@@ -31,6 +31,7 @@ class ProfileController extends Controller
             'date_of_birth' => $request->date_of_birth,
             'gender' => $request->gender,
             'bio' => $request->bio,
+            'updated_by' => auth()->user()->id,
         ]);
 
         if($request->hasFile('profile_photo')){
@@ -65,13 +66,15 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        Auth::logout();
-
+        $user->updated_by = auth()->user()->id;
+        $user->deleted_by = auth()->user()->id;
+        $user->save();
         $user->delete();
 
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/login');
+        return Redirect::to('/login')->with('status', 'Your account has been deleted successfully.');
     }
 }

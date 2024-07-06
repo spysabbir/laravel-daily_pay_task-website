@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
             $table->string('profile_photo')->default('default_profile_photo.png');
-            $table->enum('user_type', ['frontend', 'backend'])->default('frontend');
+            $table->enum('user_type', ['Frontend', 'Backend'])->default('Frontend');
             $table->enum('status', ['Active', 'Inactive', 'Blocked', 'Banned'])->default('Inactive');
             $table->text('bio')->nullable();
             $table->string('referral_code')->unique()->nullable();

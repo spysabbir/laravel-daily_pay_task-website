@@ -30,7 +30,7 @@ class BackendController extends Controller
     public function userList(Request $request)
     {
         if ($request->ajax()) {
-            $query = User::where('user_type', 'frontend');
+            $query = User::where('user_type', 'Frontend');
 
             if ($request->status) {
                 $query->where('users.status', $request->status);
@@ -124,7 +124,7 @@ class BackendController extends Controller
     public function userTrash(Request $request)
     {
         if ($request->ajax()) {
-            $query = User::where('user_type', 'frontend')->onlyTrashed();
+            $query = User::where('user_type', 'Frontend')->onlyTrashed();
 
             $trashUser = $query->orderBy('deleted_at', 'desc')->get();
 

@@ -22,6 +22,7 @@ class PasswordController extends Controller
 
         $request->user()->update([
             'password' => Hash::make($request->password),
+            'updated_by' => auth()->user()->id,
         ]);
 
         $notification = array(

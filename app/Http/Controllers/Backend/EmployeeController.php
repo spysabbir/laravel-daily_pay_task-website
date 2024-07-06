@@ -15,7 +15,7 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = User::where('user_type', 'backend');
+            $query = User::where('user_type', 'Backend');
 
             if ($request->role) {
                 $query->whereHas('roles', function ($query) use ($request) {
@@ -91,7 +91,7 @@ class EmployeeController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'user_type' => 'backend',
+                'user_type' => 'Backend',
                 'status' => 'Active',
                 'created_by' => auth()->user()->id,
             ]);
@@ -169,7 +169,7 @@ class EmployeeController extends Controller
     public function trash(Request $request)
     {
         if ($request->ajax()) {
-            $query = User::where('user_type', 'backend')->onlyTrashed();
+            $query = User::where('user_type', 'Backend')->onlyTrashed();
 
             $trashEmployee = $query->orderBy('deleted_at', 'desc')->get();
 

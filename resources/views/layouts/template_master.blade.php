@@ -56,7 +56,7 @@
         <!-- partial:partials/_sidebar.html -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <a href="{{ Auth::user()->user_type === 'backend' ? route('backend.dashboard') : route('dashboard') }}" class="sidebar-brand">
+                <a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}" class="sidebar-brand">
                     <span>{{ config('app.name') }}</span>
                 </a>
                 <div class="sidebar-toggler not-active">
@@ -77,11 +77,11 @@
                 </a>
                 <div class="theme-wrapper">
                     <h6 class="text-muted mb-2">Light Theme:</h6>
-                    <a class="theme-item" href="{{ Auth::user()->user_type === 'backend' ? route('backend.dashboard') : route('dashboard') }}">
+                    <a class="theme-item" href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}">
                         <img src="{{ asset('template') }}/images/screenshots/light.jpg" alt="light theme">
                     </a>
                     <h6 class="text-muted mb-2">Dark Theme:</h6>
-                    <a class="theme-item active" href="{{ Auth::user()->user_type === 'backend' ? route('backend.dashboard') : route('dashboard') }}">
+                    <a class="theme-item active" href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}">
                         <img src="{{ asset('template') }}/images/screenshots/dark.jpg" alt="light theme">
                     </a>
                 </div>
@@ -289,13 +289,13 @@
                                 </div>
                                 <ul class="list-unstyled p-1">
                                     <li class="dropdown-item p-0">
-                                        <a href="{{ Auth::user()->user_type === 'backend' ? route('backend.profile.edit') : route('profile.edit') }}" class="text-body ms-0 d-block p-2">
+                                        <a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.profile.edit') : route('profile.edit') }}" class="text-body ms-0 d-block p-2">
                                             <i class="me-2 icon-md" data-feather="user"></i>
                                             <span>Profile Edit</span>
                                         </a>
                                     </li>
                                     <li class="dropdown-item p-0">
-                                        <a href="{{ Auth::user()->user_type === 'backend' ? route('backend.profile.setting') : route('profile.setting') }}" class="text-body ms-0 d-block p-2">
+                                        <a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.profile.setting') : route('profile.setting') }}" class="text-body ms-0 d-block p-2">
                                             <i class="me-2 icon-md" data-feather="settings"></i>
                                             <span>Profile Setting</span>
                                         </a>
@@ -342,7 +342,7 @@
                     @else
                     <nav class="page-breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ Auth::user()->user_type === 'backend' ? route('backend.dashboard') : route('dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active" aria-current="page">@yield('title')</li>
                         </ol>
                     </nav>

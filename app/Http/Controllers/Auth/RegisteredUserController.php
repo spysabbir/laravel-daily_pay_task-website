@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 
@@ -33,15 +33,18 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'password_confirmation' => ['required', Rules\Password::defaults()],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+            'password_confirmation' => ['required', Password::defaults()],
             'terms_conditions' => 'required',
             'referral_code' => ['nullable', 'string', 'exists:users,referral_code'],
+        ],
+        [
+            'terms_conditions.required' => 'You must agree to the terms and conditions.',
+            'referral_code.exists' => 'The referral code is invalid.',
         ]);
 
-        // Find the referrer based on the referral code
-        $referrer = $request->referral_code ? User::where('referral_code', $request->referral_code)->first() : null;
+        $referrer = $request->referral_code ? User::firstWhere('referral_code', $request->referral_code) : null;
 
         $user = User::create([
             'name' => $request->name,

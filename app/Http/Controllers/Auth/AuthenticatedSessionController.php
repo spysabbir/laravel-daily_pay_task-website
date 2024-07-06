@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (Auth::user()->user_type === 'backend') {
+        if (Auth::user()->user_type === 'Backend') {
             return redirect()->intended(route('backend.dashboard', absolute: false));
         }
 
@@ -46,6 +46,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

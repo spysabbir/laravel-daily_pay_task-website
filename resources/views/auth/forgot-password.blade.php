@@ -13,6 +13,11 @@
         <div class="auth-form-wrapper px-4 py-5">
             <span class="noble-ui-logo logo-light d-block mb-2"><span>{{ config('app.name') }}</span></span>
             <h5 class="text-muted fw-normal mb-4">Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.</h5>
+            @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
+            </div>
+            @endif
             <form class="forms-sample" method="POST" action="{{ route('password.email') }}">
                 @csrf
                 <div class="mb-3">

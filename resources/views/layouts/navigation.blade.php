@@ -1,13 +1,13 @@
 <ul class="nav">
     <li class="nav-item nav-category">Main</li>
     <li class="nav-item">
-        <a href="{{ Auth::user()->user_type === 'backend' ? route('backend.dashboard') : route('dashboard') }}" class="nav-link">
+        <a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}" class="nav-link">
             <i class="link-icon" data-feather="box"></i>
             <span class="link-title">Dashboard</span>
         </a>
     </li>
 
-    @if (Auth::user()->user_type === 'backend')
+    @if (Auth::user()->user_type === 'Backend')
         <li class="nav-item nav-category">Super Admin</li>
         @can('SettingMenu')
         <li class="nav-item">

@@ -15,6 +15,13 @@ class UserController extends Controller
     public function profileEdit(Request $request)
     {
         $user = $request->user();
-        return view('profile.index', compact('user'));
+        return view('profile.edit', compact('user'));
     }
+
+    public function profileSetting(Request $request)
+    {
+        $user = $request->user();
+        return view('profile.setting', compact('user'));
+    }
+
 }

@@ -24,7 +24,7 @@
                     <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white">Resend Verification Email</button>
                 </div>
             </form>
-            <form class="forms-sample" method="POST" action="{{ route('logout') }}">
+            <form class="forms-sample mt-3" method="POST" action="{{ route('logout') }}">
                 @csrf
                 <div>
                     <button type="submit" class="btn btn-danger me-2 mb-2 mb-md-0 text-white">Log Out</button>

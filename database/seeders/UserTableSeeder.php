@@ -20,7 +20,7 @@ class UserTableSeeder extends Seeder
             'name' => 'Super Admin',
             'email' => 'superadmin@gmail.com',
             'password' => Hash::make('12345678'),
-            'user_type' => 'backend',
+            'user_type' => 'Backend',
             'status' => 'Active',
         ]);
 
@@ -36,7 +36,7 @@ class UserTableSeeder extends Seeder
             'name' => 'Demo User',
             'email' => 'user@gmail.com',
             'password' => Hash::make('12345678'),
-            'user_type' => 'frontend',
+            'user_type' => 'Frontend',
             'status' => 'Active',
         ]);
 

@@ -1,14 +1,14 @@
 <?php
 
-use App\Http\Controllers\backend\BackendController;
+use App\Http\Controllers\Backend\BackendController;
 use App\Http\Controllers\Backend\EmployeeController;
-use App\Http\Controllers\backend\PermissionController;
+use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
-use App\Http\Controllers\backend\RolePermissionController;
+use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SettingController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type:backend'])->group(function() {
+Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type:Backend'])->group(function() {
     Route::get('/dashboard', [BackendController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile/edit', [BackendController::class, 'profileEdit'])->name('profile.edit');
     Route::get('/profile/setting', [BackendController::class, 'profileSetting'])->name('profile.setting');
