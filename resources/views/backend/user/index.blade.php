@@ -53,6 +53,8 @@
                                     <option value="">-- Select Status --</option>
                                     <option value="Active">Active</option>
                                     <option value="Inactive">Inactive</option>
+                                    <option value="Blocked">Blocked</option>
+                                    <option value="Banned">Banned</option>
                                 </select>
                             </div>
                         </div>

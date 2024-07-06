@@ -89,11 +89,11 @@
         </li>
         @endcan
     @else
-        <li class="nav-item nav-category">Docs</li>
+        <li class="nav-item nav-category">User</li>
         <li class="nav-item">
-            <a href="" class="nav-link">
-                <i class="link-icon" data-feather="hash"></i>
-                <span class="link-title">User</span>
+            <a href="{{ route('nid.verification') }}" class="nav-link">
+                <i class="link-icon" data-feather="user-check"></i>
+                <span class="link-title">Nid Verification</span>
             </a>
         </li>
     @endif
