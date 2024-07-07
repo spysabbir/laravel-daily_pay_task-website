@@ -31,7 +31,7 @@ class UserController extends Controller
     {
         $nidVerification = NidVerification::where('user_id', $request->user()->id)->first();
         $user = $request->user();
-        return view('frontend.nid-verification', compact('user', 'nidVerification'));
+        return view('frontend.nid_verification.index', compact('user', 'nidVerification'));
     }
 
     public function nidVerificationStore(Request $request)
@@ -87,6 +87,46 @@ class UserController extends Controller
 
         $notification = array(
             'message' => 'NID Verification request submitted successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
+    }
+
+    // deposit
+    public function deposit(Request $request)
+    {
+        return view('frontend.deposit.index');
+    }
+
+    public function depositStore(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+        ]);
+
+        $notification = array(
+            'message' => 'Deposit request submitted successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
+    }
+
+    // withdraw
+    public function withdraw(Request $request)
+    {
+        return view('frontend.withdraw.index');
+    }
+
+    public function withdrawStore(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+        ]);
+
+        $notification = array(
+            'message' => 'Withdraw request submitted successfully.',
             'alert-type' => 'success'
         );
 

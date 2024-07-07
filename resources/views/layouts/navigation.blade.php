@@ -101,8 +101,77 @@
         <li class="nav-item">
             <a href="{{ route('nid.verification') }}" class="nav-link">
                 <i class="link-icon" data-feather="user-check"></i>
-                <span class="link-title">Nid Verification</span>
+                <span class="link-title">Verification</span>
             </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('nid.verification') }}" class="nav-link">
+                <i class="link-icon" data-feather="search"></i>
+                <span class="link-title">Find Works</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#workingList" role="button" aria-expanded="false" aria-controls="workingList">
+                <i class="link-icon" data-feather="list"></i>
+                <span class="link-title">Working List</span>
+                <i class="link-arrow" data-feather="chevron-down"></i>
+            </a>
+            <div class="collapse" id="workingList">
+                <ul class="nav sub-menu">
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Pending</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Approve</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Reject</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('nid.verification') }}" class="nav-link">
+                <i class="link-icon" data-feather="plus"></i>
+                <span class="link-title">Post Job</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#jobsList" role="button" aria-expanded="false" aria-controls="jobsList">
+                <i class="link-icon" data-feather="list"></i>
+                <span class="link-title">Jobs List</span>
+                <i class="link-arrow" data-feather="chevron-down"></i>
+            </a>
+            <div class="collapse" id="jobsList">
+                <ul class="nav sub-menu">
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Running</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Completed</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#wallet" role="button" aria-expanded="false" aria-controls="wallet">
+                <i class="link-icon" data-feather="credit-card"></i>
+                <span class="link-title">Wallet</span>
+                <i class="link-arrow" data-feather="chevron-down"></i>
+            </a>
+            <div class="collapse" id="wallet">
+                <ul class="nav sub-menu">
+                    <li class="nav-item">
+                        <a href="{{ route('deposit') }}" class="nav-link">Deposit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('withdraw') }}" class="nav-link">Withdraw</a>
+                    </li>
+                </ul>
+            </div>
         </li>
     @endif
 </ul>

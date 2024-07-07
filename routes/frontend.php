@@ -20,5 +20,15 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
 
     Route::get('/nid-verification', [UserController::class, 'nidVerification'])->name('nid.verification');
     Route::post('/nid-verification', [UserController::class, 'nidVerificationStore'])->name('nid.verification.store');
+
+    Route::get('/bank-verification', [UserController::class, 'bankVerification'])->name('bank.verification');
+    Route::post('/bank-verification', [UserController::class, 'bankVerificationStore'])->name('bank.verification.store');
+
+    Route::get('/deposit', [UserController::class, 'deposit'])->name('deposit');
+    Route::post('/deposit', [UserController::class, 'depositStore'])->name('deposit.store');
+
+    Route::get('/withdraw', [UserController::class, 'withdraw'])->name('withdraw');
+    Route::post('/withdraw', [UserController::class, 'withdrawStore'])->name('withdraw.store');
+
 });
 
