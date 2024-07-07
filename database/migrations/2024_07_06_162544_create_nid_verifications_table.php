@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('nid_number')->unique();
+            $table->date('nid_date_of_birth');
             $table->string('nid_front_image');
             $table->string('nid_with_face_image');
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');

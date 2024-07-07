@@ -15,4 +15,14 @@ class NidVerification extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function rejectedBy()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
 }

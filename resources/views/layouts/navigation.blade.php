@@ -88,6 +88,14 @@
             </a>
         </li>
         @endcan
+        {{-- @can('verification.request') --}}
+        <li class="nav-item">
+            <a href="{{ route('backend.verification.request') }}" class="nav-link">
+                <i class="link-icon" data-feather="user-check"></i>
+                <span class="link-title">Verification Request</span>
+            </a>
+        </li>
+        {{-- @endcan --}}
     @else
         <li class="nav-item nav-category">User</li>
         <li class="nav-item">

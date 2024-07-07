@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\NidVerification;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
@@ -157,5 +158,127 @@ class BackendController extends Controller
     {
         $user = User::onlyTrashed()->where('id', $id)->first();
         $user->forceDelete();
+    }
+
+    public function verificationRequest(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = NidVerification::where('status', 'Pending');
+
+            $query->select('nid_verifications.*')->orderBy('created_at', 'desc');
+
+            $allRequest = $query->get();
+
+            return DataTables::of($allRequest)
+                ->addIndexColumn()
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        ';
+                })
+                ->editColumn('user_email', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . $row->user->email . '</span>
+                        ';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    ';
+                return $btn;
+                })
+                ->rawColumns(['user_name', 'user_email', 'created_at', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.nid_verification.index');
+    }
+
+    public function verificationRequestShow(string $id)
+    {
+        $nidVerification = NidVerification::where('id', $id)->first();
+        return view('backend.nid_verification.show', compact('nidVerification'));
+    }
+
+    public function verificationRequestStatusChange(Request $request, string $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'error' => $validator->errors()->toArray()
+            ]);
+        } else {
+            $nidVerification = NidVerification::findOrFail($id);
+            $nidVerification->update([
+                'status' => $request->status,
+                'remarks' => $request->remarks,
+                'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
+                'rejected_at' => $request->status == 'Rejected' ? now() : NULL,
+                'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,
+                'approved_at' => $request->status == 'Approved' ? now() : NULL,
+            ]);
+
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
+    }
+
+    public function verificationRequestRejectedData(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = NidVerification::where('status', 'Rejected');
+
+            $query->select('nid_verifications.*')->orderBy('rejected_at', 'desc');
+
+            $rejectedData = $query->get();
+
+            return DataTables::of($rejectedData)
+                ->addIndexColumn()
+                ->editColumn('user_email', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . $row->user->email . '</span>
+                        ';
+                })
+                ->editColumn('rejected_by', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . $row->rejectedBy->name . '</span>
+                        ';
+                })
+                ->editColumn('rejected_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->rejected_at)) . '</span>
+                        ';
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
+                    ';
+                return $btn;
+                })
+                ->rawColumns(['user_email', 'rejected_by', 'rejected_at', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.nid_verification.index');
+    }
+
+    public function verificationRequestDelete(string $id)
+    {
+        $nidVerification = NidVerification::findOrFail($id);
+
+        unlink(base_path("public/uploads/nid_verification_photo/").$nidVerification->nid_front_image);
+        unlink(base_path("public/uploads/nid_verification_photo/").$nidVerification->nid_with_face_image);
+
+        $nidVerification->delete();
     }
 }
