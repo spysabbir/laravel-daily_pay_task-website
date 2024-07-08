@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Deposit;
 use App\Models\Verification;
+use App\Models\Withdraw;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -93,44 +97,138 @@ class UserController extends Controller
         return back()->with($notification);
     }
 
-    // deposit
     public function deposit(Request $request)
     {
+        if ($request->ajax()) {
+            $query = Deposit::select('deposits.*');
+
+            if ($request->status) {
+                $query->where('deposits.status', $request->status);
+            }
+
+            $query->orderBy('created_at', 'desc');
+
+            $deposits = $query->get();
+
+            return DataTables::of($deposits)
+                ->addIndexColumn()
+                ->editColumn('status', function ($row) {
+                    if ($row->status == 'Pending') {
+                        $status = '
+                        <span class="badge bg-success">' . $row->status . '</span>
+                        ';
+                    } else if ($row->status == 'Approved') {
+                        $status = '
+                        <span class="badge text-white bg-info">' . $row->status . '</span>
+                        ';
+                    } else {
+                        $status = '
+                        <span class="badge bg-danger">' . $row->status . '</span>
+                        ';
+                    }
+                    return $status;
+                })
+                ->rawColumns(['status'])
+                ->make(true);
+        }
+
         return view('frontend.deposit.index');
     }
 
     public function depositStore(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:1',
+            'method' => 'required|string|max:255',
+            'number' => 'required|string|max:255',
+            'transaction_id' => 'required|string|max:255',
         ]);
 
-        $notification = array(
-            'message' => 'Deposit request submitted successfully.',
-            'alert-type' => 'success'
-        );
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            Deposit::create([
+                'user_id' => $request->user()->id,
+                'amount' => $request->amount,
+                'method' => $request->method,
+                'number' => $request->number,
+                'transaction_id' => $request->transaction_id,
+                'status' => 'Pending',
+            ]);
 
-        return back()->with($notification);
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
     }
 
-    // withdraw
     public function withdraw(Request $request)
     {
+        if ($request->ajax()) {
+            $query = Withdraw::select('withdraws.*');
+
+            if ($request->status) {
+                $query->where('withdraws.status', $request->status);
+            }
+
+            $query->orderBy('created_at', 'desc');
+
+            $withdraws = $query->get();
+
+            return DataTables::of($withdraws)
+                ->addIndexColumn()
+                ->editColumn('status', function ($row) {
+                    if ($row->status == 'Pending') {
+                        $status = '
+                        <span class="badge bg-success">' . $row->status . '</span>
+                        ';
+                    } else if ($row->status == 'Approved') {
+                        $status = '
+                        <span class="badge text-white bg-info">' . $row->status . '</span>
+                        ';
+                    } else {
+                        $status = '
+                        <span class="badge bg-danger">' . $row->status . '</span>
+                        ';
+                    }
+                    return $status;
+                })
+                ->rawColumns(['status'])
+                ->make(true);
+        }
+
         return view('frontend.withdraw.index');
     }
 
     public function withdrawStore(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:1',
+            'method' => 'required|string|max:255',
+            'number' => 'required|string|max:255',
         ]);
 
-        $notification = array(
-            'message' => 'Withdraw request submitted successfully.',
-            'alert-type' => 'success'
-        );
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            Withdraw::create([
+                'user_id' => $request->user()->id,
+                'amount' => $request->amount,
+                'method' => $request->method,
+                'number' => $request->number,
+                'status' => 'Pending',
+            ]);
 
-        return back()->with($notification);
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
     }
 
 }

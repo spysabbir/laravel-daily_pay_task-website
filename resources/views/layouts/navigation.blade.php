@@ -72,30 +72,87 @@
             </div>
         </li>
         @endcan
-        @can('employee.index')
+
+        @can('EmployeeMenu')
+            @can('employee.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.employee.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="users"></i>
+                    <span class="link-title">Employee</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
+        @can('UserMenu')
+            @can('user.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.user.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="user"></i>
+                    <span class="link-title">User</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
+        @can('VerificationMenu')
+            @can('verification.request')
+            <li class="nav-item">
+                <a href="{{ route('backend.verification.request') }}" class="nav-link">
+                    <i class="link-icon" data-feather="user-check"></i>
+                    <span class="link-title">Verification Request</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
+        @can('DepositMenu')
         <li class="nav-item">
-            <a href="{{ route('backend.employee.index') }}" class="nav-link">
-                <i class="link-icon" data-feather="users"></i>
-                <span class="link-title">Employee</span>
+            <a class="nav-link" data-bs-toggle="collapse" href="#depositRequest" role="button" aria-expanded="false" aria-controls="depositRequest">
+                <i class="link-icon" data-feather="credit-card"></i>
+                <span class="link-title">Deposit request</span>
+                <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
+            <div class="collapse" id="depositRequest">
+                <ul class="nav sub-menu">
+                    @can('deposit.request')
+                    <li class="nav-item">
+                        <a href="{{ route('backend.deposit.request') }}" class="nav-link">Pending</a>
+                    </li>
+                    @endcan
+                    @can('deposit.request.approved')
+                    <li class="nav-item">
+                        <a href="{{ route('backend.deposit.request.approved') }}" class="nav-link">Approved</a>
+                    </li>
+                    @endcan
+                </ul>
+            </div>
         </li>
         @endcan
-        @can('user.index')
+
+        @can('WithdrawMenu')
         <li class="nav-item">
-            <a href="{{ route('backend.user.index') }}" class="nav-link">
-                <i class="link-icon" data-feather="user"></i>
-                <span class="link-title">User</span>
+            <a class="nav-link" data-bs-toggle="collapse" href="#withdrawRequest" role="button" aria-expanded="false" aria-controls="withdrawRequest">
+                <i class="link-icon" data-feather="dollar-sign"></i>
+                <span class="link-title">Withdraw request</span>
+                <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
+            <div class="collapse" id="withdrawRequest">
+                <ul class="nav sub-menu">
+                    @can('withdraw.request')
+                    <li class="nav-item">
+                        <a href="{{ route('backend.withdraw.request') }}" class="nav-link">Pending</a>
+                    </li>
+                    @endcan
+                    @can('withdraw.request.approved')
+                    <li class="nav-item">
+                        <a href="{{ route('backend.withdraw.request.approved') }}" class="nav-link">Approved</a>
+                    </li>
+                    @endcan
+                </ul>
+            </div>
         </li>
         @endcan
-        {{-- @can('verification.request') --}}
-        <li class="nav-item">
-            <a href="{{ route('backend.verification.request') }}" class="nav-link">
-                <i class="link-icon" data-feather="user-check"></i>
-                <span class="link-title">Verification Request</span>
-            </a>
-        </li>
-        {{-- @endcan --}}
     @else
         <li class="nav-item nav-category">User</li>
         <li class="nav-item">

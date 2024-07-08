@@ -105,6 +105,22 @@
                             <input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
                         </div>
                     </form>
+                    @if (auth()->user()->user_type === 'Frontend')
+                    <div class="d-flex py-3">
+                        <span class="badge bg-primary mt-1 mx-2">
+                            Deposit
+                            <strong class="badge bg-light text-dark">
+                                {{ App\Models\Deposit::where('user_id', auth()->id())->where('status', 'Approved')->sum('amount') }}
+                            </strong>
+                        </span>
+                        <span class="badge bg-success mt-1 mx-2">
+                            Withdraw
+                            <strong class="badge bg-light text-dark">
+                                {{ App\Models\Withdraw::where('user_id', auth()->id())->where('status', 'Approved')->sum('amount') }}
+                            </strong>
+                        </span>
+                    </div>
+                    @endif
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="appsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

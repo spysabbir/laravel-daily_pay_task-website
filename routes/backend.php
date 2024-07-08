@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\Backend\BackendController;
+use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SettingController;
+use App\Http\Controllers\Backend\VerificationController;
+use App\Http\Controllers\Backend\WithdrawController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type:Backend'])->group(function() {
@@ -40,12 +43,24 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('user/trash', [BackendController::class, 'userTrash'])->name('user.trash');
     Route::get('user/restore/{id}', [BackendController::class, 'userRestore'])->name('user.restore');
     Route::get('user/delete/{id}', [BackendController::class, 'userDelete'])->name('user.delete');
-
     // Id Verification
-    Route::get('verification-request', [BackendController::class, 'verificationRequest'])->name('verification.request');
-    Route::get('verification-request/{id}', [BackendController::class, 'verificationRequestShow'])->name('verification.request.show');
-    Route::put('verification-request-status-change/{id}', [BackendController::class, 'verificationRequestStatusChange'])->name('verification.request.status.change');
-    Route::get('verification-request-rejected-data', [BackendController::class, 'verificationRequestRejectedData'])->name('verification.request.rejected.data');
-    Route::delete('verification-request-delete/{id}', [BackendController::class, 'verificationRequestDelete'])->name('verification.request.delete');
-
+    Route::get('verification-request', [VerificationController::class, 'verificationRequest'])->name('verification.request');
+    Route::get('verification-request/{id}', [VerificationController::class, 'verificationRequestShow'])->name('verification.request.show');
+    Route::put('verification-request-status-change/{id}', [VerificationController::class, 'verificationRequestStatusChange'])->name('verification.request.status.change');
+    Route::get('verification-request-rejected-data', [VerificationController::class, 'verificationRequestRejectedData'])->name('verification.request.rejected.data');
+    Route::delete('verification-request-delete/{id}', [VerificationController::class, 'verificationRequestDelete'])->name('verification.request.delete');
+    // Deposit
+    Route::get('deposit-request', [DepositController::class, 'depositRequest'])->name('deposit.request');
+    Route::get('deposit-request/{id}', [DepositController::class, 'depositRequestShow'])->name('deposit.request.show');
+    Route::put('deposit-request-status-change/{id}', [DepositController::class, 'depositRequestStatusChange'])->name('deposit.request.status.change');
+    Route::get('deposit-request-rejected', [DepositController::class, 'depositRequestRejected'])->name('deposit.request.rejected');
+    Route::get('deposit-request-approved', [DepositController::class, 'depositRequestApproved'])->name('deposit.request.approved');
+    Route::delete('deposit-request-delete/{id}', [DepositController::class, 'depositRequestDelete'])->name('deposit.request.delete');
+    // Withdraw
+    Route::get('withdraw-request', [WithdrawController::class, 'withdrawRequest'])->name('withdraw.request');
+    Route::get('withdraw-request/{id}', [WithdrawController::class, 'withdrawRequestShow'])->name('withdraw.request.show');
+    Route::put('withdraw-request-status-change/{id}', [WithdrawController::class, 'withdrawRequestStatusChange'])->name('withdraw.request.status.change');
+    Route::get('withdraw-request-rejected', [WithdrawController::class, 'withdrawRequestRejected'])->name('withdraw.request.rejected');
+    Route::get('withdraw-request-approved', [WithdrawController::class, 'withdrawRequestApproved'])->name('withdraw.request.approved');
+    Route::delete('withdraw-request-delete/{id}', [WithdrawController::class, 'withdrawRequestDelete'])->name('withdraw.request.delete');
 });

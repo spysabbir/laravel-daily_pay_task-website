@@ -54,6 +54,29 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'user.trash', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.restore', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.delete', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
+
+            ['name' => 'VerificationMenu', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
+            ['name' => 'verification.request', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
+            ['name' => 'verification.request.show', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
+            ['name' => 'verification.request.status.change', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
+            ['name' => 'verification.request.rejected.data', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
+            ['name' => 'verification.request.delete', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
+
+            ['name' => 'DepositMenu', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
+            ['name' => 'deposit.request', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
+            ['name' => 'deposit.request.show', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
+            ['name' => 'deposit.request.status.change', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
+            ['name' => 'deposit.request.rejected', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
+            ['name' => 'deposit.request.approved', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
+            ['name' => 'deposit.request.delete', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
+
+            ['name' => 'WithdrawMenu', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
+            ['name' => 'withdraw.request', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
+            ['name' => 'withdraw.request.show', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
+            ['name' => 'withdraw.request.status.change', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
+            ['name' => 'withdraw.request.rejected', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
+            ['name' => 'withdraw.request.approved', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
+            ['name' => 'withdraw.request.delete', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
         ]);
 
         $this->command->info('Permissions added successfully.');

@@ -12,7 +12,7 @@
                                 <td>Full Name</td>
                                 <td>{{ $verification->user->name }}</td>
                             </tr>
-                            <tr></tr>
+                            <tr>
                                 <td>Id Type</td>
                                 <td>{{ $verification->id_type }}</td>
                             </tr>

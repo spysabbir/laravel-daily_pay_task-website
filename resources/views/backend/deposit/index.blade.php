@@ -1,23 +1,23 @@
 @extends('layouts.template_master')
 
-@section('title', 'Verification Request')
+@section('title', 'Deposit Request (Pending)')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Verification Request (Pending)</h3>
+                <h3 class="card-title">Deposit Request (Pending)</h3>
                 <div class="action-btn">
                     <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".rejectedData">
                         Rejected Request
                     </button>
-                    <!-- Verification Request (Reject) Modal -->
+                    <!-- Deposit Request (Reject) Modal -->
                     <div class="modal fade rejectedData" tabindex="-1" aria-labelledby="rejectedDataLabel" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="rejectedDataLabel">Verification Reject</h5>
+                                    <h5 class="modal-title" id="rejectedDataLabel">Deposit Reject</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -104,7 +104,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.verification.request') }}",
+                url: "{{ route('backend.deposit.request') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -119,7 +119,7 @@
         // View Data
         $(document).on('click', '.viewBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.verification.request.show', ":id") }}";
+            var url = "{{ route('backend.deposit.request.show', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -133,8 +133,8 @@
         // Update Data
         $("body").on("submit", "#editForm", function(e){
             e.preventDefault();
-            var id = $('#verification_id').val();
-            var url = "{{ route('backend.verification.request.status.change', ":id") }}";
+            var id = $('#deposit_id').val();
+            var url = "{{ route('backend.deposit.request.status.change', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -152,7 +152,7 @@
                         $('#pendingDataTable').DataTable().ajax.reload();
                         $('#rejectedDataTable').DataTable().ajax.reload();
                         $(".viewModal").modal('hide');
-                        toastr.success('Verification status change successfully.');
+                        toastr.success('Deposit status change successfully.');
                     }
                 },
             });
@@ -164,7 +164,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.verification.request.rejected.data') }}",
+                url: "{{ route('backend.deposit.request.rejected') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -180,7 +180,7 @@
         // Delete Data
         $(document).on('click', '.deleteBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('backend.verification.request.delete', ":id") }}";
+            var url = "{{ route('backend.deposit.request.delete', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -198,7 +198,7 @@
                         success: function(response) {
                             $(".rejectedData").modal('hide');
                             $('#rejectedDataTable').DataTable().ajax.reload();
-                            toastr.success('Verification request delete successfully.');
+                            toastr.success('Deposit request delete successfully.');
                         }
                     });
                 }
