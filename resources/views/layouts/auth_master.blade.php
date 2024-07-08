@@ -30,6 +30,8 @@
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{ asset('template') }}/css/demo2/style.css">
     <!-- End layout styles -->
+
+    {!! NoCaptcha::renderJs() !!}
 </head>
 <body>
 	<div class="main-wrapper">

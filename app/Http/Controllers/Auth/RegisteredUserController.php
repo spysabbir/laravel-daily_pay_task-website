@@ -38,10 +38,13 @@ class RegisteredUserController extends Controller
             'password_confirmation' => ['required', Password::defaults()],
             'terms_conditions' => 'required',
             'referral_code' => ['nullable', 'string', 'exists:users,referral_code'],
+            'g-recaptcha-response' => 'required|captcha',
         ],
         [
             'terms_conditions.required' => 'You must agree to the terms and conditions.',
             'referral_code.exists' => 'The referral code is invalid.',
+            'g-recaptcha-response.required' => 'Please verify that you are not a robot.',
+            'g-recaptcha-response.captcha' => 'Failed to validate captcha response.',
         ]);
 
         $referrer = $request->referral_code ? User::firstWhere('referral_code', $request->referral_code) : null;

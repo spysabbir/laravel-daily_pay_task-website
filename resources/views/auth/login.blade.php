@@ -34,6 +34,12 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
+                <div class="mb-3">
+                    {!! NoCaptcha::display() !!}
+                    @error('g-recaptcha-response')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
                 <div class="form-check mb-3">
                     <input type="checkbox" class="form-check-input" id="remember_me" name="remember">
                     <label class="form-check-label" for="remember_me">

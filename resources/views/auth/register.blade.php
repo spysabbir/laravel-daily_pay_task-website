@@ -45,6 +45,12 @@
                     @enderror
                 </div>
                 <div class="mb-3">
+                    {!! NoCaptcha::display() !!}
+                    @error('g-recaptcha-response')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="mb-3">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="termsConditions" name="terms_conditions">
                         <label class="form-check-label" for="termsConditions">
