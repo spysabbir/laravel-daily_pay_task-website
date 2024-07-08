@@ -41,7 +41,7 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('user/restore/{id}', [BackendController::class, 'userRestore'])->name('user.restore');
     Route::get('user/delete/{id}', [BackendController::class, 'userDelete'])->name('user.delete');
 
-    // Nid Verification
+    // Id Verification
     Route::get('verification-request', [BackendController::class, 'verificationRequest'])->name('verification.request');
     Route::get('verification-request/{id}', [BackendController::class, 'verificationRequestShow'])->name('verification.request.show');
     Route::put('verification-request-status-change/{id}', [BackendController::class, 'verificationRequestStatusChange'])->name('verification.request.status.change');

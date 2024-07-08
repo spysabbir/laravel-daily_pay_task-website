@@ -14,7 +14,7 @@
                     </button>
                     <!-- Trash Modal -->
                     <div class="modal fade rejectedData" tabindex="-1" aria-labelledby="rejectedDataLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="rejectedDataLabel">Verification Reject</h5>
@@ -28,6 +28,7 @@
                                                     <td>Sl No</td>
                                                     <th>User Id</th>
                                                     <th>User Email</th>
+                                                    <th>Remarks</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
                                                     <th>Action</th>
@@ -169,6 +170,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_email', name: 'user_email' },
+                { data: 'remarks', name: 'remarks' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'rejected_at', name: 'rejected_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }

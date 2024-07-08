@@ -2,7 +2,7 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">NID Verification Details</h4>
+                <h4 class="card-title">Verification Details</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -10,40 +10,44 @@
                         <tbody>
                             <tr>
                                 <td>Full Name</td>
-                                <td>{{ $nidVerification->user->name }}</td>
+                                <td>{{ $verification->user->name }}</td>
+                            </tr>
+                            <tr></tr>
+                                <td>Id Type</td>
+                                <td>{{ $verification->id_type }}</td>
                             </tr>
                             <tr>
-                                <td>NID Number</td>
-                                <td>{{ $nidVerification->nid_number }}</td>
+                                <td>ID Number</td>
+                                <td>{{ $verification->id_number }}</td>
                             </tr>
                             <tr>
                                 <td>Date of Birth</td>
-                                <td>{{ $nidVerification->nid_date_of_birth }}</td>
+                                <td>{{ $verification->user->date_of_birth }}</td>
                             </tr>
                             <tr>
-                                <td>Nid Front Image</td>
+                                <td>Id Front Image</td>
                                 <td>
-                                    <img src="{{ asset('uploads/nid_verification_photo') }}/{{ $nidVerification->nid_front_image }}" alt="Nid Front Image" style="width: 120px; height: 120px">
-                                    <a class="mx-2" href="{{ asset('uploads/nid_verification_photo') }}/{{ $nidVerification->nid_front_image }}" target="_blank">View Full Image</a>
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image }}" alt="Id Front Image" style="width: 120px; height: 120px">
+                                    <a class="mx-2" href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image }}" target="_blank">View Full Image</a>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Nid With Face Image</td>
+                                <td>Id With Face Image</td>
                                 <td>
-                                    <img src="{{ asset('uploads/nid_verification_photo') }}/{{ $nidVerification->nid_with_face_image }}" alt="Nid With Face Image" style="width: 120px; height: 120px">
-                                    <a class="mx-2" href="{{ asset('uploads/nid_verification_photo') }}/{{ $nidVerification->nid_with_face_image }}" target="_blank">View Full Image</a>                                </td>
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image }}" alt="Id With Face Image" style="width: 120px; height: 120px">
+                                    <a class="mx-2" href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image }}" target="_blank">View Full Image</a>                                </td>
                             </tr>
                             <tr>
                                 <td>Remarks</td>
-                                <td>{{ $nidVerification->remarks ?? 'N/A' }}</td>
+                                <td>{{ $verification->remarks ?? 'N/A' }}</td>
                             </tr>
                             <tr>
                                 <td>Rejected By</td>
-                                <td>{{ $nidVerification->rejectedBy->name ?? 'N/A' }}</td>
+                                <td>{{ $verification->rejectedBy->name ?? 'N/A' }}</td>
                             </tr>
                             <tr>
                                 <td>Rejected At</td>
-                                <td>{{ $nidVerification->rejected_at ?? 'N/A' }}</td>
+                                <td>{{ $verification->rejected_at ?? 'N/A' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -61,7 +65,7 @@
             <div class="card-body">
                 <form class="forms-sample" id="editForm">
                     @csrf
-                    <input type="hidden" id="verification_id" value="{{ $nidVerification->id }}">
+                    <input type="hidden" id="verification_id" value="{{ $verification->id }}">
                     <div class="mb-3">
                         <label for="verification_status" class="form-label">Verification Status</label>
                         <select class="form-select" id="verification_status" name="status">
@@ -75,7 +79,7 @@
                         <label for="verification_remarks" class="form-label">Remarks</label>
                         <textarea class="form-control" id="verification_remarks" name="remarks" rows="4"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Edit</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>

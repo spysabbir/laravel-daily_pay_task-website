@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\NidVerification;
+use App\Models\Verification;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
@@ -163,13 +163,13 @@ class BackendController extends Controller
     public function verificationRequest(Request $request)
     {
         if ($request->ajax()) {
-            $query = NidVerification::where('status', 'Pending');
+            $query = Verification::where('status', 'Pending');
 
-            $query->select('nid_verifications.*')->orderBy('created_at', 'desc');
+            $query->select('verifications.*')->orderBy('created_at', 'desc');
 
-            $allRequest = $query->get();
+            $pendingRequest = $query->get();
 
-            return DataTables::of($allRequest)
+            return DataTables::of($pendingRequest)
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '
@@ -196,13 +196,13 @@ class BackendController extends Controller
                 ->make(true);
         }
 
-        return view('backend.nid_verification.index');
+        return view('backend.verification.index');
     }
 
     public function verificationRequestShow(string $id)
     {
-        $nidVerification = NidVerification::where('id', $id)->first();
-        return view('backend.nid_verification.show', compact('nidVerification'));
+        $verification = Verification::where('id', $id)->first();
+        return view('backend.verification.show', compact('verification'));
     }
 
     public function verificationRequestStatusChange(Request $request, string $id)
@@ -217,8 +217,8 @@ class BackendController extends Controller
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
-            $nidVerification = NidVerification::findOrFail($id);
-            $nidVerification->update([
+            $verification = Verification::findOrFail($id);
+            $verification->update([
                 'status' => $request->status,
                 'remarks' => $request->remarks,
                 'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
@@ -236,9 +236,9 @@ class BackendController extends Controller
     public function verificationRequestRejectedData(Request $request)
     {
         if ($request->ajax()) {
-            $query = NidVerification::where('status', 'Rejected');
+            $query = Verification::where('status', 'Rejected');
 
-            $query->select('nid_verifications.*')->orderBy('rejected_at', 'desc');
+            $query->select('verifications.*')->orderBy('rejected_at', 'desc');
 
             $rejectedData = $query->get();
 
@@ -269,16 +269,16 @@ class BackendController extends Controller
                 ->make(true);
         }
 
-        return view('backend.nid_verification.index');
+        return view('backend.verification.index');
     }
 
     public function verificationRequestDelete(string $id)
     {
-        $nidVerification = NidVerification::findOrFail($id);
+        $verification = Verification::findOrFail($id);
 
-        unlink(base_path("public/uploads/nid_verification_photo/").$nidVerification->nid_front_image);
-        unlink(base_path("public/uploads/nid_verification_photo/").$nidVerification->nid_with_face_image);
+        unlink(base_path("public/uploads/verification_photo/").$verification->id_front_image);
+        unlink(base_path("public/uploads/verification_photo/").$verification->id_with_face_image);
 
-        $nidVerification->delete();
+        $verification->delete();
     }
 }

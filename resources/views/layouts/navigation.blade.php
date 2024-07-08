@@ -99,14 +99,14 @@
     @else
         <li class="nav-item nav-category">User</li>
         <li class="nav-item">
-            <a href="{{ route('nid.verification') }}" class="nav-link">
+            <a href="{{ route('verification') }}" class="nav-link">
                 <i class="link-icon" data-feather="user-check"></i>
                 <span class="link-title">Verification</span>
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="{{ route('nid.verification') }}" class="nav-link">
+            <a href="" class="nav-link">
                 <i class="link-icon" data-feather="search"></i>
                 <span class="link-title">Find Works</span>
             </a>
@@ -133,7 +133,7 @@
         </li>
 
         <li class="nav-item">
-            <a href="{{ route('nid.verification') }}" class="nav-link">
+            <a href="" class="nav-link">
                 <i class="link-icon" data-feather="plus"></i>
                 <span class="link-title">Post Job</span>
             </a>

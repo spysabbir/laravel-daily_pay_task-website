@@ -18,11 +18,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/profile/edit', [UserController::class, 'profileEdit'])->name('profile.edit');
     Route::get('/profile/setting', [UserController::class, 'profileSetting'])->name('profile.setting');
 
-    Route::get('/nid-verification', [UserController::class, 'nidVerification'])->name('nid.verification');
-    Route::post('/nid-verification', [UserController::class, 'nidVerificationStore'])->name('nid.verification.store');
-
-    Route::get('/bank-verification', [UserController::class, 'bankVerification'])->name('bank.verification');
-    Route::post('/bank-verification', [UserController::class, 'bankVerificationStore'])->name('bank.verification.store');
+    Route::get('/verification', [UserController::class, 'verification'])->name('verification');
+    Route::post('/verification', [UserController::class, 'verificationStore'])->name('verification.store');
 
     Route::get('/deposit', [UserController::class, 'deposit'])->name('deposit');
     Route::post('/deposit', [UserController::class, 'depositStore'])->name('deposit.store');
