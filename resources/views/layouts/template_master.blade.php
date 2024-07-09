@@ -1,3 +1,7 @@
+@php
+    auth()->user()->update(['last_login_at' => now()]);
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

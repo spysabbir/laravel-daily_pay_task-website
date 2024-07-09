@@ -17,7 +17,9 @@
                 <input type="hidden" name="referral_code" value="{{ $referral_code }}">
                 @csrf
                 <div class="mb-3">
-                    <label for="userName" class="form-label">Full Name</label>
+                    <label for="userName" class="form-label">
+                        Full Name <span class="text-primary">(As per your verification document)</span>
+                    </label>
                     <input type="text" class="form-control" id="userName" name="name" value="{{ old('name') }}" placeholder="Name">
                     @error('name')
                         <span class="text-danger">{{ $message }}</span>

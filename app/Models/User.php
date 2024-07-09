@@ -74,4 +74,25 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return route('register') . '?ref=' . $this->referral_code;
     }
+
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by', 'id');
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'referred_by', 'id');
+    }
+
+    // is id verified
+    public function hasApprovedVerification()
+    {
+        return Verification::where('user_id', $this->id)->where('status', 'Approved')->exists();
+    }
+
+    public function isFrontendUser()
+    {
+        return $this->user_type === 'Frontend';
+    }
 }

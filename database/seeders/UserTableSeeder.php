@@ -36,6 +36,7 @@ class UserTableSeeder extends Seeder
             'name' => 'Demo User',
             'email' => 'user@gmail.com',
             'password' => Hash::make('12345678'),
+            'email_verified_at' => now(),
             'user_type' => 'Frontend',
             'status' => 'Active',
         ]);

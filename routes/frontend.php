@@ -21,11 +21,28 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/verification', [UserController::class, 'verification'])->name('verification');
     Route::post('/verification', [UserController::class, 'verificationStore'])->name('verification.store');
 
+    Route::get('/find-works', [UserController::class, 'findWorks'])->name('find.works');
+    Route::get('/work-details/{id}', [UserController::class, 'workDetails'])->name('work.details');
+    Route::post('/work-details/{id}/apply', [UserController::class, 'workApplyStore'])->name('work.apply.store');
+
+    Route::get('/work-list-pending', [UserController::class, 'workListPending'])->name('work.list.pending');
+    Route::get('/work-list-approved', [UserController::class, 'workListApproved'])->name('work.list.approved');
+    Route::get('/work-list-rejected', [UserController::class, 'workListRejected'])->name('work.list.rejected');
+
+    Route::get('/post-job', [UserController::class, 'postJob'])->name('post.job');
+    Route::post('/post-job', [UserController::class, 'postJobStore'])->name('post.job.store');
+
+    Route::get('/job-list-running', [UserController::class, 'jobListRunning'])->name('job.list.running');
+    Route::get('/job-list-completed', [UserController::class, 'jobListCompleted'])->name('job.list.completed');
+
+
     Route::get('/deposit', [UserController::class, 'deposit'])->name('deposit');
     Route::post('/deposit', [UserController::class, 'depositStore'])->name('deposit.store');
 
     Route::get('/withdraw', [UserController::class, 'withdraw'])->name('withdraw');
     Route::post('/withdraw', [UserController::class, 'withdrawStore'])->name('withdraw.store');
+
+
 
 });
 

@@ -163,51 +163,51 @@
         </li>
 
         <li class="nav-item">
-            <a href="" class="nav-link">
+            <a href="{{ route('find.works') }}" class="nav-link">
                 <i class="link-icon" data-feather="search"></i>
                 <span class="link-title">Find Works</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#workingList" role="button" aria-expanded="false" aria-controls="workingList">
+            <a class="nav-link" data-bs-toggle="collapse" href="#workList" role="button" aria-expanded="false" aria-controls="workList">
                 <i class="link-icon" data-feather="list"></i>
-                <span class="link-title">Working List</span>
+                <span class="link-title">Work List</span>
                 <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
-            <div class="collapse" id="workingList">
+            <div class="collapse" id="workList">
                 <ul class="nav sub-menu">
                     <li class="nav-item">
-                        <a href="" class="nav-link">Pending</a>
+                        <a href="{{ route('work.list.pending') }}" class="nav-link">Pending</a>
                     </li>
                     <li class="nav-item">
-                        <a href="" class="nav-link">Approve</a>
+                        <a href="{{ route('work.list.approved') }}" class="nav-link">Approved</a>
                     </li>
                     <li class="nav-item">
-                        <a href="" class="nav-link">Reject</a>
+                        <a href="{{ route('work.list.rejected') }}" class="nav-link">Rejected</a>
                     </li>
                 </ul>
             </div>
         </li>
 
         <li class="nav-item">
-            <a href="" class="nav-link">
+            <a href="{{ route('post.job') }}" class="nav-link">
                 <i class="link-icon" data-feather="plus"></i>
                 <span class="link-title">Post Job</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#jobsList" role="button" aria-expanded="false" aria-controls="jobsList">
+            <a class="nav-link" data-bs-toggle="collapse" href="#jobList" role="button" aria-expanded="false" aria-controls="jobList">
                 <i class="link-icon" data-feather="list"></i>
-                <span class="link-title">Jobs List</span>
+                <span class="link-title">Job List</span>
                 <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
-            <div class="collapse" id="jobsList">
+            <div class="collapse" id="jobList">
                 <ul class="nav sub-menu">
                     <li class="nav-item">
-                        <a href="" class="nav-link">Running</a>
+                        <a href="{{ route('job.list.running') }}" class="nav-link">Running</a>
                     </li>
                     <li class="nav-item">
-                        <a href="" class="nav-link">Completed</a>
+                        <a href="{{ route('job.list.completed') }}" class="nav-link">Completed</a>
                     </li>
                 </ul>
             </div>

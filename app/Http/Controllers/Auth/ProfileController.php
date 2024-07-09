@@ -18,10 +18,12 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
+            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'name' => ['required', 'string', 'max:255'],
             'username' => ['nullable', 'string', 'max:255', 'unique:users,username,'.$request->user()->id],
             'phone' => ['nullable', 'min:11', 'max:14'],
-            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'date_of_birth' => ['required', 'date'],
+            'gender' => ['required', 'string'],
         ]);
 
         $request->user()->update([

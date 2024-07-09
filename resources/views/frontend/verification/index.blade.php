@@ -3,14 +3,20 @@
 @section('title', 'Verification')
 
 @section('content')
-<div class="row">
-    <div class="col-md-12 grid-margin stretch-card">
+<div class="row justify-content-center">
+    <div class="col-md-8 grid-margin stretch-card">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Verification</h3>
+                @if ($verification && $verification->status !== 'Rejected')
+                <p class="text-info">
+                    <strong>Note:</strong> You have already submitted the verification. <br>
+                </p>
+                @else
                 <p class="text-warning">
                     <strong>Note:</strong> Before verification, Please make sure you have fill up your profile information correctly. <br>
                 </p>
+                @endif
             </div>
             <div class="card-body">
                 @if ($verification && $verification->status !== 'Rejected')
@@ -43,7 +49,7 @@
                         @csrf
                         <div class="row">
                             {{-- id_type --}}
-                            <div class="col-lg-3 col-md-6">
+                            <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="id_type" class="form-label">Id Type</label>
                                     <select class="form-select" id="id_type" name="id_type">
@@ -57,7 +63,7 @@
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div><!-- Col -->
-                            <div class="col-lg-3 col-md-6">
+                            <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="id_number" class="form-label">Id Number</label>
                                     <input type="text" class="form-control" id="id_number" name="id_number" value="{{ old('id_number') }}" placeholder="Id Number">
@@ -66,7 +72,7 @@
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div><!-- Col -->
-                            <div class="col-lg-3 col-md-6">
+                            <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="id_front_image" class="form-label">Id Front Image</label>
                                     <input type="file" class="form-control" id="id_front_image" name="id_front_image" accept=".jpg, .jpeg, .png">
@@ -75,7 +81,7 @@
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div><!-- Col -->
-                            <div class="col-lg-3 col-md-6">
+                            <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="id_with_face_image" class="form-label">Id With Face Image</label>
                                     <input type="file" class="form-control" id="id_with_face_image" name="id_with_face_image" accept=".jpg, .jpeg, .png">

@@ -12,7 +12,7 @@
                 </figure>
                 <div class="d-flex justify-content-between align-items-center position-absolute top-90 w-100 px-2 px-md-4 mt-n4">
                     <div class="d-flex">
-                        <img class="wd-70 rounded-circle" src="{{ asset('uploads/profile_photo') }}/{{ Auth::user()->profile_photo }}" alt="profile">
+                        <img class="wd-70 rounded-circle" id="userProfilePhotoPreview" src="{{ asset('uploads/profile_photo') }}/{{ Auth::user()->profile_photo }}" alt="profile">
                         <div>
                             <h4 class="ms-3 text-dark">{{ Auth::user()->name }}</h4>
                             <h6 class="ms-3 text-dark">{{ Auth::user()->email }}</h6>
@@ -112,14 +112,14 @@
                             @method('patch')
                             <div class="mb-3">
                                 <label for="userProfilePhoto" class="form-label">Profile Photo</label>
-                                <input type="file" class="form-control" id="userProfilePhoto" name="profile_photo">
+                                <input type="file" class="form-control" id="userProfilePhoto" name="profile_photo" accept=".jpg, .jpeg, .png, .gif">
                                 @error('profile_photo')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="userName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="userName" name="name" value="{{ old('name', $user->name) }}" placeholder="Name">
+                                <label for="userName" class="form-label">Full Name <span class="text-primary">(As per your verification document)</span></label>
+                                <input type="text" class="form-control" id="userName" name="name" value="{{ old('name', $user->name) }}" placeholder="Name" {{ $user->isFrontendUser() && $user->hasApprovedVerification() ? 'readonly' : '' }}>
                                 @error('name')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -139,29 +139,37 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="userDateOfBirth" class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" id="userDateOfBirth" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth) }}" placeholder="Date of Birth">
+                                <label for="userDateOfBirth" class="form-label">Date of Birth <span class="text-primary">(As per your verification document)</span></label>
+                                <input type="date" class="form-control" id="userDateOfBirth" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth) }}" {{ $user->isFrontendUser() && $user->hasApprovedVerification() ? 'readonly' : '' }}>
+                                @error('date_of_birth')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="userDateOfBirth" class="form-label d-block">Gender</label>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" value="Male" name="gender" id="Male" @checked(old('gender', $user->gender) === 'Male')>
-                                    <label class="form-check-label" for="Male">
-                                        Male
-                                    </label>
+                                <div>
+                                    <label for="userDateOfBirth" class="form-label d-block">Gender <span class="text-primary">(As per your verification document)</span></label>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" class="form-check-input" value="Male" name="gender" id="Male" @checked(old('gender', $user->gender) === 'Male') {{ $user->gender === 'Male' && $user->isFrontendUser() && $user->hasApprovedVerification() ? '' : 'disabled' }}>
+                                        <label class="form-check-label" for="Male">
+                                            Male
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" class="form-check-input" value="Female" name="gender" id="Female" @checked(old('gender', $user->gender) === 'Female') {{ $user->gender === 'Female' && $user->isFrontendUser() && $user->hasApprovedVerification() ? '' : 'disabled' }} >
+                                        <label class="form-check-label" for="Female">
+                                            Female
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" class="form-check-input" value="Other" name="gender" id="Other" @checked(old('gender', $user->gender) === 'Other') {{ $user->gender === 'Other' && $user->isFrontendUser() && $user->hasApprovedVerification() ? '' : 'disabled' }}>
+                                        <label class="form-check-label" for="Other">
+                                            Other
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" value="Female" name="gender" id="Female" @checked(old('gender', $user->gender) === 'Female')>
-                                    <label class="form-check-label" for="Female">
-                                        Female
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" value="Other" name="gender" id="Other" @checked(old('gender', $user->gender) === 'Other')>
-                                    <label class="form-check-label" for="Other">
-                                        Other
-                                    </label>
-                                </div>
+                                @error('gender')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="userBio" class="form-label">Bio</label>
@@ -178,4 +186,19 @@
     </div>
     <!-- middle wrapper end -->
 </div>
+@endsection
+
+@section('script')
+<script>
+    $(document).ready(function(){
+        // Profile Image Preview
+        $('#userProfilePhoto').change(function(){
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#userProfilePhotoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+    })
+</script>
 @endsection

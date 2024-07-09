@@ -231,4 +231,57 @@ class UserController extends Controller
         }
     }
 
+    public function findWorks()
+    {
+        return view('frontend.find_works.index');
+    }
+
+    public function workDetails()
+    {
+        return view('frontend.find_works.view');
+    }
+
+    public function workApplyStore()
+    {
+        return response()->json([
+            'status' => 200,
+        ]);
+    }
+
+    public function workListPending()
+    {
+        return view('frontend.work_list.pending');
+    }
+
+    public function workListApproved()
+    {
+        return view('frontend.work_list.approved');
+    }
+
+    public function workListRejected()
+    {
+        return view('frontend.work_list.rejected');
+    }
+
+    public function postJob()
+    {
+        return view('frontend.post_job.create');
+    }
+
+    public function postJobStore()
+    {
+        return response()->json([
+            'status' => 200,
+        ]);
+    }
+
+    public function jobListRunning()
+    {
+        return view('frontend.job_list.running');
+    }
+
+    public function jobListCompleted()
+    {
+        return view('frontend.job_list.completed');
+    }
 }
