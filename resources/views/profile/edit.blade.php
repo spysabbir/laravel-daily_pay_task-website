@@ -102,9 +102,8 @@
             <div class="col-md-12 grid-margin">
                 <div class="card rounded">
                     <div class="card-header">
-                        <h4 class="card-title">
-                            Update Profile Information
-                        </h4>
+                        <h4 class="card-title"> Update Profile Information</h4>
+                        <span class="text-primary">Note: </span> <span class="text-muted">Fields marked with <span class="text-danger">*</span> are required.</span>
                     </div>
                     <div class="card-body">
                         <form method="post" action="{{ route('profile.update') }}" class="forms-sample" enctype="multipart/form-data">
@@ -118,8 +117,8 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="userName" class="form-label">Full Name <span class="text-primary">(As per your verification document)</span></label>
-                                <input type="text" class="form-control" id="userName" name="name" value="{{ old('name', $user->name) }}" placeholder="Name" {{ $user->isFrontendUser() && $user->hasApprovedVerification() ? 'readonly' : '' }}>
+                                <label for="userName" class="form-label">Full Name <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
+                                <input type="text" class="form-control" id="userName" name="name" value="{{ old('name', $user->name) }}" placeholder="Name" {{ $user->isFrontendUser() && $user->hasVerification('Pending') || $user->hasVerification('Approved') ? 'readonly' : '' }}>
                                 @error('name')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -139,29 +138,29 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="userDateOfBirth" class="form-label">Date of Birth <span class="text-primary">(As per your verification document)</span></label>
-                                <input type="date" class="form-control" id="userDateOfBirth" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth) }}" {{ $user->isFrontendUser() && $user->hasApprovedVerification() ? 'readonly' : '' }}>
+                                <label for="userDateOfBirth" class="form-label">Date of Birth <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
+                                <input type="date" class="form-control" id="userDateOfBirth" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth) }}" {{ $user->isFrontendUser() && $user->hasVerification('Pending') || $user->hasVerification('Approved') ? 'readonly' : '' }}>
                                 @error('date_of_birth')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <div>
-                                    <label for="userDateOfBirth" class="form-label d-block">Gender <span class="text-primary">(As per your verification document)</span></label>
+                                    <label for="userDateOfBirth" class="form-label d-block">Gender <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
                                     <div class="form-check form-check-inline">
-                                        <input type="radio" class="form-check-input" value="Male" name="gender" id="Male" @checked(old('gender', $user->gender) === 'Male') {{ $user->gender === 'Male' && $user->isFrontendUser() && $user->hasApprovedVerification() ? '' : 'disabled' }}>
+                                        <input type="radio" class="form-check-input" value="Male" name="gender" id="Male" @checked(old('gender', $user->gender) === 'Male') {{ $user->gender !== 'Male' && $user->isFrontendUser() && ($user->hasVerification('Pending') || $user->hasVerification('Approved')) ? 'disabled' : '' }}>
                                         <label class="form-check-label" for="Male">
                                             Male
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input type="radio" class="form-check-input" value="Female" name="gender" id="Female" @checked(old('gender', $user->gender) === 'Female') {{ $user->gender === 'Female' && $user->isFrontendUser() && $user->hasApprovedVerification() ? '' : 'disabled' }} >
+                                        <input type="radio" class="form-check-input" value="Female" name="gender" id="Female" @checked(old('gender', $user->gender) === 'Female') {{ $user->gender !== 'Female' && $user->isFrontendUser() && ($user->hasVerification('Pending') || $user->hasVerification('Approved')) ? 'disabled' : '' }}>
                                         <label class="form-check-label" for="Female">
                                             Female
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input type="radio" class="form-check-input" value="Other" name="gender" id="Other" @checked(old('gender', $user->gender) === 'Other') {{ $user->gender === 'Other' && $user->isFrontendUser() && $user->hasApprovedVerification() ? '' : 'disabled' }}>
+                                        <input type="radio" class="form-check-input" value="Other" name="gender" id="Other" @checked(old('gender', $user->gender) === 'Other') {{ $user->gender !== 'Other' && $user->isFrontendUser() && ($user->hasVerification('Pending') || $user->hasVerification('Approved')) ? 'disabled' : '' }}>
                                         <label class="form-check-label" for="Other">
                                             Other
                                         </label>

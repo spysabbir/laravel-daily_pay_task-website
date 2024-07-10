@@ -102,6 +102,24 @@
                             <label for="site_address" class="form-label">Site Address</label>
                             <textarea class="form-control" id="site_address" name="site_address" rows="4" placeholder="Site Address">{{ old('site_address', $defaultSetting->site_address) }}</textarea>
                         </div><!-- Col -->
+                        <div class="col-lg-6 mb-3">
+                            <label for="site_referal_registion_bonus_amount" class="form-label">Site Referal Registion Bonus Amount</label>
+                            <input type="number" class="form-control" id="site_referal_registion_bonus_amount" name="site_referal_registion_bonus_amount" value="{{ old('site_referal_registion_bonus_amount', $defaultSetting->site_referal_registion_bonus_amount) }}" placeholder="Site Referal Registion Bonus Amount">
+                            @error('site_referal_registion_bonus_amount')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-6 mb-3">
+                            <label for="site_referal_earning_bonus_percentage" class="form-label">Site Referal Earning Bonus Percentage</label>
+                            <input type="number" class="form-control" id="site_referal_earning_bonus_percentage" name="site_referal_earning_bonus_percentage" value="{{ old('site_referal_earning_bonus_percentage', $defaultSetting->site_referal_earning_bonus_percentage) }}" placeholder="Site Referal Earning Bonus Percentage">
+                            @error('site_referal_earning_bonus_percentage')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-12 col-sm-6 mb-3">
+                            <label for="site_notice" class="form-label">Site Notice</label>
+                            <textarea class="form-control" id="site_notice" name="site_notice" rows="4" placeholder="Site Notice">{{ old('site_notice', $defaultSetting->site_notice) }}</textarea>
+                        </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="site_facebook" class="form-label">Site Facebook</label>
                             <input type="text" class="form-control" id="site_facebook" name="site_facebook" value="{{ old('site_facebook',$defaultSetting->site_facebook) }}" placeholder="Site Facebook">

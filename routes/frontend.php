@@ -42,7 +42,9 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/withdraw', [UserController::class, 'withdraw'])->name('withdraw');
     Route::post('/withdraw', [UserController::class, 'withdrawStore'])->name('withdraw.store');
 
+    Route::get('/notifications', [UserController::class, 'notifications'])->name('notifications');
 
+    Route::get('/refferal', [UserController::class, 'refferal'])->name('refferal');
 
 });
 

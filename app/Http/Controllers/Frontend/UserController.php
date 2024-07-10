@@ -284,4 +284,16 @@ class UserController extends Controller
     {
         return view('frontend.job_list.completed');
     }
+
+    // notifications
+    public function notifications()
+    {
+        return view('frontend.notifications.index');
+    }
+
+    // refferal
+    public function refferal()
+    {
+        return view('frontend.refferal.index');
+    }
 }

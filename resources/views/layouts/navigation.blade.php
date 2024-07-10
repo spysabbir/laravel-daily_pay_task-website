@@ -230,5 +230,19 @@
                 </ul>
             </div>
         </li>
+
+        <li class="nav-item">
+            <a href="{{ route('notifications') }}" class="nav-link">
+                <i class="link-icon" data-feather="bell"></i>
+                <span class="link-title">notifications</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('refferal') }}" class="nav-link">
+                <i class="link-icon" data-feather="share"></i>
+                <span class="link-title">Refferal</span>
+            </a>
+        </li>
     @endif
 </ul>

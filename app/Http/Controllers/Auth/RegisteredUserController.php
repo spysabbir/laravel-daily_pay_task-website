@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Withdraw;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -55,7 +56,14 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'referral_code' => Str::random(10),
             'referred_by' => $referrer ? $referrer->id : null,
+            // 'referral_balance' => $referrer ? get_default_settings('site_referal_registion_bonus_amount') : 0,
         ]);
+
+        if ($referrer) {
+            User::where('id', $referrer->id)->update([
+                'referral_balance' => $referrer->referral_balance + get_default_settings('site_referal_registion_bonus_amount'),
+            ]);
+        }
 
         event(new Registered($user));
 

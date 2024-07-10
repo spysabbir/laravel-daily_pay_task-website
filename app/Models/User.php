@@ -85,10 +85,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(User::class, 'referred_by', 'id');
     }
 
-    // is id verified
-    public function hasApprovedVerification()
+    // Check Verification status approved or pending useing parameter
+    public function hasVerification($status)
     {
-        return Verification::where('user_id', $this->id)->where('status', 'Approved')->exists();
+        return Verification::where('user_id', $this->id)->where('status', $status)->exists();
     }
 
     public function isFrontendUser()

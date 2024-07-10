@@ -112,13 +112,13 @@
                     @if (auth()->user()->user_type === 'Frontend')
                     <div class="d-flex py-3">
                         <span class="badge bg-primary mt-1 mx-2">
-                            Deposit
+                            Deposit Balance
                             <strong class="badge bg-light text-dark">
                                 {{ App\Models\Deposit::where('user_id', auth()->id())->where('status', 'Approved')->sum('amount') }}
                             </strong>
                         </span>
                         <span class="badge bg-success mt-1 mx-2">
-                            Withdraw
+                            Withdraw Balance
                             <strong class="badge bg-light text-dark">
                                 {{ App\Models\Withdraw::where('user_id', auth()->id())->where('status', 'Approved')->sum('amount') }}
                             </strong>

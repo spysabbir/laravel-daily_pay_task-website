@@ -49,6 +49,8 @@ class SettingController extends Controller
             'site_main_email' => 'required',
             'site_main_phone' => 'required',
             'site_address' => 'required',
+            'site_referal_registion_bonus_amount' => 'required',
+            'site_referal_earning_bonus_percentage' => 'required',
         ]);
 
         $this->changeEnv("APP_NAME", "'$request->site_name'");
@@ -68,6 +70,9 @@ class SettingController extends Controller
             'site_main_email' => $request->site_main_email,
             'site_support_email' => $request->site_support_email,
             'site_address' => $request->site_address,
+            'site_referal_registion_bonus_amount' => $request->site_referal_registion_bonus_amount,
+            'site_referal_earning_bonus_percentage' => $request->site_referal_earning_bonus_percentage,
+            'site_notice' => $request->site_notice,
             'site_facebook' => $request->site_facebook,
             'site_twitter' => $request->site_twitter,
             'site_instagram' => $request->site_instagram,
