@@ -7,7 +7,10 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Deposit List</h3>
+                <div class="text">
+                    <h3 class="card-title">Deposit List</h3>
+                    <p class="mb-0">You can deposit money by using Bkash, Nagad, Rocket. After depositing money, you have to submit a deposit request with the transaction id. Admin will approve or reject your request.</p>
+                </div>
                 <div class="action-btn">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
                     <!-- Create Modal -->
@@ -58,6 +61,14 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="mb-3">
+                    <div class="alert alert-info" role="alert">
+                        <h4 class="alert-heading text-center">
+                            <i class="link-icon" data-feather="credit-card"></i>
+                            Total Deposit: {{ get_default_settings('site_currency_symbol') }} {{ $total_deposit }}
+                        </h4>
+                    </div>
+                </div>
                 <div class="filter mb-3">
                     <div class="row">
                         <div class="col-md-3">
@@ -149,10 +160,14 @@
                             $('span.'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('.createModel').modal('hide');
-                        $('#createForm')[0].reset();
-                        $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('Deposit request sent successfully.');
+                        if (response.status == 401) {
+                            toastr.error(response.error);
+                        }else{
+                            $('.createModel').modal('hide');
+                            $('#createForm')[0].reset();
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.success('Deposit request sent successfully.');
+                        }
                     }
                 }
             });

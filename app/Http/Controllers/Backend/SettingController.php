@@ -49,8 +49,14 @@ class SettingController extends Controller
             'site_main_email' => 'required',
             'site_main_phone' => 'required',
             'site_address' => 'required',
-            'site_referal_registion_bonus_amount' => 'required',
-            'site_referal_earning_bonus_percentage' => 'required',
+            'referal_registion_bonus_amount' => 'required',
+            'referal_earning_bonus_percentage' => 'required',
+            'min_deposit_amount' => 'required',
+            'max_deposit_amount' => 'required',
+            'withdraw_charge_percentage' => 'required',
+            'min_withdraw_amount' => 'required',
+            'max_withdraw_amount' => 'required',
+
         ]);
 
         $this->changeEnv("APP_NAME", "'$request->site_name'");
@@ -70,8 +76,13 @@ class SettingController extends Controller
             'site_main_email' => $request->site_main_email,
             'site_support_email' => $request->site_support_email,
             'site_address' => $request->site_address,
-            'site_referal_registion_bonus_amount' => $request->site_referal_registion_bonus_amount,
-            'site_referal_earning_bonus_percentage' => $request->site_referal_earning_bonus_percentage,
+            'referal_registion_bonus_amount' => $request->referal_registion_bonus_amount,
+            'referal_earning_bonus_percentage' => $request->referal_earning_bonus_percentage,
+            'min_deposit_amount' => $request->min_deposit_amount,
+            'max_deposit_amount' => $request->max_deposit_amount,
+            'withdraw_charge_percentage' => $request->withdraw_charge_percentage,
+            'min_withdraw_amount' => $request->min_withdraw_amount,
+            'max_withdraw_amount' => $request->max_withdraw_amount,
             'site_notice' => $request->site_notice,
             'site_facebook' => $request->site_facebook,
             'site_twitter' => $request->site_twitter,

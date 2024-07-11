@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Withdraw;
 use Illuminate\Support\Facades\Validator;
@@ -68,6 +69,7 @@ class WithdrawController extends Controller
             ]);
         } else {
             $withdraw = Withdraw::findOrFail($id);
+
             $withdraw->update([
                 'status' => $request->status,
                 'remarks' => $request->remarks,
@@ -76,6 +78,16 @@ class WithdrawController extends Controller
                 'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,
                 'approved_at' => $request->status == 'Approved' ? now() : NULL,
             ]);
+
+            $user = User::where('id', $withdraw->user_id)->first();
+            $referred = User::where('id', $user->referred_by)->first();
+
+            if ($referred && $request->status == 'Approved') {
+                $referred->update([
+                    'referral_bonus_amount' => $referred->referral_bonus_amount + ($withdraw->amount * get_default_settings('referal_earning_bonus_percentage')) / 100,
+                    'withdraw_balance' => $referred->withdraw_balance + ($withdraw->amount * get_default_settings('referal_earning_bonus_percentage')) / 100,
+                ]);
+            }
 
             return response()->json([
                 'status' => 200,

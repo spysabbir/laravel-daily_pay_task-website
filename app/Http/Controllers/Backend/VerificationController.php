@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Verification;
 use Illuminate\Support\Facades\Validator;
@@ -76,6 +77,12 @@ class VerificationController extends Controller
                 'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,
                 'approved_at' => $request->status == 'Approved' ? now() : NULL,
             ]);
+
+            if ($request->status == 'Approved') {
+                User::where('id', $verification->user_id)->update([
+                    'status' => 'Active',
+                ]);
+            }
 
             return response()->json([
                 'status' => 200,

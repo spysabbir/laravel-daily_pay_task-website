@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Deposit;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -76,6 +77,13 @@ class DepositController extends Controller
                 'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,
                 'approved_at' => $request->status == 'Approved' ? now() : NULL,
             ]);
+
+            $user = User::where('id', $deposit->user_id)->first();
+            if ($request->status == 'Approved') {
+                $user->update([
+                    'deposit_balance' => $user->deposit_balance + $deposit->amount
+                ]);
+            }
 
             return response()->json([
                 'status' => 200,

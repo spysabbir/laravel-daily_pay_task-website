@@ -114,13 +114,13 @@
                         <span class="badge bg-primary mt-1 mx-2">
                             Deposit Balance
                             <strong class="badge bg-light text-dark">
-                                {{ App\Models\Deposit::where('user_id', auth()->id())->where('status', 'Approved')->sum('amount') }}
+                                {{ get_default_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}
                             </strong>
                         </span>
                         <span class="badge bg-success mt-1 mx-2">
                             Withdraw Balance
                             <strong class="badge bg-light text-dark">
-                                {{ App\Models\Withdraw::where('user_id', auth()->id())->where('status', 'Approved')->sum('amount') }}
+                                {{ get_default_settings('site_currency_symbol') }} {{ auth::user()->withdraw_balance }}
                             </strong>
                         </span>
                     </div>

@@ -25,10 +25,14 @@ return new class extends Migration
             $table->string('site_main_phone')->nullable();
             $table->string('site_support_phone')->nullable();
             $table->string('site_address')->nullable();
-            $table->decimal('site_referal_registion_bonus_amount', 10, 2)->nullable();
-            $table->decimal('site_referal_earning_bonus_percentage', 10, 2)->nullable();
+            $table->decimal('referal_registion_bonus_amount', 10, 2)->nullable();
+            $table->decimal('referal_earning_bonus_percentage', 10, 2)->nullable();
+            $table->decimal('min_deposit_amount', 10, 2)->nullable();
+            $table->decimal('max_deposit_amount', 10, 2)->nullable();
+            $table->decimal('withdraw_charge_percentage', 10, 2)->nullable();
+            $table->decimal('min_withdraw_amount', 10, 2)->nullable();
+            $table->decimal('max_withdraw_amount', 10, 2)->nullable();
             $table->longText('site_notice')->nullable();
-            $table->string('site_referal_user_bonus')->nullable();
             $table->string('site_facebook')->nullable();
             $table->string('site_twitter')->nullable();
             $table->string('site_instagram')->nullable();

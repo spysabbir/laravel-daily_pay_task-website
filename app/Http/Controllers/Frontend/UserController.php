@@ -132,7 +132,9 @@ class UserController extends Controller
                 ->make(true);
         }
 
-        return view('frontend.deposit.index');
+        $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
+
+        return view('frontend.deposit.index', compact('total_deposit'));
     }
 
     public function depositStore(Request $request)
@@ -150,18 +152,25 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            Deposit::create([
-                'user_id' => $request->user()->id,
-                'amount' => $request->amount,
-                'method' => $request->method,
-                'number' => $request->number,
-                'transaction_id' => $request->transaction_id,
-                'status' => 'Pending',
-            ]);
+            if ($request->amount < get_default_settings('min_deposit_amount') || $request->amount > get_default_settings('max_deposit_amount')) {
+                return response()->json([
+                    'status' => 401,
+                    'error'=> 'The amount must be between '.get_default_settings('site_currency_symbol') .get_default_settings('min_deposit_amount').' and '.get_default_settings('site_currency_symbol') .get_default_settings('max_deposit_amount') .' to deposit'
+                ]);
+            }else {
+                Deposit::create([
+                    'user_id' => $request->user()->id,
+                    'amount' => $request->amount,
+                    'method' => $request->method,
+                    'number' => $request->number,
+                    'transaction_id' => $request->transaction_id,
+                    'status' => 'Pending',
+                ]);
 
-            return response()->json([
-                'status' => 200,
-            ]);
+                return response()->json([
+                    'status' => 200,
+                ]);
+            }
         }
     }
 
@@ -200,7 +209,9 @@ class UserController extends Controller
                 ->make(true);
         }
 
-        return view('frontend.withdraw.index');
+        $total_withdraw = Withdraw::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
+
+        return view('frontend.withdraw.index', compact('total_withdraw'));
     }
 
     public function withdrawStore(Request $request)
@@ -217,17 +228,31 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            Withdraw::create([
-                'user_id' => $request->user()->id,
-                'amount' => $request->amount,
-                'method' => $request->method,
-                'number' => $request->number,
-                'status' => 'Pending',
-            ]);
+            if ($request->amount < get_default_settings('min_withdraw_amount') || $request->amount > get_default_settings('max_withdraw_amount')) {
+                return response()->json([
+                    'status' => 401,
+                    'error'=> 'The amount must be between '.get_default_settings('site_currency_symbol') .get_default_settings('min_withdraw_amount').' and '.get_default_settings('site_currency_symbol') .get_default_settings('max_withdraw_amount').' to withdraw'
+                ]);
+            }else {
+                if ($request->amount > $request->user()->withdraw_balance) {
+                    return response()->json([
+                        'status' => 402,
+                        'error'=> 'Insufficient balance in your account to withdraw '.get_default_settings('site_currency_symbol') .$request->amount .' . Your current balance is '.get_default_settings('site_currency_symbol') .$request->user()->withdraw_balance
+                    ]);
+                }else {
+                    Withdraw::create([
+                        'user_id' => $request->user()->id,
+                        'amount' => $request->amount,
+                        'method' => $request->method,
+                        'number' => $request->number,
+                        'status' => 'Pending',
+                    ]);
 
-            return response()->json([
-                'status' => 200,
-            ]);
+                    return response()->json([
+                        'status' => 200,
+                    ]);
+                }
+            }
         }
     }
 

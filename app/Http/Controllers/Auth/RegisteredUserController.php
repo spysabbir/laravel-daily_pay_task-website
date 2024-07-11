@@ -56,12 +56,14 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'referral_code' => Str::random(10),
             'referred_by' => $referrer ? $referrer->id : null,
-            // 'referral_balance' => $referrer ? get_default_settings('site_referal_registion_bonus_amount') : 0,
+            'referral_bonus_amount' => $referrer ? get_default_settings('referal_registion_bonus_amount') : 0,
+            'withdraw_balance' => $referrer ? get_default_settings('referal_registion_bonus_amount') : 0
         ]);
 
         if ($referrer) {
             User::where('id', $referrer->id)->update([
-                'referral_balance' => $referrer->referral_balance + get_default_settings('site_referal_registion_bonus_amount'),
+                'referral_bonus_amount' => $referrer->referral_bonus_amount + get_default_settings('referal_registion_bonus_amount'),
+                'withdraw_balance' => $referrer->withdraw_balance + get_default_settings('referal_registion_bonus_amount')
             ]);
         }
 
