@@ -13,16 +13,20 @@
                                 <td>{{ $verification->user->name }}</td>
                             </tr>
                             <tr>
+                                <td>Date of Birth</td>
+                                <td>{{ $verification->user->date_of_birth }}</td>
+                            </tr>
+                            <tr>
+                                <td>Gender</td>
+                                <td>{{ $verification->user->gender }}</td>
+                            </tr>
+                            <tr>
                                 <td>Id Type</td>
                                 <td>{{ $verification->id_type }}</td>
                             </tr>
                             <tr>
                                 <td>ID Number</td>
                                 <td>{{ $verification->id_number }}</td>
-                            </tr>
-                            <tr>
-                                <td>Date of Birth</td>
-                                <td>{{ $verification->user->date_of_birth }}</td>
                             </tr>
                             <tr>
                                 <td>Id Front Image</td>

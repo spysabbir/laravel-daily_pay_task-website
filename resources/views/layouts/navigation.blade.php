@@ -155,13 +155,14 @@
         @endcan
     @else
         <li class="nav-item nav-category">User</li>
+        @if (!Auth::user()->hasVerification('Approved'))
         <li class="nav-item">
             <a href="{{ route('verification') }}" class="nav-link">
                 <i class="link-icon" data-feather="user-check"></i>
                 <span class="link-title">Verification</span>
             </a>
         </li>
-
+        @endif
         <li class="nav-item">
             <a href="{{ route('find.works') }}" class="nav-link">
                 <i class="link-icon" data-feather="search"></i>

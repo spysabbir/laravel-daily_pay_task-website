@@ -30,7 +30,7 @@
                         Share your referral link with your friends and earn {{ get_default_settings('referal_registion_bonus_amount') }} {{ get_default_settings('site_currency') }} for each friend that signs up using your link.
                     </p>
                     <p class="mt-3">
-                        If your friends sign up using your referral link and work on our platform, you will earn {{ get_default_settings('referal_earning_bonus_percentage') }}% of their earnings.
+                        If your friends sign up using your referral link and work on our platform, you will earn {{ get_default_settings('referal_earning_bonus_percentage') }}% of their every withdrawal amount.
                     </p>
                     <p class="mt-3">
                         Your friends will also get {{ get_default_settings('referal_registion_bonus_amount') }} {{ get_default_settings('site_currency') }} when they sign up using your referral link.

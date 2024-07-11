@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Deposit;
+use App\Models\User;
 use App\Models\Verification;
 use App\Models\Withdraw;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Yajra\DataTables\Facades\DataTables;
@@ -99,42 +101,51 @@ class UserController extends Controller
 
     public function deposit(Request $request)
     {
-        if ($request->ajax()) {
-            $query = Deposit::select('deposits.*');
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
 
-            if ($request->status) {
-                $query->where('deposits.status', $request->status);
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            if ($request->ajax()) {
+                $query = Deposit::select('deposits.*');
+
+                if ($request->status) {
+                    $query->where('deposits.status', $request->status);
+                }
+
+                $query->orderBy('created_at', 'desc');
+
+                $deposits = $query->get();
+
+                return DataTables::of($deposits)
+                    ->addIndexColumn()
+                    ->editColumn('status', function ($row) {
+                        if ($row->status == 'Pending') {
+                            $status = '
+                            <span class="badge bg-success">' . $row->status . '</span>
+                            ';
+                        } else if ($row->status == 'Approved') {
+                            $status = '
+                            <span class="badge text-white bg-info">' . $row->status . '</span>
+                            ';
+                        } else {
+                            $status = '
+                            <span class="badge bg-danger">' . $row->status . '</span>
+                            ';
+                        }
+                        return $status;
+                    })
+                    ->rawColumns(['status'])
+                    ->make(true);
             }
 
-            $query->orderBy('created_at', 'desc');
+            $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
 
-            $deposits = $query->get();
-
-            return DataTables::of($deposits)
-                ->addIndexColumn()
-                ->editColumn('status', function ($row) {
-                    if ($row->status == 'Pending') {
-                        $status = '
-                        <span class="badge bg-success">' . $row->status . '</span>
-                        ';
-                    } else if ($row->status == 'Approved') {
-                        $status = '
-                        <span class="badge text-white bg-info">' . $row->status . '</span>
-                        ';
-                    } else {
-                        $status = '
-                        <span class="badge bg-danger">' . $row->status . '</span>
-                        ';
-                    }
-                    return $status;
-                })
-                ->rawColumns(['status'])
-                ->make(true);
+            return view('frontend.deposit.index', compact('total_deposit'));
         }
-
-        $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
-
-        return view('frontend.deposit.index', compact('total_deposit'));
     }
 
     public function depositStore(Request $request)
@@ -176,42 +187,51 @@ class UserController extends Controller
 
     public function withdraw(Request $request)
     {
-        if ($request->ajax()) {
-            $query = Withdraw::select('withdraws.*');
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
 
-            if ($request->status) {
-                $query->where('withdraws.status', $request->status);
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            if ($request->ajax()) {
+                $query = Withdraw::select('withdraws.*');
+
+                if ($request->status) {
+                    $query->where('withdraws.status', $request->status);
+                }
+
+                $query->orderBy('created_at', 'desc');
+
+                $withdraws = $query->get();
+
+                return DataTables::of($withdraws)
+                    ->addIndexColumn()
+                    ->editColumn('status', function ($row) {
+                        if ($row->status == 'Pending') {
+                            $status = '
+                            <span class="badge bg-success">' . $row->status . '</span>
+                            ';
+                        } else if ($row->status == 'Approved') {
+                            $status = '
+                            <span class="badge text-white bg-info">' . $row->status . '</span>
+                            ';
+                        } else {
+                            $status = '
+                            <span class="badge bg-danger">' . $row->status . '</span>
+                            ';
+                        }
+                        return $status;
+                    })
+                    ->rawColumns(['status'])
+                    ->make(true);
             }
 
-            $query->orderBy('created_at', 'desc');
+            $total_withdraw = Withdraw::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
 
-            $withdraws = $query->get();
-
-            return DataTables::of($withdraws)
-                ->addIndexColumn()
-                ->editColumn('status', function ($row) {
-                    if ($row->status == 'Pending') {
-                        $status = '
-                        <span class="badge bg-success">' . $row->status . '</span>
-                        ';
-                    } else if ($row->status == 'Approved') {
-                        $status = '
-                        <span class="badge text-white bg-info">' . $row->status . '</span>
-                        ';
-                    } else {
-                        $status = '
-                        <span class="badge bg-danger">' . $row->status . '</span>
-                        ';
-                    }
-                    return $status;
-                })
-                ->rawColumns(['status'])
-                ->make(true);
+            return view('frontend.withdraw.index', compact('total_withdraw'));
         }
-
-        $total_withdraw = Withdraw::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
-
-        return view('frontend.withdraw.index', compact('total_withdraw'));
     }
 
     public function withdrawStore(Request $request)
@@ -258,7 +278,16 @@ class UserController extends Controller
 
     public function findWorks()
     {
-        return view('frontend.find_works.index');
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            return view('frontend.find_works.index');
+        }
     }
 
     public function workDetails()
@@ -275,22 +304,58 @@ class UserController extends Controller
 
     public function workListPending()
     {
-        return view('frontend.work_list.pending');
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            return view('frontend.work_list.pending');
+        }
     }
 
     public function workListApproved()
     {
-        return view('frontend.work_list.approved');
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            return view('frontend.work_list.approved');
+        }
     }
 
     public function workListRejected()
     {
-        return view('frontend.work_list.rejected');
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            return view('frontend.work_list.rejected');
+        }
     }
 
     public function postJob()
     {
-        return view('frontend.post_job.create');
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            return view('frontend.post_job.create');
+        }
     }
 
     public function postJobStore()
@@ -302,21 +367,37 @@ class UserController extends Controller
 
     public function jobListRunning()
     {
-        return view('frontend.job_list.running');
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            return view('frontend.job_list.running');
+        }
     }
 
     public function jobListCompleted()
     {
-        return view('frontend.job_list.completed');
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            return view('frontend.job_list.completed');
+        }
     }
 
-    // notifications
     public function notifications()
     {
         return view('frontend.notifications.index');
     }
 
-    // refferal
     public function refferal()
     {
         return view('frontend.refferal.index');

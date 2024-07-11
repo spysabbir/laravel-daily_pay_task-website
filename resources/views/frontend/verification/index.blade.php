@@ -4,6 +4,24 @@
 
 @section('content')
 <div class="row justify-content-center">
+    <div class="col-md-10">
+        @if (session('error'))
+        <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+            <div class="alert-heading mb-3">
+                <i data-feather="alert-circle"></i>
+                <h4>Account Not Verified!</h4>
+            </div>
+            <p class="mt-3">
+                Your account is not verified yet. Please verify your account to access all features. Otherwise, you can't access all features. Verifaication account is mandatory to access all features. Need your real id example NID, Passport, Driving License to verify your account. If you have any issue, please contact with us. We are always ready to help you.
+            </p>
+            <hr>
+            <div class="mb-0">
+                <a href="javascript:;" class="btn btn-danger btn-sm">Contact Us</a>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close"></button>
+        </div>
+        @endif
+    </div>
     <div class="col-md-8 grid-margin stretch-card">
         <div class="card">
             <div class="card-header">
