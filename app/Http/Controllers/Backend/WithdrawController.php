@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Withdraw;
+use App\Notifications\WithdrawNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -69,7 +70,6 @@ class WithdrawController extends Controller
             ]);
         } else {
             $withdraw = Withdraw::findOrFail($id);
-
             $withdraw->update([
                 'status' => $request->status,
                 'remarks' => $request->remarks,
@@ -88,6 +88,8 @@ class WithdrawController extends Controller
                     'withdraw_balance' => $referred->withdraw_balance + ($withdraw->amount * get_default_settings('referal_earning_bonus_percentage')) / 100,
                 ]);
             }
+
+            $user->notify(new WithdrawNotification($withdraw));
 
             return response()->json([
                 'status' => 200,

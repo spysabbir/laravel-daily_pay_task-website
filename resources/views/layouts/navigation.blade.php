@@ -233,9 +233,9 @@
         </li>
 
         <li class="nav-item">
-            <a href="{{ route('notifications') }}" class="nav-link">
+            <a href="{{ route('notification') }}" class="nav-link">
                 <i class="link-icon" data-feather="bell"></i>
-                <span class="link-title">notifications</span>
+                <span class="link-title">Notification</span>
             </a>
         </li>
 

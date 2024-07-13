@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
+use App\Notifications\DepositNotification;
+use App\Notifications\ReferalNotification;
 
 class RegisteredUserController extends Controller
 {
@@ -65,6 +67,9 @@ class RegisteredUserController extends Controller
                 'referral_bonus_amount' => $referrer->referral_bonus_amount + get_default_settings('referal_registion_bonus_amount'),
                 'withdraw_balance' => $referrer->withdraw_balance + get_default_settings('referal_registion_bonus_amount')
             ]);
+
+            $referrer = User::where('id', $referrer->id)->first();
+            $referrer->notify(new ReferalNotification($referrer, $user));
         }
 
         event(new Registered($user));

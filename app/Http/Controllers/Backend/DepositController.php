@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Deposit;
 use App\Models\User;
+use App\Notifications\DepositNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -84,6 +85,8 @@ class DepositController extends Controller
                     'deposit_balance' => $user->deposit_balance + $deposit->amount
                 ]);
             }
+
+            $user->notify(new DepositNotification($deposit));
 
             return response()->json([
                 'status' => 200,

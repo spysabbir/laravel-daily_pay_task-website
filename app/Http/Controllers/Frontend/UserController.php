@@ -110,13 +110,13 @@ class UserController extends Controller
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
             if ($request->ajax()) {
-                $query = Deposit::select('deposits.*');
+                $query = Deposit::where('user_id', Auth::id());
 
                 if ($request->status) {
                     $query->where('deposits.status', $request->status);
                 }
 
-                $query->orderBy('created_at', 'desc');
+                $query->select('deposits.*')->orderBy('created_at', 'desc');
 
                 $deposits = $query->get();
 
@@ -196,13 +196,13 @@ class UserController extends Controller
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
             if ($request->ajax()) {
-                $query = Withdraw::select('withdraws.*');
+                $query = Withdraw::where('user_id', Auth::id());
 
                 if ($request->status) {
                     $query->where('withdraws.status', $request->status);
                 }
 
-                $query->orderBy('created_at', 'desc');
+                $query->select('withdraws.*')->orderBy('created_at', 'desc');
 
                 $withdraws = $query->get();
 
@@ -393,9 +393,58 @@ class UserController extends Controller
         }
     }
 
-    public function notifications()
+    public function notification(Request $request)
     {
-        return view('frontend.notifications.index');
+        if ($request->ajax()) {
+            $user = Auth::user();
+            $notifications = $user->notifications;
+
+            return DataTables::of($notifications)
+                ->addIndexColumn()
+                ->editColumn('type', function ($row) {
+                    return class_basename($row->type);
+                })
+                ->editColumn('title', function ($row) {
+                    return $row->data['title'];
+                })
+                ->editColumn('message', function ($row) {
+                    return $row->data['message'];
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->diffForHumans();
+                })
+                ->editColumn('status', function ($row) {
+                    if ($row->read_at) {
+                        $status = '
+                        <span class="badge bg-success">Read</span>
+                        ';
+                    } else {
+                        $status = '
+                        <span class="badge bg-danger">Unread</span>
+                        ';
+                    }
+                    return $status;
+                })
+                ->rawColumns(['status'])
+                ->make(true);
+        }
+
+        return view('frontend.notification.index');
+    }
+
+    public function notificationRead($id)
+    {
+        $notification = Auth::user()->notifications()->where('id', $id)->first();
+        if ($notification) {
+            $notification->markAsRead();
+        }
+        return redirect()->route('notification');
+    }
+
+    public function notificationReadAll()
+    {
+        Auth::user()->unreadNotifications->markAsRead();
+        return redirect()->route('notification');
     }
 
     public function refferal()

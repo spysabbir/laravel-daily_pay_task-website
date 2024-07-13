@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Verification;
+use App\Notifications\VerificationNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -78,11 +79,15 @@ class VerificationController extends Controller
                 'approved_at' => $request->status == 'Approved' ? now() : NULL,
             ]);
 
+            $user = User::findOrFail($verification->user_id);
+
             if ($request->status == 'Approved') {
-                User::where('id', $verification->user_id)->update([
+                $user->update([
                     'status' => 'Active',
                 ]);
             }
+
+            $user->notify(new VerificationNotification($verification));
 
             return response()->json([
                 'status' => 200,
