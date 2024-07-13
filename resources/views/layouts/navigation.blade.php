@@ -38,6 +38,11 @@
                         <a href="{{ route('backend.sms.setting') }}" class="nav-link">Sms</a>
                     </li>
                     @endcan
+                    @can('captcha.setting')
+                    <li class="nav-item">
+                        <a href="{{ route('backend.captcha.setting') }}" class="nav-link">Captcha</a>
+                    </li>
+                    @endcan
                 </ul>
             </div>
         </li>

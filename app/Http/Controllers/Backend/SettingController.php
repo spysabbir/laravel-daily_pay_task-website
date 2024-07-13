@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\CaptchaSetting;
 use App\Models\DefaultSetting;
 use App\Models\MailSetting;
 use App\Models\SeoSetting;
@@ -270,6 +271,34 @@ class SettingController extends Controller
 
         $notification = array(
             'message' => 'SMS setting updated successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
+    }
+
+    public function captchaSetting(){
+        $captchaSetting = CaptchaSetting::first();
+        return view('backend.setting.captcha', compact('captchaSetting'));
+    }
+
+    public function captchaSettingUpdate(Request $request){
+        $request->validate([
+            'captcha_secret_key' => 'required',
+            'captcha_site_key' => 'required',
+        ]);
+
+        $this->changeEnv("NOCAPTCHA_SECRET", "'$request->captcha_secret_key'");
+        $this->changeEnv("NOCAPTCHA_SITEKEY", "'$request->captcha_site_key'");
+
+        $captchaSetting = CaptchaSetting::first();
+        $captchaSetting->update([
+            'captcha_secret_key' => $request->captcha_secret_key,
+            'captcha_site_key' => $request->captcha_site_key,
+        ]);
+
+        $notification = array(
+            'message' => 'Captcha setting updated successfully.',
             'alert-type' => 'success'
         );
 

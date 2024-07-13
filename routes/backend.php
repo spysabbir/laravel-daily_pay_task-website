@@ -28,6 +28,8 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::post('mail/setting/update', [SettingController::class, 'mailSettingUpdate'])->name('mail.setting.update');
     Route::get('sms/setting', [SettingController::class, 'smsSetting'])->name('sms.setting');
     Route::post('sms/setting/update', [SettingController::class, 'smsSettingUpdate'])->name('sms.setting.update');
+    Route::get('captcha/setting', [SettingController::class, 'captchaSetting'])->name('captcha.setting');
+    Route::post('captcha/setting/update', [SettingController::class, 'captchaSettingUpdate'])->name('captcha.setting.update');
     // Employee
     Route::resource('employee', EmployeeController::class);
     Route::get('employee-trash', [EmployeeController::class, 'trash'])->name('employee.trash');

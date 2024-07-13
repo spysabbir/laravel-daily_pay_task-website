@@ -36,6 +36,7 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'seo.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'mail.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'sms.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
+            ['name' => 'captcha.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
 
             ['name' => 'EmployeeMenu', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
             ['name' => 'employee.index', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
