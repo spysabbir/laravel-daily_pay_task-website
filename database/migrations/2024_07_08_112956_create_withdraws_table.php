@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->string('method');
             $table->string('number');
+            $table->decimal('payable_amount', 10, 2);
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
             $table->text('remarks')->nullable();
             $table->foreignId('approved_by')->nullable();

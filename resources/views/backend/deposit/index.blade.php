@@ -27,7 +27,7 @@
                                                 <tr>
                                                     <td>Sl No</td>
                                                     <th>User Id</th>
-                                                    <th>User Email</th>
+                                                    <th>User Name</th>
                                                     <th>Remarks</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
@@ -56,7 +56,9 @@
                                 <th>Sl No</th>
                                 <th>User Id</th>
                                 <th>User Name</th>
-                                <th>User Email</th>
+                                <th>Deposit Amount</th>
+                                <th>Method</th>
+                                <th>Number</th>
                                 <th>Created At</th>
                                 <th>Action</th>
                             </tr>
@@ -110,7 +112,9 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
-                { data: 'user_email', name: 'user_email' },
+                { data: 'amount', name: 'amount' },
+                { data: 'method', name: 'method' },
+                { data: 'number', name: 'number' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
@@ -169,7 +173,7 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
-                { data: 'user_email', name: 'user_email' },
+                { data: 'user_name', name: 'user_name' },
                 { data: 'remarks', name: 'remarks' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'rejected_at', name: 'rejected_at' },

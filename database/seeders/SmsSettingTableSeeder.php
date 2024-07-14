@@ -14,7 +14,7 @@ class SmsSettingTableSeeder extends Seeder
     public function run(): void
     {
         $setting = [
-            'sms_driver' => 'Twilio',
+            'sms_driver' => 'bulksmsbd',
             'sms_api_key' => '1234567890',
             'sms_from' => '1234567890',
         ];

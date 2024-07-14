@@ -33,7 +33,7 @@ class UserTableSeeder extends Seeder
         $user->assignRole([$role->id]);
 
         User::create([
-            'name' => 'Demo User',
+            'name' => 'User',
             'email' => 'user@gmail.com',
             'password' => Hash::make('12345678'),
             'email_verified_at' => now(),

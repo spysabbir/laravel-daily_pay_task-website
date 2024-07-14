@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.9",
         "propaganistas/laravel-disposable-email": "^2.4",
         "spatie/laravel-permission": "^6.9",
+        "stevebauman/location": "^7.3",
         "yajra/laravel-datatables": "11.0"
     },
     "require-dev": {

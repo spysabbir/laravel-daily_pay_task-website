@@ -28,11 +28,6 @@ class WithdrawController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
-                ->editColumn('user_email', function ($row) {
-                    return '
-                        <span class="badge text-dark bg-light">' . $row->user->email . '</span>
-                        ';
-                })
                 ->editColumn('created_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
@@ -44,7 +39,7 @@ class WithdrawController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_name', 'user_email', 'created_at', 'action'])
+                ->rawColumns(['user_name', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -108,9 +103,9 @@ class WithdrawController extends Controller
 
             return DataTables::of($rejectedData)
                 ->addIndexColumn()
-                ->editColumn('user_email', function ($row) {
+                ->editColumn('user_name', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . $row->user->email . '</span>
+                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
                 ->editColumn('rejected_by', function ($row) {
@@ -129,7 +124,7 @@ class WithdrawController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_email', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_name', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
@@ -152,11 +147,6 @@ class WithdrawController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
-                ->editColumn('user_email', function ($row) {
-                    return '
-                        <span class="badge text-dark bg-light">' . $row->user->email . '</span>
-                        ';
-                })
                 ->editColumn('approved_by', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . $row->approvedBy->name . '</span>
@@ -167,7 +157,7 @@ class WithdrawController extends Controller
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
-                ->rawColumns(['user_name', 'user_email', 'approved_by', 'approved_at'])
+                ->rawColumns(['user_name', 'approved_by', 'approved_at'])
                 ->make(true);
         }
 

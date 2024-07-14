@@ -102,17 +102,24 @@
                             <label for="site_address" class="form-label">Site Address</label>
                             <textarea class="form-control" id="site_address" name="site_address" rows="4" placeholder="Site Address">{{ old('site_address', $defaultSetting->site_address) }}</textarea>
                         </div><!-- Col -->
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="referal_registion_bonus_amount" class="form-label">Referal Registion Bonus Amount</label>
                             <input type="number" class="form-control" id="referal_registion_bonus_amount" name="referal_registion_bonus_amount" value="{{ old('referal_registion_bonus_amount', $defaultSetting->referal_registion_bonus_amount) }}" placeholder="Referal Registion Bonus Amount">
                             @error('referal_registion_bonus_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="referal_earning_bonus_percentage" class="form-label">Referal Earning Bonus Percentage</label>
                             <input type="number" class="form-control" id="referal_earning_bonus_percentage" name="referal_earning_bonus_percentage" value="{{ old('referal_earning_bonus_percentage', $defaultSetting->referal_earning_bonus_percentage) }}" placeholder="Referal Earning Bonus Percentage">
                             @error('referal_earning_bonus_percentage')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-4 col-sm-6 mb-3">
+                            <label for="withdraw_charge_percentage" class="form-label">Withdraw Charge Percentage</label>
+                            <input type="number" class="form-control" id="withdraw_charge_percentage" name="withdraw_charge_percentage" value="{{ old('withdraw_charge_percentage', $defaultSetting->withdraw_charge_percentage) }}" placeholder="Withdraw Charge Percentage">
+                            @error('withdraw_charge_percentage')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
@@ -127,13 +134,6 @@
                             <label for="max_deposit_amount" class="form-label">Maximum Deposit Amount</label>
                             <input type="number" class="form-control" id="max_deposit_amount" name="max_deposit_amount" value="{{ old('max_deposit_amount', $defaultSetting->max_deposit_amount) }}" placeholder="Maximum Deposit Amount">
                             @error('max_deposit_amount')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                        </div><!-- Col -->
-                        <div class="col-lg-6 mb-3">
-                            <label for="withdraw_charge_percentage" class="form-label">Withdraw Charge Percentage</label>
-                            <input type="number" class="form-control" id="withdraw_charge_percentage" name="withdraw_charge_percentage" value="{{ old('withdraw_charge_percentage', $defaultSetting->withdraw_charge_percentage) }}" placeholder="Withdraw Charge Percentage">
-                            @error('withdraw_charge_percentage')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

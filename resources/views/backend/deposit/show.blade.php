@@ -29,20 +29,8 @@
                                 <td>{{ $deposit->transaction_id }}</td>
                             </tr>
                             <tr>
-                                <td>Remarks</td>
-                                <td>{{ $deposit->remarks ?? 'N/A' }}</td>
-                            </tr>
-                            <tr>
                                 <td>Created At</td>
                                 <td>{{ $deposit->created_at }}</td>
-                            </tr>
-                            <tr>
-                                <td>Rejected By</td>
-                                <td>{{ $deposit->rejectedBy->name ?? 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <td>Rejected At</td>
-                                <td>{{ $deposit->rejected_at ?? 'N/A' }}</td>
                             </tr>
                         </tbody>
                     </table>

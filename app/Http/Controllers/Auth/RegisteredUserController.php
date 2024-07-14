@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
-use App\Notifications\DepositNotification;
 use App\Notifications\ReferalNotification;
 
 class RegisteredUserController extends Controller

@@ -17,10 +17,10 @@
                                 <th>Sl No</th>
                                 <th>User Id</th>
                                 <th>User Name</th>
-                                <th>User Email</th>
                                 <th>Amount</th>
                                 <th>Method</th>
                                 <th>Number</th>
+                                <td>Transaction Id</td>
                                 <th>Approved By</th>
                                 <th>Approved At</th>
                             </tr>
@@ -57,10 +57,10 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
-                { data: 'user_email', name: 'user_email' },
                 { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number' },
+                { data: 'transaction_id', name: 'transaction_id' },
                 { data: 'approved_by', name: 'approved_by' },
                 { data: 'approved_at', name: 'approved_at' },
             ]

@@ -27,7 +27,16 @@
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Withdraw Amount</label>
                                             <input type="number" class="form-control" id="amount" name="amount" placeholder="Withdraw Amount">
+                                            <small class="text-info">Minimum withdraw amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
                                             <span class="text-danger error-text amount_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Withdraw Charge Percentage</label>
+                                            <input type="text" class="form-control" value="{{ get_default_settings('withdraw_charge_percentage') }} %" disabled>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Payable Amount</label>
+                                            <input type="number" class="form-control" id="payable_amount" placeholder="Payable Amount" disabled>
                                         </div>
                                         <div class="mb-3">
                                             <label for="method" class="form-label">Withdraw Method</label>
@@ -84,9 +93,11 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Amount</th>
+                                <th>Withdraw Amount</th>
                                 <th>Withdraw Method</th>
                                 <th>Withdraw Number</th>
+                                <th>Payable Amount</th>
+                                <th>Updated At</th>
                                 <td>Status</td>
                             </tr>
                         </thead>
@@ -126,6 +137,8 @@
                 { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number'},
+                { data: 'payable_amount', name: 'payable_amount' },
+                { data: 'updated_at', name: 'updated_at' },
                 { data: 'status', name: 'status' },
             ]
         });
@@ -133,6 +146,14 @@
         // Filter Data
         $('.filter_data').change(function(){
             $('#allDataTable').DataTable().ajax.reload();
+        });
+
+        // Calculate Payable Amount
+        $('#amount').keyup(function(){
+            var amount = $(this).val();
+            var charge = {{ get_default_settings('withdraw_charge_percentage') }};
+            var payable_amount = amount - (amount * charge / 100);
+            $('#payable_amount').val(payable_amount);
         });
 
         // Store Data

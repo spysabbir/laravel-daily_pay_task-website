@@ -13,6 +13,7 @@
                         This is the list of all notification.
                     </p>
                 </div>
+                <a href="{{ route('notification.read.all') }}" class="text-info m-3">Read all notification</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

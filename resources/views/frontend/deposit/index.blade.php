@@ -27,6 +27,7 @@
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Deposit Amount</label>
                                             <input type="number" class="form-control" id="amount" name="amount" placeholder="Deposit Amount">
+                                            <small class="text-info">Minimum deposit amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
                                         <div class="mb-3">
@@ -93,6 +94,7 @@
                                 <th>Deposit Method</th>
                                 <th>Deposit Number</th>
                                 <th>Transaction Id</th>
+                                <th>Updated At</th>
                                 <td>Status</td>
                             </tr>
                         </thead>
@@ -133,6 +135,7 @@
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number'},
                 { data: 'transaction_id', name: 'transaction_id' },
+                { data: 'updated_at', name: 'updated_at' },
                 { data: 'status', name: 'status' },
             ]
         });

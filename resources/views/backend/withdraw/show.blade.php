@@ -25,20 +25,12 @@
                                 <td>{{ $withdraw->number }}</td>
                             </tr>
                             <tr>
-                                <td>Remarks</td>
-                                <td>{{ $withdraw->remarks ?? 'N/A' }}</td>
+                                <td>Payable Amount</td>
+                                <td>{{ $withdraw->payable_amount }}</td>
                             </tr>
                             <tr>
                                 <td>Created At</td>
                                 <td>{{ $withdraw->created_at }}</td>
-                            </tr>
-                            <tr>
-                                <td>Rejected By</td>
-                                <td>{{ $withdraw->rejectedBy->name ?? 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <td>Rejected At</td>
-                                <td>{{ $withdraw->rejected_at ?? 'N/A' }}</td>
                             </tr>
                         </tbody>
                     </table>

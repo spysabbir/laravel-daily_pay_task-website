@@ -14,8 +14,8 @@ class CaptchaSettingTableSeeder extends Seeder
     public function run(): void
     {
         $setting = [
-            'captcha_site_key' => '6LfrZwoqAAAAAFzI1W03nmwpeL88Jt8tJpE3aM7R',
-            'captcha_secret_key' => '6LfrZwoqAAAAAFzI1W03nmwpeL88Jt8tJpE3aM7R'
+            'captcha_site_key' => 'captcha_site_key',
+            'captcha_secret_key' => 'captcha_site_key'
         ];
 
         CaptchaSetting::create($setting);

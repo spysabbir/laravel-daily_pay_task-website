@@ -13,11 +13,15 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Stevebauman\Location\Facades\Location;
 
 class UserController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
+        // $user = $request->user();
+        // return $myIp = $request->ip();
+        // return $position = Location::get('103.4.119.20');
         return view('frontend/dashboard');
     }
 
@@ -122,6 +126,9 @@ class UserController extends Controller
 
                 return DataTables::of($deposits)
                     ->addIndexColumn()
+                    ->editColumn('updated_at', function ($row) {
+                        return $row->updated_at->diffForHumans();
+                    })
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
                             $status = '
@@ -208,6 +215,9 @@ class UserController extends Controller
 
                 return DataTables::of($withdraws)
                     ->addIndexColumn()
+                    ->editColumn('updated_at', function ($row) {
+                        return $row->updated_at->diffForHumans();
+                    })
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
                             $status = '
@@ -260,12 +270,18 @@ class UserController extends Controller
                         'error'=> 'Insufficient balance in your account to withdraw '.get_default_settings('site_currency_symbol') .$request->amount .' . Your current balance is '.get_default_settings('site_currency_symbol') .$request->user()->withdraw_balance
                     ]);
                 }else {
+                    $payable_amount = $request->amount - ($request->amount * get_default_settings('withdraw_charge_percentage') / 100);
                     Withdraw::create([
                         'user_id' => $request->user()->id,
                         'amount' => $request->amount,
                         'method' => $request->method,
                         'number' => $request->number,
+                        'payable_amount' => $payable_amount,
                         'status' => 'Pending',
+                    ]);
+
+                    User::where('id', $request->user()->id)->update([
+                        'withdraw_balance' => $request->user()->withdraw_balance - $request->amount,
                     ]);
 
                     return response()->json([

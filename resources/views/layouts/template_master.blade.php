@@ -57,7 +57,7 @@
 </head>
 <body>
 	<div class="main-wrapper">
-        <!-- partial:partials/_sidebar.html -->
+        <!-- sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
                 <a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}" class="sidebar-brand">
@@ -95,7 +95,7 @@
         <!-- partial -->
         <div class="page-wrapper">
 
-            <!-- partial:partials/_navbar.html -->
+            <!-- navbar -->
             <nav class="navbar">
                 <a href="#" class="sidebar-toggler">
                     <i data-feather="menu"></i>
@@ -148,54 +148,6 @@
                                     <p class="tx-12 text-muted">2 min ago</p>
                                     </div>
                                 </a>
-                                <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
-                                    <div class="me-3">
-                                    <img class="wd-30 ht-30 rounded-circle" src="https://via.placeholder.com/30x30" alt="userr">
-                                    </div>
-                                    <div class="d-flex justify-content-between flex-grow-1">
-                                    <div class="me-4">
-                                        <p>Carl Henson</p>
-                                        <p class="tx-12 text-muted">Client meeting</p>
-                                    </div>
-                                    <p class="tx-12 text-muted">30 min ago</p>
-                                    </div>
-                                </a>
-                                <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
-                                    <div class="me-3">
-                                    <img class="wd-30 ht-30 rounded-circle" src="https://via.placeholder.com/30x30" alt="userr">
-                                    </div>
-                                    <div class="d-flex justify-content-between flex-grow-1">
-                                    <div class="me-4">
-                                        <p>Jensen Combs</p>
-                                        <p class="tx-12 text-muted">Project updates</p>
-                                    </div>
-                                    <p class="tx-12 text-muted">1 hrs ago</p>
-                                    </div>
-                                </a>
-                                <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
-                                    <div class="me-3">
-                                    <img class="wd-30 ht-30 rounded-circle" src="https://via.placeholder.com/30x30" alt="userr">
-                                    </div>
-                                    <div class="d-flex justify-content-between flex-grow-1">
-                                    <div class="me-4">
-                                        <p>Amiah Burton</p>
-                                        <p class="tx-12 text-muted">Project deatline</p>
-                                    </div>
-                                    <p class="tx-12 text-muted">2 hrs ago</p>
-                                    </div>
-                                </a>
-                                <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
-                                    <div class="me-3">
-                                    <img class="wd-30 ht-30 rounded-circle" src="https://via.placeholder.com/30x30" alt="userr">
-                                    </div>
-                                    <div class="d-flex justify-content-between flex-grow-1">
-                                    <div class="me-4">
-                                        <p>Yaretzi Mayo</p>
-                                        <p class="tx-12 text-muted">New record</p>
-                                    </div>
-                                    <p class="tx-12 text-muted">5 hrs ago</p>
-                                    </div>
-                                </a>
                                 </div>
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
                                     <a href="javascript:;">View all</a>
@@ -212,14 +164,21 @@
                             <div class="dropdown-menu p-0" aria-labelledby="notificationDropdown">
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
                                     <p class="text-info mx-2">{{ Auth::user()->unreadNotifications->count() }} New Notifications</p>
-                                    <a href="{{ route('notification.read.all') }}" class="text-warning mx-2">Read all</a>
+                                    <a href="{{ route('notification.read.all') }}" class="text-warning mx-2">Clear all</a>
                                 </div>
                                 <div class="p-1">
                                     @if (Auth::user()->unreadNotifications->count() > 0)
                                         @foreach (Auth::user()->unreadNotifications as $notification)
+
                                         <a href="{{ route('notification.read', $notification->id) }}" class="dropdown-item d-flex align-items-center py-2">
                                             <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
-                                                <i class="icon-sm text-white" data-feather="alert-circle"></i>
+                                                @if (class_basename($notification->type) === 'DepositNotification')
+                                                    <i class="icon-sm text-white" data-feather="dollar-sign"></i>
+                                                @elseif (class_basename($notification->type) === 'WithdrawNotification')
+                                                    <i class="icon-sm text-white" data-feather="credit-card"></i>
+                                                @else
+                                                    <i class="icon-sm text-white" data-feather="alert-circle"></i>
+                                                @endif
                                             </div>
                                             <div class="flex-grow-1 me-2">
                                                 <p>
