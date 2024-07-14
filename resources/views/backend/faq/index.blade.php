@@ -1,18 +1,18 @@
 @extends('layouts.template_master')
 
-@section('title', 'Subcategory')
+@section('title', 'FAQ')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Subcategory List</h3>
+                <h3 class="card-title">Faq List</h3>
                 <div class="action-btn">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
                     <!-- Create Modal -->
                     <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-md">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="createModelLabel">Create</h5>
@@ -22,19 +22,14 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="category_id" class="form-label">Category</label>
-                                            <select class="form-select" id="category_id" name="category_id">
-                                                <option value="">-- Select Category --</option>
-                                                @foreach ($categories as $category)
-                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <span class="text-danger error-text category_id_error"></span>
+                                            <label for="question" class="form-label">Faq Question</label>
+                                            <input type="text" class="form-control" id="question" name="question" placeholder="Faq question">
+                                            <span class="text-danger error-text question_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="name" class="form-label">Subcategory Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" placeholder="Subcategory Name">
-                                            <span class="text-danger error-text name_error"></span>
+                                            <label for="answer" class="form-label">Faq Answer</label>
+                                            <textarea class="form-control" id="answer" name="answer" placeholder="Faq answer" rows="4"></textarea>
+                                            <span class="text-danger error-text answer_error"></span>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -60,8 +55,7 @@
                                             <thead>
                                                 <tr>
                                                     <td>Sl No</td>
-                                                    <td>Category Name</td>
-                                                    <th>SubcategoryName</th>
+                                                    <td>Faq Question</td>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -99,8 +93,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Category Name</th>
-                                <th>Subcategory Name</th>
+                                <th>Faq Question</th>
                                 <td>Status</td>
                                 <th>Action</th>
                             </tr>
@@ -109,7 +102,7 @@
 
                             <!-- Edit Modal -->
                             <div class="modal fade editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-md">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="editModalLabel">Edit</h5>
@@ -118,21 +111,16 @@
                                         <form class="forms-sample" id="editForm">
                                             @csrf
                                             <div class="modal-body">
-                                                <input type="hidden" id="subcategory_id">
+                                                <input type="hidden" id="faq_id">
                                                 <div class="mb-3">
-                                                    <label for="category_id" class="form-label">Category</label>
-                                                    <select class="form-select category_id" id="category_id" name="category_id">
-                                                        <option value="">-- Select Category --</option>
-                                                        @foreach ($categories as $category)
-                                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <span class="text-danger error-text update_category_id_error"></span>
+                                                    <label for="faq_question" class="form-label">Faq question</label>
+                                                    <input type="text" class="form-control" id="faq_question" name="question" placeholder="Faq question">
+                                                    <span class="text-danger error-text update_question_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="subcategory_name" class="form-label">Subcategory Name</label>
-                                                    <input type="text" class="form-control" id="subcategory_name" name="name" placeholder="Subcategory Name">
-                                                    <span class="text-danger error-text update_name_error"></span>
+                                                    <label for="faq_answer" class="form-label">Faq answer</label>
+                                                    <textarea class="form-control" id="faq_answer" name="answer" placeholder="Faq answer" rows="4"></textarea>
+                                                    <span class="text-danger error-text update_answer_error"></span>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -167,15 +155,14 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.subcategory.index') }}",
+                url: "{{ route('backend.faq.index') }}",
                 data: function (e) {
                     e.status = $('#filter_status').val();
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'category_name', name: 'category_name' },
-                { data: 'name', name: 'name' },
+                { data: 'question', name: 'question' },
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
@@ -191,7 +178,7 @@
             event.preventDefault();
             var formData = $(this).serialize();
             $.ajax({
-                url: "{{ route('backend.subcategory.store') }}",
+                url: "{{ route('backend.faq.store') }}",
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
@@ -207,7 +194,7 @@
                         $('.createModel').modal('hide');
                         $('#createForm')[0].reset();
                         $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('Subcategory store successfully.');
+                        toastr.success('Faq store successfully.');
                     }
                 }
             });
@@ -216,15 +203,15 @@
         // Edit Data
         $(document).on('click', '.editBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.subcategory.edit', ":id") }}";
+            var url = "{{ route('backend.faq.edit', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
-                    $('#subcategory_id').val(response.id);
-                    $('.category_id').val(response.category_id);
-                    $('#subcategory_name').val(response.name);
+                    $('#faq_id').val(response.id);
+                    $('#faq_question').val(response.question);
+                    $('#faq_answer').val(response.answer);
                 },
             });
         });
@@ -232,8 +219,8 @@
         // Update Data
         $('#editForm').submit(function (event) {
             event.preventDefault();
-            var id = $('#subcategory_id').val();
-            var url = "{{ route('backend.subcategory.update', ":id") }}";
+            var id = $('#faq_id').val();
+            var url = "{{ route('backend.faq.update', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -250,7 +237,7 @@
                     }else{
                         $(".editModal").modal('hide');
                         $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('Subcategory update successfully.');
+                        toastr.success('Faq update successfully.');
                     }
                 },
             });
@@ -259,7 +246,7 @@
         // Soft Delete Data
         $(document).on('click', '.deleteBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('backend.subcategory.destroy', ":id") }}";
+            var url = "{{ route('backend.faq.destroy', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -277,7 +264,7 @@
                         success: function(response) {
                             $('#allDataTable').DataTable().ajax.reload();
                             $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.warning('Subcategory soft delete successfully.');
+                            toastr.warning('Faq soft delete successfully.');
                         }
                     });
                 }
@@ -290,12 +277,11 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.subcategory.trash') }}",
+                url: "{{ route('backend.faq.trash') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'category_name', name: 'category_name' },
-                { data: 'name', name: 'name' },
+                { data: 'question', name: 'question' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
@@ -303,7 +289,7 @@
         // Restore Data
         $(document).on('click', '.restoreBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.subcategory.restore', ":id") }}";
+            var url = "{{ route('backend.faq.restore', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -312,7 +298,7 @@
                     $(".trashModel").modal('hide');
                     $('#allDataTable').DataTable().ajax.reload();
                     $('#trashDataTable').DataTable().ajax.reload();
-                    toastr.success('Subcategory restore successfully.');
+                    toastr.success('Faq restore successfully.');
                 },
             });
         });
@@ -320,7 +306,7 @@
         // Force Delete Data
         $(document).on('click', '.forceDeleteBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('backend.subcategory.delete', ":id") }}";
+            var url = "{{ route('backend.faq.delete', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -338,7 +324,7 @@
                         success: function(response) {
                             $(".trashModel").modal('hide');
                             $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.error('Subcategory force delete successfully.');
+                            toastr.error('Faq force delete successfully.');
                         }
                     });
                 }
@@ -348,14 +334,14 @@
         // Status Change Data
         $(document).on('click', '.statusBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.subcategory.status', ":id") }}";
+            var url = "{{ route('backend.faq.status', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
                     $('#allDataTable').DataTable().ajax.reload();
-                    toastr.success('Subcategory status change successfully.');
+                    toastr.success('Faq status change successfully.');
                 },
             });
         });

@@ -50,32 +50,32 @@
 
         <li class="nav-item nav-category">Admin</li>
         @can('RolePermissionMenu')
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#rolePermission" role="button" aria-expanded="false" aria-controls="rolePermission">
-                <i class="link-icon" data-feather="lock"></i>
-                <span class="link-title">Role Permission</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-            </a>
-            <div class="collapse" id="rolePermission">
-                <ul class="nav sub-menu">
-                    @can('role.index')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.role.index') }}" class="nav-link">Role</a>
-                    </li>
-                    @endcan
-                    @can('permission.index')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.permission.index') }}" class="nav-link">Permission</a>
-                    </li>
-                    @endcan
-                    @can('role-permission.index')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.role-permission.index') }}" class="nav-link">Assigning</a>
-                    </li>
-                    @endcan
-                </ul>
-            </div>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#rolePermission" role="button" aria-expanded="false" aria-controls="rolePermission">
+                    <i class="link-icon" data-feather="lock"></i>
+                    <span class="link-title">Role Permission</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="rolePermission">
+                    <ul class="nav sub-menu">
+                        @can('role.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.role.index') }}" class="nav-link">Role</a>
+                        </li>
+                        @endcan
+                        @can('permission.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.permission.index') }}" class="nav-link">Permission</a>
+                        </li>
+                        @endcan
+                        @can('role-permission.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.role-permission.index') }}" class="nav-link">Assigning</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
         @endcan
 
         @can('EmployeeMenu')
@@ -84,17 +84,6 @@
                 <a href="{{ route('backend.employee.index') }}" class="nav-link">
                     <i class="link-icon" data-feather="users"></i>
                     <span class="link-title">Employee</span>
-                </a>
-            </li>
-            @endcan
-        @endcan
-
-        @can('UserMenu')
-            @can('user.index')
-            <li class="nav-item">
-                <a href="{{ route('backend.user.index') }}" class="nav-link">
-                    <i class="link-icon" data-feather="user"></i>
-                    <span class="link-title">User</span>
                 </a>
             </li>
             @endcan
@@ -122,6 +111,29 @@
             @endcan
         @endcan
 
+        @can('FaqMenu')
+            @can('faq.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.faq.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="help-circle"></i>
+                    <span class="link-title">Faq</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
+        <li class="nav-item nav-category">User</li>
+        @can('UserMenu')
+            @can('user.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.user.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="user"></i>
+                    <span class="link-title">User</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
         @can('VerificationMenu')
             @can('verification.request')
             <li class="nav-item">
@@ -134,51 +146,51 @@
         @endcan
 
         @can('DepositMenu')
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#depositRequest" role="button" aria-expanded="false" aria-controls="depositRequest">
-                <i class="link-icon" data-feather="credit-card"></i>
-                <span class="link-title">Deposit request</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-            </a>
-            <div class="collapse" id="depositRequest">
-                <ul class="nav sub-menu">
-                    @can('deposit.request')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.deposit.request') }}" class="nav-link">Pending</a>
-                    </li>
-                    @endcan
-                    @can('deposit.request.approved')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.deposit.request.approved') }}" class="nav-link">Approved</a>
-                    </li>
-                    @endcan
-                </ul>
-            </div>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#depositRequest" role="button" aria-expanded="false" aria-controls="depositRequest">
+                    <i class="link-icon" data-feather="credit-card"></i>
+                    <span class="link-title">Deposit request</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="depositRequest">
+                    <ul class="nav sub-menu">
+                        @can('deposit.request')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.deposit.request') }}" class="nav-link">Pending</a>
+                        </li>
+                        @endcan
+                        @can('deposit.request.approved')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.deposit.request.approved') }}" class="nav-link">Approved</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
         @endcan
 
         @can('WithdrawMenu')
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#withdrawRequest" role="button" aria-expanded="false" aria-controls="withdrawRequest">
-                <i class="link-icon" data-feather="dollar-sign"></i>
-                <span class="link-title">Withdraw request</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-            </a>
-            <div class="collapse" id="withdrawRequest">
-                <ul class="nav sub-menu">
-                    @can('withdraw.request')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.withdraw.request') }}" class="nav-link">Pending</a>
-                    </li>
-                    @endcan
-                    @can('withdraw.request.approved')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.withdraw.request.approved') }}" class="nav-link">Approved</a>
-                    </li>
-                    @endcan
-                </ul>
-            </div>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#withdrawRequest" role="button" aria-expanded="false" aria-controls="withdrawRequest">
+                    <i class="link-icon" data-feather="dollar-sign"></i>
+                    <span class="link-title">Withdraw request</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="withdrawRequest">
+                    <ul class="nav sub-menu">
+                        @can('withdraw.request')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.withdraw.request') }}" class="nav-link">Pending</a>
+                        </li>
+                        @endcan
+                        @can('withdraw.request.approved')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.withdraw.request.approved') }}" class="nav-link">Approved</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
         @endcan
     @else
         <li class="nav-item nav-category">User</li>

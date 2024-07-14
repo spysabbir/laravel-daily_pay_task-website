@@ -4,6 +4,7 @@ use App\Http\Controllers\Backend\BackendController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
+use App\Http\Controllers\Backend\FaqController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
@@ -59,6 +60,12 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('subcategory/restore/{id}', [SubcategoryController::class, 'restore'])->name('subcategory.restore');
     Route::get('subcategory/delete/{id}', [SubcategoryController::class, 'delete'])->name('subcategory.delete');
     Route::get('subcategory/status/{id}', [SubcategoryController::class, 'status'])->name('subcategory.status');
+    // Faq
+    Route::resource('faq', FaqController::class);
+    Route::get('faq-trash', [FaqController::class, 'trash'])->name('faq.trash');
+    Route::get('faq/restore/{id}', [FaqController::class, 'restore'])->name('faq.restore');
+    Route::get('faq/delete/{id}', [FaqController::class, 'delete'])->name('faq.delete');
+    Route::get('faq/status/{id}', [FaqController::class, 'status'])->name('faq.status');
     // Id Verification
     Route::get('verification-request', [VerificationController::class, 'verificationRequest'])->name('verification.request');
     Route::get('verification-request/{id}', [VerificationController::class, 'verificationRequestShow'])->name('verification.request.show');

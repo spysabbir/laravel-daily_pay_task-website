@@ -74,6 +74,15 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'subcategory.restore', 'group_name' => 'SubcategoryManagement', 'guard_name' => 'web'],
             ['name' => 'subcategory.delete', 'group_name' => 'SubcategoryManagement', 'guard_name' => 'web'],
 
+            ['name' => 'FaqMenu', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
+            ['name' => 'faq.index', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
+            ['name' => 'faq.create', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
+            ['name' => 'faq.edit', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
+            ['name' => 'faq.destroy', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
+            ['name' => 'faq.trash', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
+            ['name' => 'faq.restore', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
+            ['name' => 'faq.delete', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
+
             ['name' => 'VerificationMenu', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
             ['name' => 'verification.request', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
             ['name' => 'verification.request.show', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
