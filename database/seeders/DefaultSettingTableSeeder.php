@@ -14,7 +14,7 @@ class DefaultSettingTableSeeder extends Seeder
     public function run(): void
     {
         $setting = [
-            'site_name' => 'Daily Earnings BD',
+            'site_name' => 'Daily Earnings',
             'site_url' => 'http://127.0.0.1:8000',
             'site_timezone' => 'Asia/Dhaka',
             'site_currency' => 'BDT',

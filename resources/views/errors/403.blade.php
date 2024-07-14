@@ -8,9 +8,7 @@
 	<meta name="author" content="{{ config('app.name') }}">
 	<meta name="keywords" content="{{ config('app.name') }}">
 
-	<title>{{ config('app.name') }} - @yield('title')</title>
-
-    <link rel="shortcut icon" href="{{ asset('uploads/setting_photo') }}/{{ get_default_settings('site_favicon') }}" />
+	<title>{{ config('app.name') }} | 403</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,8 +17,11 @@
     <!-- End fonts -->
 
 	<!-- core:css -->
-	<link rel="stylesheet" href="{{ asset('template') }}/vendors/core/core.css">
+	<link rel="stylesheet" href="{{ asset('uploads/setting_photo') }}/{{ get_default_settings('site_favicon') }}">
 	<!-- endinject -->
+
+	<!-- Plugin css for this page -->
+	<!-- End plugin css for this page -->
 
 	<!-- inject:css -->
 	<link rel="stylesheet" href="{{ asset('template') }}/fonts/feather-font/css/iconfont.css">
@@ -28,10 +29,10 @@
 	<!-- endinject -->
 
     <!-- Layout styles -->
-    <link rel="stylesheet" href="{{ asset('template') }}/css/demo2/style.css">
+        <link rel="stylesheet" href="{{ asset('template') }}/css/demo2/style.css">
     <!-- End layout styles -->
 
-    {!! NoCaptcha::renderJs() !!}
+    <link rel="shortcut icon" href="{{ asset('template') }}/images/favicon.png" />
 </head>
 <body>
 	<div class="main-wrapper">
@@ -39,10 +40,16 @@
 			<div class="page-content d-flex align-items-center justify-content-center">
 
 				<div class="row w-100 mx-0 auth-page">
-					<div class="col-md-8 col-xl-6 mx-auto">
-						<div class="card">
-							@yield('content')
-						</div>
+					<div class="col-md-8 col-xl-6 mx-auto d-flex flex-column align-items-center">
+						<img src="{{ asset('template') }}/images/others/error.svg" class="img-fluid mb-2" alt="403">
+						<h1 class="fw-bolder mb-22 mt-2 tx-80 text-muted">403</h1>
+						<h4 class="mb-2">
+                            Unauthorized Access
+                        </h4>
+						<h6 class="text-muted mb-3 text-center">
+                            Oopps!! The page you are not authorized to access. Please contact the administrator.
+                        </h6>
+						<a href="{{ url()->previous() }}">Back to home</a>
 					</div>
 				</div>
 
@@ -54,9 +61,16 @@
 	<script src="{{ asset('template') }}/vendors/core/core.js"></script>
 	<!-- endinject -->
 
+	<!-- Plugin js for this page -->
+	<!-- End plugin js for this page -->
+
 	<!-- inject:js -->
 	<script src="{{ asset('template') }}/vendors/feather-icons/feather.min.js"></script>
 	<script src="{{ asset('template') }}/js/template.js"></script>
 	<!-- endinject -->
+
+	<!-- Custom js for this page -->
+	<!-- End custom js for this page -->
+
 </body>
 </html>

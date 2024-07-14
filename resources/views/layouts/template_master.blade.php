@@ -15,7 +15,7 @@
 
 	<title>{{ config('app.name') }} - @yield('title')</title>
 
-    <link rel="shortcut icon" href="{{ asset('template') }}/images/favicon.png" />
+    <link rel="shortcut icon" href="{{ asset('uploads/setting_photo') }}/{{ get_default_settings('site_favicon') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

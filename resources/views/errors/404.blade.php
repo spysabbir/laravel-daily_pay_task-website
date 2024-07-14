@@ -8,7 +8,7 @@
 	<meta name="author" content="{{ config('app.name') }}">
 	<meta name="keywords" content="{{ config('app.name') }}">
 
-	<title>{{ config('app.name') }}</title>
+	<title>{{ config('app.name') }} | 404</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,7 +32,7 @@
         <link rel="stylesheet" href="{{ asset('template') }}/css/demo2/style.css">
     <!-- End layout styles -->
 
-    <link rel="shortcut icon" href="{{ asset('template') }}/images/favicon.png" />
+    <link rel="shortcut icon" href="{{ asset('uploads/setting_photo') }}/{{ get_default_settings('site_favicon') }}" />
 </head>
 <body>
 	<div class="main-wrapper">
@@ -41,7 +41,7 @@
 
 				<div class="row w-100 mx-0 auth-page">
 					<div class="col-md-8 col-xl-6 mx-auto d-flex flex-column align-items-center">
-						<img src="{{ asset('template') }}/images/others/404.svg" class="img-fluid mb-2" alt="404">
+						<img src="{{ asset('template') }}/images/others/error.svg" class="img-fluid mb-2" alt="404">
 						<h1 class="fw-bolder mb-22 mt-2 tx-80 text-muted">404</h1>
 						<h4 class="mb-2">Page Not Found</h4>
 						<h6 class="text-muted mb-3 text-center">Oopps!! The page you were looking for doesn't exist.</h6>
