@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Backend\BackendController;
+use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SettingController;
+use App\Http\Controllers\Backend\SubcategoryController;
 use App\Http\Controllers\Backend\VerificationController;
 use App\Http\Controllers\Backend\WithdrawController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +47,18 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('user/trash', [BackendController::class, 'userTrash'])->name('user.trash');
     Route::get('user/restore/{id}', [BackendController::class, 'userRestore'])->name('user.restore');
     Route::get('user/delete/{id}', [BackendController::class, 'userDelete'])->name('user.delete');
+    // Category
+    Route::resource('category', CategoryController::class);
+    Route::get('category-trash', [CategoryController::class, 'trash'])->name('category.trash');
+    Route::get('category/restore/{id}', [CategoryController::class, 'restore'])->name('category.restore');
+    Route::get('category/delete/{id}', [CategoryController::class, 'delete'])->name('category.delete');
+    Route::get('category/status/{id}', [CategoryController::class, 'status'])->name('category.status');
+    // Subcategory
+    Route::resource('subcategory', SubcategoryController::class);
+    Route::get('subcategory-trash', [SubcategoryController::class, 'trash'])->name('subcategory.trash');
+    Route::get('subcategory/restore/{id}', [SubcategoryController::class, 'restore'])->name('subcategory.restore');
+    Route::get('subcategory/delete/{id}', [SubcategoryController::class, 'delete'])->name('subcategory.delete');
+    Route::get('subcategory/status/{id}', [SubcategoryController::class, 'status'])->name('subcategory.status');
     // Id Verification
     Route::get('verification-request', [VerificationController::class, 'verificationRequest'])->name('verification.request');
     Route::get('verification-request/{id}', [VerificationController::class, 'verificationRequestShow'])->name('verification.request.show');

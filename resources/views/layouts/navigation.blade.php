@@ -100,6 +100,28 @@
             @endcan
         @endcan
 
+        @can('CategoryMenu')
+            @can('category.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.category.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="file"></i>
+                    <span class="link-title">Category</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
+        @can('SubcategoryMenu')
+            @can('subcategory.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.subcategory.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="folder"></i>
+                    <span class="link-title">Subcategory</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
         @can('VerificationMenu')
             @can('verification.request')
             <li class="nav-item">
