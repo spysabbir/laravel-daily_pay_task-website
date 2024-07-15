@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('withdraws', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
+            $table->enum('type', ['Ragular', 'Instant']);
             $table->decimal('amount', 10, 2);
             $table->string('method');
             $table->string('number');

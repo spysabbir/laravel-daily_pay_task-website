@@ -94,7 +94,7 @@
                                 <th>Deposit Method</th>
                                 <th>Deposit Number</th>
                                 <th>Transaction Id</th>
-                                <th>Updated At</th>
+                                <th>Created At</th>
                                 <td>Status</td>
                             </tr>
                         </thead>
@@ -135,7 +135,7 @@
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number'},
                 { data: 'transaction_id', name: 'transaction_id' },
-                { data: 'updated_at', name: 'updated_at' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'status', name: 'status' },
             ]
         });

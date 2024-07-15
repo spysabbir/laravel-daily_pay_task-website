@@ -29,6 +29,7 @@ return new class extends Migration
             $table->decimal('referal_earning_bonus_percentage', 10, 2)->nullable();
             $table->decimal('min_deposit_amount', 10, 2)->nullable();
             $table->decimal('max_deposit_amount', 10, 2)->nullable();
+            $table->decimal('instant_withdraw_charge', 10, 2)->nullable();
             $table->decimal('withdraw_charge_percentage', 10, 2)->nullable();
             $table->decimal('min_withdraw_amount', 10, 2)->nullable();
             $table->decimal('max_withdraw_amount', 10, 2)->nullable();

@@ -28,6 +28,18 @@ class WithdrawController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('type', function ($row) {
+                    if ($row->type == 'Ragular') {
+                        $type = '
+                        <span class="badge bg-dark">' . $row->type . '</span>
+                        ';
+                    } else {
+                        $type = '
+                        <span class="badge bg-primary">' . $row->type . '</span>
+                        ';
+                    }
+                    return $type;
+                })
                 ->editColumn('created_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
@@ -39,7 +51,7 @@ class WithdrawController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_name', 'created_at', 'action'])
+                ->rawColumns(['user_name', 'type', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -108,6 +120,18 @@ class WithdrawController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('type', function ($row) {
+                    if ($row->type == 'Ragular') {
+                        $type = '
+                        <span class="badge bg-dark">' . $row->type . '</span>
+                        ';
+                    } else {
+                        $type = '
+                        <span class="badge bg-primary">' . $row->type . '</span>
+                        ';
+                    }
+                    return $type;
+                })
                 ->editColumn('rejected_by', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . $row->rejectedBy->name . '</span>
@@ -124,7 +148,7 @@ class WithdrawController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_name', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_name', 'type', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
@@ -147,6 +171,18 @@ class WithdrawController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('type', function ($row) {
+                    if ($row->type == 'Ragular') {
+                        $type = '
+                        <span class="badge bg-dark">' . $row->type . '</span>
+                        ';
+                    } else {
+                        $type = '
+                        <span class="badge bg-primary">' . $row->type . '</span>
+                        ';
+                    }
+                    return $type;
+                })
                 ->editColumn('approved_by', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . $row->approvedBy->name . '</span>
@@ -157,7 +193,7 @@ class WithdrawController extends Controller
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
-                ->rawColumns(['user_name', 'approved_by', 'approved_at'])
+                ->rawColumns(['user_name', 'type', 'approved_by', 'approved_at'])
                 ->make(true);
         }
 

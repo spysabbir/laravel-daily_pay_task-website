@@ -102,49 +102,56 @@
                             <label for="site_address" class="form-label">Site Address</label>
                             <textarea class="form-control" id="site_address" name="site_address" rows="4" placeholder="Site Address">{{ old('site_address', $defaultSetting->site_address) }}</textarea>
                         </div><!-- Col -->
-                        <div class="col-lg-4 col-sm-6 mb-3">
+                        <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="referal_registion_bonus_amount" class="form-label">Referal Registion Bonus Amount</label>
                             <input type="number" class="form-control" id="referal_registion_bonus_amount" name="referal_registion_bonus_amount" value="{{ old('referal_registion_bonus_amount', $defaultSetting->referal_registion_bonus_amount) }}" placeholder="Referal Registion Bonus Amount">
                             @error('referal_registion_bonus_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-4 col-sm-6 mb-3">
+                        <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="referal_earning_bonus_percentage" class="form-label">Referal Earning Bonus Percentage</label>
                             <input type="number" class="form-control" id="referal_earning_bonus_percentage" name="referal_earning_bonus_percentage" value="{{ old('referal_earning_bonus_percentage', $defaultSetting->referal_earning_bonus_percentage) }}" placeholder="Referal Earning Bonus Percentage">
                             @error('referal_earning_bonus_percentage')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-4 col-sm-6 mb-3">
-                            <label for="withdraw_charge_percentage" class="form-label">Withdraw Charge Percentage</label>
-                            <input type="number" class="form-control" id="withdraw_charge_percentage" name="withdraw_charge_percentage" value="{{ old('withdraw_charge_percentage', $defaultSetting->withdraw_charge_percentage) }}" placeholder="Withdraw Charge Percentage">
-                            @error('withdraw_charge_percentage')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                        </div><!-- Col -->
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="min_deposit_amount" class="form-label">Minimum Deposit Amount</label>
                             <input type="number" class="form-control" id="min_deposit_amount" name="min_deposit_amount" value="{{ old('min_deposit_amount', $defaultSetting->min_deposit_amount) }}" placeholder="Minimum Deposit Amount">
                             @error('min_deposit_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="max_deposit_amount" class="form-label">Maximum Deposit Amount</label>
                             <input type="number" class="form-control" id="max_deposit_amount" name="max_deposit_amount" value="{{ old('max_deposit_amount', $defaultSetting->max_deposit_amount) }}" placeholder="Maximum Deposit Amount">
                             @error('max_deposit_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="instant_withdraw_charge" class="form-label">Instant Withdraw Charge</label>
+                            <input type="number" class="form-control" id="instant_withdraw_charge" name="instant_withdraw_charge" value="{{ old('instant_withdraw_charge', $defaultSetting->instant_withdraw_charge) }}" placeholder="Instant Withdraw Charge">
+                            @error('instant_withdraw_charge')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="withdraw_charge_percentage" class="form-label">Withdraw Charge Percentage</label>
+                            <input type="number" class="form-control" id="withdraw_charge_percentage" name="withdraw_charge_percentage" value="{{ old('withdraw_charge_percentage', $defaultSetting->withdraw_charge_percentage) }}" placeholder="Withdraw Charge Percentage">
+                            @error('withdraw_charge_percentage')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="min_withdraw_amount" class="form-label">Minimum Withdraw Amount</label>
                             <input type="number" class="form-control" id="min_withdraw_amount" name="min_withdraw_amount" value="{{ old('min_withdraw_amount', $defaultSetting->min_withdraw_amount) }}" placeholder="Minimum Withdraw Amount">
                             @error('min_withdraw_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="max_withdraw_amount" class="form-label">Maximum Withdraw Amount</label>
                             <input type="number" class="form-control" id="max_withdraw_amount" name="max_withdraw_amount" value="{{ old('max_withdraw_amount', $defaultSetting->max_withdraw_amount) }}" placeholder="Maximum Withdraw Amount">
                             @error('max_withdraw_amount')

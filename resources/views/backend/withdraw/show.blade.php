@@ -13,6 +13,10 @@
                                 <td>{{ $withdraw->user->name }}</td>
                             </tr>
                             <tr>
+                                <td>Type</td>
+                                <td>{{ $withdraw->type }}</td>
+                            </tr>
+                            <tr>
                                 <td>Withdraw Amount</td>
                                 <td>{{ $withdraw->amount }}</td>
                             </tr>

@@ -28,6 +28,7 @@
                                                     <td>Sl No</td>
                                                     <th>User Id</th>
                                                     <th>User Name</th>
+                                                    <th>Type</th>
                                                     <th>Remarks</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
@@ -56,6 +57,7 @@
                                 <th>Sl No</th>
                                 <th>User Id</th>
                                 <th>User Name</th>
+                                <th>Type</th>
                                 <th>Withdraw Amount</th>
                                 <th>Method</th>
                                 <th>Number</th>
@@ -113,6 +115,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
+                { data: 'type', name: 'type' },
                 { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number' },
@@ -176,6 +179,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
+                { data: 'type', name: 'type' },
                 { data: 'remarks', name: 'remarks' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'rejected_at', name: 'rejected_at' },

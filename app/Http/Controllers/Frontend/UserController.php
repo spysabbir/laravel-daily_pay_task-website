@@ -126,8 +126,8 @@ class UserController extends Controller
 
                 return DataTables::of($deposits)
                     ->addIndexColumn()
-                    ->editColumn('updated_at', function ($row) {
-                        return $row->updated_at->diffForHumans();
+                    ->editColumn('created_at', function ($row) {
+                        return $row->created_at->format('d M Y h:i A');
                     })
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
@@ -145,7 +145,7 @@ class UserController extends Controller
                         }
                         return $status;
                     })
-                    ->rawColumns(['status'])
+                    ->rawColumns(['created_at', 'status'])
                     ->make(true);
             }
 
@@ -160,7 +160,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:1',
             'method' => 'required|string|max:255',
-            'number' => 'required|string|max:255',
+            'number' => 'required|string|min:11|max:14',
             'transaction_id' => 'required|string|max:255',
         ]);
 
@@ -215,8 +215,20 @@ class UserController extends Controller
 
                 return DataTables::of($withdraws)
                     ->addIndexColumn()
-                    ->editColumn('updated_at', function ($row) {
-                        return $row->updated_at->diffForHumans();
+                    ->editColumn('type', function ($row) {
+                        if ($row->type == 'Ragular') {
+                            $type = '
+                            <span class="badge bg-dark">' . $row->type . '</span>
+                            ';
+                        } else {
+                            $type = '
+                            <span class="badge bg-primary">' . $row->type . '</span>
+                            ';
+                        }
+                        return $type;
+                    })
+                    ->editColumn('created_at', function ($row) {
+                        return $row->created_at->format('d M Y h:i A');
                     })
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
@@ -234,7 +246,7 @@ class UserController extends Controller
                         }
                         return $status;
                     })
-                    ->rawColumns(['status'])
+                    ->rawColumns(['type', 'created_at', 'status'])
                     ->make(true);
             }
 
@@ -247,9 +259,10 @@ class UserController extends Controller
     public function withdrawStore(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'type' => 'required|in:Ragular,Instant',
             'amount' => 'required|numeric|min:1',
-            'method' => 'required|string|max:255',
-            'number' => 'required|string|max:255',
+            'method' => 'required|string',
+            'number' => 'required|string|min:11|max:14',
         ]);
 
         if($validator->fails()){
@@ -267,11 +280,16 @@ class UserController extends Controller
                 if ($request->amount > $request->user()->withdraw_balance) {
                     return response()->json([
                         'status' => 402,
-                        'error'=> 'Insufficient balance in your account to withdraw '.get_default_settings('site_currency_symbol') .$request->amount .' . Your current balance is '.get_default_settings('site_currency_symbol') .$request->user()->withdraw_balance
+                        'error'=> 'Insufficient balance in your account to withdraw '.get_default_settings('site_currency_symbol') . $request->amount .' . Your current balance is '.get_default_settings('site_currency_symbol') . $request->user()->withdraw_balance
                     ]);
                 }else {
-                    $payable_amount = $request->amount - ($request->amount * get_default_settings('withdraw_charge_percentage') / 100);
+                    if ($request->type == 'Instant') {
+                        $payable_amount = $request->amount - ($request->amount * get_default_settings('withdraw_charge_percentage') / 100) - get_default_settings('instant_withdraw_charge');
+                    } else {
+                        $payable_amount = $request->amount - ($request->amount * get_default_settings('withdraw_charge_percentage') / 100);
+                    }
                     Withdraw::create([
+                        'type' => $request->type,
                         'user_id' => $request->user()->id,
                         'amount' => $request->amount,
                         'method' => $request->method,

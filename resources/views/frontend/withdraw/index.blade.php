@@ -25,6 +25,19 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
+                                            <label for="type" class="form-label">Withdraw Type</label>
+                                            <select class="form-select" id="type" name="type">
+                                                <option value="">-- Select Withdraw Type --</option>
+                                                <option value="Ragular">Ragular</option>
+                                                <option value="Instant">Instant</option>
+                                            </select>
+                                            <small class="text-info">
+                                                <strong id="ragular">Withdraw request will be processed within 24 hours.</strong>
+                                                <strong id="instant">Withdraw request will be processed in 20 minutes. But you will be charged an extra {{ get_default_settings('instant_withdraw_charge') }} {{ get_default_settings('site_currency_symbol') }}.</strong>
+                                            </small>
+                                            <span class="text-danger error-text type_error"></span>
+                                        </div>
+                                        <div class="mb-3">
                                             <label for="amount" class="form-label">Withdraw Amount</label>
                                             <input type="number" class="form-control" id="amount" name="amount" placeholder="Withdraw Amount">
                                             <small class="text-info">Minimum withdraw amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
@@ -93,11 +106,12 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>Withdraw Type</th>
                                 <th>Withdraw Amount</th>
                                 <th>Withdraw Method</th>
                                 <th>Withdraw Number</th>
                                 <th>Payable Amount</th>
-                                <th>Updated At</th>
+                                <th>Created At</th>
                                 <td>Status</td>
                             </tr>
                         </thead>
@@ -121,6 +135,35 @@
             }
         });
 
+        $('#ragular').hide();
+        $('#instant').hide();
+        $('#type').change(function(){
+            if ($('#type').val() == 'Ragular') {
+                $('#ragular').show();
+                $('#instant').hide();
+                var amount = $('#amount').val();
+                var charge = {{ get_default_settings('withdraw_charge_percentage') }};
+                var payable_amount = amount - (amount * charge / 100);
+                $('#payable_amount').val(payable_amount);
+            }else if ($('#type').val() == 'Instant') {
+                $('#ragular').hide();
+                $('#instant').show();
+                var amount = $('#amount').val();
+                var charge = {{ get_default_settings('withdraw_charge_percentage') }};
+                var instant_withdraw_charge = {{ get_default_settings('instant_withdraw_charge') }};
+                var payable_amount = amount - (amount * charge / 100);
+                if(amount == ''){
+                        $('#payable_amount').val(payable_amount);
+                    }else{
+                        $('#payable_amount').val(payable_amount - instant_withdraw_charge);
+                    }
+            }else{
+                $('#ragular').hide();
+                $('#instant').hide();
+            }
+        });
+
+
         // Read Data
         $('#allDataTable').DataTable({
             processing: true,
@@ -134,11 +177,12 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'type', name: 'type' },
                 { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number'},
                 { data: 'payable_amount', name: 'payable_amount' },
-                { data: 'updated_at', name: 'updated_at' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'status', name: 'status' },
             ]
         });
@@ -151,9 +195,14 @@
         // Calculate Payable Amount
         $('#amount').keyup(function(){
             var amount = $(this).val();
+            var instant_withdraw_charge = {{ get_default_settings('instant_withdraw_charge') }};
             var charge = {{ get_default_settings('withdraw_charge_percentage') }};
             var payable_amount = amount - (amount * charge / 100);
-            $('#payable_amount').val(payable_amount);
+            if ($('#type').val() == 'Instant') {
+                $('#payable_amount').val(payable_amount - instant_withdraw_charge);
+            }else{
+                $('#payable_amount').val(payable_amount);
+            }
         });
 
         // Store Data
