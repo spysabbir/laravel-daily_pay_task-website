@@ -122,6 +122,17 @@
             @endcan
         @endcan
 
+        @can('JobChargeMenu')
+            @can('job_charge.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.job_charge.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="folder-plus"></i>
+                    <span class="link-title">Job Charge</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
         @can('FaqMenu')
             @can('faq.index')
             <li class="nav-item">

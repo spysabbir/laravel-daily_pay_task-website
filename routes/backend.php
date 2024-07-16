@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\ChildCategoryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
 use App\Http\Controllers\Backend\FaqController;
+use App\Http\Controllers\Backend\JobChargeController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
@@ -67,6 +68,12 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('child_category/restore/{id}', [ChildCategoryController::class, 'restore'])->name('child_category.restore');
     Route::get('child_category/delete/{id}', [ChildCategoryController::class, 'delete'])->name('child_category.delete');
     Route::get('child_category/status/{id}', [ChildCategoryController::class, 'status'])->name('child_category.status');
+    // Job Charge
+    Route::resource('job_charge', JobChargeController::class);
+    Route::get('job_charge-trash', [JobChargeController::class, 'trash'])->name('job_charge.trash');
+    Route::get('job_charge/restore/{id}', [JobChargeController::class, 'restore'])->name('job_charge.restore');
+    Route::get('job_charge/delete/{id}', [JobChargeController::class, 'delete'])->name('job_charge.delete');
+    Route::get('job_charge/status/{id}', [JobChargeController::class, 'status'])->name('job_charge.status');
     // Faq
     Route::resource('faq', FaqController::class);
     Route::get('faq-trash', [FaqController::class, 'trash'])->name('faq.trash');

@@ -82,7 +82,16 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'child_category.trash', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
             ['name' => 'child_category.restore', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
             ['name' => 'child_category.delete', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
-            
+
+            ['name' => 'JobChargeMenu', 'group_name' => 'JobChargeManagement', 'guard_name' => 'web'],
+            ['name' => 'job_charge.index', 'group_name' => 'JobChargeManagement', 'guard_name' => 'web'],
+            ['name' => 'job_charge.create', 'group_name' => 'JobChargeManagement', 'guard_name' => 'web'],
+            ['name' => 'job_charge.edit', 'group_name' => 'JobChargeManagement', 'guard_name' => 'web'],
+            ['name' => 'job_charge.destroy', 'group_name' => 'JobChargeManagement', 'guard_name' => 'web'],
+            ['name' => 'job_charge.trash', 'group_name' => 'JobChargeManagement', 'guard_name' => 'web'],
+            ['name' => 'job_charge.restore', 'group_name' => 'JobChargeManagement', 'guard_name' => 'web'],
+            ['name' => 'job_charge.delete', 'group_name' => 'JobChargeManagement', 'guard_name' => 'web'],
+
             ['name' => 'FaqMenu', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
             ['name' => 'faq.index', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
             ['name' => 'faq.create', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],

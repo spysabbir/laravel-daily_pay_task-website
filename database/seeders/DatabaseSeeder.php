@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
             SmsSettingTableSeeder::class,
             SeoSettingTableSeeder::class,
             CaptchaSettingTableSeeder::class,
+
+            CategorySeeder::class,
+            SubCategorySeeder::class,
+            ChildCategorySeeder::class,
         ]);
     }
 }
