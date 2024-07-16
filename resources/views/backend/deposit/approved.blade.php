@@ -20,7 +20,7 @@
                                 <th>Amount</th>
                                 <th>Method</th>
                                 <th>Number</th>
-                                <td>Transaction Id</td>
+                                <th>Transaction Id</th>
                                 <th>Approved By</th>
                                 <th>Approved At</th>
                             </tr>

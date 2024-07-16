@@ -59,6 +59,7 @@
                                 <th>Deposit Amount</th>
                                 <th>Method</th>
                                 <th>Number</th>
+                                <th>Transaction Id</th>
                                 <th>Created At</th>
                                 <th>Action</th>
                             </tr>
@@ -115,6 +116,7 @@
                 { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number' },
+                { data: 'transaction_id', name: 'transaction_id' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
