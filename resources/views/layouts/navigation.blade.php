@@ -100,12 +100,12 @@
             @endcan
         @endcan
 
-        @can('SubcategoryMenu')
-            @can('subcategory.index')
+        @can('SubCategoryMenu')
+            @can('sub_category.index')
             <li class="nav-item">
-                <a href="{{ route('backend.subcategory.index') }}" class="nav-link">
+                <a href="{{ route('backend.sub_category.index') }}" class="nav-link">
                     <i class="link-icon" data-feather="folder"></i>
-                    <span class="link-title">Subcategory</span>
+                    <span class="link-title">Sub Category</span>
                 </a>
             </li>
             @endcan

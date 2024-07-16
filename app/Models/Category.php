@@ -12,8 +12,8 @@ class Category extends Model
 
     protected $guarded = [];
 
-    public function subcategories()
+    public function sub_categories()
     {
-        return $this->hasMany(Subcategory::class);
+        return $this->hasMany(SubCategory::class);
     }
 }

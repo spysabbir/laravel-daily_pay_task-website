@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Subcategory;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use App\Models\Category;
 
-class SubcategoryController extends Controller
+class SubCategoryController extends Controller
 {
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Subcategory::select('subcategories.*');
+            $query = SubCategory::select('sub_categories.*');
 
             $query->orderBy('created_at', 'desc');
 
@@ -23,9 +23,9 @@ class SubcategoryController extends Controller
                 $query->where('status', $request->status);
             }
 
-            $subcategories = $query->get();
+            $sub_categories = $query->get();
 
-            return DataTables::of($subcategories)
+            return DataTables::of($sub_categories)
                 ->addIndexColumn()
                 ->addColumn('category_name', function ($row) {
                     return $row->category->name;
@@ -57,14 +57,14 @@ class SubcategoryController extends Controller
 
         $categories = Category::where('status', 'Active')->get();
 
-        return view('backend.subcategory.index', compact('categories'));
+        return view('backend.sub_category.index', compact('categories'));
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255|unique:subcategories',
+            'name' => 'required|string|max:255|unique:sub_categories',
         ]);
 
         if($validator->fails()){
@@ -73,7 +73,7 @@ class SubcategoryController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            Subcategory::create([
+            SubCategory::create([
                 'category_id' => $request->category_id,
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
@@ -88,15 +88,15 @@ class SubcategoryController extends Controller
 
     public function edit(string $id)
     {
-        $subcategory = Subcategory::where('id', $id)->first();
-        return response()->json($subcategory);
+        $sub_category = SubCategory::where('id', $id)->first();
+        return response()->json($sub_category);
     }
 
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255|unique:subcategories,name,' . $id,
+            'name' => 'required|string|max:255|unique:sub_categories,name,' . $id,
         ]);
 
         if ($validator->fails()) {
@@ -105,7 +105,7 @@ class SubcategoryController extends Controller
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
-            Subcategory::where('id', $id)->update([
+            SubCategory::where('id', $id)->update([
                 'category_id' => $request->category_id,
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
@@ -120,14 +120,14 @@ class SubcategoryController extends Controller
 
     public function destroy(string $id)
     {
-        $subcategory = Subcategory::findOrFail($id);
-        $subcategory->delete();
+        $sub_category = SubCategory::findOrFail($id);
+        $sub_category->delete();
     }
 
     public function trash(Request $request)
     {
         if ($request->ajax()) {
-            $query = Subcategory::onlyTrashed();
+            $query = SubCategory::onlyTrashed();
 
             $trashSubcategories = $query->orderBy('deleted_at', 'desc')->get();
 
@@ -147,35 +147,35 @@ class SubcategoryController extends Controller
                 ->make(true);
         }
 
-        return view('backend.subcategory.index');
+        return view('backend.sub_category.index');
     }
 
     public function restore(string $id)
     {
-        Subcategory::onlyTrashed()->where('id', $id)->update([
+        SubCategory::onlyTrashed()->where('id', $id)->update([
             'deleted_by' => NULL
         ]);
 
-        Subcategory::onlyTrashed()->where('id', $id)->restore();
+        SubCategory::onlyTrashed()->where('id', $id)->restore();
     }
 
     public function delete(string $id)
     {
-        $subcategory = Subcategory::onlyTrashed()->where('id', $id)->first();
-        $subcategory->forceDelete();
+        $sub_category = SubCategory::onlyTrashed()->where('id', $id)->first();
+        $sub_category->forceDelete();
     }
 
     public function status(string $id)
     {
-        $subcategory = Subcategory::findOrFail($id);
+        $sub_category = SubCategory::findOrFail($id);
 
-        if ($subcategory->status == "Active") {
-            $subcategory->status = "Inactive";
+        if ($sub_category->status == "Active") {
+            $sub_category->status = "Inactive";
         } else {
-            $subcategory->status = "Active";
+            $sub_category->status = "Active";
         }
 
-        $subcategory->updated_by = auth()->user()->id;
-        $subcategory->save();
+        $sub_category->updated_by = auth()->user()->id;
+        $sub_category->save();
     }
 }
