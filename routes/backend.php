@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\BackendController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\ChildCategoryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
 use App\Http\Controllers\Backend\FaqController;
@@ -60,6 +61,12 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('sub_category/restore/{id}', [SubCategoryController::class, 'restore'])->name('sub_category.restore');
     Route::get('sub_category/delete/{id}', [SubCategoryController::class, 'delete'])->name('sub_category.delete');
     Route::get('sub_category/status/{id}', [SubCategoryController::class, 'status'])->name('sub_category.status');
+    // Child Category
+    Route::resource('child_category', ChildCategoryController::class);
+    Route::get('child_category-trash', [ChildCategoryController::class, 'trash'])->name('child_category.trash');
+    Route::get('child_category/restore/{id}', [ChildCategoryController::class, 'restore'])->name('child_category.restore');
+    Route::get('child_category/delete/{id}', [ChildCategoryController::class, 'delete'])->name('child_category.delete');
+    Route::get('child_category/status/{id}', [ChildCategoryController::class, 'status'])->name('child_category.status');
     // Faq
     Route::resource('faq', FaqController::class);
     Route::get('faq-trash', [FaqController::class, 'trash'])->name('faq.trash');

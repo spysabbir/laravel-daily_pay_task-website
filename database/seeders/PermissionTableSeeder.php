@@ -74,6 +74,15 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'sub_category.restore', 'group_name' => 'SubCategoryManagement', 'guard_name' => 'web'],
             ['name' => 'sub_category.delete', 'group_name' => 'SubCategoryManagement', 'guard_name' => 'web'],
 
+            ['name' => 'ChildCategoryMenu', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
+            ['name' => 'child_category.index', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
+            ['name' => 'child_category.create', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
+            ['name' => 'child_category.edit', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
+            ['name' => 'child_category.destroy', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
+            ['name' => 'child_category.trash', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
+            ['name' => 'child_category.restore', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
+            ['name' => 'child_category.delete', 'group_name' => 'ChildCategoryManagement', 'guard_name' => 'web'],
+            
             ['name' => 'FaqMenu', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
             ['name' => 'faq.index', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
             ['name' => 'faq.create', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],

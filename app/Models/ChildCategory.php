@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SubCategory extends Model
+class ChildCategory extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -17,13 +17,13 @@ class SubCategory extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function child_categories()
-    {
-        return $this->hasMany(ChildCategory::class);
-    }
-
     public function subCategory()
     {
         return $this->belongsTo(SubCategory::class);
+    }
+
+    public function child_categories()
+    {
+        return $this->hasMany(ChildCategory::class);
     }
 }

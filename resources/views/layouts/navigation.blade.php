@@ -111,6 +111,17 @@
             @endcan
         @endcan
 
+        @can('ChildCategoryMenu')
+            @can('child_category.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.child_category.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="folder-plus"></i>
+                    <span class="link-title">Child Category</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
         @can('FaqMenu')
             @can('faq.index')
             <li class="nav-item">

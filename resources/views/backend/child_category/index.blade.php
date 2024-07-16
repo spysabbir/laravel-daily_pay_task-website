@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Sub Category')
+@section('title', 'Child Category')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Sub Category List</h3>
+                <h3 class="card-title">Child Category List</h3>
                 <div class="action-btn">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
                     <!-- Create Modal -->
@@ -32,8 +32,18 @@
                                             <span class="text-danger error-text category_id_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="name" class="form-label">Sub Category Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" placeholder="Sub Category Name">
+                                            <label for="sub_category_id" class="form-label">Sub Category</label>
+                                            <select class="form-select" id="sub_category_id" name="sub_category_id">
+                                                <option value="">-- Select Sub Category --</option>
+                                                @foreach ($sub_categories as $sub_category)
+                                                    <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger error-text sub_category_id_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Child Category Name</label>
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="Child Category Name">
                                             <span class="text-danger error-text name_error"></span>
                                         </div>
                                     </div>
@@ -62,6 +72,7 @@
                                                     <td>Sl No</td>
                                                     <td>Category Name</td>
                                                     <th>Sub Category Name</th>
+                                                    <th>Child Category Name</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -101,6 +112,7 @@
                                 <th>Sl No</th>
                                 <th>Category Name</th>
                                 <th>Sub Category Name</th>
+                                <th>Child Category Name</th>
                                 <td>Status</td>
                                 <th>Action</th>
                             </tr>
@@ -118,7 +130,7 @@
                                         <form class="forms-sample" id="editForm">
                                             @csrf
                                             <div class="modal-body">
-                                                <input type="hidden" id="sub_category_id">
+                                                <input type="hidden" id="child_category_id">
                                                 <div class="mb-3">
                                                     <label for="category_id" class="form-label">Category</label>
                                                     <select class="form-select category_id" id="category_id" name="category_id">
@@ -130,8 +142,18 @@
                                                     <span class="text-danger error-text update_category_id_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="sub_category_name" class="form-label">Sub Category Name</label>
-                                                    <input type="text" class="form-control" id="sub_category_name" name="name" placeholder="Sub Category Name">
+                                                    <label for="sub_category_id" class="form-label">Sub Category</label>
+                                                    <select class="form-select sub_category_id" id="sub_category_id" name="sub_category_id">
+                                                        <option value="">-- Select Sub Category --</option>
+                                                        @foreach ($sub_categories as $sub_category)
+                                                            <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <span class="text-danger error-text update_sub_category_id_error"></span>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="child_category_name" class="form-label">Child Category Name</label>
+                                                    <input type="text" class="form-control" id="child_category_name" name="name" placeholder="Child Category Name">
                                                     <span class="text-danger error-text update_name_error"></span>
                                                 </div>
                                             </div>
@@ -167,7 +189,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.sub_category.index') }}",
+                url: "{{ route('backend.child_category.index') }}",
                 data: function (e) {
                     e.status = $('#filter_status').val();
                 }
@@ -175,6 +197,7 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'category_name', name: 'category_name' },
+                { data: 'sub_category_name', name: 'sub_category_name' },
                 { data: 'name', name: 'name' },
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
@@ -191,7 +214,7 @@
             event.preventDefault();
             var formData = $(this).serialize();
             $.ajax({
-                url: "{{ route('backend.sub_category.store') }}",
+                url: "{{ route('backend.child_category.store') }}",
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
@@ -207,7 +230,7 @@
                         $('.createModel').modal('hide');
                         $('#createForm')[0].reset();
                         $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('Sub Category store successfully.');
+                        toastr.success('Child Category store successfully.');
                     }
                 }
             });
@@ -216,15 +239,16 @@
         // Edit Data
         $(document).on('click', '.editBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.sub_category.edit', ":id") }}";
+            var url = "{{ route('backend.child_category.edit', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
-                    $('#sub_category_id').val(response.id);
+                    $('#child_category_id').val(response.id);
                     $('.category_id').val(response.category_id);
-                    $('#sub_category_name').val(response.name);
+                    $('.sub_category_id').val(response.sub_category_id);
+                    $('#child_category_name').val(response.name);
                 },
             });
         });
@@ -232,8 +256,8 @@
         // Update Data
         $('#editForm').submit(function (event) {
             event.preventDefault();
-            var id = $('#sub_category_id').val();
-            var url = "{{ route('backend.sub_category.update', ":id") }}";
+            var id = $('#child_category_id').val();
+            var url = "{{ route('backend.child_category.update', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -250,7 +274,7 @@
                     }else{
                         $(".editModal").modal('hide');
                         $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('Sub Category update successfully.');
+                        toastr.success('Child Category update successfully.');
                     }
                 },
             });
@@ -259,7 +283,7 @@
         // Soft Delete Data
         $(document).on('click', '.deleteBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('backend.sub_category.destroy', ":id") }}";
+            var url = "{{ route('backend.child_category.destroy', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -277,7 +301,7 @@
                         success: function(response) {
                             $('#allDataTable').DataTable().ajax.reload();
                             $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.warning('Sub Category soft delete successfully.');
+                            toastr.warning('Child Category soft delete successfully.');
                         }
                     });
                 }
@@ -290,11 +314,12 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.sub_category.trash') }}",
+                url: "{{ route('backend.child_category.trash') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'category_name', name: 'category_name' },
+                { data: 'sub_category_name', name: 'sub_category_name' },
                 { data: 'name', name: 'name' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
@@ -303,7 +328,7 @@
         // Restore Data
         $(document).on('click', '.restoreBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.sub_category.restore', ":id") }}";
+            var url = "{{ route('backend.child_category.restore', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -312,7 +337,7 @@
                     $(".trashModel").modal('hide');
                     $('#allDataTable').DataTable().ajax.reload();
                     $('#trashDataTable').DataTable().ajax.reload();
-                    toastr.success('Sub Category restore successfully.');
+                    toastr.success('Child Category restore successfully.');
                 },
             });
         });
@@ -320,7 +345,7 @@
         // Force Delete Data
         $(document).on('click', '.forceDeleteBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('backend.sub_category.delete', ":id") }}";
+            var url = "{{ route('backend.child_category.delete', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -338,7 +363,7 @@
                         success: function(response) {
                             $(".trashModel").modal('hide');
                             $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.error('Sub Category force delete successfully.');
+                            toastr.error('Child Category force delete successfully.');
                         }
                     });
                 }
@@ -348,14 +373,14 @@
         // Status Change Data
         $(document).on('click', '.statusBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.sub_category.status', ":id") }}";
+            var url = "{{ route('backend.child_category.status', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
                     $('#allDataTable').DataTable().ajax.reload();
-                    toastr.success('Sub Category status change successfully.');
+                    toastr.success('Child Category status change successfully.');
                 },
             });
         });
