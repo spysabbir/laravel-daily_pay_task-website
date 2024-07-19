@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\ChildCategory;
 use App\Models\Deposit;
+use App\Models\JobCharge;
+use App\Models\SubCategory;
 use App\Models\User;
 use App\Models\Verification;
 use App\Models\Withdraw;
@@ -388,8 +392,45 @@ class UserController extends Controller
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
-            return view('frontend.post_job.create');
+            $categories = Category::where('status', 'Active')->get();
+            return view('frontend.post_job.create', compact('categories'));
         }
+    }
+
+    public function getSubCategory(Request $request)
+    {
+        $subCategories = SubCategory::where('category_id', $request->category_id)->get();
+        $options = '<option value="">Select Sub Category</option>';
+        foreach ($subCategories as $subCategory) {
+            $options .= '<option value="' . $subCategory->id . '">' . $subCategory->name . '</option>';
+        }
+        return response()->json(['html' => $options]);
+    }
+
+    public function getChildCategory(Request $request)
+    {
+        $childCategories = ChildCategory::where('sub_category_id', $request->sub_category_id)->get();
+        $childCategoryOptions = [];
+        foreach ($childCategories as $childCategory) {
+            $childCategoryOptions[] = [
+                'id' => $childCategory->id,
+                'name' => $childCategory->name,
+            ];
+        }
+
+        $workingMinCharges = SubCategory::find($request->sub_category_id)->working_min_charges;
+        return response()->json(['child_categories' => $childCategoryOptions, 'working_min_charges' => $workingMinCharges]);
+    }
+
+    public function getJobCharge(Request $request)
+    {
+        if ($request->child_category_id) {
+            $workingMinCharges = ChildCategory::find($request->child_category_id)->working_min_charges;
+        } else {
+            $workingMinCharges = SubCategory::find($request->sub_category_id)->working_min_charges;
+        }
+
+        return response()->json(['working_min_charges' => $workingMinCharges]);
     }
 
     public function postJobStore()

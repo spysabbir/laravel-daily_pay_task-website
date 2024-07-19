@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/datatable/css/buttons.dataTables.min.css">
 	<link rel="stylesheet" href="{{ asset('template') }}/vendors/select2/select2.min.css">
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/sweetalert2/sweetalert2.min.css">
+
+    <link rel="stylesheet" href="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.css">
 	<!-- End plugin css for this page -->
 
 	<!-- inject:css -->
@@ -82,11 +84,11 @@
                 <div class="theme-wrapper">
                     <h6 class="text-muted mb-2">Light Theme:</h6>
                     <a class="theme-item" href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}">
-                        <img src="{{ asset('template') }}/images/screenshots/light.jpg" alt="light theme">
+                        <img src="{{ asset('template') }}/images/others/placeholder.jpg" alt="light theme">
                     </a>
                     <h6 class="text-muted mb-2">Dark Theme:</h6>
                     <a class="theme-item active" href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}">
-                        <img src="{{ asset('template') }}/images/screenshots/dark.jpg" alt="light theme">
+                        <img src="{{ asset('template') }}/images/others/placeholder.jpg" alt="Dark theme">
                     </a>
                 </div>
             </div>
@@ -313,6 +315,9 @@
 	<script src="{{ asset('template') }}/vendors/select2/select2.min.js"></script>
     <script src="{{ asset('template') }}/vendors/sweetalert2/sweetalert2.min.js"></script>
     <script src="{{ asset('template') }}/vendors/toastr/toastr.min.js"></script>
+
+    <script src="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.min.js"></script>
+
 	<!-- End plugin js for this page -->
 
 	<!-- inject:js -->
@@ -326,6 +331,8 @@
 
     <script src="{{ asset('template') }}/js/data-table.js"></script>
 	<script src="{{ asset('template') }}/js/select2.js"></script>
+
+    <script src="{{ asset('template') }}/js/wizard.js"></script>
 	<!-- End custom js for this page -->
 
     @yield('script')
