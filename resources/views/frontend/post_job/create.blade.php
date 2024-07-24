@@ -8,9 +8,9 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Post Job</h4>
-                <form id="jobForm" action="{{ route('post_job.submit') }}" method="post">
+                <form id="jobForm" action="{{ route('post_job.submit') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <div id="wizard" class="border">
+                    <div id="wizard">
                         <h2>Notice</h2>
                         <section>
                             <h4 class="mb-3">First Step</h4>
@@ -62,12 +62,12 @@
                                 <div class="invalid-feedback">Please enter a description.</div>
                             </div>
                             <div class="mb-3">
-                                <label for="requirements" class="form-label">Job Requirements</label>
-                                <textarea class="form-control" name="requirements" id="requirements" required></textarea>
-                                <div class="invalid-feedback">Please enter requirements.</div>
+                                <label for="proof_required" class="form-label">Job Finish Proof Required</label>
+                                <textarea class="form-control" name="proof_required" id="proof_required" required></textarea>
+                                <div class="invalid-feedback">Please enter the proof required.</div>
                             </div>
                             <div class="mb-3">
-                                <label for="thumbnail" class="form-label">Thumbnail</label>
+                                <label for="thumbnail" class="form-label">Job Thumbnail</label>
                                 <input type="file" class="form-control" name="thumbnail" id="thumbnail" required>
                                 <div class="invalid-feedback">Please select a thumbnail.</div>
                             </div>
@@ -93,6 +93,24 @@
                                         <div class="invalid-feedback">Please enter how many additional screenshots are required</div>
                                     </div>
                                     <div class="mb-3">
+                                        <label for="job_boosted_time" class="form-label">Job Boosted time</label>
+                                        <select class="form-select" name="job_boosted_time" id="job_boosted_time" required>
+                                            <option value="0" selected>No Boost</option>
+                                            <option value="15">15 Minutes</option>
+                                            <option value="30">30 Minutes</option>
+                                            <option value="45">45 Minutes</option>
+                                            <option value="60">1 Hour</option>
+                                            <option value="120">2 Hours</option>
+                                            <option value="180">3 Hours</option>
+                                            <option value="240">4 Hours</option>
+                                            <option value="300">5 Hours</option>
+                                            <option value="360">6 Hours</option>
+                                        </select>
+                                        <div class="invalid-feedback">Please enter the job boosted time.</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
                                         <label for="job_running_day" class="form-label">Job Running Day</label>
                                         <select class="form-select" name="job_running_day" id="job_running_day" required>
                                             <option value="3" selected>3 Days</option>
@@ -107,26 +125,16 @@
                                         <div class="invalid-feedback">Please enter the job running day.</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="job_boosted_time" class="form-label">Job Boosted time</label>
-                                        <select class="form-select" name="job_boosted_time" id="job_boosted_time" required>
-                                            <option value="0" selected>No Boost</option>
-                                            <option value="15">15 Manutes</option>
-                                            <option value="30">30 Manutes</option>
-                                            <option value="45">45 Manutes</option>
-                                            <option value="60">1 Hour</option>
-                                            <option value="120">2 Hours</option>
-                                            <option value="180">3 Hours</option>
-                                            <option value="240">4 Hours</option>
-                                            <option value="300">5 Hours</option>
-                                            <option value="360">6 Hours</option>
-                                        </select>
-                                        <div class="invalid-feedback">Please enter the job boosted time.</div>
+                                        <label for="job_cost" class="form-label">Job Cost</label>
+                                        <input type="number" class="form-control" id="job_cost" readonly>
                                     </div>
-                                </div>
-                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="site_charge" class="form-label">Site Charge <strong class="text-info">( 5% )</strong></label>
+                                        <input type="number" class="form-control" id="site_charge" readonly>
+                                    </div>
                                     <div class="mb-3">
                                         <label for="total_job_cost" class="form-label">Total Job Cost</label>
-                                        <input type="number" class="form-control" id="total_job_cost" disabled>
+                                        <input type="number" class="form-control" name="total_job_cost" id="total_job_cost" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -142,148 +150,171 @@
 @section('script')
 <script>
     $(document).ready(function() {
-    $('#wizard').steps({
-        headerTag: 'h2',
-        bodyTag: 'section',
-        transitionEffect: 'slideLeft',
-        autoFocus: true,
-        onStepChanging: function(event, currentIndex, newIndex) {
-            if (newIndex < currentIndex) {
-                return true;
-            }
+        $('#wizard').steps({
+            headerTag: 'h2',
+            bodyTag: 'section',
+            transitionEffect: 'slideLeft',
+            autoFocus: true,
+            labels: {
+                finish: "Submit"
+            },
+            onStepChanging: function(event, currentIndex, newIndex) {
+                if (newIndex < currentIndex) {
+                    return true;
+                }
 
-            var form = $('#jobForm');
-            var isValid = true;
+                var form = $('#jobForm');
+                var isValid = true;
 
-            if (currentIndex === 1 ) {
-                var categorySelected = $('input[name="category_id"]:checked').val();
-                if (!categorySelected) {
-                    $('#category-options').addClass('is-invalid');
+                if (currentIndex === 1) {
+                    var categorySelected = $('input[name="category_id"]:checked').val();
+                    if (!categorySelected) {
+                        $('#category-options').addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $('#category-options').removeClass('is-invalid');
+                    }
+
+                    if (categorySelected) {
+                        var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
+                        if (!subCategorySelected) {
+                            $('#sub-category-options').addClass('is-invalid');
+                            isValid = false;
+                        } else {
+                            $('#sub-category-options').removeClass('is-invalid');
+                        }
+                    }
+
+                    if (subCategorySelected) {
+                        var childCategorySelected = $('input[name="child_category_id"]:checked').val();
+                        if (!childCategorySelected) {
+                            $('#child-category-options').addClass('is-invalid');
+                            isValid = false;
+                        } else {
+                            $('#child-category-options').removeClass('is-invalid');
+                        }
+                    }
+
+                    return isValid;
+                }
+
+                form.find('section').eq(currentIndex).find(':input[required]').each(function() {
+                    if (!this.checkValidity()) {
+                        $(this).addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                return isValid;
+            },
+            onFinishing: function(event, currentIndex) {
+                var form = $('#jobForm');
+                var isValid = true;
+
+                // Validate all required inputs
+                form.find(':input[required]').each(function() {
+                    if (!this.checkValidity()) {
+                        $(this).addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                // Check if total_job_cost is 100
+                if ($('#total_job_cost').val() != 100) {
+                    alert('Total Job Cost must be 100.');
                     isValid = false;
-                } else {
-                    $('#category-options').removeClass('is-invalid');
-                }
-
-                if (categorySelected) {
-                    var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
-                    if (!subCategorySelected) {
-                        $('#sub-category-options').addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        $('#sub-category-options').removeClass('is-invalid');
-                    }
-                }
-
-                if (subCategorySelected) {
-                    var childCategorySelected = $('input[name="child_category_id"]:checked').val();
-                    if (!childCategorySelected) {
-                        $('#child-category-options').addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        $('#child-category-options').removeClass('is-invalid');
-                    }
                 }
 
                 return isValid;
-            }
-
-            form.find('section').eq(currentIndex).find(':input[required]').each(function() {
-                if (!this.checkValidity()) {
-                    $(this).addClass('is-invalid');
-                    isValid = false;
-                } else {
-                    $(this).removeClass('is-invalid');
-                }
-            });
-
-            return isValid;
-        },
-        onFinishing: function(event, currentIndex) {
-            var form = $('#jobForm');
-            var isValid = true;
-
-            // Validate all required inputs
-            form.find(':input[required]').each(function() {
-                if (!this.checkValidity()) {
-                    $(this).addClass('is-invalid');
-                    isValid = false;
-                } else {
-                    $(this).removeClass('is-invalid');
-                }
-            });
-
-            return isValid;
-        },
-        onFinished: function(event, currentIndex) {
-            $('#jobForm').submit();
-        }
-    });
-
-    // Load sub-categories when a category is selected
-    $('input[name="category_id"]').change(function() {
-        var category_id = $(this).val();
-        $.ajax({
-            url: "{{ route('post_job.get_sub_category') }}",
-            type: 'GET',
-            data: { category_id: category_id },
-            success: function(response) {
-                $('#sub-category-section').show();
-                $('#sub-category-options').html(response.html);
-                $('#child-category-section').hide();
-                $('#child-category-options').html('');
-                $('#work_charge').val('');
+            },
+            onFinished: function(event, currentIndex) {
+                // Submit the form when the wizard is finished
+                $('#jobForm').submit();
             }
         });
-    });
 
-    // Load child categories when a sub-category is selected
-    $(document).on('change', 'input[name="sub_category_id"]', function() {
-        var sub_category_id = $(this).val();
-        var category_id = $('input[name="category_id"]:checked').val();
-        $.ajax({
-            url: "{{ route('post_job.get_child_category') }}",
-            type: 'GET',
-            data: { category_id: category_id, sub_category_id: sub_category_id },
-            success: function(response) {
-                if (response.child_categories && response.child_categories.length > 0) {
-                    var options = '';
-                    $.each(response.child_categories, function(index, child_category) {
-                        options += '<div class="form-check form-check-inline">';
-                        options += '<input type="radio" class="form-check-input" name="child_category_id" id="child_category_' + child_category.id + '" value="' + child_category.id + '">';
-                        options += '<label class="form-check-label" for="child_category_' + child_category.id + '">' + child_category.name + '</label>';
-                        options += '</div>';
-                    });
-                    $('#child-category-options').html(options);
-                    $('#child-category-section').show();
-                } else {
+        // Load sub-categories when a category is selected
+        $('input[name="category_id"]').change(function() {
+            var category_id = $(this).val();
+            $.ajax({
+                url: "{{ route('post_job.get_sub_category') }}",
+                type: 'GET',
+                data: { category_id: category_id },
+                success: function(response) {
+                    $('#sub-category-section').show();
+                    $('#sub-category-options').html(response.html);
                     $('#child-category-section').hide();
                     $('#child-category-options').html('');
                 }
-                $('#worker_charge').val(response.working_charges.working_min_charges);
-            }
+            });
         });
-    });
 
-    // Update work charge based on selected child category
-    $(document).on('change', 'input[name="child_category_id"]', function() {
-        var category_id = $('input[name="category_id"]:checked').val();
-        var sub_category_id = $('input[name="sub_category_id"]:checked').val();
-        var child_category_id = $(this).val();
-        if (child_category_id) {
+        // Load child categories when a sub-category is selected
+        $(document).on('change', 'input[name="sub_category_id"]', function() {
+            var sub_category_id = $(this).val();
+            var category_id = $('input[name="category_id"]:checked').val();
             $.ajax({
-                url: "{{ route('post_job.get_job_charge') }}",
+                url: "{{ route('post_job.get_child_category') }}",
                 type: 'GET',
-                data: {
-                    category_id: category_id,
-                    sub_category_id: sub_category_id,
-                    child_category_id: child_category_id
-                },
+                data: { category_id: category_id, sub_category_id: sub_category_id },
                 success: function(response) {
+                    if (response.child_categories && response.child_categories.length > 0) {
+                        var options = '';
+                        $.each(response.child_categories, function(index, child_category) {
+                            options += '<div class="form-check form-check-inline">';
+                            options += '<input type="radio" class="form-check-input" name="child_category_id" id="child_category_' + child_category.id + '" value="' + child_category.id + '">';
+                            options += '<label class="form-check-label" for="child_category_' + child_category.id + '">' + child_category.name + '</label>';
+                            options += '</div>';
+                        });
+                        $('#child-category-options').html(options);
+                        $('#child-category-section').show();
+                    } else {
+                        $('#child-category-section').hide();
+                        $('#child-category-options').html('');
+                    }
                     $('#worker_charge').val(response.working_charges.working_min_charges);
                 }
             });
-        }
+        });
+
+        // Update work charge based on selected child category
+        $(document).on('change', 'input[name="child_category_id"]', function() {
+            var category_id = $('input[name="category_id"]:checked').val();
+            var sub_category_id = $('input[name="sub_category_id"]:checked').val();
+            var child_category_id = $(this).val();
+            if (child_category_id) {
+                $.ajax({
+                    url: "{{ route('post_job.get_job_charge') }}",
+                    type: 'GET',
+                    data: {
+                        category_id: category_id,
+                        sub_category_id: sub_category_id,
+                        child_category_id: child_category_id
+                    },
+                    success: function(response) {
+                        $('#worker_charge').val(response.working_charges.working_min_charges);
+                    }
+                });
+            }
+        });
+
+        // Calculate total job cost
+        $('#jobForm').on('change', 'input, select', function() {
+            var need_worker = $('#need_worker').val();
+            var worker_charge = $('#worker_charge').val();
+            var extra_screenshots = $('#extra_screenshots').val();
+            var job_boosted_time = $('#job_boosted_time').val();
+
+            var job_cost = (need_worker * worker_charge) + (extra_screenshots * 2.5) + (job_boosted_time * 1);
+            $('#job_cost').val(job_cost);
+            var site_charge = (job_cost * 5) / 100;
+            $('#site_charge').val(site_charge);
+            $('#total_job_cost').val(job_cost + site_charge);
+        });
     });
-});
 </script>
 @endsection
