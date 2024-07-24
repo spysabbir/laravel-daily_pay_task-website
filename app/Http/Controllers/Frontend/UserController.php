@@ -397,40 +397,55 @@ class UserController extends Controller
         }
     }
 
-    public function getSubCategory(Request $request)
+    public function getSubCategories(Request $request)
     {
-        $subCategories = SubCategory::where('category_id', $request->category_id)->get();
-        $options = '<option value="">Select Sub Category</option>';
+        $categoryId = $request->category_id;
+        $subCategories = SubCategory::where('category_id', $categoryId)->get();
+
+        $html = '';
         foreach ($subCategories as $subCategory) {
-            $options .= '<option value="' . $subCategory->id . '">' . $subCategory->name . '</option>';
+            $html .= '<div class="form-check form-check-inline">';
+            $html .= '<input type="radio" class="form-check-input" name="sub_category_id" id="sub_category_' . $subCategory->id . '" value="' . $subCategory->id . '" required>';
+            $html .= '<label class="form-check-label" for="sub_category_' . $subCategory->id . '">' . $subCategory->name . '</label>';
+            $html .= '</div>';
         }
-        return response()->json(['html' => $options]);
+
+        return response()->json(['html' => $html]);
     }
 
-    public function getChildCategory(Request $request)
+    public function getChildCategories(Request $request)
     {
-        $childCategories = ChildCategory::where('sub_category_id', $request->sub_category_id)->get();
-        $childCategoryOptions = [];
-        foreach ($childCategories as $childCategory) {
-            $childCategoryOptions[] = [
-                'id' => $childCategory->id,
-                'name' => $childCategory->name,
-            ];
+        $categoryId = $request->category_id;
+        $subCategoryId = $request->sub_category_id;
+        $childCategories = ChildCategory::where('sub_category_id', $subCategoryId)->get();
+
+        $response = [];
+        if ($childCategories->isNotEmpty()) {
+            $response['child_categories'] = $childCategories;
         }
 
-        $workingMinCharges = SubCategory::find($request->sub_category_id)->working_min_charges;
-        return response()->json(['child_categories' => $childCategoryOptions, 'working_min_charges' => $workingMinCharges]);
+        // Assume get_min_charge() is a method to get minimum charge based on sub-category
+        $response['working_charges'] = JobCharge::where('category_id', $categoryId)
+        ->where('sub_category_id', $subCategoryId)
+        ->first();
+
+        return response()->json($response);
     }
 
     public function getJobCharge(Request $request)
     {
-        if ($request->child_category_id) {
-            $workingMinCharges = ChildCategory::find($request->child_category_id)->working_min_charges;
-        } else {
-            $workingMinCharges = SubCategory::find($request->sub_category_id)->working_min_charges;
-        }
+        $categoryId = $request->category_id;
+        $subCategoryId = $request->sub_category_id;
+        $childCategoryId = $request->child_category_id;
 
-        return response()->json(['working_min_charges' => $workingMinCharges]);
+        // Assuming you have a method to calculate the job charge based on selected categories
+
+        $charge = JobCharge::where('category_id', $categoryId)
+            ->where('sub_category_id', $subCategoryId)
+            ->where('child_category_id', $childCategoryId)
+            ->first();
+
+        return response()->json(['working_charges' => $charge]);
     }
 
     public function postJobStore()
