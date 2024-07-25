@@ -406,7 +406,7 @@ class UserController extends Controller
         foreach ($subCategories as $subCategory) {
             $html .= '<div class="form-check form-check-inline">';
             $html .= '<input type="radio" class="form-check-input" name="sub_category_id" id="sub_category_' . $subCategory->id . '" value="' . $subCategory->id . '" required>';
-            $html .= '<label class="form-check-label" for="sub_category_' . $subCategory->id . '">' . $subCategory->name . '</label>';
+            $html .= '<label class="form-check-label" for="sub_category_' . $subCategory->id . '"><span class="badge bg-primary">' . $subCategory->name . '</span></label>';
             $html .= '</div>';
         }
 

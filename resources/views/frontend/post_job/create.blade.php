@@ -13,35 +13,58 @@
                     <div id="wizard">
                         <h2>Notice</h2>
                         <section>
-                            <h4 class="mb-3">First Step</h4>
-                            <p>
-                                Donec mi sapien, hendrerit nec egestas a, rutrum vitae dolor. Nullam venenatis diam ac ligula elementum pellentesque.
+                            <h4 class="mb-3">
+                                <strong>Important Notice:</strong>
+                            </h4>
+                            <p class="mb-3">
+                                <strong>1. </strong> Please fill out the form carefully. Once you submit the form, you can't edit it. <br>
+                                <strong>2. </strong> You can't cancel the job once you submit it. <br>
+                                <strong>3. </strong> You can't get a refund once you submit the job. <br>
+                                <strong>4. </strong> You can't get a refund if you don't complete the job. <br>
+                                <strong>5. </strong> Your job will be boosted for the selected time. <br>
+                                <strong>6. </strong> Your job will be running for the selected days. <br>
+                                <strong>7. </strong> You can't change the job category once you submit the job. <br>
+                                <strong>8. </strong> You can only change the job cost if you want to increase it. <br>
+                                <strong>9. </strong> You can't change the job cost if you want to decrease it. <br>
+                                <strong>10. </strong> You can't change the job thumbnail once you submit the job. <br>
+                                <strong>11. </strong> You can only change the job need worker if you want to increase it. <br>
+                                <strong>12. </strong> You can't change the job need worker if you want to decrease it. <br>
+                                <strong>13. </strong> Youy job is not aproved if you provide wrong information. <br>
+                                <strong>14. </strong> You job is not submit if your total job cost is not 100. <br>
                             </p>
                         </section>
 
                         <h2>Select Category</h2>
                         <section>
-                            <div class="mb-3">
-                                <label class="form-label">Select Category</label>
+                            <div class="mb-3 border p-2">
+                                <h5 class="bg-dark text-center py-1 mb-3 rounded">
+                                    Select Category <small class="text-danger">* Required</small>
+                                </h5>
                                 <div id="category-options">
                                     @foreach($categories as $category)
                                     <div class="form-check form-check-inline">
                                         <input type="radio" class="form-check-input" name="category_id" id="category_{{ $category->id }}" value="{{ $category->id }}" required>
-                                        <label class="form-check-label" for="category_{{ $category->id }}">{{ $category->name }}</label>
+                                        <label class="form-check-label" for="category_{{ $category->id }}">
+                                            <span class="badge bg-primary">{{ $category->name }}</span>
+                                        </label>
                                     </div>
                                     @endforeach
                                 </div>
                                 <div class="invalid-feedback">Please select a category.</div>
                             </div>
-                            <div class="mb-3" id="sub-category-section" style="display:none;">
-                                <label class="form-label">Select Sub Category</label>
+                            <div class="mb-3 border p-2" id="sub-category-section" style="display:none;">
+                                <h5 class="bg-dark text-center py-1 mb-3 rounded">
+                                    Select Sub Category <small class="text-danger">* Required</small>
+                                </h5>
                                 <div id="sub-category-options">
                                     <!-- Sub-category radio buttons will be loaded here -->
                                 </div>
                                 <div class="invalid-feedback">Please select a sub category.</div>
                             </div>
-                            <div class="mb-3" id="child-category-section" style="display:none;">
-                                <label class="form-label">Select Child Category</label>
+                            <div class="mb-3 border p-2" id="child-category-section" style="display:none;">
+                                <h5 class="bg-dark text-center py-1 mb-3 rounded">
+                                    Select Child Category <small class="text-danger">* Required</small>
+                                </h5>
                                 <div id="child-category-options">
                                     <!-- Child-category radio buttons will be loaded here -->
                                 </div>
@@ -51,28 +74,45 @@
 
                         <h2>Job Information</h2>
                         <section>
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Job Title</label>
-                                <input type="text" class="form-control" name="title" id="title" required>
+                            <div class="mb-2">
+                                <label for="title" class="form-label">
+                                    Job Title <small class="text-danger">* Required</small>
+                                </label>
+                                <input type="text" class="form-control" name="title" id="title" placeholder="Please enter a title." required>
                                 <div class="invalid-feedback">Please enter a title.</div>
                             </div>
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Job Description</label>
-                                <textarea class="form-control" name="description" id="description" required></textarea>
+                            <div class="mb-2">
+                                <label for="description" class="form-label">
+                                    Job Description <small class="text-danger">* Required</small>
+                                </label>
+                                <textarea class="form-control" name="description" id="description" rows="4" placeholder="Please enter a description." required></textarea>
                                 <div class="invalid-feedback">Please enter a description.</div>
                             </div>
-                            <div class="mb-3">
-                                <label for="proof_required" class="form-label">Job Finish Proof Required</label>
-                                <textarea class="form-control" name="proof_required" id="proof_required" required></textarea>
-                                <div class="invalid-feedback">Please enter the proof required.</div>
+                            <div class="mb-2">
+                                <label for="required_proof" class="form-label">
+                                    Required Proof <small class="text-danger">* Required</small>
+                                </label>
+                                <textarea class="form-control" name="required_proof" id="required_proof" rows="4" placeholder="Please enter the required proof." required></textarea>
+                                <div class="invalid-feedback">Please enter the required proof.</div>
                             </div>
-                            <div class="mb-3">
-                                <label for="thumbnail" class="form-label">Job Thumbnail</label>
-                                <input type="file" class="form-control" name="thumbnail" id="thumbnail" required>
-                                <div class="invalid-feedback">Please select a thumbnail.</div>
+                            <div class="mb-2">
+                                <label for="additional_note" class="form-label">
+                                    Additional Note <small class="text-danger">* Required </small>
+                                    * Please enter additional notes only for salf and admin information.
+                                </label>
+                                <textarea class="form-control" name="additional_note" id="additional_note" rows="4" placeholder="Please enter additional notes." required></textarea>
+                                <div class="invalid-feedback">Please enter additional notes.</div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="thumbnail" class="form-label">
+                                    Thumbnail (Optional)
+                                    <small class="text-danger"> * Image size should be 300x300 pixels. * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
+                                </label>
+                                <input type="file" class="form-control" name="thumbnail" id="thumbnail">
                             </div>
                         </section>
 
+                        <!-- Charge & Setting Section -->
                         <h2>Charge & Setting</h2>
                         <section>
                             <div class="row">
@@ -85,15 +125,21 @@
                                     <div class="mb-3">
                                         <label for="worker_charge" class="form-label">Each worker charge</label>
                                         <input type="number" class="form-control" name="worker_charge" id="worker_charge" required>
-                                        <div class="invalid-feedback">Please enter the charges for each worker.</div>
+                                        <div class="invalid-feedback">Please enter the charges for each worker within the allowed range.</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="extra_screenshots" class="form-label">Additional screenshots are required</label>
+                                        <label for="extra_screenshots" class="form-label">
+                                            Additional screenshots are required
+                                            <small class="text-danger">* Each additional screenshot costs 2.5</small>
+                                        </label>
                                         <input type="number" class="form-control" name="extra_screenshots" id="extra_screenshots" value="0" required>
                                         <div class="invalid-feedback">Please enter how many additional screenshots are required</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="job_boosted_time" class="form-label">Job Boosted time</label>
+                                        <label for="job_boosted_time" class="form-label">
+                                            Job Boosted time
+                                            <small class="text-danger">* Every 1 minute costs 1</small>
+                                        </label>
                                         <select class="form-select" name="job_boosted_time" id="job_boosted_time" required>
                                             <option value="0" selected>No Boost</option>
                                             <option value="15">15 Minutes</option>
@@ -118,9 +164,6 @@
                                             <option value="5">5 Days</option>
                                             <option value="6">6 Days</option>
                                             <option value="7">1 Week</option>
-                                            <option value="14">2 Weeks</option>
-                                            <option value="21">3 Weeks</option>
-                                            <option value="30">1 Month</option>
                                         </select>
                                         <div class="invalid-feedback">Please enter the job running day.</div>
                                     </div>
@@ -175,24 +218,21 @@
                         $('#category-options').removeClass('is-invalid');
                     }
 
-                    if (categorySelected) {
-                        var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
-                        if (!subCategorySelected) {
-                            $('#sub-category-options').addClass('is-invalid');
-                            isValid = false;
-                        } else {
-                            $('#sub-category-options').removeClass('is-invalid');
-                        }
+                    var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
+                    if (categorySelected && !subCategorySelected) {
+                        $('#sub-category-options').addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $('#sub-category-options').removeClass('is-invalid');
                     }
 
-                    if (subCategorySelected) {
-                        var childCategorySelected = $('input[name="child_category_id"]:checked').val();
-                        if (!childCategorySelected) {
-                            $('#child-category-options').addClass('is-invalid');
-                            isValid = false;
-                        } else {
-                            $('#child-category-options').removeClass('is-invalid');
-                        }
+                    var childCategoryData = $('#child-category-options').html();
+                    var childCategorySelected = $('input[name="child_category_id"]:checked').val();
+                    if (subCategorySelected && !childCategorySelected && childCategoryData) {
+                        $('#child-category-options').addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $('#child-category-options').removeClass('is-invalid');
                     }
 
                     return isValid;
@@ -267,7 +307,7 @@
                         $.each(response.child_categories, function(index, child_category) {
                             options += '<div class="form-check form-check-inline">';
                             options += '<input type="radio" class="form-check-input" name="child_category_id" id="child_category_' + child_category.id + '" value="' + child_category.id + '">';
-                            options += '<label class="form-check-label" for="child_category_' + child_category.id + '">' + child_category.name + '</label>';
+                            options += '<label class="form-check-label" for="child_category_' + child_category.id + '">' + '<span class="badge bg-primary">' + child_category.name + '</span>'  + '</label>';
                             options += '</div>';
                         });
                         $('#child-category-options').html(options);
@@ -276,7 +316,10 @@
                         $('#child-category-section').hide();
                         $('#child-category-options').html('');
                     }
-                    $('#worker_charge').val(response.working_charges.working_min_charges);
+                    var workerChargeInput = $('#worker_charge');
+                    workerChargeInput.attr('min', response.working_charges.working_min_charges);
+                    workerChargeInput.attr('max', response.working_charges.working_max_charges);
+                    workerChargeInput.val(response.working_charges.working_min_charges);
                 }
             });
         });
@@ -296,7 +339,10 @@
                         child_category_id: child_category_id
                     },
                     success: function(response) {
-                        $('#worker_charge').val(response.working_charges.working_min_charges);
+                        var workerChargeInput = $('#worker_charge');
+                        workerChargeInput.attr('min', response.working_charges.working_min_charges);
+                        workerChargeInput.attr('max', response.working_charges.working_max_charges);
+                        workerChargeInput.val(response.working_charges.working_min_charges);
                     }
                 });
             }
@@ -315,6 +361,8 @@
             $('#site_charge').val(site_charge);
             $('#total_job_cost').val(job_cost + site_charge);
         });
+
+
     });
 </script>
 @endsection
