@@ -37,7 +37,7 @@ class WithdrawNotification extends Notification implements ShouldQueue
         return (new MailMessage)
                     ->subject('Withdraw Status')
                     ->greeting('Hello ' . $notifiable->name . ',')
-                    ->line('Now your withdraw status is ' . $this->withdraw['status'] . ' and the amount is ' . get_default_settings('site_currency_symbol') . $this->withdraw['amount'])
+                    ->line('Now your withdraw status is ' . $this->withdraw['status'] . ' and the amount is ' . get_site_settings('site_currency_symbol') . $this->withdraw['amount'])
                     ->line($this->withdraw['remarks'])
                     ->line('Updated on: ' . Carbon::parse($this->withdraw['created_at'])->format('d-F-Y H:i:s'))
                     ->line('Thank you for using our application!');

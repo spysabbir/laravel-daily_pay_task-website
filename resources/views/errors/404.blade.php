@@ -32,7 +32,7 @@
         <link rel="stylesheet" href="{{ asset('template') }}/css/demo2/style.css">
     <!-- End layout styles -->
 
-    <link rel="shortcut icon" href="{{ asset('uploads/setting_photo') }}/{{ get_default_settings('site_favicon') }}" />
+    <link rel="shortcut icon" href="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_favicon') }}" />
 </head>
 <body>
 	<div class="main-wrapper">

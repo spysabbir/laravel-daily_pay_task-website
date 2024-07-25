@@ -25,6 +25,8 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::resource('permission', PermissionController::class);
     Route::resource('role-permission', RolePermissionController::class);
     // Setting
+    Route::get('site/setting', [SettingController::class, 'siteSetting'])->name('site.setting');
+    Route::post('site/setting/update', [SettingController::class, 'siteSettingUpdate'])->name('site.setting.update');
     Route::get('default/setting', [SettingController::class, 'defaultSetting'])->name('default.setting');
     Route::post('default/setting/update', [SettingController::class, 'defaultSettingUpdate'])->name('default.setting.update');
     Route::get('seo/setting', [SettingController::class, 'seoSetting'])->name('seo.setting');

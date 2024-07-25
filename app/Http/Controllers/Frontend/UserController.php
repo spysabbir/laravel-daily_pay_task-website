@@ -177,7 +177,7 @@ class UserController extends Controller
             if ($request->amount < get_default_settings('min_deposit_amount') || $request->amount > get_default_settings('max_deposit_amount')) {
                 return response()->json([
                     'status' => 401,
-                    'error'=> 'The amount must be between '.get_default_settings('site_currency_symbol') .get_default_settings('min_deposit_amount').' and '.get_default_settings('site_currency_symbol') .get_default_settings('max_deposit_amount') .' to deposit'
+                    'error'=> 'The amount must be between '.get_site_settings('site_currency_symbol') .get_default_settings('min_deposit_amount').' and '.get_site_settings('site_currency_symbol') .get_default_settings('max_deposit_amount') .' to deposit'
                 ]);
             }else {
                 Deposit::create([
@@ -278,13 +278,13 @@ class UserController extends Controller
             if ($request->amount < get_default_settings('min_withdraw_amount') || $request->amount > get_default_settings('max_withdraw_amount')) {
                 return response()->json([
                     'status' => 401,
-                    'error'=> 'The amount must be between '.get_default_settings('site_currency_symbol') .get_default_settings('min_withdraw_amount').' and '.get_default_settings('site_currency_symbol') .get_default_settings('max_withdraw_amount').' to withdraw'
+                    'error'=> 'The amount must be between '.get_site_settings('site_currency_symbol') .get_default_settings('min_withdraw_amount').' and '.get_site_settings('site_currency_symbol') .get_default_settings('max_withdraw_amount').' to withdraw'
                 ]);
             }else {
                 if ($request->amount > $request->user()->withdraw_balance) {
                     return response()->json([
                         'status' => 402,
-                        'error'=> 'Insufficient balance in your account to withdraw '.get_default_settings('site_currency_symbol') . $request->amount .' . Your current balance is '.get_default_settings('site_currency_symbol') . $request->user()->withdraw_balance
+                        'error'=> 'Insufficient balance in your account to withdraw '.get_site_settings('site_currency_symbol') . $request->amount .' . Your current balance is '.get_site_settings('site_currency_symbol') . $request->user()->withdraw_balance
                     ]);
                 }else {
                     if ($request->type == 'Instant') {

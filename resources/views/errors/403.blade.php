@@ -17,7 +17,7 @@
     <!-- End fonts -->
 
 	<!-- core:css -->
-	<link rel="stylesheet" href="{{ asset('uploads/setting_photo') }}/{{ get_default_settings('site_favicon') }}">
+	<link rel="stylesheet" href="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_favicon') }}">
 	<!-- endinject -->
 
 	<!-- Plugin css for this page -->

@@ -7,6 +7,7 @@ use App\Models\CaptchaSetting;
 use App\Models\DefaultSetting;
 use App\Models\MailSetting;
 use App\Models\SeoSetting;
+use App\Models\SiteSetting;
 use App\Models\SmsSetting;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
@@ -40,6 +41,58 @@ class SettingController extends Controller
 
     public function defaultSettingUpdate(Request $request){
         $request->validate([
+            'referal_registion_bonus_amount' => 'required',
+            'referal_earning_bonus_percentage' => 'required',
+            'deposit_bkash_account' => 'required',
+            'deposit_rocket_account' => 'required',
+            'deposit_nagad_account' => 'required',
+            'min_deposit_amount' => 'required',
+            'max_deposit_amount' => 'required',
+            'instant_withdraw_charge' => 'required',
+            'withdraw_charge_percentage' => 'required',
+            'min_withdraw_amount' => 'required',
+            'max_withdraw_amount' => 'required',
+            'job_posting_charge_percentage' => 'required',
+            'job_posting_additional_screenshot_charge' => 'required',
+            'job_posting_boosted_time_charge' => 'required',
+            'job_posting_min_budget' => 'required',
+        ]);
+
+        $defaultSetting = DefaultSetting::first();
+
+        $defaultSetting->update([
+            'referal_registion_bonus_amount' => $request->referal_registion_bonus_amount,
+            'referal_earning_bonus_percentage' => $request->referal_earning_bonus_percentage,
+            'deposit_bkash_account' => $request->deposit_bkash_account,
+            'deposit_rocket_account' => $request->deposit_rocket_account,
+            'deposit_nagad_account' => $request->deposit_nagad_account,
+            'min_deposit_amount' => $request->min_deposit_amount,
+            'max_deposit_amount' => $request->max_deposit_amount,
+            'instant_withdraw_charge' => $request->instant_withdraw_charge,
+            'withdraw_charge_percentage' => $request->withdraw_charge_percentage,
+            'min_withdraw_amount' => $request->min_withdraw_amount,
+            'max_withdraw_amount' => $request->max_withdraw_amount,
+            'job_posting_charge_percentage' => $request->job_posting_charge_percentage,
+            'job_posting_additional_screenshot_charge' => $request->job_posting_additional_screenshot_charge,
+            'job_posting_boosted_time_charge' => $request->job_posting_boosted_time_charge,
+            'job_posting_min_budget' => $request->job_posting_min_budget,
+        ]);
+
+        $notification = array(
+            'message' => 'Default setting updated successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
+    }
+
+    public function siteSetting(){
+        $siteSetting = SiteSetting::first();
+        return view('backend.setting.site', compact('siteSetting'));
+    }
+
+    public function siteSettingUpdate(Request $request){
+        $request->validate([
             'site_logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'site_favicon' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'site_name' => 'required',
@@ -48,26 +101,19 @@ class SettingController extends Controller
             'site_currency' => 'required',
             'site_currency_symbol' => 'required',
             'site_main_email' => 'required',
+            'site_support_email' => 'required',
             'site_main_phone' => 'required',
+            'site_support_phone' => 'required',
             'site_address' => 'required',
-            'referal_registion_bonus_amount' => 'required',
-            'referal_earning_bonus_percentage' => 'required',
-            'min_deposit_amount' => 'required',
-            'max_deposit_amount' => 'required',
-            'instant_withdraw_charge' => 'required',
-            'withdraw_charge_percentage' => 'required',
-            'min_withdraw_amount' => 'required',
-            'max_withdraw_amount' => 'required',
-
         ]);
 
         $this->changeEnv("APP_NAME", "'$request->site_name'");
         $this->changeEnv("APP_URL", "'$request->site_url'");
         $this->changeEnv("APP_TIMEZONE", "'$request->site_timezone'");
 
-        $defaultSetting = DefaultSetting::first();
+        $siteSetting = SiteSetting::first();
 
-        $defaultSetting->update([
+        $siteSetting->update([
             'site_name' => $request->site_name,
             'site_url' => $request->site_url,
             'site_timezone' => $request->site_timezone,
@@ -78,57 +124,49 @@ class SettingController extends Controller
             'site_main_email' => $request->site_main_email,
             'site_support_email' => $request->site_support_email,
             'site_address' => $request->site_address,
-            'referal_registion_bonus_amount' => $request->referal_registion_bonus_amount,
-            'referal_earning_bonus_percentage' => $request->referal_earning_bonus_percentage,
-            'min_deposit_amount' => $request->min_deposit_amount,
-            'max_deposit_amount' => $request->max_deposit_amount,
-            'instant_withdraw_charge' => $request->instant_withdraw_charge,
-            'withdraw_charge_percentage' => $request->withdraw_charge_percentage,
-            'min_withdraw_amount' => $request->min_withdraw_amount,
-            'max_withdraw_amount' => $request->max_withdraw_amount,
             'site_notice' => $request->site_notice,
-            'site_facebook' => $request->site_facebook,
-            'site_twitter' => $request->site_twitter,
-            'site_instagram' => $request->site_instagram,
-            'site_linkedin' => $request->site_linkedin,
-            'site_pinterest' => $request->site_pinterest,
-            'site_youtube' => $request->site_youtube,
-            'site_whatsapp' => $request->site_whatsapp,
-            'site_telegram' => $request->site_telegram,
-            'site_tiktok' => $request->site_tiktok,
+            'site_facebook_url' => $request->site_facebook_url,
+            'site_twitter_url' => $request->site_twitter_url,
+            'site_instagram_url' => $request->site_instagram_url,
+            'site_linkedin_url' => $request->site_linkedin_url,
+            'site_pinterest_url' => $request->site_pinterest_url,
+            'site_youtube_url' => $request->site_youtube_url,
+            'site_whatsapp_url' => $request->site_whatsapp_url,
+            'site_telegram_url' => $request->site_telegram_url,
+            'site_tiktok_url' => $request->site_tiktok_url,
         ]);
 
         // Site Logo Upload
         if($request->hasFile('site_logo')){
-            if($defaultSetting->site_logo != 'default_site_logo.png'){
-                unlink(base_path("public/uploads/setting_photo/").$defaultSetting->site_logo);
+            if($siteSetting->site_logo != 'default_site_logo.png'){
+                unlink(base_path("public/uploads/setting_photo/").$siteSetting->site_logo);
             }
 
             $manager = new ImageManager(new Driver());
             $site_logo_name = "Site-Logo".".". $request->file('site_logo')->getClientOriginalExtension();
             $image = $manager->read($request->file('site_logo'));
             $image->toJpeg(80)->save(base_path("public/uploads/setting_photo/").$site_logo_name);
-            $defaultSetting->update([
+            $siteSetting->update([
                 'site_logo' => $site_logo_name
             ]);
         }
 
         // Site Favicon Upload
         if($request->hasFile('site_favicon')){
-            if($defaultSetting->site_favicon != 'default_site_favicon.png'){
-                unlink(base_path("public/uploads/setting_photo/").$defaultSetting->site_favicon);
+            if($siteSetting->site_favicon != 'default_site_favicon.png'){
+                unlink(base_path("public/uploads/setting_photo/").$siteSetting->site_favicon);
             }
             $manager = new ImageManager(new Driver());
             $site_favicon_name = "Site-Favicon".".". $request->file('site_favicon')->getClientOriginalExtension();
             $image = $manager->read($request->file('site_favicon'));
             $image->toJpeg(80)->save(base_path("public/uploads/setting_photo/").$site_favicon_name);
-            $defaultSetting->update([
+            $siteSetting->update([
                 'site_favicon' => $site_favicon_name
             ]);
         }
 
         $notification = array(
-            'message' => 'Default setting updated successfully.',
+            'message' => 'Site setting updated successfully.',
             'alert-type' => 'success'
         );
 

@@ -32,6 +32,7 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'role-permission.destroy', 'group_name' => 'RolePermissionManagement', 'guard_name' => 'web'],
 
             ['name' => 'SettingMenu', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
+            ['name' => 'site.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'default.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'seo.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'mail.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],

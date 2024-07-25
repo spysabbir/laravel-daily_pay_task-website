@@ -27,7 +27,7 @@
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Deposit Amount</label>
                                             <input type="number" class="form-control" id="amount" name="amount" placeholder="Deposit Amount">
-                                            <small class="text-info">Minimum deposit amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
+                                            <small class="text-info">Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
                                         <div class="mb-3">
@@ -66,7 +66,7 @@
                     <div class="alert alert-info" role="alert">
                         <h4 class="alert-heading text-center">
                             <i class="link-icon" data-feather="credit-card"></i>
-                            Total Deposit: {{ get_default_settings('site_currency_symbol') }} {{ $total_deposit }}
+                            Total Deposit: {{ get_site_settings('site_currency_symbol') }} {{ $total_deposit }}
                         </h4>
                     </div>
                 </div>

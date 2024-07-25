@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PermissionTableSeeder::class,
             UserTableSeeder::class,
+            SiteSettingTableSeeder::class,
             DefaultSettingTableSeeder::class,
             MailSettingTableSeeder::class,
             SmsSettingTableSeeder::class,

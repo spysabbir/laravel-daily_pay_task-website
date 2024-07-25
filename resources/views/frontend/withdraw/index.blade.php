@@ -33,14 +33,14 @@
                                             </select>
                                             <small class="text-info">
                                                 <strong id="ragular">Withdraw request will be processed within 24 hours.</strong>
-                                                <strong id="instant">Withdraw request will be processed in 20 minutes. But you will be charged an extra {{ get_default_settings('instant_withdraw_charge') }} {{ get_default_settings('site_currency_symbol') }}.</strong>
+                                                <strong id="instant">Withdraw request will be processed in 20 minutes. But you will be charged an extra {{ get_default_settings('instant_withdraw_charge') }} {{ get_site_settings('site_currency_symbol') }}.</strong>
                                             </small>
                                             <span class="text-danger error-text type_error"></span>
                                         </div>
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Withdraw Amount</label>
                                             <input type="number" class="form-control" id="amount" name="amount" placeholder="Withdraw Amount">
-                                            <small class="text-info">Minimum withdraw amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_default_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
+                                            <small class="text-info">Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
                                         <div class="mb-3">
@@ -82,7 +82,7 @@
                     <div class="alert alert-info" role="alert">
                         <h4 class="alert-heading text-center">
                             <i class="link-icon" data-feather="credit-card"></i>
-                            Total Withdraw: {{ get_default_settings('site_currency_symbol') }} {{ $total_withdraw }}
+                            Total Withdraw: {{ get_site_settings('site_currency_symbol') }} {{ $total_withdraw }}
                         </h4>
                     </div>
                 </div>

@@ -18,6 +18,11 @@
             </a>
             <div class="collapse" id="setting">
                 <ul class="nav sub-menu">
+                    @can('site.setting')
+                    <li class="nav-item">
+                        <a href="{{ route('backend.site.setting') }}" class="nav-link">Site</a>
+                    </li>
+                    @endcan
                     @can('default.setting')
                     <li class="nav-item">
                         <a href="{{ route('backend.default.setting') }}" class="nav-link">Default</a>

@@ -13,36 +13,21 @@ return new class extends Migration
     {
         Schema::create('default_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('site_name')->nullable();
-            $table->string('site_url')->nullable();
-            $table->string('site_timezone')->nullable();
-            $table->string('site_currency')->nullable();
-            $table->string('site_currency_symbol')->nullable();
-            $table->string('site_logo')->nullable();
-            $table->string('site_favicon')->nullable();
-            $table->string('site_main_email')->nullable();
-            $table->string('site_support_email')->nullable();
-            $table->string('site_main_phone')->nullable();
-            $table->string('site_support_phone')->nullable();
-            $table->string('site_address')->nullable();
             $table->decimal('referal_registion_bonus_amount', 10, 2)->nullable();
             $table->decimal('referal_earning_bonus_percentage', 10, 2)->nullable();
+            $table->string('deposit_bkash_account')->nullable();
+            $table->string('deposit_rocket_account')->nullable();
+            $table->string('deposit_nagad_account')->nullable();
             $table->decimal('min_deposit_amount', 10, 2)->nullable();
             $table->decimal('max_deposit_amount', 10, 2)->nullable();
             $table->decimal('instant_withdraw_charge', 10, 2)->nullable();
             $table->decimal('withdraw_charge_percentage', 10, 2)->nullable();
             $table->decimal('min_withdraw_amount', 10, 2)->nullable();
             $table->decimal('max_withdraw_amount', 10, 2)->nullable();
-            $table->longText('site_notice')->nullable();
-            $table->string('site_facebook')->nullable();
-            $table->string('site_twitter')->nullable();
-            $table->string('site_instagram')->nullable();
-            $table->string('site_linkedin')->nullable();
-            $table->string('site_pinterest')->nullable();
-            $table->string('site_youtube')->nullable();
-            $table->string('site_whatsapp')->nullable();
-            $table->string('site_telegram')->nullable();
-            $table->string('site_tiktok')->nullable();
+            $table->decimal('job_posting_charge_percentage', 10, 2)->nullable();
+            $table->decimal('job_posting_additional_screenshot_charge', 10, 2)->nullable();
+            $table->decimal('job_posting_boosted_time_charge', 10, 2)->nullable();
+            $table->decimal('job_posting_min_budget', 10, 2)->nullable();
             $table->timestamps();
         });
     }

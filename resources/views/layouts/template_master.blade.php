@@ -15,7 +15,7 @@
 
 	<title>{{ config('app.name') }} - @yield('title')</title>
 
-    <link rel="shortcut icon" href="{{ asset('uploads/setting_photo') }}/{{ get_default_settings('site_favicon') }}" />
+    <link rel="shortcut icon" href="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_favicon') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -116,13 +116,13 @@
                         <span class="badge bg-primary mt-1 mx-2">
                             Deposit Balance
                             <strong class="badge bg-light text-dark">
-                                {{ get_default_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}
+                                {{ get_site_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}
                             </strong>
                         </span>
                         <span class="badge bg-success mt-1 mx-2">
                             Withdraw Balance
                             <strong class="badge bg-light text-dark">
-                                {{ get_default_settings('site_currency_symbol') }} {{ auth::user()->withdraw_balance }}
+                                {{ get_site_settings('site_currency_symbol') }} {{ auth::user()->withdraw_balance }}
                             </strong>
                         </span>
                     </div>
