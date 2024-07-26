@@ -6,7 +6,7 @@ use App\Http\Controllers\Backend\ChildCategoryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
 use App\Http\Controllers\Backend\FaqController;
-use App\Http\Controllers\Backend\JobChargeController;
+use App\Http\Controllers\Backend\JobPostChargeController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
@@ -72,11 +72,13 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('child_category/delete/{id}', [ChildCategoryController::class, 'delete'])->name('child_category.delete');
     Route::get('child_category/status/{id}', [ChildCategoryController::class, 'status'])->name('child_category.status');
     // Job Charge
-    Route::resource('job_charge', JobChargeController::class);
-    Route::get('job_charge-trash', [JobChargeController::class, 'trash'])->name('job_charge.trash');
-    Route::get('job_charge/restore/{id}', [JobChargeController::class, 'restore'])->name('job_charge.restore');
-    Route::get('job_charge/delete/{id}', [JobChargeController::class, 'delete'])->name('job_charge.delete');
-    Route::get('job_charge/status/{id}', [JobChargeController::class, 'status'])->name('job_charge.status');
+    Route::resource('job_post_charge', JobPostChargeController::class);
+    Route::get('job_post_charge-get_sub_category', [JobPostChargeController::class, 'getSubCategories'])->name('job_post_charge.get_sub_categories');
+    Route::get('job_post_charge-get_child_category', [JobPostChargeController::class, 'getChildCategories'])->name('job_post_charge.get_child_categories');
+    Route::get('job_post_charge-trash', [JobPostChargeController::class, 'trash'])->name('job_post_charge.trash');
+    Route::get('job_post_charge/restore/{id}', [JobPostChargeController::class, 'restore'])->name('job_post_charge.restore');
+    Route::get('job_post_charge/delete/{id}', [JobPostChargeController::class, 'delete'])->name('job_post_charge.delete');
+    Route::get('job_post_charge/status/{id}', [JobPostChargeController::class, 'status'])->name('job_post_charge.status');
     // Faq
     Route::resource('faq', FaqController::class);
     Route::get('faq-trash', [FaqController::class, 'trash'])->name('faq.trash');

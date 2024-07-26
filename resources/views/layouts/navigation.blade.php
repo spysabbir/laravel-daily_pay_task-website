@@ -127,12 +127,12 @@
             @endcan
         @endcan
 
-        @can('JobChargeMenu')
-            @can('job_charge.index')
+        @can('JobPostChargeMenu')
+            @can('job_post_charge.index')
             <li class="nav-item">
-                <a href="{{ route('backend.job_charge.index') }}" class="nav-link">
+                <a href="{{ route('backend.job_post_charge.index') }}" class="nav-link">
                     <i class="link-icon" data-feather="folder-plus"></i>
-                    <span class="link-title">Job Charge</span>
+                    <span class="link-title">Job Post Charge</span>
                 </a>
             </li>
             @endcan

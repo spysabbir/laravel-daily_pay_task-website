@@ -3,21 +3,20 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\ChildCategory;
-use App\Models\JobCharge;
-use App\Models\SubCategory;
+use App\Models\JobPostCharge;
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\SubCategory;
+use App\Models\ChildCategory;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
-class JobChargeController extends Controller
+class JobPostChargeController extends Controller
 {
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = JobCharge::select('job_charges.*');
+            $query = JobPostCharge::select('job_post_charges.*');
 
             $query->orderBy('created_at', 'desc');
 
@@ -25,9 +24,9 @@ class JobChargeController extends Controller
                 $query->where('status', $request->status);
             }
 
-            $job_charges = $query->get();
+            $job_post_charges = $query->get();
 
-            return DataTables::of($job_charges)
+            return DataTables::of($job_post_charges)
                 ->addIndexColumn()
                 ->addColumn('category_name', function ($row) {
                     return $row->category->name ?? 'N/A';
@@ -67,7 +66,7 @@ class JobChargeController extends Controller
         $sub_categories = SubCategory::where('status', 'Active')->get();
         $child_categories = ChildCategory::where('status', 'Active')->get();
 
-        return view('backend.job_charge.index', compact('categories', 'sub_categories', 'child_categories'));
+        return view('backend.job_post_charge.index', compact('categories', 'sub_categories', 'child_categories'));
     }
 
     public function store(Request $request)
@@ -76,8 +75,8 @@ class JobChargeController extends Controller
             'category_id' => 'required|exists:categories,id',
             'sub_category_id' => 'required|exists:sub_categories,id',
             'child_category_id' => 'nullable|exists:child_categories,id',
-            'working_min_charges' => 'required|numeric',
-            'working_max_charges' => 'required|numeric',
+            'working_min_charge' => 'required|numeric',
+            'working_max_charge' => 'required|numeric',
         ]);
 
         if($validator->fails()){
@@ -86,12 +85,12 @@ class JobChargeController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            JobCharge::create([
+            JobPostCharge::create([
                 'category_id' => $request->category_id,
                 'sub_category_id' => $request->sub_category_id,
                 'child_category_id' => $request->child_category_id,
-                'working_min_charges' => $request->working_min_charges,
-                'working_max_charges' => $request->working_max_charges,
+                'working_min_charge' => $request->working_min_charge,
+                'working_max_charge' => $request->working_max_charge,
                 'created_by' => auth()->user()->id,
             ]);
 
@@ -103,8 +102,8 @@ class JobChargeController extends Controller
 
     public function edit(string $id)
     {
-        $job_charge = JobCharge::where('id', $id)->first();
-        return response()->json($job_charge);
+        $job_post_charge = JobPostCharge::where('id', $id)->first();
+        return response()->json($job_post_charge);
     }
 
     public function update(Request $request, string $id)
@@ -113,8 +112,8 @@ class JobChargeController extends Controller
             'category_id' => 'required|exists:categories,id',
             'sub_category_id' => 'required|exists:sub_categories,id',
             'child_category_id' => 'nullable|exists:child_categories,id',
-            'working_min_charges' => 'required|numeric',
-            'working_max_charges' => 'required|numeric',
+            'working_min_charge' => 'required|numeric',
+            'working_max_charge' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -123,12 +122,12 @@ class JobChargeController extends Controller
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
-            JobCharge::where('id', $id)->update([
+            JobPostCharge::where('id', $id)->update([
                 'category_id' => $request->category_id,
                 'sub_category_id' => $request->sub_category_id,
                 'child_category_id' => $request->child_category_id,
-                'working_min_charges' => $request->working_min_charges,
-                'working_max_charges' => $request->working_max_charges,
+                'working_min_charge' => $request->working_min_charge,
+                'working_max_charge' => $request->working_max_charge,
                 'updated_by' => auth()->user()->id,
             ]);
 
@@ -140,18 +139,18 @@ class JobChargeController extends Controller
 
     public function destroy(string $id)
     {
-        $job_charge = JobCharge::findOrFail($id);
-        $job_charge->delete();
+        $job_post_charge = JobPostCharge::findOrFail($id);
+        $job_post_charge->delete();
     }
 
     public function trash(Request $request)
     {
         if ($request->ajax()) {
-            $query = JobCharge::onlyTrashed();
+            $query = JobPostCharge::onlyTrashed();
 
-            $trash_job_charges = $query->orderBy('deleted_at', 'desc')->get();
+            $trash_job_post_charges = $query->orderBy('deleted_at', 'desc')->get();
 
-            return DataTables::of($trash_job_charges)
+            return DataTables::of($trash_job_post_charges)
                 ->addIndexColumn()
                 ->addColumn('category_name', function ($row) {
                     return $row->category->name ?? 'N/A';
@@ -173,35 +172,59 @@ class JobChargeController extends Controller
                 ->make(true);
         }
 
-        return view('backend.job_charge.index');
+        return view('backend.job_post_charge.index');
     }
 
     public function restore(string $id)
     {
-        JobCharge::onlyTrashed()->where('id', $id)->update([
+        JobPostCharge::onlyTrashed()->where('id', $id)->update([
             'deleted_by' => NULL
         ]);
 
-        JobCharge::onlyTrashed()->where('id', $id)->restore();
+        JobPostCharge::onlyTrashed()->where('id', $id)->restore();
     }
 
     public function delete(string $id)
     {
-        $job_charge = JobCharge::onlyTrashed()->where('id', $id)->first();
-        $job_charge->forceDelete();
+        $job_post_charge = JobPostCharge::onlyTrashed()->where('id', $id)->first();
+        $job_post_charge->forceDelete();
     }
 
     public function status(string $id)
     {
-        $job_charge = JobCharge::findOrFail($id);
+        $job_post_charge = JobPostCharge::findOrFail($id);
 
-        if ($job_charge->status == "Active") {
-            $job_charge->status = "Inactive";
+        if ($job_post_charge->status == "Active") {
+            $job_post_charge->status = "Inactive";
         } else {
-            $job_charge->status = "Active";
+            $job_post_charge->status = "Active";
         }
 
-        $job_charge->updated_by = auth()->user()->id;
-        $job_charge->save();
+        $job_post_charge->updated_by = auth()->user()->id;
+        $job_post_charge->save();
+    }
+
+    public function getSubCategories(Request $request)
+    {
+        $subCategories = SubCategory::where('category_id', $request->category_id)->get();
+
+        $html = '<option value="">-- Select Sub Category --</option>';
+        foreach ($subCategories as $subCategory) {
+            $html .= '<option value="'.$subCategory->id.'">'.$subCategory->name.'</option>';
+        }
+
+        return response()->json(['html' => $html]);
+    }
+
+    public function getChildCategories(Request $request)
+    {
+        $childCategories = ChildCategory::where('category_id', $request->category_id)->where('sub_category_id', $request->sub_category_id)->get();
+
+        $html = '<option value="">-- Select Child Category --</option>';
+        foreach ($childCategories as $childCategory) {
+            $html .= '<option value="'.$childCategory->id.'">'.$childCategory->name.'</option>';
+        }
+
+        return response()->json(['html' => $html]);
     }
 }
