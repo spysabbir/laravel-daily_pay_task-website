@@ -66,6 +66,7 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('sub_category/status/{id}', [SubCategoryController::class, 'status'])->name('sub_category.status');
     // Child Category
     Route::resource('child_category', ChildCategoryController::class);
+    Route::get('child_category-get_sub_category', [ChildCategoryController::class, 'getSubCategories'])->name('child_category.get_sub_categories');
     Route::get('child_category-trash', [ChildCategoryController::class, 'trash'])->name('child_category.trash');
     Route::get('child_category/restore/{id}', [ChildCategoryController::class, 'restore'])->name('child_category.restore');
     Route::get('child_category/delete/{id}', [ChildCategoryController::class, 'delete'])->name('child_category.delete');

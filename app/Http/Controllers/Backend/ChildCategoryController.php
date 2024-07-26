@@ -190,4 +190,16 @@ class ChildCategoryController extends Controller
         $child_category->updated_by = auth()->user()->id;
         $child_category->save();
     }
+
+    public function getSubCategories(Request $request)
+    {
+        $subCategories = SubCategory::where('category_id', $request->category_id)->get();
+
+        $html = '<option value="">-- Select Sub Category --</option>';
+        foreach ($subCategories as $subCategory) {
+            $html .= '<option value="'.$subCategory->id.'">'.$subCategory->name.'</option>';
+        }
+
+        return response()->json(['html' => $html]);
+    }
 }

@@ -33,11 +33,11 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="sub_category_id" class="form-label">Sub Category</label>
-                                            <select class="form-select" id="sub_category_id" name="sub_category_id">
-                                                <option value="">-- Select Sub Category --</option>
-                                                @foreach ($sub_categories as $sub_category)
+                                            <select class="form-select get_sub_categories" id="sub_category_id" name="sub_category_id">
+                                                <option value="">-- Select Category First --</option>
+                                                {{-- @foreach ($sub_categories as $sub_category)
                                                     <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
-                                                @endforeach
+                                                @endforeach --}}
                                             </select>
                                             <span class="text-danger error-text sub_category_id_error"></span>
                                         </div>
@@ -143,12 +143,15 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="sub_category_id" class="form-label">Sub Category</label>
-                                                    <select class="form-select sub_category_id" id="sub_category_id" name="sub_category_id">
-                                                        <option value="">-- Select Sub Category --</option>
+                                                    <select class="form-select sub_category_id get_sub_categories" id="sub_category_id" name="sub_category_id">
+                                                        <option value="">-- Select Category First --</option>
                                                         @foreach ($sub_categories as $sub_category)
                                                             <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
                                                         @endforeach
                                                     </select>
+                                                    <div id="sub-category-options">
+                                                        <!-- Sub-category radio buttons will be loaded here -->
+                                                    </div>
                                                     <span class="text-danger error-text update_sub_category_id_error"></span>
                                                 </div>
                                                 <div class="mb-3">
@@ -236,6 +239,34 @@
             });
         });
 
+        // Load sub-categories when a category is selected in the create form
+        $(document).on('change', '#category_id', function () {
+            var category_id = $(this).val();
+            loadSubCategories(category_id, '.get_sub_categories');
+        });
+
+        // Load sub-categories when a category is selected in the edit form
+        $(document).on('change', '.category_id', function () {
+            var category_id = $(this).val();
+            loadSubCategories(category_id, '.sub_category_id');
+        });
+
+        // Load sub-categories when a category is selected
+        function loadSubCategories(category_id, target, selectedSubCategory = null) {
+            $.ajax({
+                url: "{{ route('backend.child_category.get_sub_categories') }}",
+                type: 'GET',
+                data: { category_id: category_id },
+                success: function(response) {
+                    $(target).html(response.html);
+
+                    if (selectedSubCategory) {
+                        $(target).val(selectedSubCategory);
+                    }
+                }
+            });
+        }
+
         // Edit Data
         $(document).on('click', '.editBtn', function () {
             var id = $(this).data('id');
@@ -246,12 +277,13 @@
                 type: "GET",
                 success: function (response) {
                     $('#child_category_id').val(response.id);
-                    $('.category_id').val(response.category_id);
-                    $('.sub_category_id').val(response.sub_category_id);
+                    $('.category_id').val(response.category_id).change();
+                    loadSubCategories(response.category_id, '.sub_category_id', response.sub_category_id);
                     $('#child_category_name').val(response.name);
                 },
             });
         });
+
 
         // Update Data
         $('#editForm').submit(function (event) {
