@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\ChildCategory;
 use App\Models\Deposit;
-use App\Models\JobCharge;
+use App\Models\JobPostCharge;
 use App\Models\SubCategory;
 use App\Models\User;
 use App\Models\Verification;
@@ -424,15 +424,14 @@ class UserController extends Controller
             $response['child_categories'] = $childCategories;
         }
 
-        // Assume get_min_charge() is a method to get minimum charge based on sub-category
-        $response['working_charges'] = JobCharge::where('category_id', $categoryId)
-        ->where('sub_category_id', $subCategoryId)
-        ->first();
+        $response['job_post_charge'] = JobPostCharge::where('category_id', $categoryId)
+                                                ->where('sub_category_id', $subCategoryId)
+                                                ->first();
 
         return response()->json($response);
     }
 
-    public function getJobCharge(Request $request)
+    public function getJobPostCharge(Request $request)
     {
         $categoryId = $request->category_id;
         $subCategoryId = $request->sub_category_id;
@@ -440,12 +439,12 @@ class UserController extends Controller
 
         // Assuming you have a method to calculate the job charge based on selected categories
 
-        $charge = JobCharge::where('category_id', $categoryId)
+        $charge = JobPostCharge::where('category_id', $categoryId)
             ->where('sub_category_id', $subCategoryId)
             ->where('child_category_id', $childCategoryId)
             ->first();
 
-        return response()->json(['working_charges' => $charge]);
+        return response()->json(['job_post_charge' => $charge]);
     }
 
     public function postJobStore()

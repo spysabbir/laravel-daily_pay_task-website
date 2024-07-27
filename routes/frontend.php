@@ -32,13 +32,11 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/post-job', [UserController::class, 'postJob'])->name('post.job');
     Route::get('/post-job-get-sub-category', [UserController::class, 'getSubCategories'])->name('post_job.get_sub_category');
     Route::get('/post-job-get-child-category', [UserController::class, 'getChildCategories'])->name('post_job.get_child_category');
-    Route::get('/post-job-get-job-charges', [UserController::class, 'getJobCharge'])->name('post_job.get_job_charge');
+    Route::get('/post-job-get_job_post_charge', [UserController::class, 'getJobPostCharge'])->name('post_job.get_job_post_charge');
     Route::post('/post-job', [UserController::class, 'postJobStore'])->name('post_job.submit');
-
 
     Route::get('/job-list-running', [UserController::class, 'jobListRunning'])->name('job.list.running');
     Route::get('/job-list-completed', [UserController::class, 'jobListCompleted'])->name('job.list.completed');
-
 
     Route::get('/deposit', [UserController::class, 'deposit'])->name('deposit');
     Route::post('/deposit', [UserController::class, 'depositStore'])->name('deposit.store');
