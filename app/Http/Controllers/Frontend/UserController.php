@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\ChildCategory;
 use App\Models\Deposit;
 use App\Models\JobPostCharge;
+use App\Models\JobPost;
 use App\Models\SubCategory;
 use App\Models\User;
 use App\Models\Verification;
@@ -18,6 +19,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Stevebauman\Location\Facades\Location;
+
 
 class UserController extends Controller
 {
@@ -437,8 +439,6 @@ class UserController extends Controller
         $subCategoryId = $request->sub_category_id;
         $childCategoryId = $request->child_category_id;
 
-        // Assuming you have a method to calculate the job charge based on selected categories
-
         $charge = JobPostCharge::where('category_id', $categoryId)
             ->where('sub_category_id', $subCategoryId)
             ->where('child_category_id', $childCategoryId)
@@ -447,11 +447,66 @@ class UserController extends Controller
         return response()->json(['job_post_charge' => $charge]);
     }
 
-    public function postJobStore()
+    public function postJobStore(Request $request)
     {
-        return response()->json([
-            'status' => 200,
+        // return $request->all();
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'sub_category_id' => 'required|exists:sub_categories,id',
+            'child_category_id' => 'nullable|exists:child_categories,id',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'required_proof' => 'required|string',
+            'additional_note' => 'required|string',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'need_worker' => 'required|numeric|min:1',
+            'worker_charge' => 'required|numeric|min:1',
+            'extra_screenshots' => 'required|numeric|min:0',
+            'job_boosted_time' => 'required|numeric|min:0',
+            'job_running_day' => 'required|numeric|min:1',
         ]);
+
+        if($request->hasFile('thumbnail')){
+            $manager = new ImageManager(new Driver());
+            $thumbnail_photo_name = $request->user()->id."-thumbnail-photo". date('YmdHis') . "." . $request->file('thumbnail')->getClientOriginalExtension();
+            $image = $manager->read($request->file('thumbnail'));
+            $image->toJpeg(80)->save(base_path("public/uploads/job_thumbnail_photo/").$thumbnail_photo_name);
+        }else{
+            $thumbnail_photo_name = null;
+        }
+
+        $job_post_charge = (($request->need_worker * $request->worker_charge) + ($request->extra_screenshots * get_default_settings('extra_screenshot_charge'))) + (($request->job_boosted_time / 15) * get_default_settings('job_boosted_charge'));
+
+        $site_charge = $job_post_charge * get_default_settings('job_posting_charge_percentage') / 100;
+
+        $request->user()->update([
+            'deposit_balance' => $request->user()->deposit_balance - ($job_post_charge + $site_charge),
+        ]);
+
+        JobPost::create([
+            'user_id' => $request->user()->id,
+            'category_id' => $request->category_id,
+            'sub_category_id' => $request->sub_category_id,
+            'child_category_id' => $request->child_category_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'required_proof' => $request->required_proof,
+            'additional_note' => $request->additional_note,
+            'thumbnail' => $thumbnail_photo_name,
+            'need_worker' => $request->need_worker,
+            'worker_charge' => $request->worker_charge,
+            'extra_screenshots' => $request->extra_screenshots,
+            'job_boosted_time' => $request->job_boosted_time,
+            'job_running_day' => $request->job_running_day,
+            'status' => 'Pending',
+        ]);
+
+        $notification = array(
+            'message' => 'Job post submitted successfully.',
+            'alert-type' => 'success'
+        );
+
+        return to_route('job.list.running')->with($notification);
     }
 
     public function jobListRunning()
