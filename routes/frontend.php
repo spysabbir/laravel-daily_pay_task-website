@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Frontend\FrontendController;
+use App\Http\Controllers\Frontend\JobListController;
+use App\Http\Controllers\Frontend\PostJobController;
 use App\Http\Controllers\Frontend\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,14 +31,18 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/work-list-approved', [UserController::class, 'workListApproved'])->name('work.list.approved');
     Route::get('/work-list-rejected', [UserController::class, 'workListRejected'])->name('work.list.rejected');
 
-    Route::get('/post-job', [UserController::class, 'postJob'])->name('post.job');
-    Route::get('/post-job-get-sub-category', [UserController::class, 'getSubCategories'])->name('post_job.get_sub_category');
-    Route::get('/post-job-get-child-category', [UserController::class, 'getChildCategories'])->name('post_job.get_child_category');
-    Route::get('/post-job-get_job_post_charge', [UserController::class, 'getJobPostCharge'])->name('post_job.get_job_post_charge');
-    Route::post('/post-job', [UserController::class, 'postJobStore'])->name('post_job.submit');
+    Route::get('/post-job', [PostJobController::class, 'postJob'])->name('post.job');
+    Route::get('/post-job-get-sub-category', [PostJobController::class, 'getSubCategories'])->name('post_job.get_sub_category');
+    Route::get('/post-job-get-child-category', [PostJobController::class, 'getChildCategories'])->name('post_job.get_child_category');
+    Route::get('/post-job-get_job_post_charge', [PostJobController::class, 'getJobPostCharge'])->name('post_job.get_job_post_charge');
+    Route::post('/post-job', [PostJobController::class, 'postJobStore'])->name('post_job.submit');
 
-    Route::get('/job-list-running', [UserController::class, 'jobListRunning'])->name('job.list.running');
-    Route::get('/job-list-completed', [UserController::class, 'jobListCompleted'])->name('job.list.completed');
+    Route::get('/job-list-pending', [JobListController::class, 'jobListPending'])->name('job.list.pending');
+    Route::get('/job-list-rejected', [JobListController::class, 'jobListRejected'])->name('job.list.rejected');
+    Route::get('/job-list-canceled', [JobListController::class, 'jobListCanceled'])->name('job.list.canceled');
+    Route::get('/job-list-paused', [JobListController::class, 'jobListPaused'])->name('job.list.paused');
+    Route::get('/job-list-running', [JobListController::class, 'jobListRunning'])->name('job.list.running');
+    Route::get('/job-list-completed', [JobListController::class, 'jobListCompleted'])->name('job.list.completed');
 
     Route::get('/deposit', [UserController::class, 'deposit'])->name('deposit');
     Route::post('/deposit', [UserController::class, 'depositStore'])->name('deposit.store');

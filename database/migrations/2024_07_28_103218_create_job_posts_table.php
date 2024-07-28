@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('extra_screenshots');
             $table->integer('job_boosted_time');
             $table->integer('job_running_day');
-            $table->enum('status', ['Pending', 'Rejected', 'Approved', 'Canceled', 'Paused', 'Completed']);
+            $table->enum('status', ['Pending', 'Rejected', 'Running', 'Canceled', 'Paused', 'Completed']);
             $table->timestamp('rejected_at')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('canceled_at')->nullable();

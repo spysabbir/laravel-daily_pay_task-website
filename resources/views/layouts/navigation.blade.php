@@ -271,7 +271,19 @@
             <div class="collapse" id="jobList">
                 <ul class="nav sub-menu">
                     <li class="nav-item">
+                        <a href="{{ route('job.list.pending') }}" class="nav-link">Pending</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('job.list.rejected') }}" class="nav-link">Rejected</a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('job.list.running') }}" class="nav-link">Running</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('job.list.canceled') }}" class="nav-link">Canceled</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('job.list.paused') }}" class="nav-link">Paused</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('job.list.completed') }}" class="nav-link">Completed</a>

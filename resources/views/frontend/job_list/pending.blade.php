@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Job List - Completed')
+@section('title', 'Job List - Pending')
 
 @section('content')
 <div class="row">
@@ -51,7 +51,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('job.list.completed') }}",
+                url: "{{ route('job.list.pending') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
