@@ -114,7 +114,8 @@
                                     Thumbnail (Optional)
                                 </label>
                                 <input type="file" class="form-control" name="thumbnail" id="thumbnail" accept=".jpg, .jpeg, .png">
-                                <small class="text-info"> * Image size should be 300x300 pixels. * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
+                                <div id="thumbnailError" class="text-danger"></div>
+                                <small class="text-info"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
                             </div>
                         </section>
 
@@ -255,6 +256,22 @@
                     }
 
                     return isValid;
+                }
+
+                if (currentIndex === 2) {
+                    var thumbnail = $('#thumbnail').val();
+                    if (thumbnail) {
+                        var ext = thumbnail.split('.').pop().toLowerCase();
+                        if ($.inArray(ext, ['jpg', 'jpeg', 'png']) == -1) {
+                            $('#thumbnailError').text('Please upload a valid image file. Only jpg, jpeg, png files are allowed.');
+                            isValid = false;
+                        } else if ($('#thumbnail')[0].files[0].size > 2097152) {
+                            $('#thumbnailError').text('Please upload an image file less than 2MB.');
+                            isValid = false;
+                        } else {
+                            $('#thumbnailError').text('');
+                        }
+                    }
                 }
 
                 form.find('section').eq(currentIndex).find(':input[required]').each(function() {
