@@ -41,6 +41,14 @@
                                             <span class="text-danger error-text method_error"></span>
                                         </div>
                                         <div class="mb-3">
+                                            <label for="deposit_account" class="form-label">Deposit Account Number</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="deposit_account" placeholder="Deposit Account Number" disabled>
+                                                <button class="btn btn-outline-secondary" type="button" id="copyButton">Copy</button>
+                                            </div>
+                                            <small class="text-warning">Please cash out money to this account number. Please do not send money to this account number.</small>
+                                        </div>
+                                        <div class="mb-3">
                                             <label for="number" class="form-label">Deposit Number</label>
                                             <input type="text" class="form-control" id="number" name="number" placeholder="Deposit Number">
                                             <span class="text-danger error-text number_error"></span>
@@ -143,6 +151,31 @@
         // Filter Data
         $('.filter_data').change(function(){
             $('#allDataTable').DataTable().ajax.reload();
+        });
+
+        // Get Deposit Account
+        $('#method').change(function(){
+            var method = $(this).val();
+            if (method == 'Bkash') {
+                var account = "{{ get_default_settings('deposit_bkash_account') }}";
+            }else if (method == 'Nagad') {
+                var account = "{{ get_default_settings('deposit_bkash_account') }}";
+            }else if (method == 'Rocket') {
+                var account = "{{ get_default_settings('deposit_bkash_account') }}";
+            }else{
+                var account = '';
+            }
+            $('#deposit_account').val(account);
+        });
+
+        // Copy Account Number
+        $('#copyButton').click(function() {
+            var accountNumber = $('#deposit_account').val();
+            navigator.clipboard.writeText(accountNumber).then(function() {
+                toastr.success('Account number copied to clipboard');
+            }, function(err) {
+                toastr.error('Failed to copy account number');
+            });
         });
 
         // Store Data
