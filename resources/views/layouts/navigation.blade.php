@@ -219,6 +219,30 @@
                 </div>
             </li>
         @endcan
+
+        {{-- @can('JobPostMenu') --}}
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#JobPostRequest" role="button" aria-expanded="false" aria-controls="JobPostRequest">
+                    <i class="link-icon" data-feather="briefcase"></i>
+                    <span class="link-title">Job Post request</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="JobPostRequest">
+                    <ul class="nav sub-menu">
+                        {{-- @can('job_post.request') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.job_post.request') }}" class="nav-link">Pending</a>
+                        </li>
+                        {{-- @endcan --}}
+                        {{-- @can('job_post.request.approved') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.job_post.request.approved') }}" class="nav-link">Approved</a>
+                        </li>
+                        {{-- @endcan --}}
+                    </ul>
+                </div>
+            </li>
+        {{-- @endcan --}}
     @else
         <li class="nav-item nav-category">User</li>
         @if (!Auth::user()->hasVerification('Approved'))

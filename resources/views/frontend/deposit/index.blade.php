@@ -9,7 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Deposit List</h3>
-                    <p class="mb-0">You can deposit money by using Bkash, Nagad, Rocket. After depositing money, you have to submit a deposit request with the transaction id. Admin will approve or reject your request.</p>
+                    <p class="mb-0">You can deposit money by using Bkash, Nagad, Rocket. After depositing money, you have to submit a deposit request with the transaction id. Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}. After submitting the deposit request, the admin will verify your request and add the money to your account. If you have any problem, please contact the admin.</p>
                 </div>
                 <div class="action-btn">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
@@ -24,12 +24,6 @@
                                 <form class="forms-sample" id="createForm">
                                     @csrf
                                     <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="amount" class="form-label">Deposit Amount</label>
-                                            <input type="number" class="form-control" id="amount" name="amount" placeholder="Deposit Amount">
-                                            <small class="text-info">Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
-                                            <span class="text-danger error-text amount_error"></span>
-                                        </div>
                                         <div class="mb-3">
                                             <label for="method" class="form-label">Deposit Method</label>
                                             <select class="form-select" id="method" name="method">
@@ -47,6 +41,12 @@
                                                 <button class="btn btn-outline-secondary" type="button" id="copyButton">Copy</button>
                                             </div>
                                             <small class="text-warning">Please cash out money to this account number. Please do not send money to this account number.</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="amount" class="form-label">Deposit Amount</label>
+                                            <input type="number" class="form-control" id="amount" name="amount" placeholder="Deposit Amount">
+                                            <small class="text-info">Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
+                                            <span class="text-danger error-text amount_error"></span>
                                         </div>
                                         <div class="mb-3">
                                             <label for="number" class="form-label">Deposit Number</label>

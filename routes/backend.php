@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
 use App\Http\Controllers\Backend\FaqController;
 use App\Http\Controllers\Backend\JobPostChargeController;
+use App\Http\Controllers\Backend\JobPostController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
@@ -105,4 +106,9 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('withdraw-request-rejected', [WithdrawController::class, 'withdrawRequestRejected'])->name('withdraw.request.rejected');
     Route::get('withdraw-request-approved', [WithdrawController::class, 'withdrawRequestApproved'])->name('withdraw.request.approved');
     Route::delete('withdraw-request-delete/{id}', [WithdrawController::class, 'withdrawRequestDelete'])->name('withdraw.request.delete');
+    // Job Post
+    Route::get('job_post-request', [JobPostController::class, 'jobPostRequest'])->name('job_post.request');
+    Route::get('job_post-request/{id}', [JobPostController::class, 'jobPostRequestShow'])->name('job_post.request.show');
+    Route::put('job_post-request-update/{id}', [JobPostController::class, 'jobPostRequestUpdate'])->name('job_post.request.update');
+    Route::get('job_post-request-approved', [JobPostController::class, 'jobPostRequestApproved'])->name('job_post.request.approved');
 });

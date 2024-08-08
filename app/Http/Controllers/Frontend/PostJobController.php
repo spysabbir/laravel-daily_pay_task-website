@@ -137,6 +137,6 @@ class PostJobController extends Controller
             'alert-type' => 'success'
         );
 
-        return to_route('job.list.running')->with($notification);
+        return to_route('job.list.pending')->with($notification);
     }
 }

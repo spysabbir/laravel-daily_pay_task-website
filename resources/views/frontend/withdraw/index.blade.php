@@ -9,7 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Withdraw List</h3>
-                    <p class="mb-0">You can deposit money by using Bkash, Nagad, Rocket. After depositing money, you have to submit a deposit request with the account number. Admin will approve or reject your request.</p>
+                    <p class="mb-0">You can Withdraw money by using Bkash, Nagad, Rocket. Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}. Withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }}%. Instant withdraw charge is {{ get_default_settings('instant_withdraw_charge') }} {{ get_site_settings('site_currency_symbol') }}. After submitting the withdraw request, the admin will verify your request and send the money to your account number. If you have any problem, please contact the admin.</p>
                 </div>
                 <div class="action-btn">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
@@ -38,20 +38,6 @@
                                             <span class="text-danger error-text type_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="amount" class="form-label">Withdraw Amount</label>
-                                            <input type="number" class="form-control" id="amount" name="amount" placeholder="Withdraw Amount">
-                                            <small class="text-info">Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
-                                            <span class="text-danger error-text amount_error"></span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Withdraw Charge Percentage</label>
-                                            <input type="text" class="form-control" value="{{ get_default_settings('withdraw_charge_percentage') }} %" disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Payable Amount</label>
-                                            <input type="number" class="form-control" id="payable_amount" placeholder="Payable Amount" disabled>
-                                        </div>
-                                        <div class="mb-3">
                                             <label for="method" class="form-label">Withdraw Method</label>
                                             <select class="form-select" id="method" name="method">
                                                 <option value="">-- Select Withdraw Method --</option>
@@ -65,6 +51,20 @@
                                             <label for="number" class="form-label">Withdraw Number</label>
                                             <input type="text" class="form-control" id="number" name="number" placeholder="Withdraw Number">
                                             <span class="text-danger error-text number_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="amount" class="form-label">Withdraw Amount</label>
+                                            <input type="number" class="form-control" id="amount" name="amount" placeholder="Withdraw Amount">
+                                            <small class="text-info">Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
+                                            <span class="text-danger error-text amount_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Withdraw Charge Percentage</label>
+                                            <input type="text" class="form-control" value="{{ get_default_settings('withdraw_charge_percentage') }} %" disabled>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Payable Amount</label>
+                                            <input type="number" class="form-control" id="payable_amount" placeholder="Payable Amount" disabled>
                                         </div>
                                     </div>
                                     <div class="modal-footer">

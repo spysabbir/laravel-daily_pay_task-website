@@ -157,50 +157,111 @@
                             </div>
                         </li>
                         <li class="nav-item dropdown">
+                            @php
+                                $verification = App\Models\Verification::where('status', 'Pending')->count();
+                                $deposit = App\Models\Deposit::where('status', 'Pending')->count();
+                                $withdraw = App\Models\Withdraw::where('status', 'Pending')->count();
+                                $backend_notification = $verification + $deposit + $withdraw;
+                            @endphp
                             <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i data-feather="bell"></i>
+                                @if ((Auth::user()->isFrontendUser() && Auth::user()->unreadNotifications->count() > 0) || (!Auth::user()->isFrontendUser() && $backend_notification > 0))
                                 <div class="indicator">
                                     <div class="circle"></div>
                                 </div>
+                                @endif
                             </a>
                             <div class="dropdown-menu p-0" aria-labelledby="notificationDropdown">
+                                @if (Auth::user()->isFrontendUser())
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
                                     <p class="text-info mx-2">{{ Auth::user()->unreadNotifications->count() }} New Notifications</p>
                                     <a href="{{ route('notification.read.all') }}" class="text-warning mx-2">Clear all</a>
                                 </div>
                                 <div class="p-1">
-                                    @if (Auth::user()->unreadNotifications->count() > 0)
-                                        @foreach (Auth::user()->unreadNotifications as $notification)
-
-                                        <a href="{{ route('notification.read', $notification->id) }}" class="dropdown-item d-flex align-items-center py-2">
-                                            <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
-                                                @if (class_basename($notification->type) === 'DepositNotification')
-                                                    <i class="icon-sm text-white" data-feather="dollar-sign"></i>
-                                                @elseif (class_basename($notification->type) === 'WithdrawNotification')
-                                                    <i class="icon-sm text-white" data-feather="credit-card"></i>
-                                                @else
-                                                    <i class="icon-sm text-white" data-feather="alert-circle"></i>
-                                                @endif
-                                            </div>
-                                            <div class="flex-grow-1 me-2">
-                                                <p>
-                                                    <strong>{{ $notification->data['title'] }}</strong>
-                                                </p>
-                                                <p class="tx-12 text-muted">{{ $notification->created_at->diffForHumans() }}</p>
-                                            </div>
-                                        </a>
-                                        @endforeach
-                                    @else
-                                        <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
-                                            <div class="flex-grow-1 me-2">
-                                                <p class="text-center">No new notifications</p>
-                                            </div>
-                                        </a>
-                                    @endif
+                                        @if (Auth::user()->unreadNotifications->count() > 0)
+                                            @foreach (Auth::user()->unreadNotifications as $notification)
+                                            <a href="{{ route('notification.read', $notification->id) }}" class="dropdown-item d-flex align-items-center py-2">
+                                                <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                                    @if (class_basename($notification->type) === 'DepositNotification')
+                                                        <i class="icon-sm text-white" data-feather="dollar-sign"></i>
+                                                    @elseif (class_basename($notification->type) === 'WithdrawNotification')
+                                                        <i class="icon-sm text-white" data-feather="credit-card"></i>
+                                                    @else
+                                                        <i class="icon-sm text-white" data-feather="alert-circle"></i>
+                                                    @endif
+                                                </div>
+                                                <div class="flex-grow-1 me-2">
+                                                    <p>
+                                                        <strong>{{ $notification->data['title'] }}</strong>
+                                                    </p>
+                                                    <p class="tx-12 text-muted">{{ $notification->created_at->diffForHumans() }}</p>
+                                                </div>
+                                            </a>
+                                            @endforeach
+                                        @else
+                                            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+                                                <div class="flex-grow-1 me-2">
+                                                    <p class="text-center">No new notifications</p>
+                                                </div>
+                                            </a>
+                                        @endif
                                 </div>
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
                                     <a href="{{ route('notification') }}">View all</a>
                                 </div>
+                                @else
+                                <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
+                                    <p class="text-info mx-2">{{ $backend_notification }} New Notifications</p>
+                                </div>
+                                <div class="p-1">
+                                    @if ($verification > 0)
+                                    <a href="{{ route('backend.verification.request') }}" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                            <i class="icon-sm text-white" data-feather="alert-circle"></i>
+                                        </div>
+                                        <div class="flex-grow-1 me-2">
+                                            <p>
+                                                <strong>Verification Request</strong>
+                                            </p>
+                                            <p class="tx-12 text-muted">{{ $verification }} Pending</p>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    @if ($deposit > 0)
+                                    <a href="{{ route('backend.deposit.request') }}" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                            <i class="icon-sm text-white" data-feather="alert-circle"></i>
+                                        </div>
+                                        <div class="flex-grow-1 me-2">
+                                            <p>
+                                                <strong>Deposit Request</strong>
+                                            </p>
+                                            <p class="tx-12 text-muted">{{ $deposit }} Pending</p>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    @if ($withdraw > 0)
+                                    <a href="{{ route('backend.withdraw.request') }}" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                            <i class="icon-sm text-white" data-feather="alert-circle"></i>
+                                        </div>
+                                        <div class="flex-grow-1 me-2">
+                                            <p>
+                                                <strong>Withdraw Request</strong>
+                                            </p>
+                                            <p class="tx-12 text-muted">{{ $withdraw }} Pending</p>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    @if ($backend_notification === 0)
+                                    <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="flex-grow-1 me-2">
+                                            <p class="text-center">No new notifications</p>
+                                        </div>
+                                    </a>
+                                    @endif
+                                </div>
+                                @endif
                             </div>
                         </li>
                         <li class="nav-item dropdown">
