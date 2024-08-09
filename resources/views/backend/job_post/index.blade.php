@@ -53,7 +53,9 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>User Id</th>
+                                <th>User</th>
+                                <th>Post Id</th>
+                                <th>Title</th>
                                 <th>Created At</th>
                                 <th>Action</th>
                             </tr>
@@ -105,7 +107,9 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'user_id', name: 'user_id' },
+                { data: 'user', name: 'user' },
+                { data: 'id', name: 'id' },
+                { data: 'title', name: 'title' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
@@ -160,7 +164,7 @@
                             })
                         }else{
                             $('#pendingDataTable').DataTable().ajax.reload();
-                            $('#rejectedDataTable').DataTable().ajax.reload();
+                            // $('#rejectedDataTable').DataTable().ajax.reload();
                             $(".viewModal").modal('hide');
                             toastr.success('Job post update successfully.');
                         }
@@ -170,7 +174,7 @@
         })
 
         // Rejected Data
-      
+
 
         // Delete Data
         $(document).on('click', '.deleteBtn', function(){

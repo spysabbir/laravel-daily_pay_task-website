@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Job List - Pending</h3>
+                    <h3 class="card-title">Job List - Rejected</h3>
                 </div>
             </div>
             <div class="card-body">
@@ -19,10 +19,9 @@
                                 <th>Sl No</th>
                                 <th>Job ID</th>
                                 <th>Title</th>
-                                <th>Need Worker</th>
-                                <th>Worker Charge</th>
-                                <th>Job Running Day</th>
-                                <td>Status</td>
+                                <th>Cancellation Reason</th>
+                                <th>Rejected At</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,10 +56,9 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
-                { data: 'need_worker', name: 'need_worker' },
-                { data: 'worker_charge', name: 'worker_charge' },
-                { data: 'job_running_day', name: 'job_running_day' },
-                { data: 'status', name: 'status' },
+                { data: 'rejection_reason', name: 'rejection_reason' },
+                { data: 'rejected_at', name: 'rejected_at' },
+                { data: 'action', name: 'action' }
             ]
         });
     });

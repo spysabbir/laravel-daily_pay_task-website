@@ -21,6 +21,9 @@ class JobPostController extends Controller
 
             return DataTables::of($pendingRequest)
                 ->addIndexColumn()
+                ->editColumn('user', function ($row) {
+                    return $row->user->name;
+                })
                 ->editColumn('created_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
@@ -32,7 +35,7 @@ class JobPostController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['created_at', 'action'])
+                ->rawColumns(['user', 'created_at', 'action'])
                 ->make(true);
         }
         return view('backend.job_post.index');

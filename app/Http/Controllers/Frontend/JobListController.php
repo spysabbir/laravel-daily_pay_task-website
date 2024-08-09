@@ -30,13 +30,13 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListPending)
                     ->addIndexColumn()
-                    ->editColumn('status', function ($row) {
-                        $status = '
-                            <span class="badge bg-info">' . $row->status . '</span>
+                    ->editColumn('worker_charge', function ($row) {
+                        $workerCharge = '
+                            <span class="badge bg-primary">' . $row->worker_charge .' '. get_site_settings('site_currency_symbol') . '</span>
                         ';
-                        return $status;
+                        return $workerCharge;
                     })
-                    ->rawColumns(['status'])
+                    ->rawColumns(['worker_charge'])
                     ->make(true);
             }
             return view('frontend.job_list.pending');
@@ -62,13 +62,19 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListRejected)
                     ->addIndexColumn()
-                    ->editColumn('status', function ($row) {
-                        $status = '
-                            <span class="badge bg-danger">' . $row->status . '</span>
+                    ->editColumn('worker_charge', function ($row) {
+                        $workerCharge = '
+                            <span class="badge bg-primary">' . $row->worker_charge .' '. get_site_settings('site_currency_symbol') . '</span>
                         ';
-                        return $status;
+                        return $workerCharge;
                     })
-                    ->rawColumns(['status'])
+                    ->addColumn('action', function ($row) {
+                        $actionBtn = '
+                            <a href="' . route('post_job.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>
+                        ';
+                        return $actionBtn;
+                    })
+                    ->rawColumns(['worker_charge', 'action'])
                     ->make(true);
             }
             return view('frontend.job_list.rejected');

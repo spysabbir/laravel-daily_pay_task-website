@@ -11,6 +11,7 @@ use App\Models\SubCategory;
 use App\Models\ChildCategory;
 use App\Models\JobPostCharge;
 use App\Models\JobPost;
+use Illuminate\Contracts\Queue\Job;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -93,8 +94,8 @@ class PostJobController extends Controller
             'need_worker' => 'required|numeric|min:1',
             'worker_charge' => 'required|numeric|min:1',
             'extra_screenshots' => 'required|numeric|min:0',
-            'job_boosted_time' => 'required|numeric|min:0',
-            'job_running_day' => 'required|numeric|min:1',
+            'boosted_time' => 'required|numeric|min:0',
+            'running_day' => 'required|numeric|min:1',
         ]);
 
         if($request->hasFile('thumbnail')){
@@ -106,7 +107,7 @@ class PostJobController extends Controller
             $thumbnail_photo_name = null;
         }
 
-        $job_post_charge = (($request->need_worker * $request->worker_charge) + ($request->extra_screenshots * get_default_settings('extra_screenshot_charge'))) + (($request->job_boosted_time / 15) * get_default_settings('job_boosted_charge'));
+        $job_post_charge = (($request->need_worker * $request->worker_charge) + ($request->extra_screenshots * get_default_settings('extra_screenshot_charge'))) + (($request->boosted_time / 15) * get_default_settings('job_boosted_charge'));
 
         $site_charge = $job_post_charge * get_default_settings('job_posting_charge_percentage') / 100;
 
@@ -127,8 +128,11 @@ class PostJobController extends Controller
             'need_worker' => $request->need_worker,
             'worker_charge' => $request->worker_charge,
             'extra_screenshots' => $request->extra_screenshots,
-            'job_boosted_time' => $request->job_boosted_time,
-            'job_running_day' => $request->job_running_day,
+            'boosted_time' => $request->boosted_time,
+            'running_day' => $request->running_day,
+            'charge' => $job_post_charge,
+            'site_charge' => $site_charge,
+            'total_charge' => $job_post_charge + $site_charge,
             'status' => 'Pending',
         ]);
 
@@ -138,5 +142,12 @@ class PostJobController extends Controller
         );
 
         return to_route('job.list.pending')->with($notification);
+    }
+
+    public function postJobEdit($id)
+    {
+        $categories = Category::where('status', 'Active')->get();
+        $jobPost = JobPost::findOrFail($id);
+        return view('frontend.post_job.edit', compact('categories', 'jobPost'));
     }
 }

@@ -31,4 +31,9 @@ class JobPost extends Model
     {
         return $this->belongsTo(ChildCategory::class);
     }
+
+    public function rejectedBy()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
+    }
 }

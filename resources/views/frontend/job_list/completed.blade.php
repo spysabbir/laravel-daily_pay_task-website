@@ -59,7 +59,7 @@
                 { data: 'title', name: 'title' },
                 { data: 'need_worker', name: 'need_worker' },
                 { data: 'worker_charge', name: 'worker_charge' },
-                { data: 'job_running_day', name: 'job_running_day' },
+                { data: 'running_day', name: 'running_day' },
                 { data: 'status', name: 'status' },
             ]
         });

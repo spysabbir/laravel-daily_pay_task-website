@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Post Job')
+@section('title', 'Post Job Edit')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Post Job</h4>
+                <h4 class="card-title">Post Job Edit</h4>
                 {{-- Error Showing --}}
                 @if ($errors->any())
                 <div class="alert alert-danger">
@@ -20,17 +20,12 @@
                 </div>
                 @endif
                 {{-- Error Showing --}}
-                <form id="jobForm" action="{{ route('post_job.submit') }}" method="post" enctype="multipart/form-data">
+                <form id="jobForm" action="{{ route('post_job.update', $jobPost->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                     <div id="wizard">
                         <h2>Notice</h2>
                         <section>
-                            @if (Auth::user()->deposit_balance < get_default_settings('job_posting_min_budget'))
-                            <div class="alert alert-warning">
-                                Your current balance is {{ Auth::user()->deposit_balance }} {{ get_site_settings('site_currency_symbol') }}. You need to pay {{ get_default_settings('job_posting_min_budget') }} {{ get_site_settings('site_currency_symbol') }} to post a job. Your balance is not enough to post a job. Please deposit now to post a job.
-                                <a href="{{ route('deposit') }}" class="text-primary">Deposit Now</a>
-                            </div>
-                            @endif
                             <h4 class="mb-3">
                                 <strong>Important Notice:</strong>
                             </h4>

@@ -36,6 +36,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/post-job-get-child-category', [PostJobController::class, 'getChildCategories'])->name('post_job.get_child_category');
     Route::get('/post-job-get_job_post_charge', [PostJobController::class, 'getJobPostCharge'])->name('post_job.get_job_post_charge');
     Route::post('/post-job', [PostJobController::class, 'postJobStore'])->name('post_job.submit');
+    Route::get('/post_job-edit/{id}', [PostJobController::class, 'postJobEdit'])->name('post_job.edit');
+    Route::put('/post_job-update/{id}', [PostJobController::class, 'postJobUpdate'])->name('post_job.update');
 
     Route::get('/job-list-pending', [JobListController::class, 'jobListPending'])->name('job.list.pending');
     Route::get('/job-list-rejected', [JobListController::class, 'jobListRejected'])->name('job.list.rejected');

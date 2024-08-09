@@ -25,8 +25,11 @@ return new class extends Migration
             $table->integer('need_worker');
             $table->integer('worker_charge');
             $table->integer('extra_screenshots');
-            $table->integer('job_boosted_time');
-            $table->integer('job_running_day');
+            $table->integer('boosted_time');
+            $table->integer('running_day');
+            $table->integer('charge');
+            $table->integer('site_charge');
+            $table->integer('total_charge');
             $table->enum('status', ['Pending', 'Rejected', 'Running', 'Canceled', 'Paused', 'Completed']);
             $table->timestamp('rejected_at')->nullable();
             $table->timestamp('approved_at')->nullable();
@@ -39,7 +42,6 @@ return new class extends Migration
             $table->integer('deleted_by')->nullable();
             $table->text('rejection_reason')->nullable();
             $table->text('cancellation_reason')->nullable();
-            $table->text('pause_reason')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
