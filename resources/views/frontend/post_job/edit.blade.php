@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Post Job Edit')
+@section('title', 'Edit Job')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Post Job Edit</h4>
+                <h4 class="card-title">Edit Job</h4>
                 {{-- Error Showing --}}
                 @if ($errors->any())
                 <div class="alert alert-danger">
@@ -56,7 +56,7 @@
                                 <div id="category-options">
                                     @foreach($categories as $category)
                                     <div class="form-check form-check-inline">
-                                        <input type="radio" class="form-check-input" name="category_id" id="category_{{ $category->id }}" value="{{ $category->id }}" required>
+                                        <input type="radio" class="form-check-input" name="category_id" id="category_{{ $category->id }}" value="{{ $category->id }}" {{ $jobPost->category_id == $category->id ? 'checked' : '' }} required>
                                         <label class="form-check-label" for="category_{{ $category->id }}">
                                             <span class="badge bg-primary">{{ $category->name }}</span>
                                         </label>
@@ -91,28 +91,28 @@
                                 <label for="title" class="form-label">
                                     Title <small class="text-danger">* Required</small>
                                 </label>
-                                <input type="text" class="form-control" name="title" id="title" placeholder="Please enter a title." required>
+                                <input type="text" class="form-control" name="title" id="title" placeholder="Please enter a title." value="{{ old('title', $jobPost->title) }}" required>
                                 <div class="invalid-feedback">Please enter a title.</div>
                             </div>
                             <div class="mb-2">
                                 <label for="description" class="form-label">
                                     Description <small class="text-danger">* Required</small>
                                 </label>
-                                <textarea class="form-control" name="description" id="description" rows="4" placeholder="Please enter a description." required></textarea>
+                                <textarea class="form-control" name="description" id="description" rows="4" placeholder="Please enter a description." required>{{ old('description', $jobPost->description) }}</textarea>
                                 <div class="invalid-feedback">Please enter a description.</div>
                             </div>
                             <div class="mb-2">
                                 <label for="required_proof" class="form-label">
                                     Required Proof <small class="text-danger">* Required</small>
                                 </label>
-                                <textarea class="form-control" name="required_proof" id="required_proof" rows="4" placeholder="Please enter the required proof." required></textarea>
+                                <textarea class="form-control" name="required_proof" id="required_proof" rows="4" placeholder="Please enter the required proof." required>{{ old('required_proof', $jobPost->required_proof) }}</textarea>
                                 <div class="invalid-feedback">Please enter the required proof.</div>
                             </div>
                             <div class="mb-2">
                                 <label for="additional_note" class="form-label">
                                     Additional Note <small class="text-danger">* Required </small>
                                 </label>
-                                <textarea class="form-control" name="additional_note" id="additional_note" rows="4" placeholder="Please enter additional notes." required></textarea>
+                                <textarea class="form-control" name="additional_note" id="additional_note" rows="4" placeholder="Please enter additional notes." required>{{ old('additional_note', $jobPost->additional_note) }}</textarea>
                                 <small class="text-info">* If you need answers to any questions, write them here for review after the task is complete. Only self and admin can see it.</small>
                                 <div class="invalid-feedback">Please enter additional notes.</div>
                             </div>
@@ -121,6 +121,9 @@
                                     Thumbnail (Optional)
                                 </label>
                                 <input type="file" class="form-control" name="thumbnail" id="thumbnail" accept=".jpg, .jpeg, .png">
+                                @if ($jobPost->thumbnail)
+                                <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $jobPost->thumbnail }}" alt="Thumbnail" class="img-thumbnail mt-2" style="max-width: 150px;">
+                                @endif
                                 <div id="thumbnailError" class="text-danger"></div>
                                 <small class="text-info"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
                             </div>
@@ -135,22 +138,23 @@
                                         <label for="need_worker" class="form-label">
                                             Workers are needed <small class="text-danger">* Required </small>
                                         </label>
-                                        <input type="number" class="form-control" name="need_worker" min="1" id="need_worker" value="1" required>
+                                        <input type="number" class="form-control" name="need_worker" min="1" id="need_worker" value="{{ old('need_worker', $jobPost->need_worker) }}" required>
                                         <div class="invalid-feedback">Please enter how many workers are required.</div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="worker_charge" class="form-label">
                                             Each worker charge <small class="text-danger">* Required </small>
                                         </label>
-                                        <input type="number" class="form-control" name="worker_charge" id="worker_charge" required>
-                                        <small class="text-info">* Each worker charge should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
+                                        <input type="number" class="form-control" name="worker_charge" id="worker_charge" value="{{ old('worker_charge') }}" required>
+                                        <small class="text-info">* Each worker charge should be within the min charge <strong id="min_job_charge">0</strong> and max charge <strong id="max_job_charge">0</strong>.</small>
                                         <div class="invalid-feedback">Please enter the charges for each worker within the allowed range.</div>
+                                        <span id="min_job_charge"></span>
                                     </div>
                                     <div class="mb-3">
                                         <label for="extra_screenshots" class="form-label">
                                             Additional screenshots are required <small class="text-danger">* Required </small>
                                         </label>
-                                        <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="0" required>
+                                        <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="{{ old('extra_screenshots', $jobPost->extra_screenshots) }}" required>
                                         <small class="text-info">* Additional screenshot charge is {{ get_default_settings('job_posting_additional_screenshot_charge') }} {{ get_site_settings('site_currency_symbol') }}. Note: You get 1 screenshot for free.</small>
                                         <div class="invalid-feedback">Please enter how many additional screenshots are required</div>
                                     </div>
@@ -159,16 +163,16 @@
                                             Boosted time <small class="text-danger">* Required </small>
                                         </label>
                                         <select class="form-select" name="boosted_time" id="boosted_time" required>
-                                            <option value="0" selected>No Boost</option>
-                                            <option value="15">15 Minutes</option>
-                                            <option value="30">30 Minutes</option>
-                                            <option value="45">45 Minutes</option>
-                                            <option value="60">1 Hour</option>
-                                            <option value="120">2 Hours</option>
-                                            <option value="180">3 Hours</option>
-                                            <option value="240">4 Hours</option>
-                                            <option value="300">5 Hours</option>
-                                            <option value="360">6 Hours</option>
+                                            <option value="0" {{ old('boosted_time', $jobPost->boosted_time) == 0 ? 'selected' : '' }}>No Boost</option>
+                                            <option value="15" {{ old('boosted_time', $jobPost->boosted_time) == 15 ? 'selected' : '' }}>15 Minutes</option>
+                                            <option value="30" {{ old('boosted_time', $jobPost->boosted_time) == 30 ? 'selected' : '' }}>30 Minutes</option>
+                                            <option value="45" {{ old('boosted_time', $jobPost->boosted_time) == 45 ? 'selected' : '' }}>45 Minutes</option>
+                                            <option value="60" {{ old('boosted_time', $jobPost->boosted_time) == 60 ? 'selected' : '' }}>1 Hour</option>
+                                            <option value="120" {{ old('boosted_time', $jobPost->boosted_time) == 120 ? 'selected' : '' }}>2 Hours</option>
+                                            <option value="180" {{ old('boosted_time', $jobPost->boosted_time) == 180 ? 'selected' : '' }}>3 Hours</option>
+                                            <option value="240" {{ old('boosted_time', $jobPost->boosted_time) == 240 ? 'selected' : '' }}>4 Hours</option>
+                                            <option value="300" {{ old('boosted_time', $jobPost->boosted_time) == 300 ? 'selected' : '' }}>5 Hours</option>
+                                            <option value="360" {{ old('boosted_time', $jobPost->boosted_time) == 360 ? 'selected' : '' }}>6 Hours</option>
                                         </select>
                                         <small class="text-info">* Every 15 minutes boost Charges {{ get_default_settings('job_posting_boosted_time_charge') }} {{ get_site_settings('site_currency_symbol') }}. When the job is boosted, it will be shown at the top of the job list.</small>
                                         <div class="invalid-feedback">Please enter the boosted time.</div>
@@ -180,11 +184,11 @@
                                             Running Day <small class="text-danger">* Required </small>
                                         </label>
                                         <select class="form-select" name="running_day" id="running_day" required>
-                                            <option value="3" selected>3 Days</option>
-                                            <option value="4">4 Days</option>
-                                            <option value="5">5 Days</option>
-                                            <option value="6">6 Days</option>
-                                            <option value="7">1 Week</option>
+                                            <option value="3" {{ old('running_day', $jobPost->running_day) == 3 ? 'selected' : '' }}>3 Days</option>
+                                            <option value="4" {{ old('running_day', $jobPost->running_day) == 4 ? 'selected' : '' }}>4 Days</option>
+                                            <option value="5" {{ old('running_day', $jobPost->running_day) == 5 ? 'selected' : '' }}>5 Days</option>
+                                            <option value="6" {{ old('running_day', $jobPost->running_day) == 6 ? 'selected' : '' }}>6 Days</option>
+                                            <option value="7" {{ old('running_day', $jobPost->running_day) == 7 ? 'selected' : '' }}>1 Week</option>
                                         </select>
                                         <small class="text-info">* When running day is over the job will be closed automatically.</small>
                                         <div class="invalid-feedback">Please enter the running day.</div>
@@ -204,12 +208,6 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (Auth::user()->deposit_balance < get_default_settings('job_posting_min_budget'))
-                            <div class="alert alert-warning">
-                                Your current balance is {{ Auth::user()->deposit_balance }} {{ get_site_settings('site_currency_symbol') }}. You need to pay {{ get_default_settings('job_posting_min_budget') }} {{ get_site_settings('site_currency_symbol') }} to post a job. Your balance is not enough to post a job. Please deposit now to post a job.
-                                <a href="{{ route('deposit') }}" class="text-primary">Deposit Now</a>
-                            </div>
-                            @endif
                         </section>
                     </div>
                 </form>
@@ -228,7 +226,7 @@
             transitionEffect: 'slideLeft',
             autoFocus: true,
             labels: {
-                finish: "Submit"
+                finish: "Update"
             },
             onStepChanging: function(event, currentIndex, newIndex) {
                 if (newIndex < currentIndex) return true;
@@ -324,24 +322,37 @@
             }
         });
 
-        $('input[name="category_id"]').change(function() {
-            var category_id = $(this).val();
+        function loadSubCategories(category_id) {
             $.ajax({
                 url: "{{ route('post_job.get_sub_category') }}",
                 type: 'GET',
                 data: { category_id: category_id },
                 success: function(response) {
-                    $('#sub-category-section').show();
-                    $('#sub-category-options').html(response.html);
-                    $('#child-category-section').hide();
-                    $('#child-category-options').html('');
+                    if (response.sub_categories && response.sub_categories.length > 0) {
+                        var options = '';
+                        $.each(response.sub_categories, function(index, sub_category) {
+                            var isChecked = ({{ $jobPost->sub_category_id }} === sub_category.id) ? 'checked' : '';
+
+                            options += '<div class="form-check form-check-inline">';
+                            options += '<input type="radio" class="form-check-input" name="sub_category_id" id="sub_category_' + sub_category.id + '" value="' + sub_category.id + '" ' + isChecked + '>';
+                            options += '<label class="form-check-label" for="sub_category_' + sub_category.id + '">' + '<span class="badge bg-primary">' + sub_category.name + '</span>' + '</label>';
+                            options += '</div>';
+                        });
+                        $('#sub-category-section').show();
+                        $('#sub-category-options').html(options);
+                    } else {
+                        $('#child-category-section').hide();
+                        $('#child-category-options').html('');
+                    }
+
+                    var sub_category_id = $('input[name="sub_category_id"]:checked').val();
+                    if (sub_category_id) {
+                        loadChildCategories(category_id, sub_category_id);
+                    }
                 }
             });
-        });
-
-        $(document).on('change', 'input[name="sub_category_id"]', function() {
-            var sub_category_id = $(this).val();
-            var category_id = $('input[name="category_id"]:checked').val();
+        }
+        function loadChildCategories(category_id, sub_category_id) {
             $.ajax({
                 url: "{{ route('post_job.get_child_category') }}",
                 type: 'GET',
@@ -350,9 +361,12 @@
                     if (response.child_categories && response.child_categories.length > 0) {
                         var options = '';
                         $.each(response.child_categories, function(index, child_category) {
+                            // Check if child_category.id matches the current job's child_category_id
+                            var isChecked = ({{ $jobPost->child_category_id }} === child_category.id) ? 'checked' : '';
+
                             options += '<div class="form-check form-check-inline">';
-                            options += '<input type="radio" class="form-check-input" name="child_category_id" id="child_category_' + child_category.id + '" value="' + child_category.id + '">';
-                            options += '<label class="form-check-label" for="child_category_' + child_category.id + '">' + '<span class="badge bg-primary">' + child_category.name + '</span>'  + '</label>';
+                            options += '<input type="radio" class="form-check-input" name="child_category_id" id="child_category_' + child_category.id + '" value="' + child_category.id + '" ' + isChecked + '>';
+                            options += '<label class="form-check-label" for="child_category_' + child_category.id + '">' + '<span class="badge bg-primary">' + child_category.name + '</span>' + '</label>';
                             options += '</div>';
                         });
                         $('#child-category-options').html(options);
@@ -361,40 +375,61 @@
                         $('#child-category-section').hide();
                         $('#child-category-options').html('');
                     }
-                    var workerChargeInput = $('#worker_charge');
-                    workerChargeInput.attr('min', response.job_post_charge.working_min_charges);
-                    workerChargeInput.attr('max', response.job_post_charge.working_max_charges);
-                    workerChargeInput.val(response.job_post_charge.working_min_charges);
 
-                    $('#min_charge').text(response.job_post_charge.working_min_charge + ' {{ get_site_settings('site_currency_symbol') }}');
-                    $('#max_charge').text(response.job_post_charge.working_max_charge + ' {{ get_site_settings('site_currency_symbol') }}');
+                    if (!response.child_categories) {
+                        loadJobPostCharge(category_id, sub_category_id, null);
+                    }
                 }
             });
-        });
+        }
 
+        function loadJobPostCharge(category_id, sub_category_id, child_category_id) {
+            $.ajax({
+                url: "{{ route('post_job.get_job_post_charge') }}",
+                type: 'GET',
+                data: { category_id: category_id, sub_category_id: sub_category_id, child_category_id: child_category_id },
+                success: function(response) {
+
+                    if (response.working_min_charge && response.working_max_charge) {
+
+                        var workerChargeInput = $('#worker_charge');
+                        workerChargeInput.attr('min', response.working_min_charge);
+                        workerChargeInput.attr('max', response.working_max_charge);
+                        workerChargeInput.val(response.working_min_charge);
+
+                        $('#min_job_charge').text(response.working_min_charge + ' {{ get_site_settings('site_currency_symbol') }}');
+                        $('#max_job_charge').text(response.working_max_charge + ' {{ get_site_settings('site_currency_symbol') }}');
+                    }
+                }
+            });
+        }
+
+        // Get Sub Categories on category change
+        $('input[name="category_id"]').change(function() {
+            // Reset the sub category and child category sections
+            $('#sub-category-section').hide();
+            $('#sub-category-options').html('');
+            $('#child-category-section').hide();
+            $('#child-category-options').html('');
+            var category_id = $(this).val();
+            loadSubCategories(category_id);
+        });
+        // Get Child Categories on sub category change
+        $(document).on('change', 'input[name="sub_category_id"]', function() {
+            // Reset the child category section
+            $('#child-category-section').hide();
+            $('#child-category-options').html('');
+            var sub_category_id = $(this).val();
+            var category_id = $('input[name="category_id"]:checked').val();
+            loadChildCategories(category_id, sub_category_id);
+        });
+        // Get Job Post Charge on child category change
         $(document).on('change', 'input[name="child_category_id"]', function() {
             var category_id = $('input[name="category_id"]:checked').val();
             var sub_category_id = $('input[name="sub_category_id"]:checked').val();
             var child_category_id = $(this).val();
             if (child_category_id) {
-                $.ajax({
-                    url: "{{ route('post_job.get_job_post_charge') }}",
-                    type: 'GET',
-                    data: {
-                        category_id: category_id,
-                        sub_category_id: sub_category_id,
-                        child_category_id: child_category_id
-                    },
-                    success: function(response) {
-                        var workerChargeInput = $('#worker_charge');
-                        workerChargeInput.attr('min', response.job_post_charge.working_min_charge);
-                        workerChargeInput.attr('max', response.job_post_charge.working_max_charge);
-                        workerChargeInput.val(response.job_post_charge.working_min_charge);
-
-                        $('#min_charge').text(response.job_post_charge.working_min_charge + ' {{ get_site_settings('site_currency_symbol') }}');
-                        $('#max_charge').text(response.job_post_charge.working_max_charge + ' {{ get_site_settings('site_currency_symbol') }}');
-                    }
-                });
+                loadJobPostCharge(category_id, sub_category_id, child_category_id);
             }
         });
 
@@ -462,6 +497,13 @@
 
         // Initialize the total job Charge on page load
         calculateTotalJobCharge();
+
+        var category_id = $('input[name="category_id"]:checked').val();
+        var sub_category_id = $('input[name="sub_category_id"]:checked').val();
+        var child_category_id = $('input[name="child_category_id"]:checked').val();
+        loadSubCategories(category_id);
+        loadChildCategories(category_id, sub_category_id);
+        loadJobPostCharge(category_id, sub_category_id, child_category_id);
     });
 </script>
 @endsection

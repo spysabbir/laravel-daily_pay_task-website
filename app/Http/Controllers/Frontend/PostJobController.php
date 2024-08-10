@@ -37,15 +37,12 @@ class PostJobController extends Controller
         $categoryId = $request->category_id;
         $subCategories = SubCategory::where('category_id', $categoryId)->get();
 
-        $html = '';
-        foreach ($subCategories as $subCategory) {
-            $html .= '<div class="form-check form-check-inline">';
-            $html .= '<input type="radio" class="form-check-input" name="sub_category_id" id="sub_category_' . $subCategory->id . '" value="' . $subCategory->id . '" required>';
-            $html .= '<label class="form-check-label" for="sub_category_' . $subCategory->id . '"><span class="badge bg-primary">' . $subCategory->name . '</span></label>';
-            $html .= '</div>';
+        $response = [];
+        if ($subCategories->isNotEmpty()) {
+            $response['sub_categories'] = $subCategories;
         }
 
-        return response()->json(['html' => $html]);
+        return response()->json($response);
     }
 
     public function getChildCategories(Request $request)
@@ -77,7 +74,7 @@ class PostJobController extends Controller
             ->where('child_category_id', $childCategoryId)
             ->first();
 
-        return response()->json(['job_post_charge' => $charge]);
+        return response()->json($charge);
     }
 
     public function postJobStore(Request $request)
