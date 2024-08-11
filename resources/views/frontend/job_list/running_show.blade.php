@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Job List - Paused')
+@section('title', 'Job List - Running')
 
 @section('content')
 <div class="row">
@@ -8,11 +8,11 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Job List - Pending</h3>
+                    <h3 class="card-title">Job List - Running</h3>
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                {{-- <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
                             <tr>
@@ -22,14 +22,14 @@
                                 <th>Need Worker</th>
                                 <th>Worker Charge</th>
                                 <th>Job Running Day</th>
-                                <td>Action</td>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
 
                         </tbody>
                     </table>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -51,7 +51,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('job.list.paused') }}",
+                url: "{{ route('job.list.running') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -60,23 +60,23 @@
                 { data: 'need_worker', name: 'need_worker' },
                 { data: 'worker_charge', name: 'worker_charge' },
                 { data: 'running_day', name: 'running_day' },
-                { data: 'action', name: 'action' },
+                { data: 'action', name: 'action' }
             ]
         });
 
-        // Resume Data
-        $(document).on('click', '.resumeBtn', function(){
+        // Paused Data
+        $(document).on('click', '.pausedBtn', function(){
             var id = $(this).data('id');
             var url = "{{ route('running_job.paused_resume', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You want to resume this job!",
+                text: "You want to paused this job!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Resume it!'
+                confirmButtonText: 'Yes, Paused it!'
                 }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -84,7 +84,7 @@
                         method: 'GET',
                         success: function(response) {
                             $('#allDataTable').DataTable().ajax.reload();
-                            toastr.warning('Job Resumed Successfully');
+                            toastr.warning('Job Paused Successfully');
                         }
                     });
                 }

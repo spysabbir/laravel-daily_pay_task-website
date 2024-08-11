@@ -227,6 +227,7 @@
 @section('script')
 <script>
     $(document).ready(function() {
+        // Initialize the wizard
         $('#wizard').steps({
             headerTag: 'h2',
             bodyTag: 'section',
@@ -329,6 +330,7 @@
             }
         });
 
+        // Add change event for category radio buttons
         $('input[name="category_id"]').change(function() {
             var category_id = $(this).val();
             $.ajax({
@@ -336,14 +338,27 @@
                 type: 'GET',
                 data: { category_id: category_id },
                 success: function(response) {
-                    $('#sub-category-section').show();
-                    $('#sub-category-options').html(response.html);
-                    $('#child-category-section').hide();
-                    $('#child-category-options').html('');
+                    if (response.sub_categories && response.sub_categories.length > 0) {
+                        var options = '';
+                        $.each(response.sub_categories, function(index, sub_category) {
+                            var isChecked = ({{ $jobPost->sub_category_id }} === sub_category.id) ? 'checked' : '';
+
+                            options += '<div class="form-check form-check-inline">';
+                            options += '<input type="radio" class="form-check-input" name="sub_category_id" id="sub_category_' + sub_category.id + '" value="' + sub_category.id + '" ' + isChecked + '>';
+                            options += '<label class="form-check-label" for="sub_category_' + sub_category.id + '">' + '<span class="badge bg-primary">' + sub_category.name + '</span>' + '</label>';
+                            options += '</div>';
+                        });
+                        $('#sub-category-section').show();
+                        $('#sub-category-options').html(options);
+                    } else {
+                        $('#child-category-section').hide();
+                        $('#child-category-options').html('');
+                    }
                 }
             });
         });
 
+        // Add change event for sub category radio buttons
         $(document).on('change', 'input[name="sub_category_id"]', function() {
             var sub_category_id = $(this).val();
             var category_id = $('input[name="category_id"]:checked').val();
@@ -377,6 +392,7 @@
             });
         });
 
+        // Add change event for child category radio buttons
         $(document).on('change', 'input[name="child_category_id"]', function() {
             var category_id = $('input[name="category_id"]:checked').val();
             var sub_category_id = $('input[name="sub_category_id"]:checked').val();
@@ -403,6 +419,7 @@
             }
         });
 
+        // Add change event for input and select fields
         $('#jobForm').on('change', 'input, select', function() {
             calculateTotalJobCharge();
         });
@@ -412,6 +429,7 @@
             calculateTotalJobCharge();
         });
 
+        // Calculate the total job charge based on the input fields
         function calculateTotalJobCharge() {
             var need_worker = parseInt($('#need_worker').val()) || 0;
             var worker_charge = parseFloat($('#worker_charge').val()) || 0;
@@ -431,6 +449,7 @@
             $('#total_job_charge').val((job_charge + site_charge).toFixed(2));
         }
 
+        // Validate input fields before submitting the form
         function validateInputFields() {
             let isValid = true;
 

@@ -100,13 +100,6 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListCanceled)
                     ->addIndexColumn()
-                    ->editColumn('status', function ($row) {
-                        $status = '
-                            <span class="badge bg-info">' . $row->status . '</span>
-                        ';
-                        return $status;
-                    })
-                    ->rawColumns(['status'])
                     ->make(true);
             }
             return view('frontend.job_list.canceled');
@@ -132,17 +125,29 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListPaused)
                     ->addIndexColumn()
-                    ->editColumn('status', function ($row) {
-                        $status = '
-                            <span class="badge bg-info">' . $row->status . '</span>
+                    ->editColumn('action', function ($row) {
+                        $btn = '
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs resumeBtn">Resume</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
-                        return $status;
+                        return $btn;
                     })
-                    ->rawColumns(['status'])
+                    ->rawColumns(['action'])
                     ->make(true);
             }
             return view('frontend.job_list.paused');
         }
+    }
+
+    public function runningJobCanceled($id)
+    {
+        $jobPost = JobPost::findOrFail($id);
+
+        $jobPost->status = 'Canceled';
+
+        $jobPost->save();
+
+        return response()->json(['success' => 'Status updated successfully.']);
     }
 
     public function jobListRunning(Request $request)
@@ -164,17 +169,39 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListRunning)
                     ->addIndexColumn()
-                    ->editColumn('status', function ($row) {
-                        $status = '
-                            <span class="badge bg-info">' . $row->status . '</span>
+                    ->editColumn('action', function ($row) {
+                        $btn = '
+                            <a href="' . route('running_job.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
-                        return $status;
+                        return $btn;
                     })
-                    ->rawColumns(['status'])
+                    ->rawColumns(['action'])
                     ->make(true);
             }
             return view('frontend.job_list.running');
         }
+    }
+
+    public function runningJobShow()
+    {
+        return view('frontend.job_list.running_show');
+    }
+
+    public function runningJobPausedResume($id)
+    {
+        $jobPost = JobPost::findOrFail($id);
+
+        if ($jobPost->status == 'Paused') {
+            $jobPost->status = 'Running';
+        } else if ($jobPost->status == 'Running') {
+            $jobPost->status = 'Paused';
+        }
+
+        $jobPost->save();
+
+        return response()->json(['success' => 'Status updated successfully.']);
     }
 
     public function jobListCompleted(Request $request)

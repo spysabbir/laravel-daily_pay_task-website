@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\JobPost;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -78,6 +79,11 @@ class JobPostController extends Controller
                     'error' => $validator->errors()->toArray()
                 ]);
             }
+
+            $user = User::findOrFail($jobPost->user_id);
+            $user->update([
+                'deposit_balance' => $user->deposit_balance + $jobPost->total_charge,
+            ]);
         }
 
         // Update the job post

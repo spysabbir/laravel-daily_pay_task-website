@@ -145,7 +145,7 @@
                                         <label for="worker_charge" class="form-label">
                                             Each worker charge <small class="text-danger">* Required </small>
                                         </label>
-                                        <input type="number" class="form-control" name="worker_charge" id="worker_charge" value="{{ old('worker_charge') }}" required>
+                                        <input type="number" class="form-control" name="worker_charge" id="worker_charge" value="{{ old('worker_charge', $jobPost->worker_charge) }}" required>
                                         <small class="text-info">* Each worker charge should be within the min charge <strong id="min_job_charge">0</strong> and max charge <strong id="max_job_charge">0</strong>.</small>
                                         <div class="invalid-feedback">Please enter the charges for each worker within the allowed range.</div>
                                         <span id="min_job_charge"></span>
@@ -220,6 +220,7 @@
 @section('script')
 <script>
     $(document).ready(function() {
+        // Initialize the wizard
         $('#wizard').steps({
             headerTag: 'h2',
             bodyTag: 'section',
@@ -322,6 +323,7 @@
             }
         });
 
+        // Load Sub Categories on category change
         function loadSubCategories(category_id) {
             $.ajax({
                 url: "{{ route('post_job.get_sub_category') }}",
@@ -346,12 +348,12 @@
                     }
 
                     var sub_category_id = $('input[name="sub_category_id"]:checked').val();
-                    if (sub_category_id) {
-                        loadChildCategories(category_id, sub_category_id);
-                    }
+                    loadChildCategories(category_id, sub_category_id);
                 }
             });
         }
+
+        // Load Child Categories on sub category change
         function loadChildCategories(category_id, sub_category_id) {
             $.ajax({
                 url: "{{ route('post_job.get_child_category') }}",
@@ -376,37 +378,34 @@
                         $('#child-category-options').html('');
                     }
 
-                    if (!response.child_categories) {
-                        loadJobPostCharge(category_id, sub_category_id, null);
-                    }
+                    var child_category_id = $('input[name="child_category_id"]:checked').val();
+                    loadJobPostCharge(category_id, sub_category_id, child_category_id);
                 }
             });
         }
 
+        // Load Job Post Charge on child category change
         function loadJobPostCharge(category_id, sub_category_id, child_category_id) {
             $.ajax({
                 url: "{{ route('post_job.get_job_post_charge') }}",
                 type: 'GET',
                 data: { category_id: category_id, sub_category_id: sub_category_id, child_category_id: child_category_id },
                 success: function(response) {
-
                     if (response.working_min_charge && response.working_max_charge) {
-
-                        var workerChargeInput = $('#worker_charge');
-                        workerChargeInput.attr('min', response.working_min_charge);
-                        workerChargeInput.attr('max', response.working_max_charge);
-                        workerChargeInput.val(response.working_min_charge);
-
+                        $('#worker_charge').val(response.working_min_charge);
+                        $('#worker_charge').attr('min', response.working_min_charge);
+                        $('#worker_charge').attr('max', response.working_max_charge);
                         $('#min_job_charge').text(response.working_min_charge + ' {{ get_site_settings('site_currency_symbol') }}');
                         $('#max_job_charge').text(response.working_max_charge + ' {{ get_site_settings('site_currency_symbol') }}');
                     }
+
+                    calculateTotalJobCharge();
                 }
             });
         }
 
         // Get Sub Categories on category change
         $('input[name="category_id"]').change(function() {
-            // Reset the sub category and child category sections
             $('#sub-category-section').hide();
             $('#sub-category-options').html('');
             $('#child-category-section').hide();
@@ -414,25 +413,25 @@
             var category_id = $(this).val();
             loadSubCategories(category_id);
         });
+
         // Get Child Categories on sub category change
         $(document).on('change', 'input[name="sub_category_id"]', function() {
-            // Reset the child category section
             $('#child-category-section').hide();
             $('#child-category-options').html('');
             var sub_category_id = $(this).val();
             var category_id = $('input[name="category_id"]:checked').val();
             loadChildCategories(category_id, sub_category_id);
         });
+        
         // Get Job Post Charge on child category change
         $(document).on('change', 'input[name="child_category_id"]', function() {
             var category_id = $('input[name="category_id"]:checked').val();
             var sub_category_id = $('input[name="sub_category_id"]:checked').val();
             var child_category_id = $(this).val();
-            if (child_category_id) {
-                loadJobPostCharge(category_id, sub_category_id, child_category_id);
-            }
+            loadJobPostCharge(category_id, sub_category_id, child_category_id);
         });
 
+        // Add change event for all input and select fields in the form
         $('#jobForm').on('change', 'input, select', function() {
             calculateTotalJobCharge();
         });
@@ -442,11 +441,12 @@
             calculateTotalJobCharge();
         });
 
+        // Calculate the total job charge
         function calculateTotalJobCharge() {
-            var need_worker = parseInt($('#need_worker').val()) || 0;
-            var worker_charge = parseFloat($('#worker_charge').val()) || 0;
-            var extra_screenshots = parseInt($('#extra_screenshots').val()) || 0;
-            var boosted_time = parseInt($('#boosted_time').val()) || 0;
+            var need_worker = parseInt($('#need_worker').val());
+            var worker_charge = parseFloat($('#worker_charge').val());
+            var extra_screenshots = parseInt($('#extra_screenshots').val());
+            var boosted_time = parseInt($('#boosted_time').val());
             var screenshot_charge = {{ get_default_settings('job_posting_additional_screenshot_charge') }};
             var boosted_time_charge = {{ get_default_settings('job_posting_boosted_time_charge') }};
             var job_posting_charge_percentage = {{ get_default_settings('job_posting_charge_percentage') }};
@@ -461,6 +461,7 @@
             $('#total_job_charge').val((job_charge + site_charge).toFixed(2));
         }
 
+        // Validate the input fields
         function validateInputFields() {
             let isValid = true;
 
@@ -498,12 +499,9 @@
         // Initialize the total job Charge on page load
         calculateTotalJobCharge();
 
+        // Load the sub categories on page load
         var category_id = $('input[name="category_id"]:checked').val();
-        var sub_category_id = $('input[name="sub_category_id"]:checked').val();
-        var child_category_id = $('input[name="child_category_id"]:checked').val();
         loadSubCategories(category_id);
-        loadChildCategories(category_id, sub_category_id);
-        loadJobPostCharge(category_id, sub_category_id, child_category_id);
     });
 </script>
 @endsection

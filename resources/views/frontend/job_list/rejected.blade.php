@@ -19,7 +19,7 @@
                                 <th>Sl No</th>
                                 <th>Job ID</th>
                                 <th>Title</th>
-                                <th>Cancellation Reason</th>
+                                <th>Rejection Reason</th>
                                 <th>Rejected At</th>
                                 <th>Action</th>
                             </tr>

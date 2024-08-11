@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Job List - Pending</h3>
+                    <h3 class="card-title">Job List - Running</h3>
                 </div>
             </div>
             <div class="card-body">
@@ -22,7 +22,7 @@
                                 <th>Need Worker</th>
                                 <th>Worker Charge</th>
                                 <th>Job Running Day</th>
-                                <td>Status</td>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,9 +60,63 @@
                 { data: 'need_worker', name: 'need_worker' },
                 { data: 'worker_charge', name: 'worker_charge' },
                 { data: 'running_day', name: 'running_day' },
-                { data: 'status', name: 'status' },
+                { data: 'action', name: 'action' }
             ]
         });
+
+        // Paused Data
+        $(document).on('click', '.pausedBtn', function(){
+            var id = $(this).data('id');
+            var url = "{{ route('running_job.paused_resume', ":id") }}";
+            url = url.replace(':id', id)
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to paused this job!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Paused it!'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        success: function(response) {
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.warning('Job Paused Successfully');
+                        }
+                    });
+                }
+            })
+        })
+
+        // Canceled Data
+        $(document).on('click', '.canceledBtn', function(){
+            var id = $(this).data('id');
+            var url = "{{ route('running_job.canceled', ":id") }}";
+            url = url.replace(':id', id)
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to canceled this job!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Canceled it!'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        success: function(response) {
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.warning('Job Canceled Successfully');
+                        }
+                    });
+                }
+            })
+        })
     });
 </script>
 @endsection
