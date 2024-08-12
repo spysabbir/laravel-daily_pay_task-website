@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Deposit;
+use App\Models\JobPost;
 use App\Models\User;
 use App\Models\Verification;
 use App\Models\Withdraw;
@@ -311,7 +313,7 @@ class UserController extends Controller
         }
     }
 
-    public function findWorks()
+    public function findWorks(Request $request)
     {
         $user = User::findOrFail(Auth::id());
         $hasVerification = $user->hasVerification('Approved');
@@ -321,13 +323,53 @@ class UserController extends Controller
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
-            return view('frontend.find_works.index');
+            if ($request->ajax()) {
+                $query = JobPost::where('status', 'Running')->where('user_id', '!=', Auth::id());
+
+                if ($request->category_id) {
+                    $query->where('job_posts.category_id', $request->category_id)->orderBy('created_at', 'desc');
+                }
+                if ($request->sort_by) {
+                    if ($request->sort_by == 'low_to_high') {
+                        $query->orderBy('worker_charge', 'asc');
+                    } else if ($request->sort_by == 'high_to_low') {
+                        $query->orderBy('worker_charge', 'desc');
+                    } else if ($request->sort_by == 'latest') {
+                        $query->orderBy('created_at', 'desc');
+                    } else if ($request->sort_by == 'oldest') {
+                        $query->orderBy('created_at', 'asc');
+                    }
+                }
+
+                $query->select('job_posts.*');
+
+                $jobPosts = $query->get();
+
+                return DataTables::of($jobPosts)
+                    ->addIndexColumn()
+                    ->editColumn('category_name', function ($row) {
+                        return $row->category->name;
+                    })
+                    ->editColumn('action', function ($row) {
+                        $action = '
+                        <a href="'.route('work.details', encrypt($row->id)).'" target="_blank" title="View" class="btn btn-info btn-sm">
+                            View
+                        </a>
+                        ';
+                        return $action;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+            }
+            $categories = Category::where('status', 'Active')->get();
+            return view('frontend.find_works.index', compact('categories'));
         }
     }
 
-    public function workDetails()
+    public function workDetails($id)
     {
-        return view('frontend.find_works.view');
+        $jobPost = JobPost::findOrFail(decrypt($id));
+        return view('frontend.find_works.view', compact('jobPost'));
     }
 
     public function workApplyStore()
