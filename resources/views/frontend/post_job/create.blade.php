@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="row">
+
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
@@ -23,6 +24,7 @@
                 <form id="jobForm" action="{{ route('post_job.submit') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div id="wizard">
+                        <!-- Notice Section -->
                         <h2>Notice</h2>
                         <section>
                             @if (Auth::user()->deposit_balance < get_default_settings('job_posting_min_budget'))
@@ -52,6 +54,7 @@
                             </p>
                         </section>
 
+                        <!-- Category Section -->
                         <h2>Select Category</h2>
                         <section>
                             <div class="mb-3 border p-2">
@@ -90,6 +93,7 @@
                             </div>
                         </section>
 
+                        <!-- Job Information Section -->
                         <h2>Job Information</h2>
                         <section>
                             <div class="mb-2">
@@ -128,6 +132,7 @@
                                 <input type="file" class="form-control" name="thumbnail" id="thumbnail" accept=".jpg, .jpeg, .png">
                                 <div id="thumbnailError" class="text-danger"></div>
                                 <small class="text-info"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
+                                <img src="" alt="" id="thumbnailPreview" class="img-fluid mt-2 d-block" style="display:none;" alt="Thumbnail">
                             </div>
                         </section>
 
@@ -147,7 +152,10 @@
                                         <label for="worker_charge" class="form-label">
                                             Each worker charge <small class="text-danger">* Required </small>
                                         </label>
-                                        <input type="number" class="form-control" name="worker_charge" id="worker_charge" required>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="worker_charge" id="worker_charge" required>
+                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                        </div>
                                         <small class="text-info">* Each worker charge should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
                                         <div class="invalid-feedback">Please enter the charges for each worker within the allowed range.</div>
                                     </div>
@@ -196,15 +204,24 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="job_charge" class="form-label">Job Charge</label>
-                                        <input type="number" class="form-control" id="job_charge" readonly>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="job_charge" readonly>
+                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="site_charge" class="form-label">Site Charge <strong class="text-info">( {{ get_default_settings('job_posting_charge_percentage') }} % )</strong></label>
-                                        <input type="number" class="form-control" id="site_charge" readonly>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="site_charge" readonly>
+                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="total_job_charge" class="form-label">Total Job Charge</label>
-                                        <input type="number" class="form-control" name="total_job_charge" id="total_job_charge" readonly>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="total_job_charge" readonly>
+                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                        </div>
                                         <small class="text-info">* Total job Charge must be {{ get_default_settings('job_posting_min_budget') }} {{ get_site_settings('site_currency_symbol') }}.</small>
                                     </div>
                                 </div>
@@ -330,9 +347,23 @@
             }
         });
 
+        // thumbnail preview
+        $('#thumbnail').change(function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#thumbnailPreview').attr('src', e.target.result).show();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         // Add change event for category radio buttons
         $('input[name="category_id"]').change(function() {
             var category_id = $(this).val();
+            $('#child-category-section').hide();
+            $('#child-category-options').html('');
             $.ajax({
                 url: "{{ route('post_job.get_sub_category') }}",
                 type: 'GET',
@@ -341,17 +372,14 @@
                     if (response.sub_categories && response.sub_categories.length > 0) {
                         var options = '';
                         $.each(response.sub_categories, function(index, sub_category) {
-                            var isChecked = ({{ $jobPost->sub_category_id }} === sub_category.id) ? 'checked' : '';
-
                             options += '<div class="form-check form-check-inline">';
-                            options += '<input type="radio" class="form-check-input" name="sub_category_id" id="sub_category_' + sub_category.id + '" value="' + sub_category.id + '" ' + isChecked + '>';
+                            options += '<input type="radio" class="form-check-input" name="sub_category_id" id="sub_category_' + sub_category.id + '" value="' + sub_category.id + '">';
                             options += '<label class="form-check-label" for="sub_category_' + sub_category.id + '">' + '<span class="badge bg-primary">' + sub_category.name + '</span>' + '</label>';
                             options += '</div>';
                         });
                         $('#sub-category-section').show();
                         $('#sub-category-options').html(options);
                     } else {
-                        $('#child-category-section').hide();
                         $('#child-category-options').html('');
                     }
                 }
@@ -381,13 +409,9 @@
                         $('#child-category-section').hide();
                         $('#child-category-options').html('');
                     }
-                    var workerChargeInput = $('#worker_charge');
-                    workerChargeInput.attr('min', response.job_post_charge.working_min_charges);
-                    workerChargeInput.attr('max', response.job_post_charge.working_max_charges);
-                    workerChargeInput.val(response.job_post_charge.working_min_charges);
 
-                    $('#min_charge').text(response.job_post_charge.working_min_charge + ' {{ get_site_settings('site_currency_symbol') }}');
-                    $('#max_charge').text(response.job_post_charge.working_max_charge + ' {{ get_site_settings('site_currency_symbol') }}');
+                    loadJobPostCharge(category_id, sub_category_id, null);
+                    calculateTotalJobCharge();
                 }
             });
         });
@@ -398,26 +422,29 @@
             var sub_category_id = $('input[name="sub_category_id"]:checked').val();
             var child_category_id = $(this).val();
             if (child_category_id) {
-                $.ajax({
-                    url: "{{ route('post_job.get_job_post_charge') }}",
-                    type: 'GET',
-                    data: {
-                        category_id: category_id,
-                        sub_category_id: sub_category_id,
-                        child_category_id: child_category_id
-                    },
-                    success: function(response) {
-                        var workerChargeInput = $('#worker_charge');
-                        workerChargeInput.attr('min', response.job_post_charge.working_min_charge);
-                        workerChargeInput.attr('max', response.job_post_charge.working_max_charge);
-                        workerChargeInput.val(response.job_post_charge.working_min_charge);
-
-                        $('#min_charge').text(response.job_post_charge.working_min_charge + ' {{ get_site_settings('site_currency_symbol') }}');
-                        $('#max_charge').text(response.job_post_charge.working_max_charge + ' {{ get_site_settings('site_currency_symbol') }}');
-                    }
-                });
+                loadJobPostCharge(category_id, sub_category_id, child_category_id);
             }
         });
+
+        // Add change event for worker_charge input field
+        function loadJobPostCharge(category_id, sub_category_id, child_category_id) {
+            $.ajax({
+                url: "{{ route('post_job.get_job_post_charge') }}",
+                type: 'GET',
+                data: { category_id: category_id, sub_category_id: sub_category_id, child_category_id: child_category_id },
+                success: function(response) {
+                    if (response.working_min_charge && response.working_max_charge) {
+                        $('#worker_charge').val(response.working_min_charge);
+                        $('#worker_charge').attr('min', response.working_min_charge);
+                        $('#worker_charge').attr('max', response.working_max_charge);
+                        $('#min_charge').text(response.working_min_charge + ' {{ get_site_settings('site_currency_symbol') }}');
+                        $('#max_charge').text(response.working_max_charge + ' {{ get_site_settings('site_currency_symbol') }}');
+                    }
+
+                    calculateTotalJobCharge();
+                }
+            });
+        }
 
         // Add change event for input and select fields
         $('#jobForm').on('change', 'input, select', function() {

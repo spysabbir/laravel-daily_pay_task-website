@@ -24,6 +24,7 @@
                     @csrf
                     @method('PUT')
                     <div id="wizard">
+                        <!-- Notice Section -->
                         <h2>Notice</h2>
                         <section>
                             <h4 class="mb-3">
@@ -47,6 +48,7 @@
                             </p>
                         </section>
 
+                        <!-- Category Section -->
                         <h2>Select Category</h2>
                         <section>
                             <div class="mb-3 border p-2">
@@ -85,6 +87,7 @@
                             </div>
                         </section>
 
+                        <!-- Job Information Section -->
                         <h2>Job Information</h2>
                         <section>
                             <div class="mb-2">
@@ -121,11 +124,11 @@
                                     Thumbnail (Optional)
                                 </label>
                                 <input type="file" class="form-control" name="thumbnail" id="thumbnail" accept=".jpg, .jpeg, .png">
-                                @if ($jobPost->thumbnail)
-                                <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $jobPost->thumbnail }}" alt="Thumbnail" class="img-thumbnail mt-2" style="max-width: 150px;">
-                                @endif
                                 <div id="thumbnailError" class="text-danger"></div>
                                 <small class="text-info"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
+                                @if ($jobPost->thumbnail)
+                                <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $jobPost->thumbnail }}" alt="" id="thumbnailPreview" class="img-fluid mt-2 d-block" style="display:none;" alt="Thumbnail">
+                                @endif
                             </div>
                         </section>
 
@@ -203,7 +206,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="total_job_charge" class="form-label">Total Job Charge</label>
-                                        <input type="number" class="form-control" name="total_job_charge" id="total_job_charge" readonly>
+                                        <input type="number" class="form-control" id="total_job_charge" readonly>
                                         <small class="text-info">* Total job Charge must be {{ get_default_settings('job_posting_min_budget') }} {{ get_site_settings('site_currency_symbol') }}.</small>
                                     </div>
                                 </div>
@@ -323,6 +326,18 @@
             }
         });
 
+         // thumbnail preview
+         $('#thumbnail').change(function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#thumbnailPreview').attr('src', e.target.result).show();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         // Load Sub Categories on category change
         function loadSubCategories(category_id) {
             $.ajax({
@@ -422,7 +437,7 @@
             var category_id = $('input[name="category_id"]:checked').val();
             loadChildCategories(category_id, sub_category_id);
         });
-        
+
         // Get Job Post Charge on child category change
         $(document).on('change', 'input[name="child_category_id"]', function() {
             var category_id = $('input[name="category_id"]:checked').val();
