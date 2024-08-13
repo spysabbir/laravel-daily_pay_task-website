@@ -25,7 +25,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
 
     Route::get('/find-works', [UserController::class, 'findWorks'])->name('find.works');
     Route::get('/work-details/{id}', [UserController::class, 'workDetails'])->name('work.details');
-    Route::post('/work-details/{id}/apply', [UserController::class, 'workApplyStore'])->name('work.apply.store');
+    Route::post('/work-proof-submit/{id}', [UserController::class, 'workProofSubmit'])->name('work.proof.submit');
 
     Route::get('/work-list-pending', [UserController::class, 'workListPending'])->name('work.list.pending');
     Route::get('/work-list-approved', [UserController::class, 'workListApproved'])->name('work.list.approved');

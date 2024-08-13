@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Deposit;
 use App\Models\JobPost;
+use App\Models\JobProof;
 use App\Models\User;
 use App\Models\Verification;
 use App\Models\Withdraw;
@@ -350,6 +351,19 @@ class UserController extends Controller
                     ->editColumn('category_name', function ($row) {
                         return $row->category->name;
                     })
+                    ->editColumn('title', function ($row) {
+                        return '
+                            <a href="'.route('work.details', encrypt($row->id)).'" title="'.$row->title.'" class="text-info">
+                                '.$row->title.'
+                            </a>
+                        ';
+                    })
+                    ->editColumn('need_worker', function ($row) {
+                        return $row->need_worker;
+                    })
+                    ->editColumn('worker_charge', function ($row) {
+                        return $row->worker_charge . ' ' . get_site_settings('site_currency_symbol');
+                    })
                     ->editColumn('action', function ($row) {
                         $action = '
                         <a href="'.route('work.details', encrypt($row->id)).'" target="_blank" title="View" class="btn btn-info btn-sm">
@@ -358,7 +372,7 @@ class UserController extends Controller
                         ';
                         return $action;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['title', 'action'])
                     ->make(true);
             }
             $categories = Category::where('status', 'Active')->get();
@@ -368,8 +382,45 @@ class UserController extends Controller
 
     public function workDetails($id)
     {
-        $jobPost = JobPost::findOrFail(decrypt($id));
-        return view('frontend.find_works.view', compact('jobPost'));
+        $workDetails = JobPost::findOrFail(decrypt($id));
+        return view('frontend.find_works.view', compact('workDetails'));
+    }
+
+    public function workProofSubmit(Request $request, $id)
+    {
+        $request->validate([
+            'proof_answer' => 'required|string|max:1000',
+            'proof_photos.*' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'proof_answer.required' => 'The proof answer is required.',
+            'proof_photos.*.required' => 'All proof photos are required.',
+            'proof_photos.*.mimes' => 'Only jpg, jpeg, and png formats are allowed.',
+            'proof_photos.*.max' => 'Each file must be less than 2 MB.',
+        ]);
+
+        $proof_photos = [];
+        $manager = new ImageManager(new Driver());
+        foreach ($request->file('proof_photos') as $key => $photo) {
+            $proof_photo_name = $id . "-" . $request->user()->id . "-proof_photo-".($key+1).".". $photo->getClientOriginalExtension();
+            $image = $manager->read($photo);
+            $image->toJpeg(80)->save(base_path("public/uploads/job_proof_photo/").$proof_photo_name);
+            $proof_photos[] = $proof_photo_name;
+        }
+
+        JobProof::create([
+            'job_id' => $id,
+            'user_id' => $request->user()->id,
+            'proof_answer' => $request->proof_answer,
+            'proof_photos' => json_encode($proof_photos),
+            'status' => 'Pending',
+        ]);
+
+        $notification = array(
+            'message' => 'Work proof submitted successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
     }
 
     public function workApplyStore()
