@@ -29,7 +29,7 @@
                     <p>{{ $workDetails->required_proof }}</p>
                 </div>
                 <hr>
-                <div class="my-2 border p-2 rounded bg-dark">
+                <div class="my-2 border p-3 rounded bg-dark">
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul>
@@ -40,23 +40,46 @@
                         </div>
                     @endif
 
-                    <form id="workForm" action="{{ route('work.proof.submit', $workDetails->id) }}" method="post" enctype="multipart/form-data">
+                    @if ($workProofExists)
+                    <div class="alert alert-warning">
+                        <strong>Proof already submitted!</strong>
+                    </div>
+                    @else
+                    <form id="workForm" action="{{ route('work.proof.submit', encrypt($workDetails->id)) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="proof_answer" class="form-label">Proof Answer</label>
-                            <textarea class="form-control" id="proof_answer" name="proof_answer" rows="3" placeholder="Write your answer here">{{ old('proof_answer') }}</textarea>
+                            <label for="proof_answer" class="form-label">Proof Answer <small class="text-danger">* Required </small></label>
+                            <textarea class="form-control" id="proof_answer" name="proof_answer" rows="5" placeholder="Write your answer here">{{ old('proof_answer') }}</textarea>
                             <span class="text-danger error-message" id="proof_answer_error"></span>
+                            @if ($errors->has('proof_answer'))
+                                <span class="text-danger">{{ $errors->first('proof_answer') }}</span>
+                            @endif
                         </div>
-                        @for ($i = 0; $i < $workDetails->extra_screenshots; $i++)
+
+                        @for ($i = 0; $i < $workDetails->extra_screenshots + 1; $i++)
                             <div class="mb-3">
-                                <label for="proof_photo_{{ $i }}" class="form-label">Proof Photo {{ $i + 1 }}</label>
+                                <label for="proof_photo_{{ $i }}" class="form-label">Proof Photo {{ $i + 1 }} <small class="text-danger">* Required </small></label>
                                 <input class="form-control" type="file" id="proof_photo_{{ $i }}" name="proof_photos[]" accept=".jpg, .jpeg, .png">
+                                <small class="text-info">* Only jpeg, jpg, png files are allowed. File size must be less than 2 MB.</small>
+                                <span class="text-danger error-message d-block" id="proof_photo_{{ $i }}_error"></span>
                                 <img src="" alt="Proof Photo {{ $i + 1 }}" class="img-fluid" id="proof_photo_preview_{{ $i }}" style="display: none;">
-                                <span class="text-danger error-message" id="proof_photo_{{ $i }}_error"></span>
+                                @if ($errors->has('proof_photos.' . $i))
+                                    <span class="text-danger">{{ $errors->first('proof_photos.' . $i) }}</span>
+                                @endif
                             </div>
                         @endfor
-                        <button type="submit" class="btn btn-primary">Submit</button>
+
+                        @if ($errors->has('proof_photos'))
+                            <div class="mb-3">
+                                <span class="text-danger">{{ $errors->first('proof_photos') }}</span>
+                            </div>
+                        @endif
+
+                        <div class="my-2 d-flex align-items-center justify-content-end">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
                     </form>
+                    @endif
                 </div>
             </div>
         </div>
@@ -78,41 +101,52 @@
 <script>
     $(document).ready(function() {
         // Client-side validation
-        // $('#workForm').submit(function(event) {
-        //     let isValid = true;
-        //     $('.error-message').text(''); // Clear previous error messages
+        $('#workForm').submit(function(event) {
+            let isValid = true;
+            $('.error-message').text(''); // Clear previous error messages
 
-        //     // Validate proof answer
-        //     if ($('#proof_answer').val().trim() === '') {
-        //         $('#proof_answer_error').text('Proof answer is required.');
-        //         isValid = false;
-        //     }
+            // Validate proof answer
+            if ($('#proof_answer').val().trim() === '') {
+                $('#proof_answer_error').text('Proof answer is required.');
+                isValid = false;
+            }else{
 
-        //     // Validate proof photos (if required)
-        //     @for ($i = 0; $i < $workDetails->extra_screenshots; $i++)
-        //         if ($('#proof_photo_{{ $i }}').val() === '') {
-        //             $('#proof_photo_{{ $i }}_error').text('Proof photo {{ $i + 1 }} is required.');
-        //             isValid = false;
-        //         }else{
-        //             let fileExtension = ['jpeg', 'jpg', 'png'];
-        //             if ($.inArray($('#proof_photo_{{ $i }}').val().split('.').pop().toLowerCase(), fileExtension) == -1) {
-        //                 $('#proof_photo_{{ $i }}_error').text('Only jpeg, jpg, png files are allowed.');
-        //                 isValid = false;
-        //             }
-        //             if ($('#proof_photo_{{ $i }}')[0].files[0].size > 2097152) {
-        //                 $('#proof_photo_{{ $i }}_error').text('File size must be less than 2 MB.');
-        //                 isValid = false;
-        //             }
-        //         }
-        //     @endfor
+            }
 
-        //     if (!isValid) {
-        //         event.preventDefault(); // Prevent form submission if validation fails
-        //     }
-        // });
+            // Validate proof photos (if required)
+            @for ($i = 0; $i < $workDetails->extra_screenshots + 1; $i++)
+                if ($('#proof_photo_{{ $i }}').val() === '') {
+                    $('#proof_photo_{{ $i }}_error').text('Proof photo {{ $i + 1 }} is required.');
+                    isValid = false;
+                }else{
+                    let fileExtension = ['jpeg', 'jpg', 'png'];
+                    if ($.inArray($('#proof_photo_{{ $i }}').val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                        $('#proof_photo_{{ $i }}_error').text('Only jpeg, jpg, png files are allowed.');
+                        isValid = false;
+                    }
+                    if ($('#proof_photo_{{ $i }}')[0].files[0].size > 2097152) {
+                        $('#proof_photo_{{ $i }}_error').text('File size must be less than 2 MB.');
+                        isValid = false;
+                    }
+                }
+            @endfor
+
+            if(isValid){
+                {{ $proofCount = App\Models\JobProof::where('job_id', $workDetails->id)->where('status', '!=', 'Rejected')->count() }}
+                if ({{ $proofCount }} >= {{ $workDetails->need_worker }}) {
+                    toastr.warning('Proof submission limit reached!');
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+
+        });
 
         // Preview proof photos
-        @for ($i = 0; $i < $workDetails->extra_screenshots; $i++)
+        @for ($i = 0; $i < $workDetails->extra_screenshots + 1; $i++)
             $('#proof_photo_{{ $i }}').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {

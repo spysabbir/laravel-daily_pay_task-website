@@ -383,20 +383,50 @@ class UserController extends Controller
     public function workDetails($id)
     {
         $workDetails = JobPost::findOrFail(decrypt($id));
-        return view('frontend.find_works.view', compact('workDetails'));
+        $workProofExists = JobProof::where('job_id', decrypt($id))->where('user_id', Auth::id())->exists();
+        return view('frontend.find_works.view', compact('workDetails', 'workProofExists'));
     }
 
     public function workProofSubmit(Request $request, $id)
     {
-        $request->validate([
-            'proof_answer' => 'required|string|max:1000',
-            'proof_photos.*' => 'required|file|mimes:jpg,jpeg,png|max:2048',
-        ], [
+        $id = decrypt($id);
+        $workDetails = JobPost::findOrFail($id);
+
+        $rules = [
+            'proof_answer' => 'required|string|max:5000',
+            'proof_photos' => 'required|array|min:' . $workDetails->extra_screenshots + 1, // Ensure all required photos are uploaded
+            'proof_photos.*' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Each photo must be an image
+        ];
+
+        $messages = [
             'proof_answer.required' => 'The proof answer is required.',
-            'proof_photos.*.required' => 'All proof photos are required.',
-            'proof_photos.*.mimes' => 'Only jpg, jpeg, and png formats are allowed.',
-            'proof_photos.*.max' => 'Each file must be less than 2 MB.',
-        ]);
+            'proof_answer.string' => 'The proof answer must be a string.',
+            'proof_answer.max' => 'The proof answer may not be greater than 5000 characters.',
+            'proof_photos.required' => 'You must upload all required proof photos.',
+            'proof_photos.array' => 'The proof photos must be an array.',
+            'proof_photos.min' => 'You must upload at least ' . $workDetails->extra_screenshots + 1 . ' proof photos.',
+            'proof_photos.*.required' => 'Each proof photo is required.',
+            'proof_photos.*.image' => 'Each proof photo must be an image.',
+            'proof_photos.*.mimes' => 'Each proof photo must be a file of type: jpg, jpeg, png.',
+            'proof_photos.*.max' => 'Each proof photo may not be greater than 2MB.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $proofCount = JobProof::where('job_id', $id)->where('status', '!=', 'Rejected')->count();
+
+        if ($proofCount >= $workDetails->need_worker) {
+            $notification = array(
+                'message' => 'Sorry, the required number of workers have already submitted proof for this job.',
+                'alert-type' => 'error'
+            );
+
+            return back()->with($notification)->withInput();
+        }
 
         $proof_photos = [];
         $manager = new ImageManager(new Driver());
