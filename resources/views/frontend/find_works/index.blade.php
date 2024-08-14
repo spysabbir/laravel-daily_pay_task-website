@@ -44,8 +44,8 @@
                                 <th>Sl No</th>
                                 <th>Category</th>
                                 <th>Work Title</th>
-                                <th>Need Worker</th>
-                                <th>Worker Charge</th>
+                                <th>Work Compleated</th>
+                                <th>You Earn</th>
                                 <th>Running Day</th>
                                 <th>Action</th>
                             </tr>

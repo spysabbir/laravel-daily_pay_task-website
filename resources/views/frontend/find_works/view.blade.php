@@ -9,24 +9,33 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Work Details</h3>
                 <div class="d-flex">
-                    <h3 class="mx-2">Need Worker: <strong class="badge bg-primary">{{ $workDetails->need_worker }}</strong></h3>
-                    <h3 class="mx-2">Worker Charge: <strong class="badge bg-primary">{{ $workDetails->worker_charge }} {{ get_site_settings('site_currency_symbol') }}</strong></h3>
+                    <h4 class="mx-2">Work Compleated : <strong class="badge bg-primary">{{ $proofCount }} / {{ $workDetails->need_worker }}</strong></h4>
+                    <h4 class="mx-2">You Eern : <strong class="badge bg-primary">{{ $workDetails->worker_charge }} {{ get_site_settings('site_currency_symbol') }}</strong></h4>
                 </div>
             </div>
             <div class="card-body">
-                <h3 class="mb-3">Work Title: {{ $workDetails->title }}</h3>
+                <h3 class="mb-3">Title: <span class="text-info">{{ $workDetails->title }}</span></h3>
                 <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $workDetails->thumbnail }}" alt="Thumbnail image for {{ $workDetails->title }}" class="img-fluid">
-                <div class="my-3">
-                    <p>Category: {{ $workDetails->category->name }}</p>
-                    <p>Running Day: {{ $workDetails->running_day }}</p>
-                </div>
-                <div class="my-2 border p-2 rounded">
-                    <h3>Description</h3>
-                    <p>{{ $workDetails->description }}</p>
-                </div>
-                <div class="my-2 border p-2 rounded">
-                    <h3>Required Proof</h3>
-                    <p>{{ $workDetails->required_proof }}</p>
+                <div class="my-2 border p-3 rounded">
+                    <div class="border p-2 rounded bg-dark d-flex align-items-center justify-content-between">
+                        <div>
+                            <p>Category: {{ $workDetails->category->name }}</p>
+                            <p>Sub Category: {{ $workDetails->subcategory->name }}</p>
+                            <p>Child Category: {{ $workDetails->child_category_id ? $workDetails->childcategory->name : 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <p>Approved Date: {{ $workDetails->approved_at }}</p>
+                            <p>Running Day: {{ $workDetails->running_day }}</p>
+                        </div>
+                    </div>
+                    <div class="my-2 border p-2 rounded">
+                        <h4 class="text-primary">Description</h4>
+                        <p>{{ $workDetails->description }}</p>
+                    </div>
+                    <div class="border p-2 rounded">
+                        <h4 class="text-primary">Required Proof</h4>
+                        <p>{{ $workDetails->required_proof }}</p>
+                    </div>
                 </div>
                 <hr>
                 <div class="my-2 border p-3 rounded bg-dark">
@@ -87,10 +96,15 @@
     <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Find Works</h3>
+                <h3 class="card-title">Buyer Details</h3>
             </div>
             <div class="card-body">
-                <!-- Additional content for finding works can go here -->
+                <div class="text-center">
+                    <img src="{{ asset('uploads/profile_photo') }}/{{ $workDetails->user->profile_photo }}" alt="Profile photo for {{ $workDetails->user->name }}" class="img-fluid mb-3 rounded-circle">
+                    <p>Name: <span class="text-info">{{ $workDetails->user->name }}</span></p>
+                    <p>Last Active: <span class="text-info">{{ Carbon\Carbon::parse($workDetails->user->last_login_at)->diffForHumans() }}</span></p>
+                    <p>Join Date: <span class="text-info">{{ $workDetails->user->created_at->format('d M, Y') }}</span></p>
+                </div>
             </div>
         </div>
     </div>

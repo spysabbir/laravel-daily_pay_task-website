@@ -325,7 +325,8 @@ class UserController extends Controller
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
             if ($request->ajax()) {
-                $query = JobPost::where('status', 'Running')->where('user_id', '!=', Auth::id());
+                $jobProofs = JobProof::where('user_id', Auth::id())->pluck('job_id')->toArray();
+                $query = JobPost::where('status', 'Running')->whereNotIn('id', $jobProofs)->whereNot('user_id', Auth::id());
 
                 if ($request->category_id) {
                     $query->where('job_posts.category_id', $request->category_id)->orderBy('created_at', 'desc');
@@ -359,7 +360,8 @@ class UserController extends Controller
                         ';
                     })
                     ->editColumn('need_worker', function ($row) {
-                        return $row->need_worker;
+                        $proofCount = JobProof::where('job_id', $row->id)->where('status', '!=', 'Rejected')->count();
+                        return $proofCount.' / '.$row->need_worker;
                     })
                     ->editColumn('worker_charge', function ($row) {
                         return $row->worker_charge . ' ' . get_site_settings('site_currency_symbol');
@@ -382,9 +384,11 @@ class UserController extends Controller
 
     public function workDetails($id)
     {
-        $workDetails = JobPost::findOrFail(decrypt($id));
-        $workProofExists = JobProof::where('job_id', decrypt($id))->where('user_id', Auth::id())->exists();
-        return view('frontend.find_works.view', compact('workDetails', 'workProofExists'));
+        $id = decrypt($id);
+        $workDetails = JobPost::findOrFail($id);
+        $workProofExists = JobProof::where('job_id', $id)->where('user_id', Auth::id())->exists();
+        $proofCount = JobProof::where('job_id', $id)->where('status', '!=', 'Rejected')->count();
+        return view('frontend.find_works.view', compact('workDetails', 'workProofExists', 'proofCount'));
     }
 
     public function workProofSubmit(Request $request, $id)
@@ -460,7 +464,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function workListPending()
+    public function workListPending(Request $request)
     {
         $user = User::findOrFail(Auth::id());
         $hasVerification = $user->hasVerification('Approved');
@@ -470,6 +474,34 @@ class UserController extends Controller
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
+            if ($request->ajax()) {
+                $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Pending')->pluck('job_id')->toArray();
+                $query = JobPost::where('status', 'Running')->whereIn('id', $jobProofs);
+                $query->select('job_posts.*');
+
+                $jobPosts = $query->get();
+
+                return DataTables::of($jobPosts)
+                    ->addIndexColumn()
+                    ->editColumn('category_name', function ($row) {
+                        return $row->category->name;
+                    })
+                    ->editColumn('title', function ($row) {
+                        return '
+                            <a href="'.route('work.details', encrypt($row->id)).'" title="'.$row->title.'" class="text-info">
+                                '.$row->title.'
+                            </a>
+                        ';
+                    })
+                    ->editColumn('worker_charge', function ($row) {
+                        return $row->worker_charge . ' ' . get_site_settings('site_currency_symbol');
+                    })
+                    ->editColumn('created_at', function ($row) {
+                        return $row->created_at->format('d M Y h:i A');
+                    })
+                    ->rawColumns(['title'])
+                    ->make(true);
+            }
             return view('frontend.work_list.pending');
         }
     }
