@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\JobPost;
+use App\Models\JobProof;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -169,6 +170,16 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListRunning)
                     ->addIndexColumn()
+                    ->editColumn('need_worker', function ($row) {
+                        $proofCount = JobProof::where('job_id', $row->id)->where('status', '!=', 'Rejected')->count();
+                        return  '<span class="badge bg-dark">' . $proofCount . ' / ' .$row->need_worker . '</span>';
+                    })
+                    ->editColumn('worker_charge', function ($row) {
+                        $workerCharge = '
+                            <span class="badge bg-primary">' . $row->worker_charge .' '. get_site_settings('site_currency_symbol') . '</span>
+                        ';
+                        return $workerCharge;
+                    })
                     ->editColumn('action', function ($row) {
                         $btn = '
                             <a href="' . route('running_job.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>
@@ -177,16 +188,96 @@ class JobListController extends Controller
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['need_worker', 'worker_charge', 'action'])
                     ->make(true);
             }
             return view('frontend.job_list.running');
         }
     }
 
-    public function runningJobShow()
+    public function runningJobShow(Request $request, $id)
     {
-        return view('frontend.job_list.running_show');
+        if ($request->ajax()) {
+
+            $query = JobProof::where('job_id', $id);
+
+            if ($request->status) {
+                $query->where('status', $request->status);
+            }
+
+            $query->select('job_proofs.*');
+
+            $JobProofs = $query->get();
+
+            return DataTables::of($JobProofs)
+                ->addIndexColumn()
+                ->addColumn('checkbox', function ($row) {
+                    $checkbox = '
+                        <input type="checkbox" class="form-check-input checkbox" value="' . $row->id . '">
+                    ';
+                    return $checkbox;
+                })
+                ->editColumn('user', function ($row) {
+                    return $row->user->name;
+                })
+                ->editColumn('status', function ($row) {
+                    $status = '
+                        <span class="badge bg-info">' . $row->status . '</span>
+                    ';
+                    return $status;
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->format('d M Y h:i A');
+                })
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '
+                        <a href="" class="btn btn-primary btn-xs">View</a>
+                    ';
+                    return $actionBtn;
+                })
+                ->rawColumns(['checkbox', 'user', 'status', 'created_at', 'action'])
+                ->make(true);
+        }
+
+        $jobPost = JobPost::findOrFail($id);
+        return view('frontend.job_list.running_show', compact('jobPost'));
+    }
+
+    public function runningJobApprovedAll($id)
+    {
+        $jobProofs = JobProof::where('job_id', $id)->where('status', 'Pending')->get();
+
+        foreach ($jobProofs as $jobProof) {
+            $jobProof->status = 'Approved';
+            $jobProof->save();
+        }
+
+        return response()->json(['success' => 'Status updated successfully.']);
+    }
+
+    public function runningJobSelectedItemApproved(Request $request)
+    {
+        $jobProofs = JobProof::whereIn('id', $request->id)->get();
+
+        foreach ($jobProofs as $jobProof) {
+            $jobProof->status = 'Approved';
+            $jobProof->save();
+        }
+
+        return response()->json(['success' => 'Status updated successfully.']);
+    }
+
+    public function runningJobSelectedItemRejected(Request $request)
+    {
+        $jobProofs = JobProof::whereIn('id', $request->id)->get();
+
+        foreach ($jobProofs as $jobProof) {
+            $jobProof->status = 'Rejected';
+            $jobProof->rejected_reason = $request->message;
+            $jobProof->save();
+        }
+
+        return response()->json(['success' => 'Status updated successfully.']);
     }
 
     public function runningJobPausedResume($id)

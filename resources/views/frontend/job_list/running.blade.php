@@ -19,8 +19,8 @@
                                 <th>Sl No</th>
                                 <th>Job ID</th>
                                 <th>Title</th>
-                                <th>Need Worker</th>
-                                <th>Worker Charge</th>
+                                <th>Work Compleated</th>
+                                <th>Worker Earning</th>
                                 <th>Job Running Day</th>
                                 <th>Action</th>
                             </tr>

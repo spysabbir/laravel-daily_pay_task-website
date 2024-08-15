@@ -18,13 +18,14 @@ return new class extends Migration
             $table->text('proof_answer');
             $table->json('proof_photos');
             $table->enum('status', ['Pending', 'Approved', 'Rejected', 'Reviewed'])->default('Pending');
+            $table->text('rejected_reason')->nullable();
+            $table->text('reviewed_reason')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
+            $table->timestamp('reviewed_at')->nullable();
             $table->integer('approved_by')->nullable();
             $table->integer('rejected_by')->nullable();
             $table->timestamps();
-
-            $table->unique(['job_id', 'user_id']);
         });
     }
 

@@ -48,6 +48,9 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/running-job-paused_resume/{id}', [JobListController::class, 'runningJobPausedResume'])->name('running_job.paused_resume');
     Route::get('/running-job-canceled/{id}', [JobListController::class, 'runningJobCanceled'])->name('running_job.canceled');
     Route::get('/running-job-show/{id}', [JobListController::class, 'runningJobShow'])->name('running_job.show');
+    Route::get('/running-job-approved_all/{id}', [JobListController::class, 'runningJobApprovedAll'])->name('running_job.approved_all');
+    Route::post('/running-job-selected_item_approved', [JobListController::class, 'runningJobSelectedItemApproved'])->name('running_job.selected_item_approved');
+    Route::post('/running-job-selected_item_rejected', [JobListController::class, 'runningJobSelectedItemRejected'])->name('running_job.selected_item_rejected');
 
     Route::get('/job-list-completed', [JobListController::class, 'jobListCompleted'])->name('job.list.completed');
 
