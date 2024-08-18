@@ -1,5 +1,12 @@
 @php
     auth()->user()->update(['last_login_at' => now()]);
+
+    if (Auth::user()->isFrontendUser()) {
+        App\Models\UserDetail::updateOrCreate([
+            'user_id' => Auth::user()->id,
+            'ip' => request()->ip(),
+        ]);
+    }
 @endphp
 
 <!DOCTYPE html>

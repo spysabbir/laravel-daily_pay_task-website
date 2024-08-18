@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Verification;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +17,7 @@ class UserTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
+        $superAdmin = User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@gmail.com',
             'password' => Hash::make('12345678'),
@@ -30,15 +31,26 @@ class UserTableSeeder extends Seeder
 
         $role->syncPermissions($permissions);
 
-        $user->assignRole([$role->id]);
+        $superAdmin->assignRole([$role->id]);
 
-        User::create([
+        $user = User::create([
             'name' => 'User',
             'email' => 'user@gmail.com',
             'password' => Hash::make('12345678'),
             'email_verified_at' => now(),
             'user_type' => 'Frontend',
             'status' => 'Active',
+        ]);
+
+        Verification::create([
+            'user_id' => $user->id,
+            'id_type' => 'NID',
+            'id_number' => 12345678,
+            'id_front_image' => 'id_front_image.jpg',
+            'id_with_face_image' => 'id_with_face_image.jpg',
+            'status' => 'Approved',
+            'approved_by' => $superAdmin->id,
+            'approved_at' => now(),
         ]);
 
         $this->command->info('User added successfully.');

@@ -36,8 +36,7 @@
 @elseif (Auth::user()->hasVerification('Approved'))
 <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
     <div class="alert-heading mb-3">
-        <i data-feather="check-circle"></i>
-        <h4>Account Verified!</h4>
+        <h4>Welcome to {{ config('app.name') }}!</h4>
     </div>
 </div>
 @else

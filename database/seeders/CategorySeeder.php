@@ -17,13 +17,25 @@ class CategorySeeder extends Seeder
                 'name' => 'Youtube',
                 'slug' => 'youtube',
             ],
+            // [
+            //     'name' => 'Facebook',
+            //     'slug' => 'facebook',
+            // ],
+            // [
+            //     'name' => 'Instagram',
+            //     'slug' => 'instagram',
+            // ],
+            // [
+            //     'name' => 'Twitter',
+            //     'slug' => 'twitter',
+            // ],
+            // [
+            //     'name' => 'LinkedIn',
+            //     'slug' => 'linkedin',
+            // ],
             [
-                'name' => 'Facebook',
-                'slug' => 'facebook',
-            ],
-            [
-                'name' => 'Instagram',
-                'slug' => 'instagram',
+                'name' => 'N/A',
+                'slug' => 'na',
             ]
         ];
 
