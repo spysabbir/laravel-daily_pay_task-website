@@ -325,7 +325,7 @@ class UserController extends Controller
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
             if ($request->ajax()) {
-                $jobProofs = JobProof::where('user_id', Auth::id())->pluck('job_id')->toArray();
+                $jobProofs = JobProof::where('user_id', Auth::id())->pluck('job_post_id')->toArray();
                 $query = JobPost::where('status', 'Running')->whereNotIn('id', $jobProofs)->whereNot('user_id', Auth::id());
 
                 if ($request->category_id) {
@@ -360,7 +360,7 @@ class UserController extends Controller
                         ';
                     })
                     ->editColumn('need_worker', function ($row) {
-                        $proofCount = JobProof::where('job_id', $row->id)->where('status', '!=', 'Rejected')->count();
+                        $proofCount = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Rejected')->count();
                         return $proofCount.' / '.$row->need_worker;
                     })
                     ->editColumn('worker_charge', function ($row) {
@@ -386,8 +386,8 @@ class UserController extends Controller
     {
         $id = decrypt($id);
         $workDetails = JobPost::findOrFail($id);
-        $workProofExists = JobProof::where('job_id', $id)->where('user_id', Auth::id())->exists();
-        $proofCount = JobProof::where('job_id', $id)->where('status', '!=', 'Rejected')->count();
+        $workProofExists = JobProof::where('job_post_id', $id)->where('user_id', Auth::id())->exists();
+        $proofCount = JobProof::where('job_post_id', $id)->where('status', '!=', 'Rejected')->count();
         return view('frontend.find_works.view', compact('workDetails', 'workProofExists', 'proofCount'));
     }
 
@@ -421,7 +421,7 @@ class UserController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $proofCount = JobProof::where('job_id', $id)->where('status', '!=', 'Rejected')->count();
+        $proofCount = JobProof::where('job_post_id', $id)->where('status', '!=', 'Rejected')->count();
 
         if ($proofCount >= $workDetails->need_worker) {
             $notification = array(
@@ -442,7 +442,7 @@ class UserController extends Controller
         }
 
         JobProof::create([
-            'job_id' => $id,
+            'job_post_id' => $id,
             'user_id' => $request->user()->id,
             'proof_answer' => $request->proof_answer,
             'proof_photos' => json_encode($proof_photos),
@@ -475,7 +475,7 @@ class UserController extends Controller
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
             if ($request->ajax()) {
-                $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Pending')->pluck('job_id')->toArray();
+                $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Pending')->pluck('job_post_id')->toArray();
                 $query = JobPost::where('status', 'Running')->whereIn('id', $jobProofs);
                 $query->select('job_posts.*');
 

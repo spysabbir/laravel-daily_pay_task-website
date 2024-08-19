@@ -70,7 +70,7 @@
         // Read Data
         $('#allDataTable').DataTable({
             processing: true,
-            serverSide: true,
+            // serverSide: true,
             searching: true,
             ajax: {
                 url: "{{ route('running_job.show', $jobPost->id) }}",
@@ -121,27 +121,47 @@
         });
 
         // Approved All
-        $(document).on('click', '#approvedAll', function(){
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You want to approved all data!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, approved it!'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('running_job.approved_all', $jobPost->id) }}",
-                        method: 'GET',
-                        success: function(response) {
-                            toastr.success('Approved All Successfully');
-                            $('#allDataTable').DataTable().ajax.reload();
-                        }
-                    });
+        $(document).on('click', '#approvedAll', function() {
+            var table = $('#allDataTable').DataTable();
+            var allData = table.rows().data();
+            var approved = true;
+
+            for (var i = 0; i < allData.length; i++) {
+                var rowData = allData[i];
+                if (rowData.status !== '<span class="badge bg-success">Approved</span>') {
+                    approved = false;
+                    break;
                 }
-            })
+            }
+
+            if($('#allDataTable').DataTable().rows().data().length == 0){
+                toastr.error('No data available');
+                return false;
+            }else if (approved) {
+                toastr.warning('All data already approved');
+                return false;
+            }else{
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to approved all data!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, approved it!'
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('running_job.approved_all', $jobPost->id) }}",
+                            method: 'GET',
+                            success: function(response) {
+                                toastr.success('Approved All Successfully');
+                                $('#allDataTable').DataTable().ajax.reload();
+                            }
+                        });
+                    }
+                })
+            }
         });
 
         // Selected Item Approved

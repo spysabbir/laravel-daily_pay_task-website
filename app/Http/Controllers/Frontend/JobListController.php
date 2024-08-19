@@ -171,7 +171,7 @@ class JobListController extends Controller
                 return DataTables::of($jobListRunning)
                     ->addIndexColumn()
                     ->editColumn('need_worker', function ($row) {
-                        $proofCount = JobProof::where('job_id', $row->id)->where('status', '!=', 'Rejected')->count();
+                        $proofCount = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Rejected')->count();
                         return  '<span class="badge bg-dark">' . $proofCount . ' / ' .$row->need_worker . '</span>';
                     })
                     ->editColumn('worker_charge', function ($row) {
@@ -199,7 +199,7 @@ class JobListController extends Controller
     {
         if ($request->ajax()) {
 
-            $query = JobProof::where('job_id', $id);
+            $query = JobProof::where('job_post_id', $id);
 
             if ($request->status) {
                 $query->where('status', $request->status);
@@ -212,8 +212,9 @@ class JobListController extends Controller
             return DataTables::of($JobProofs)
                 ->addIndexColumn()
                 ->addColumn('checkbox', function ($row) {
+                    $checkPending = $row->status != 'Pending' ? 'disabled' : '';
                     $checkbox = '
-                        <input type="checkbox" class="form-check-input checkbox" value="' . $row->id . '">
+                        <input type="checkbox" class="form-check-input checkbox" value="' . $row->id . '" ' . $checkPending . '>
                     ';
                     return $checkbox;
                 })
@@ -221,9 +222,15 @@ class JobListController extends Controller
                     return $row->user->name;
                 })
                 ->editColumn('status', function ($row) {
-                    $status = '
-                        <span class="badge bg-info">' . $row->status . '</span>
-                    ';
+                    if ($row->status == 'Pending') {
+                        $status = '<span class="badge bg-warning">' . $row->status . '</span>';
+                    } else if ($row->status == 'Approved') {
+                        $status = '<span class="badge bg-success">' . $row->status . '</span>';
+                    } else if ($row->status == 'Rejected') {
+                        $status = '<span class="badge bg-danger">' . $row->status . '</span>';
+                    }else {
+                        $status = '<span class="badge bg-info">' . $row->status . '</span>';
+                    }
                     return $status;
                 })
                 ->editColumn('created_at', function ($row) {
@@ -245,7 +252,15 @@ class JobListController extends Controller
 
     public function runningJobApprovedAll($id)
     {
-        $jobProofs = JobProof::where('job_id', $id)->where('status', 'Pending')->get();
+        $jobProofs = JobProof::where('job_post_id', $id)->where('status', 'Pending')->get();
+
+        $jobPost = JobPost::findOrFail($id);
+
+        foreach ($jobProofs->pluck('user_id') as $user_id) {
+            $user = User::findOrFail($user_id);
+            $user->withdraw_balance = $user->withdraw_balance + $jobPost->worker_charge;
+            $user->save();
+        }
 
         foreach ($jobProofs as $jobProof) {
             $jobProof->status = 'Approved';

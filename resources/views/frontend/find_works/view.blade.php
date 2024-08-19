@@ -15,17 +15,21 @@
             </div>
             <div class="card-body">
                 <h3 class="mb-3">Title: <span class="text-info">{{ $workDetails->title }}</span></h3>
+                @if ($workDetails->thumbnail)
                 <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $workDetails->thumbnail }}" alt="Thumbnail image for {{ $workDetails->title }}" class="img-fluid">
+                @endif
                 <div class="my-2 border p-3 rounded">
                     <div class="border p-2 rounded bg-dark d-flex align-items-center justify-content-between">
-                        <div>
+                        <div class="p-2">
                             <p>Category: {{ $workDetails->category->name }}</p>
                             <p>Sub Category: {{ $workDetails->subcategory->name }}</p>
-                            <p>Child Category: {{ $workDetails->child_category_id ? $workDetails->childcategory->name : 'N/A' }}</p>
+                            @if ($workDetails->child_category_id)
+                            <p>Child Category: {{ $workDetails->childcategory->name }}</p>
+                            @endif
                         </div>
                         <div>
-                            <p>Approved Date: {{ $workDetails->approved_at }}</p>
-                            <p>Running Day: {{ $workDetails->running_day }}</p>
+                            <p>Approved Date: {{ date('d F, Y  H:i A', strtotime($workDetails->approved_at)) }}</p>
+                            <p>Running Day: {{ $workDetails->running_day }} Days</p>
                         </div>
                     </div>
                     <div class="my-2 border p-2 rounded">
@@ -84,7 +88,7 @@
                             </div>
                         @endif
 
-                        <div class="my-2 d-flex align-items-center justify-content-end">
+                        <div class="my-2 p-2 d-flex align-items-center justify-content-end bg-black">
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
@@ -146,7 +150,7 @@
             @endfor
 
             if(isValid){
-                {{ $proofCount = App\Models\JobProof::where('job_id', $workDetails->id)->where('status', '!=', 'Rejected')->count() }}
+                {{ $proofCount = App\Models\JobProof::where('job_post_id', $workDetails->id)->where('status', '!=', 'Rejected')->count() }}
                 if ({{ $proofCount }} >= {{ $workDetails->need_worker }}) {
                     toastr.warning('Proof submission limit reached!');
                     isValid = false;
