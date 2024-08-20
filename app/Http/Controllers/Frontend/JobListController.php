@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class JobListController extends Controller
 {
@@ -182,7 +183,8 @@ class JobListController extends Controller
                     })
                     ->editColumn('action', function ($row) {
                         $btn = '
-                            <a href="' . route('running_job.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
+                            <a href="' . route('running_job.show', $row->id) . '" class="btn btn-info btn-xs">View</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
@@ -192,6 +194,58 @@ class JobListController extends Controller
                     ->make(true);
             }
             return view('frontend.job_list.running');
+        }
+    }
+
+    public function runningJobEdit(string $id)
+    {
+        $jobPost = JobPost::where('id', $id)->first();
+        return response()->json($jobPost);
+    }
+
+    public function runningJobUpdate(Request $request, string $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'need_worker' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'error' => $validator->errors()->toArray()
+            ]);
+        } else {
+            $jobPost = JobPost::findOrFail($id);
+
+                $job_post_charge = (($request->need_worker * $jobPost->worker_charge));
+
+                $site_charge = $job_post_charge * get_default_settings('job_posting_charge_percentage') / 100;
+
+                $total_charge = $job_post_charge + $site_charge;
+
+            if ($request->user()->deposit_balance < $total_charge) {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'Insufficient balance.'
+                ]);
+            } else {
+
+
+                $request->user()->update([
+                    'deposit_balance' => $request->user()->deposit_balance - $total_charge,
+                ]);
+
+                JobPost::where('id', $id)->update([
+                    'need_worker' => $jobPost->need_worker + $request->need_worker,
+                    'charge' => $jobPost->charge + $job_post_charge,
+                    'site_charge' => $jobPost->site_charge + $site_charge,
+                    'total_charge' => $jobPost->total_charge + $total_charge,
+                ]);
+
+                return response()->json([
+                    'status' => 200,
+                ]);
+            }
         }
     }
 
@@ -238,7 +292,7 @@ class JobListController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $actionBtn = '
-                        <a href="" class="btn btn-primary btn-xs">View</a>
+                        <a href="" class="btn btn-info btn-xs">View</a>
                     ';
                     return $actionBtn;
                 })

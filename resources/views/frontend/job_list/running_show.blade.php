@@ -98,25 +98,15 @@
         // Check All
         $('#checkAll').change(function(){
             if(this.checked){
-                $('.checkbox').each(function(){
-                    this.checked = true;
+                $('#allDataTable').DataTable().rows().nodes().to$().find('.checkbox').each(function(){
+                    if($(this).closest('tr').find('td:eq(4)').text() == 'Pending'){
+                        this.checked = true;
+                    }
                 });
             }else{
-                $('.checkbox').each(function(){
+                $('#allDataTable').DataTable().rows().nodes().to$().find('.checkbox').each(function(){
                     this.checked = false;
                 });
-            }
-        });
-
-        // Check One
-        $(document).on('change', '.checkbox', function(){
-            if(this.checked){
-                var check = $('.checkbox').filter(':checked').length;
-                if(check == $('.checkbox').length){
-                    $('#checkAll').prop('checked', true);
-                }
-            }else{
-                $('#checkAll').prop('checked', false);
             }
         });
 
@@ -143,7 +133,7 @@
             }else{
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You want to approved all data!",
+                    text: "You want to approved all pending item!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
