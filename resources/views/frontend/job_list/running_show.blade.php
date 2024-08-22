@@ -8,6 +8,26 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
+                    <h3 class="card-title">Job Details</h3>
+                </div>
+                <div class="action">
+                    <a href="{{ route('job.list.running') }}" class="btn btn-sm btn-primary">Back</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <h4 class="border p-1 m-1"><strong class="text-info">Title:</strong> {{ $jobPost->title }}</h4>
+                <p class="border p-1 m-1"><strong class="text-info">Description:</strong> {{ $jobPost->description }}</p>
+                <p class="border p-1 m-1"><strong class="text-info">Required Proof:</strong> {{ $jobPost->required_proof }}</p>
+                <p class="border p-1 m-1"><strong class="text-info">Additional Note:</strong> {{ $jobPost->additional_note }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <div class="text">
                     <h3 class="card-title">Job List - Running</h3>
                 </div>
             </div>
@@ -36,7 +56,6 @@
                     <table id="allDataTable" class="table">
                         <thead>
                             <tr>
-                                <th>Sl No</th>
                                 <th>
                                     <input type="checkbox" class="form-check-input" id="checkAll">
                                 </th>
@@ -49,6 +68,56 @@
                         </thead>
                         <tbody>
 
+                            <!-- View Modal -->
+                            <div class="modal fade viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="viewModalLabel">View</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <h4>Rating:</h4>
+                                                <div>
+
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <h4>Tips:</h4>
+                                                <div>
+
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <h4>Proof Answer:</h4>
+                                                <div>
+
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <h4>Proof Image:</h4>
+                                                <div>
+
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <form action="" method="post">
+                                                    @csrf
+                                                    <div class="mb-3">
+                                                        <label for="message" class="form-label">Message</label>
+                                                        <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </tbody>
                     </table>
                 </div>
@@ -73,14 +142,13 @@
             // serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('running_job.show', $jobPost->id) }}",
+                url: "{{ route('running_job.show', encrypt($jobPost->id)) }}",
                 type: 'GET',
                 data: function(d) {
                     d.status = $('#filter_status').val();
                 }
             },
             columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'checkbox', name: 'checkbox' },
                 { data: 'user', name: 'user' },
                 { data: 'proof_answer', name: 'proof_answer' },

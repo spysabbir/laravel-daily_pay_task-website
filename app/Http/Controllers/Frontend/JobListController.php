@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use App\Models\UserDetail;
 
 class JobListController extends Controller
 {
@@ -184,7 +185,7 @@ class JobListController extends Controller
                     ->editColumn('action', function ($row) {
                         $btn = '
                             <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
-                            <a href="' . route('running_job.show', $row->id) . '" class="btn btn-info btn-xs">View</a>
+                            <a href="' . route('running_job.show', encrypt($row->id)) . '" class="btn btn-info btn-xs">View</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
@@ -252,8 +253,7 @@ class JobListController extends Controller
     public function runningJobShow(Request $request, $id)
     {
         if ($request->ajax()) {
-
-            $query = JobProof::where('job_post_id', $id);
+            $query = JobProof::where('job_post_id', decrypt($id));
 
             if ($request->status) {
                 $query->where('status', $request->status);
@@ -264,7 +264,6 @@ class JobListController extends Controller
             $JobProofs = $query->get();
 
             return DataTables::of($JobProofs)
-                ->addIndexColumn()
                 ->addColumn('checkbox', function ($row) {
                     $checkPending = $row->status != 'Pending' ? 'disabled' : '';
                     $checkbox = '
@@ -273,7 +272,12 @@ class JobListController extends Controller
                     return $checkbox;
                 })
                 ->editColumn('user', function ($row) {
-                    return $row->user->name;
+                    $userDetail = UserDetail::where('user_id', $row->user_id)->first();
+                    $user = '
+                        <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
+                        <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
+                    ';
+                    return $user;
                 })
                 ->editColumn('status', function ($row) {
                     if ($row->status == 'Pending') {
@@ -292,15 +296,15 @@ class JobListController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $actionBtn = '
-                        <a href="" class="btn btn-info btn-xs">View</a>
-                    ';
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>';
                     return $actionBtn;
                 })
                 ->rawColumns(['checkbox', 'user', 'status', 'created_at', 'action'])
                 ->make(true);
         }
 
-        $jobPost = JobPost::findOrFail($id);
+
+        $jobPost = JobPost::findOrFail(decrypt($id));
         return view('frontend.job_list.running_show', compact('jobPost'));
     }
 

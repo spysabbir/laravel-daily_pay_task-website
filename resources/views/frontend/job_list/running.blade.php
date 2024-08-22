@@ -39,29 +39,6 @@
                                             @csrf
                                             <div class="modal-body">
                                                 <input type="hidden" id="job_post_id">
-                                                {{-- <div class="mb-3">
-                                                    <label for="category_id" class="form-label">Category</label>
-                                                    <select class="form-select category_id" id="category_id" name="category_id">
-                                                        <option value="">-- Select Category --</option>
-                                                        @foreach ($categories as $category)
-                                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <span class="text-danger error-text update_category_id_error"></span>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="sub_category_id" class="form-label">Sub Category</label>
-                                                    <select class="form-select sub_category_id get_sub_categories" id="sub_category_id" name="sub_category_id">
-                                                        <option value="">-- Select Category First --</option>
-                                                        @foreach ($sub_categories as $sub_category)
-                                                            <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <div id="sub-category-options">
-                                                        <!-- Sub-category radio buttons will be loaded here -->
-                                                    </div>
-                                                    <span class="text-danger error-text update_sub_category_id_error"></span>
-                                                </div> --}}
                                                 <div class="mb-3">
                                                     <label for="need_worker" class="form-label">Need Worker</label>
                                                     <input type="number" class="form-control" id="need_worker" value="0" name="need_worker" placeholder="Need Worker">
@@ -205,7 +182,6 @@
                 type: "GET",
                 success: function (response) {
                     $('#job_post_id').val(response.id);
-                    // $('#need_worker').val(response.need_worker);
                     $('#worker_charge').val(response.worker_charge);
                 },
             });
