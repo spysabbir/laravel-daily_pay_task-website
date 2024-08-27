@@ -73,44 +73,11 @@
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="viewModalLabel">View</h5>
+                                            <h5 class="modal-title" id="viewModalLabel">Check</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                         </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <h4>Rating:</h4>
-                                                <div>
+                                        <div class="modal-body" id="modalBody">
 
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <h4>Tips:</h4>
-                                                <div>
-
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <h4>Proof Answer:</h4>
-                                                <div>
-
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <h4>Proof Image:</h4>
-                                                <div>
-
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <form action="" method="post">
-                                                    @csrf
-                                                    <div class="mb-3">
-                                                        <label for="message" class="form-label">Message</label>
-                                                        <textarea class="form-control" id="message" name="message" rows="3"></textarea>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                                </form>
-                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -167,7 +134,7 @@
         $('#checkAll').change(function(){
             if(this.checked){
                 $('#allDataTable').DataTable().rows().nodes().to$().find('.checkbox').each(function(){
-                    if($(this).closest('tr').find('td:eq(4)').text() == 'Pending'){
+                    if($(this).closest('tr').find('td:eq(3)').text() == 'Pending'){
                         this.checked = true;
                     }
                 });
@@ -301,6 +268,20 @@
             } else {
                 toastr.error('Please select at least one checkbox');
             }
+        });
+
+        // Check Data
+        $(document).on('click', '.viewBtn', function () {
+            var id = $(this).data('id');
+            var url = "{{ route('running_job.proof.check', ":id") }}";
+            url = url.replace(':id', id)
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    $('#modalBody').html(response);
+                },
+            });
         });
     });
 </script>

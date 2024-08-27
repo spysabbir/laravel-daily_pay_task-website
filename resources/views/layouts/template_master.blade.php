@@ -28,6 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
     <!-- End fonts -->
 
 	<!-- core:css -->
@@ -61,6 +62,22 @@
         }
         .dataTables_wrapper .dt-buttons button:hover {
             background-color: #f8f9fa;
+        }
+
+
+        .rating-box .stars {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .stars i {
+            color: #e6e6e6;
+            font-size: 35px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .stars i.active {
+            color: #ff9c1a;
         }
     </style>
 </head>

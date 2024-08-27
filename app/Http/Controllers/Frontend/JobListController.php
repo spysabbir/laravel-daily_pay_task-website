@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bonus;
 use App\Models\JobPost;
 use App\Models\JobProof;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\UserDetail;
+use App\Notifications\BonusNotification;
 
 class JobListController extends Controller
 {
@@ -322,6 +324,8 @@ class JobListController extends Controller
 
         foreach ($jobProofs as $jobProof) {
             $jobProof->status = 'Approved';
+            $jobProof->approved_at = now();
+            $jobProof->approved_by = auth()->user()->id;
             $jobProof->save();
         }
 
@@ -334,6 +338,8 @@ class JobListController extends Controller
 
         foreach ($jobProofs as $jobProof) {
             $jobProof->status = 'Approved';
+            $jobProof->approved_at = now();
+            $jobProof->approved_by = auth()->user()->id;
             $jobProof->save();
         }
 
@@ -347,10 +353,78 @@ class JobListController extends Controller
         foreach ($jobProofs as $jobProof) {
             $jobProof->status = 'Rejected';
             $jobProof->rejected_reason = $request->message;
+            $jobProof->rejected_at = now();
+            $jobProof->rejected_by = auth()->user()->id;
             $jobProof->save();
         }
 
         return response()->json(['success' => 'Status updated successfully.']);
+    }
+
+    public function runningJobProofCheck($id)
+    {
+        $jobProof = JobProof::findOrFail($id);
+        return view('frontend.job_list.proof_check', compact('jobProof'));
+    }
+
+    public function runningJobProofCheckUpdate(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required',
+            'bonus' => 'required|numeric|min:0|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'error' => $validator->errors()->toArray()
+            ]);
+        } else {
+            if ($request->status == 'Rejected') {
+                $validator = Validator::make($request->all(), [
+                    'rejected_reason' => 'required',
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => 400,
+                        'error' => $validator->errors()->toArray()
+                    ]);
+                }
+            }
+
+            $jobProof = JobProof::findOrFail($id);
+
+            $jobPost = JobPost::findOrFail($jobProof->job_post_id);
+
+            $bonus_id = Bonus::insertGetId([
+                'user_id' => $jobProof->user_id,
+                'bonus_type' => 'Job Proof',
+                'amount' => $request->bonus,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $bonus = Bonus::findOrFail($bonus_id);
+
+            $user = User::findOrFail($jobProof->user_id);
+            $user->withdraw_balance = $user->withdraw_balance + $jobPost->worker_charge + $request->bonus;
+            $user->save();
+
+            $jobProof->status = $request->status;
+            $jobProof->rejected_reason = $request->rejected_reason;
+            $jobProof->rejected_at = $request->status == 'Rejected' ? now() : NULL;
+            $jobProof->rejected_by = $request->status == 'Rejected' ? auth()->user()->id : NULL;
+            $jobProof->approved_at = $request->status == 'Approved' ? now() : NULL;
+            $jobProof->approved_by = $request->status == 'Approved' ? auth()->user()->id : NULL;
+            $jobProof->save();
+
+            $user->notify(new BonusNotification($bonus));
+
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
     }
 
     public function runningJobPausedResume($id)

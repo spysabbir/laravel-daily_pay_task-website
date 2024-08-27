@@ -50,6 +50,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/running-job-edit/{id}', [JobListController::class, 'runningJobEdit'])->name('running_job.edit');
     Route::put('/running-job-update/{id}', [JobListController::class, 'runningJobUpdate'])->name('running_job.update');
     Route::get('/running-job-show/{id}', [JobListController::class, 'runningJobShow'])->name('running_job.show');
+    Route::get('/running-job-proof-check/{id}', [JobListController::class, 'runningJobProofCheck'])->name('running_job.proof.check');
+    Route::put('/running-job-proof-check-update/{id}', [JobListController::class, 'runningJobProofCheckUpdate'])->name('running_job.proof.check.update');
     Route::get('/running-job-approved_all/{id}', [JobListController::class, 'runningJobApprovedAll'])->name('running_job.approved_all');
     Route::post('/running-job-selected_item_approved', [JobListController::class, 'runningJobSelectedItemApproved'])->name('running_job.selected_item_approved');
     Route::post('/running-job-selected_item_rejected', [JobListController::class, 'runningJobSelectedItemRejected'])->name('running_job.selected_item_rejected');
