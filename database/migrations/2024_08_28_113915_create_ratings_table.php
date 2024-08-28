@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bonuses', function (Blueprint $table) {
+        Schema::create('ratings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('bonus_type');
-            $table->decimal('amount', 8, 2);
-            $table->softDeletes();
+            $table->foreignId('job_post_id')->constrained()->cascadeOnDelete();
+            $table->integer('rating');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bonuses');
+        Schema::dropIfExists('ratings');
     }
 };

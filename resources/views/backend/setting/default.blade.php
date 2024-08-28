@@ -100,6 +100,7 @@
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="job_posting_additional_screenshot_charge" class="form-label">Job Posting Additional Screenshot Charge</label>
                             <input type="number" class="form-control" id="job_posting_additional_screenshot_charge" name="job_posting_additional_screenshot_charge" value="{{ old('job_posting_additional_screenshot_charge', $defaultSetting->job_posting_additional_screenshot_charge) }}" placeholder="Job Posting Additional Screenshot Charge">
+                            <small class="text-info">* Every additional screenshot charge</small>
                             @error('job_posting_additional_screenshot_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
@@ -107,7 +108,16 @@
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="job_posting_boosted_time_charge" class="form-label">Job Posting Boosted Time Charge</label>
                             <input type="number" class="form-control" id="job_posting_boosted_time_charge" name="job_posting_boosted_time_charge" value="{{ old('job_posting_boosted_time_charge', $defaultSetting->job_posting_boosted_time_charge) }}" placeholder="Job Posting Boosted Time Charge">
+                            <small class="text-info">* Every 15 minutes charge</small>
                             @error('job_posting_boosted_time_charge')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="job_posting_additional_running_day_charge" class="form-label">Job Posting Additional Running Day Charge</label>
+                            <input type="number" class="form-control" id="job_posting_additional_running_day_charge" name="job_posting_additional_running_day_charge" value="{{ old('job_posting_additional_running_day_charge', $defaultSetting->job_posting_additional_running_day_charge) }}" placeholder="Job Posting Additional Running Day Charge">
+                            <small class="text-info">* Every additional day charge</small>
+                            @error('job_posting_additional_running_day_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
@@ -115,6 +125,13 @@
                             <label for="job_posting_min_budget" class="form-label">Job Posting Min Budget</label>
                             <input type="number" class="form-control" id="job_posting_min_budget" name="job_posting_min_budget" value="{{ old('job_posting_min_budget', $defaultSetting->job_posting_min_budget) }}" placeholder="Job Posting Min Budget">
                             @error('job_posting_min_budget')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="max_job_proof_bonus_amount" class="form-label">Max Job Proof Bonus Amount</label>
+                            <input type="number" class="form-control" id="max_job_proof_bonus_amount" name="max_job_proof_bonus_amount" value="{{ old('max_job_proof_bonus_amount', $defaultSetting->max_job_proof_bonus_amount) }}" placeholder="Max Job Proof Bonus Amount">
+                            @error('max_job_proof_bonus_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

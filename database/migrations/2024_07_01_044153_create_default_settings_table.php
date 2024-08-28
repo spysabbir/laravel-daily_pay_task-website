@@ -27,7 +27,9 @@ return new class extends Migration
             $table->decimal('job_posting_charge_percentage', 10, 2)->nullable();
             $table->decimal('job_posting_additional_screenshot_charge', 10, 2)->nullable();
             $table->decimal('job_posting_boosted_time_charge', 10, 2)->nullable();
+            $table->decimal('job_posting_additional_running_day_charge', 10, 2)->nullable();
             $table->decimal('job_posting_min_budget', 10, 2)->nullable();
+            $table->decimal('max_job_proof_bonus_amount', 10, 2)->nullable();
             $table->timestamps();
         });
     }

@@ -28,7 +28,9 @@ class DefaultSettingTableSeeder extends Seeder
             'job_posting_charge_percentage' => 5.00,
             'job_posting_additional_screenshot_charge' => 2.50,
             'job_posting_boosted_time_charge' => 5.00,
+            'job_posting_additional_running_day_charge' => 2.50,
             'job_posting_min_budget' => 100.00,
+            'max_job_proof_bonus_amount' => 20.00,
         ];
 
         DefaultSetting::create($setting);

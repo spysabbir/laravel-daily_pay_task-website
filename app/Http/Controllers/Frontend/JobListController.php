@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bonus;
 use App\Models\JobPost;
 use App\Models\JobProof;
+use App\Models\Rating;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\UserDetail;
 use App\Notifications\BonusNotification;
+use App\Notifications\RatingNotification;
 
 class JobListController extends Controller
 {
@@ -397,19 +399,26 @@ class JobListController extends Controller
 
             $jobPost = JobPost::findOrFail($jobProof->job_post_id);
 
-            $bonus_id = Bonus::insertGetId([
-                'user_id' => $jobProof->user_id,
-                'bonus_type' => 'Job Proof',
-                'amount' => $request->bonus,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            $bonus = Bonus::findOrFail($bonus_id);
-
             $user = User::findOrFail($jobProof->user_id);
             $user->withdraw_balance = $user->withdraw_balance + $jobPost->worker_charge + $request->bonus;
             $user->save();
+
+            if ($request->rating) {
+                Rating::create([
+                    'user_id' => $jobProof->user_id,
+                    'job_post_id' => $jobPost->id,
+                    'rating' => $request->rating,
+                ]);
+
+                $rating = Rating::where('user_id', $jobProof->user_id)->where('job_post_id', $jobPost->id)->first();
+
+                $user->notify(new RatingNotification($rating));
+            }
+
+            if ($request->bonus) {
+                $bonus = $request->bonus;
+                $user->notify(new BonusNotification($bonus));
+            }
 
             $jobProof->status = $request->status;
             $jobProof->rejected_reason = $request->rejected_reason;
@@ -418,8 +427,6 @@ class JobListController extends Controller
             $jobProof->approved_at = $request->status == 'Approved' ? now() : NULL;
             $jobProof->approved_by = $request->status == 'Approved' ? auth()->user()->id : NULL;
             $jobProof->save();
-
-            $user->notify(new BonusNotification($bonus));
 
             return response()->json([
                 'status' => 200,

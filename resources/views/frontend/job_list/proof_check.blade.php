@@ -56,24 +56,6 @@
                 @csrf
                 <input type="hidden" id="job_proof_id" value="{{ $jobProof->id }}">
                 <div class="mb-3">
-                    <label for="rating" class="form-label">Rating (1-5) <span class="text-info">* Optonal</span></label>
-                    <div class="rating-box">
-                        <div class="stars">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                        </div>
-                    </div>
-                    <input type="hidden" name="rating" id="rating" value="0">
-                </div>
-                <div class="mb-3">
-                    <label for="bonus" class="form-label">Bonus <span class="text-info">* Optonal</span></label>
-                    <input type="number" class="form-control" id="bonus" name="bonus" min="0" max="20" value="0" placeholder="Bonus">
-                    <span class="text-danger error-text update_bonus_error"></span>
-                </div>
-                <div class="mb-3">
                     <label for="status" class="form-label">Status <span class="text-danger">* Required</span></label>
                     <div>
                         <div class="form-check form-check-inline">
@@ -91,10 +73,36 @@
                     </div>
                     <span class="text-danger error-text update_status_error"></span>
                 </div>
-                <div class="mb-3" id="rejected_reason_div">
-                    <label for="rejected_reason" class="form-label">Rejected Reason</label>
-                    <textarea class="form-control" id="rejected_reason" name="rejected_reason" rows="3" placeholder="Rejected Reason"></textarea>
-                    <span class="text-danger error-text update_rejected_reason_error"></span>
+                <div id="approved_div">
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Rating (1-5) <span class="text-info">* Optonal</span></label>
+                        <div class="rating-box">
+                            <div class="stars">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+                        <input type="hidden" name="rating" id="rating" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bonus" class="form-label">Bonus <span class="text-info">* Optonal</span></label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="bonus" name="bonus" min="0" max="{{ get_default_settings('max_job_proof_bonus_amount') }}" value="0" placeholder="Bonus">
+                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                        </div>
+                        <small class="text-info">Bonus should be between 0 to {{ get_default_settings('max_job_proof_bonus_amount') }} {{ get_site_settings('site_currency_symbol') }}.</small>
+                        <span class="text-danger error-text update_bonus_error"></span>
+                    </div>
+                </div>
+                <div id="rejected_div">
+                    <div class="mb-3">
+                        <label for="rejected_reason" class="form-label">Rejected Reason <span class="text-danger">* Required</span></label>
+                        <textarea class="form-control" id="rejected_reason" name="rejected_reason" rows="3" placeholder="Rejected Reason"></textarea>
+                        <span class="text-danger error-text update_rejected_reason_error"></span>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -123,12 +131,15 @@
         });
 
         // Hide rejected reason div initially
-        $('#rejected_reason_div').hide();
+        $('#approved_div').hide();
+        $('#rejected_div').hide();
         $('input[name="status"]').change(function() {
             if ($(this).val() == 'Rejected') {
-                $('#rejected_reason_div').show();
+                $('#approved_div').hide();
+                $('#rejected_div').show();
             } else {
-                $('#rejected_reason_div').hide();
+                $('#approved_div').show();
+                $('#rejected_div').hide();
             }
         });
 
