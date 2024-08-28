@@ -36,4 +36,9 @@ class JobPost extends Model
     {
         return $this->belongsTo(User::class, 'rejected_by');
     }
+
+    public function jobProofs()
+    {
+        return $this->hasMany(JobProof::class);
+    }
 }

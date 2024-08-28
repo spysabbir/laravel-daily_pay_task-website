@@ -11,7 +11,7 @@ class JobProof extends Model
 
     protected $guarded = [];
 
-    public function job()
+    public function jobPost()
     {
         return $this->belongsTo(JobPost::class);
     }
@@ -19,5 +19,10 @@ class JobProof extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function rating()
+    {
+        return $this->hasOne(Rating::class, 'job_post_id', 'job_post_id');
     }
 }

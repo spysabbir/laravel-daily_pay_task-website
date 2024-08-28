@@ -276,6 +276,9 @@
                     <li class="nav-item">
                         <a href="{{ route('work.list.rejected') }}" class="nav-link">Rejected</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('work.list.reviewed') }}" class="nav-link">Reviewed</a>
+                    </li>
                 </ul>
             </div>
         </li>

@@ -16,8 +16,8 @@ class Rating extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function job()
+    public function jobProof()
     {
-        return $this->belongsTo(JobPost::class);
+        return $this->belongsTo(JobProof::class);
     }
 }

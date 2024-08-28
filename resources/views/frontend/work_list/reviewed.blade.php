@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Work List - Rejected')
+@section('title', 'Work List - Reviewed')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Work List - Rejected</h3>
+                <h3 class="card-title">Work List - Reviewed</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -17,8 +17,8 @@
                                 <th>Sl No</th>
                                 <th>Job Id</th>
                                 <th>Work Title</th>
-                                <th>Rejected Reason</th>
-                                <th>Rejected Date</th>
+                                <th>Reviewed Reason</th>
+                                <th>Reviewed Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -65,14 +65,14 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('work.list.rejected') }}",
+                url: "{{ route('work.list.reviewed') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'job_post_id', name: 'job_post_id' },
                 { data: 'title', name: 'title' },
-                { data: 'rejected_reason', name: 'rejected_reason' },
-                { data: 'rejected_at', name: 'rejected_at' },
+                { data: 'reviewed_reason', name: 'reviewed_reason' },
+                { data: 'reviewed_at', name: 'reviewed_at' },
                 { data: 'action', name: 'action' }
             ]
         });

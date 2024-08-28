@@ -506,7 +506,7 @@ class UserController extends Controller
         }
     }
 
-    public function workListApproved()
+    public function workListApproved(Request $request)
     {
         $user = User::findOrFail(Auth::id());
         $hasVerification = $user->hasVerification('Approved');
@@ -516,11 +516,38 @@ class UserController extends Controller
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
+            if ($request->ajax()) {
+                $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Approved');
+                $query = $jobProofs->select('job_proofs.*');
+
+                $workList = $query->get();
+
+                return DataTables::of($workList)
+                    ->addIndexColumn()
+                    ->editColumn('title', function ($row) {
+                        return '
+                            <a href="'.route('work.details', encrypt($row->job_post_id)).'" title="'.$row->jobPost->title.'" class="text-info">
+                                '.$row->jobPost->title.'
+                            </a>
+                        ';
+                    })
+                    ->editColumn('worker_charge', function ($row) {
+                        return $row->jobPost->worker_charge . ' ' . get_site_settings('site_currency_symbol');
+                    })
+                    ->editColumn('rating', function ($row) {
+                        return $row->rating->rating ?? 'N/A';
+                    })
+                    ->editColumn('approved_at', function ($row) {
+                        return date('d M Y h:i A', strtotime($row->approved_at));
+                    })
+                    ->rawColumns(['title', 'rating'])
+                    ->make(true);
+            }
             return view('frontend.work_list.approved');
         }
     }
 
-    public function workListRejected()
+    public function workListRejected(Request $request)
     {
         $user = User::findOrFail(Auth::id());
         $hasVerification = $user->hasVerification('Approved');
@@ -530,7 +557,112 @@ class UserController extends Controller
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
+            if ($request->ajax()) {
+                $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Rejected');
+                $query = $jobProofs->select('job_proofs.*');
+
+                $workList = $query->get();
+
+                return DataTables::of($workList)
+                    ->addIndexColumn()
+                    ->editColumn('title', function ($row) {
+                        return '
+                            <a href="'.route('work.details', encrypt($row->job_post_id)).'" title="'.$row->jobPost->title.'" class="text-info">
+                                '.$row->jobPost->title.'
+                            </a>
+                        ';
+                    })
+                    ->editColumn('rejected_reason', function ($row) {
+                        return $row->rejected_reason;
+                    })
+                    ->editColumn('rejected_at', function ($row) {
+                        return date('d M Y h:i A', strtotime($row->rejected_at));
+                    })
+                    ->addColumn('action', function ($row) {
+                        $action = '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                        ';
+                        return $action;
+                    })
+                    ->rawColumns(['title', 'rating', 'action'])
+                    ->make(true);
+            }
             return view('frontend.work_list.rejected');
+        }
+    }
+
+    public function workListReviewed(Request $request)
+    {
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            if ($request->ajax()) {
+                $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Reviewed');
+                $query = $jobProofs->select('job_proofs.*');
+
+                $workList = $query->get();
+
+                return DataTables::of($workList)
+                    ->addIndexColumn()
+                    ->editColumn('title', function ($row) {
+                        return '
+                            <a href="'.route('work.details', encrypt($row->job_post_id)).'" title="'.$row->jobPost->title.'" class="text-info">
+                                '.$row->jobPost->title.'
+                            </a>
+                        ';
+                    })
+                    ->editColumn('rejected_reason', function ($row) {
+                        return $row->rejected_reason;
+                    })
+                    ->editColumn('rejected_at', function ($row) {
+                        return date('d M Y h:i A', strtotime($row->rejected_at));
+                    })
+                    ->addColumn('action', function ($row) {
+                        $action = '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                        ';
+                        return $action;
+                    })
+                    ->rawColumns(['title', 'rating', 'action'])
+                    ->make(true);
+            }
+            return view('frontend.work_list.reviewed');
+        }
+    }
+
+    public function rejectedJobCheck($id)
+    {
+        $jobProof = JobProof::findOrFail($id);
+        return view('frontend.work_list.proof_check', compact('jobProof'));
+    }
+
+    public function rejectedJobReviewed(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'reviewed_reason' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'error' => $validator->errors()->toArray()
+            ]);
+        } else {
+            $jobProof = JobProof::findOrFail($id);
+
+            $jobProof->status = 'Reviewed';
+            $jobProof->reviewed_reason = $request->reviewed_reason;
+            $jobProof->reviewed_at = now();
+            $jobProof->save();
+
+            return response()->json([
+                'status' => 200,
+            ]);
         }
     }
 
