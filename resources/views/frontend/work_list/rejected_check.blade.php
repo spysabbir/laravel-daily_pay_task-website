@@ -1,5 +1,25 @@
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-3">
+        <div class="mb-3">
+            <h4>Job Title:</h4>
+            <div>
+                {{ $jobPost->title }}
+            </div>
+        </div>
+        <div class="mb-3">
+            <h4>Job Description:</h4>
+            <div>
+                {{ $jobPost->description }}
+            </div>
+        </div>
+        <div class="mb-3">
+            <h4>Job Required Proof:</h4>
+            <div>
+                {{ $jobPost->required_proof }}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
         <div class="mb-3">
             <h4>Proof Answer:</h4>
             <div>
@@ -44,6 +64,7 @@
             <p>Job Proof has been rejected.</p>
             <hr>
             <p class="mb-0"><strong>Rejected Reason:</strong> {{ $jobProof->rejected_reason }}</p>
+            <p><strong>Rejected Date:</strong> {{ date('d M Y h:i A', strtotime($jobProof->rejected_date)) }}</p>
         </div>
         <form class="forms-sample" id="editForm">
             @csrf

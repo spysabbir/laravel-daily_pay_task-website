@@ -31,6 +31,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/work-list-approved', [UserController::class, 'workListApproved'])->name('work.list.approved');
     Route::get('/work-list-rejected', [UserController::class, 'workListRejected'])->name('work.list.rejected');
     Route::get('/work-list-reviewed', [UserController::class, 'workListReviewed'])->name('work.list.reviewed');
+    Route::get('/approved-job-view/{id}', [UserController::class, 'approvedJobView'])->name('approved.job.view');
+    Route::get('/reviewed-job-view/{id}', [UserController::class, 'reviewedJobView'])->name('reviewed.job.view');
     Route::get('/rejected.job.check/{id}', [UserController::class, 'rejectedJobCheck'])->name('rejected.job.check');
     Route::put('/rejected.job.reviewed/{id}', [UserController::class, 'rejectedJobReviewed'])->name('rejected.job.reviewed');
 

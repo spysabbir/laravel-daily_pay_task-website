@@ -7,9 +7,28 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Work List - Rejected</h3>
+                <div>
+                    <h3 class="card-title">Work List - Rejected</h3>
+                    <p class="text-info">
+                        <strong>Note:</strong> You can see only the last 7 days of data.
+                    </p>
+                </div>
+                <div>
+                    <a href="{{ route('work.list.pending') }}" class="btn btn-primary">Pending</a>
+                    <a href="{{ route('work.list.reviewed') }}" class="btn btn-warning">Reviewed</a>
+                </div>
             </div>
             <div class="card-body">
+                <div class="filter mb-3 border p-2">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Rejected Date</label>
+                                <input type="date" class="form-control filter_data" id="filter_date">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
@@ -66,6 +85,9 @@
             searching: true,
             ajax: {
                 url: "{{ route('work.list.rejected') }}",
+                data: function (d) {
+                    d.filter_date = $('#filter_date').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -95,6 +117,14 @@
                 },
             });
         });
+
+        // Set Date Range
+        var today = new Date();
+        var beforeSixDays = new Date();
+        beforeSixDays.setDate(today.getDate() - 6);
+        $('#filter_date').attr('max', today.toISOString().split('T')[0]);
+        $('#filter_date').attr('min', beforeSixDays.toISOString().split('T')[0]);
+
     });
 </script>
 @endsection

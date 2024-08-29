@@ -475,26 +475,29 @@ class UserController extends Controller
             return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
         } else {
             if ($request->ajax()) {
-                $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Pending')->pluck('job_post_id')->toArray();
-                $query = JobPost::where('status', 'Running')->whereIn('id', $jobProofs);
-                $query->select('job_posts.*');
+                $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Pending');
 
-                $jobPosts = $query->get();
+                $query = $jobProofs->select('job_proofs.*');
 
-                return DataTables::of($jobPosts)
+                if ($request->filter_date){
+                    $query->whereDate('job_proofs.created_at', $request->filter_date);
+                }
+
+                $query->whereDate('job_proofs.created_at', '>', now()->subDays(7));
+
+                $workList = $query->get();
+
+                return DataTables::of($workList)
                     ->addIndexColumn()
-                    ->editColumn('category_name', function ($row) {
-                        return $row->category->name;
-                    })
                     ->editColumn('title', function ($row) {
                         return '
-                            <a href="'.route('work.details', encrypt($row->id)).'" title="'.$row->title.'" class="text-info">
-                                '.$row->title.'
+                            <a href="'.route('work.details', encrypt($row->job_post_id)).'" title="'.$row->jobPost->title.'" class="text-info">
+                                '.$row->jobPost->title.'
                             </a>
                         ';
                     })
                     ->editColumn('worker_charge', function ($row) {
-                        return $row->worker_charge . ' ' . get_site_settings('site_currency_symbol');
+                        return $row->jobPost->worker_charge . ' ' . get_site_settings('site_currency_symbol');
                     })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
@@ -520,6 +523,12 @@ class UserController extends Controller
                 $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Approved');
                 $query = $jobProofs->select('job_proofs.*');
 
+                if ($request->filter_date){
+                    $query->whereDate('job_proofs.approved_at', $request->filter_date);
+                }
+
+                $query->whereDate('job_proofs.approved_at', '>', now()->subDays(7));
+
                 $workList = $query->get();
 
                 return DataTables::of($workList)
@@ -532,19 +541,32 @@ class UserController extends Controller
                         ';
                     })
                     ->editColumn('worker_charge', function ($row) {
-                        return $row->jobPost->worker_charge . ' ' . get_site_settings('site_currency_symbol');
+                        return $row->jobPost->worker_charge . ' ' . get_site_settings('site_currency_symbol') . $row->job_post_id;
                     })
                     ->editColumn('rating', function ($row) {
-                        return $row->rating->rating ?? 'N/A';
+                        return $row->rating ? $row->rating->rating . ' <i class="fa-solid fa-star text-warning"></i>' : 'Not Rated';
                     })
                     ->editColumn('approved_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->approved_at));
                     })
-                    ->rawColumns(['title', 'rating'])
+                    ->addColumn('action', function ($row) {
+                        $action = '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                        ';
+                        return $action;
+                    })
+                    ->rawColumns(['title', 'rating', 'action'])
                     ->make(true);
             }
             return view('frontend.work_list.approved');
         }
+    }
+
+    public function approvedJobView($id)
+    {
+        $jobProof = JobProof::findOrFail($id);
+        $jobPost = JobPost::findOrFail($jobProof->job_post_id);
+        return view('frontend.work_list.approved_view', compact('jobProof', 'jobPost'));
     }
 
     public function workListRejected(Request $request)
@@ -560,6 +582,12 @@ class UserController extends Controller
             if ($request->ajax()) {
                 $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Rejected');
                 $query = $jobProofs->select('job_proofs.*');
+
+                if ($request->filter_date){
+                    $query->whereDate('job_proofs.rejected_at', $request->filter_date);
+                }
+
+                $query->whereDate('job_proofs.rejected_at', '>', now()->subDays(7));
 
                 $workList = $query->get();
 
@@ -591,6 +619,38 @@ class UserController extends Controller
         }
     }
 
+    public function rejectedJobCheck($id)
+    {
+        $jobProof = JobProof::findOrFail($id);
+        $jobPost = JobPost::findOrFail($jobProof->job_post_id);
+        return view('frontend.work_list.rejected_check', compact('jobProof' , 'jobPost'));
+    }
+
+    public function rejectedJobReviewed(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'reviewed_reason' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'error' => $validator->errors()->toArray()
+            ]);
+        } else {
+            $jobProof = JobProof::findOrFail($id);
+
+            $jobProof->status = 'Reviewed';
+            $jobProof->reviewed_reason = $request->reviewed_reason;
+            $jobProof->reviewed_at = now();
+            $jobProof->save();
+
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
+    }
+
     public function workListReviewed(Request $request)
     {
         $user = User::findOrFail(Auth::id());
@@ -604,6 +664,12 @@ class UserController extends Controller
             if ($request->ajax()) {
                 $jobProofs = JobProof::where('user_id', Auth::id())->where('status', 'Reviewed');
                 $query = $jobProofs->select('job_proofs.*');
+
+                if ($request->filter_date){
+                    $query->whereDate('job_proofs.reviewed_at', $request->filter_date);
+                }
+
+                // $query->whereDate('job_proofs.reviewed_at', '>', now()->subDays(7));
 
                 $workList = $query->get();
 
@@ -635,35 +701,11 @@ class UserController extends Controller
         }
     }
 
-    public function rejectedJobCheck($id)
+    public function reviewedJobView($id)
     {
         $jobProof = JobProof::findOrFail($id);
-        return view('frontend.work_list.proof_check', compact('jobProof'));
-    }
-
-    public function rejectedJobReviewed(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'reviewed_reason' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 400,
-                'error' => $validator->errors()->toArray()
-            ]);
-        } else {
-            $jobProof = JobProof::findOrFail($id);
-
-            $jobProof->status = 'Reviewed';
-            $jobProof->reviewed_reason = $request->reviewed_reason;
-            $jobProof->reviewed_at = now();
-            $jobProof->save();
-
-            return response()->json([
-                'status' => 200,
-            ]);
-        }
+        $jobPost = JobPost::findOrFail($jobProof->job_post_id);
+        return view('frontend.work_list.reviewed_check', compact('jobProof' , 'jobPost'));
     }
 
     public function notification(Request $request)
