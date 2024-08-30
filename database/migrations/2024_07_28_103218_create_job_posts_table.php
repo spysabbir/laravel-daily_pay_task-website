@@ -31,10 +31,6 @@ return new class extends Migration
             $table->integer('site_charge');
             $table->integer('total_charge');
             $table->enum('status', ['Pending', 'Rejected', 'Running', 'Canceled', 'Paused', 'Completed']);
-            $table->timestamp('rejected_at')->nullable();
-            $table->timestamp('approved_at')->nullable();
-            $table->timestamp('canceled_at')->nullable();
-            $table->timestamp('paused_at')->nullable();
             $table->integer('rejected_by')->nullable();
             $table->integer('approved_by')->nullable();
             $table->integer('canceled_by')->nullable();
@@ -42,6 +38,10 @@ return new class extends Migration
             $table->integer('deleted_by')->nullable();
             $table->text('rejection_reason')->nullable();
             $table->text('cancellation_reason')->nullable();
+            $table->timestamp('rejected_at')->nullable();
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('canceled_at')->nullable();
+            $table->timestamp('paused_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

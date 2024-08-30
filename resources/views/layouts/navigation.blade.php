@@ -220,23 +220,28 @@
             </li>
         @endcan
 
-        {{-- @can('JobPostMenu') --}}
+        {{-- @can('JobPostRequestMenu') --}}
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#JobPostRequest" role="button" aria-expanded="false" aria-controls="JobPostRequest">
                     <i class="link-icon" data-feather="briefcase"></i>
-                    <span class="link-title">Job Post request</span>
+                    <span class="link-title">Job Post Request</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse" id="JobPostRequest">
                     <ul class="nav sub-menu">
-                        {{-- @can('job_post.request') --}}
+                        {{-- @can('job_list.pending') --}}
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_post.request') }}" class="nav-link">Pending</a>
+                            <a href="{{ route('backend.job_list.pending') }}" class="nav-link">Pending</a>
                         </li>
                         {{-- @endcan --}}
-                        {{-- @can('job_post.request.approved') --}}
+                        {{-- @can('job_list.rejected') --}}
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_post.request.approved') }}" class="nav-link">Approved</a>
+                            <a href="{{ route('backend.job_list.rejected') }}" class="nav-link">Rejected</a>
+                        </li>
+                        {{-- @endcan --}}
+                        {{-- @can('job_list.running') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.job_list.running') }}" class="nav-link">Running</a>
                         </li>
                         {{-- @endcan --}}
                     </ul>

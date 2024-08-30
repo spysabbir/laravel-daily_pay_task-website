@@ -34,7 +34,7 @@
                             </tr>
                             <tr>
                                 <td>Worker Charge</td>
-                                <td>{{ $jobPost->worker_charge }}</td>
+                                <td>{{ $jobPost->worker_charge }} {{ get_site_settings('site_currency_symbol') }}</td>
                             </tr>
                             <tr>
                                 <td>Extra Screenshots</td>
@@ -42,23 +42,29 @@
                             </tr>
                             <tr>
                                 <td>Boosted Time</td>
-                                <td>{{ $jobPost->boosted_time }}</td>
+                                <td>
+                                    @if($jobPost->boosted_time < 60)
+                                        {{ $jobPost->boosted_time }} minute{{ $jobPost->boosted_time > 1 ? 's' : '' }}
+                                    @elseif($jobPost->boosted_time >= 60)
+                                        {{ round($jobPost->boosted_time / 60, 1) }} hour{{ round($jobPost->boosted_time / 60, 1) > 1 ? 's' : '' }}
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>Running Day</td>
-                                <td>{{ $jobPost->running_day }}</td>
+                                <td>{{ $jobPost->running_day }} Days</td>
                             </tr>
                             <tr>
                                 <td>Job Cost</td>
-                                <td>{{ $jobPost->charge }}</td>
+                                <td>{{ $jobPost->charge }} {{ get_site_settings('site_currency_symbol') }}</td>
                             </tr>
                             <tr>
-                                <td>Site Cost</td>
-                                <td>{{ $jobPost->site_charge }}</td>
+                                <td>Site Cost <span class="text-info">( {{ get_default_settings('job_posting_charge_percentage') }} % )</span></td>
+                                <td>{{ $jobPost->site_charge }} {{ get_site_settings('site_currency_symbol') }}</td>
                             </tr>
                             <tr>
                                 <td>Total Cost</td>
-                                <td>{{ $jobPost->total_charge }}</td>
+                                <td>{{ $jobPost->total_charge }} {{ get_site_settings('site_currency_symbol') }}</td>
                             </tr>
                             <tr>
                                 <td>Created At</td>
@@ -101,29 +107,29 @@
                     <input type="hidden" id="job_post_id" value="{{ $jobPost->id }}">
                     @if ($jobPost->thumbnail)
                     <div class="mb-3">
-                        <label for="job_thumbnail" class="form-label">Job Thumbnail</label>
+                        <label for="job_thumbnail" class="form-label">Job Thumbnail <span class="text-danger">* Required</span></label>
                         <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $jobPost->thumbnail }}" alt="Job Thumbnail" class="img-fluid">
                     </div>
                     @endif
                     <div class="mb-3">
-                        <label for="job_title" class="form-label">Job Title</label>
+                        <label for="job_title" class="form-label">Job Title <span class="text-danger">* Required</span></label>
                         <input type="text" class="form-control" id="job_title" value="{{ $jobPost->title }}" name="title">
                         <span class="text-danger error-text update_title_error"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="job_description" class="form-label">Job Description</label>
+                        <label for="job_description" class="form-label">Job Description <span class="text-danger">* Required</span></label>
                         <textarea class="form-control" id="job_description" name="description" rows="4">{{ $jobPost->description }}</textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="job_required_proof" class="form-label">Job Required Proof</label>
+                        <label for="job_required_proof" class="form-label">Job Required Proof <span class="text-danger">* Required</span></label>
                         <textarea class="form-control" id="job_required_proof" name="required_proof" rows="4">{{ $jobPost->required_proof }}</textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="job_additional_note" class="form-label">Job Additional Note</label>
+                        <label for="job_additional_note" class="form-label">Job Additional Note <span class="text-danger">* Required</span></label>
                         <textarea class="form-control" id="job_additional_note" name="additional_note" rows="4">{{ $jobPost->additional_note }}</textarea>
                     </div>
                     <div class="mb-3 ">
-                        <label for="job_post_status" class="form-label">Job Post Status</label>
+                        <label for="job_post_status" class="form-label">Job Post Status <span class="text-danger">* Required</span></label>
                         <select class="form-select" id="job_post_status" name="status">
                             <option value="">-- Select Status --</option>
                             <option value="Running">Running</option>
@@ -132,8 +138,8 @@
                         <span class="text-danger error-text update_status_error"></span>
                     </div>
                     <div class="mb-3 d-none" id="rejection_reason_div">
-                        <label for="rejection_reason" class="form-label">Rejection Reason</label>
-                        <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="4"></textarea>
+                        <label for="rejection_reason" class="form-label">Rejection Reason <span class="text-danger">* Required</span></label>
+                        <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="4" placeholder="Write the reason for rejection"></textarea>
                         <span class="text-danger error-text update_rejection_reason_error"></span>
                     </div>
                     <button type="submit" class="btn btn-primary">Update</button>
