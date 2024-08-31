@@ -30,6 +30,9 @@ return new class extends Migration
             $table->decimal('job_posting_additional_running_day_charge', 10, 2)->nullable();
             $table->decimal('job_posting_min_budget', 10, 2)->nullable();
             $table->decimal('max_job_proof_bonus_amount', 10, 2)->nullable();
+            $table->integer('job_proof_monthly_free_review_time')->nullable();
+            $table->decimal('job_proof_additional_review_charge', 10, 2)->nullable();
+            $table->integer('user_max_blocked_time')->nullable();
             $table->timestamps();
         });
     }

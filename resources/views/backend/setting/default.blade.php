@@ -135,6 +135,27 @@
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="job_proof_monthly_free_review_time" class="form-label">Job Proof Monthly Free Review Time</label>
+                            <input type="number" class="form-control" id="job_proof_monthly_free_review_time" name="job_proof_monthly_free_review_time" value="{{ old('job_proof_monthly_free_review_time', $defaultSetting->job_proof_monthly_free_review_time) }}" placeholder="Job Proof Monthly Free Review Time">
+                            @error('job_proof_monthly_free_review_time')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="job_proof_additional_review_charge" class="form-label">Job Proof Additional Review Charge</label>
+                            <input type="number" class="form-control" id="job_proof_additional_review_charge" name="job_proof_additional_review_charge" value="{{ old('job_proof_additional_review_charge', $defaultSetting->job_proof_additional_review_charge) }}" placeholder="Job Proof Additional Review Charge">
+                            @error('job_proof_additional_review_charge')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="user_max_blocked_time" class="form-label">User Max Blocked Time</label>
+                            <input type="number" class="form-control" id="user_max_blocked_time" name="user_max_blocked_time" value="{{ old('user_max_blocked_time', $defaultSetting->user_max_blocked_time) }}" placeholder="User Max Blocked Time">
+                            @error('user_max_blocked_time')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
                     </div><!-- Row -->
                     <div class="row mt-3">
                         <button type="submit" class="btn btn-primary">Update</button>

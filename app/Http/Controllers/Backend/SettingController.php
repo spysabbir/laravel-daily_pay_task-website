@@ -58,6 +58,9 @@ class SettingController extends Controller
             'job_posting_additional_running_day_charge' => 'required',
             'job_posting_min_budget' => 'required',
             'max_job_proof_bonus_amount' => 'required',
+            'job_proof_monthly_free_review_time' => 'required',
+            'job_proof_additional_review_charge' => 'required',
+            'user_max_blocked_time' => 'required',
         ]);
 
         $defaultSetting = DefaultSetting::first();
@@ -80,6 +83,9 @@ class SettingController extends Controller
             'job_posting_additional_running_day_charge' => $request->job_posting_additional_running_day_charge,
             'job_posting_min_budget' => $request->job_posting_min_budget,
             'max_job_proof_bonus_amount' => $request->max_job_proof_bonus_amount,
+            'job_proof_monthly_free_review_time' => $request->job_proof_monthly_free_review_time,
+            'job_proof_additional_review_charge' => $request->job_proof_additional_review_charge,
+            'user_max_blocked_time' => $request->user_max_blocked_time,
         ]);
 
         $notification = array(

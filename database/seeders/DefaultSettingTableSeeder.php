@@ -31,6 +31,9 @@ class DefaultSettingTableSeeder extends Seeder
             'job_posting_additional_running_day_charge' => 2.50,
             'job_posting_min_budget' => 100.00,
             'max_job_proof_bonus_amount' => 20.00,
+            'job_proof_monthly_free_review_time' => 30,
+            'job_proof_additional_review_charge' => 0.25,
+            'user_max_blocked_time' => 7,
         ];
 
         DefaultSetting::create($setting);
