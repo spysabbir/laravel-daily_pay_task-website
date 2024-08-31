@@ -164,7 +164,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.verification.request.rejected.data') }}",
+                url: "{{ route('backend.verification.request.rejected') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },

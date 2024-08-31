@@ -7,7 +7,7 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Job Post (Running)</h3>
+                <h3 class="card-title">Job List (Running)</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -15,7 +15,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Post Id</th>
+                                <th>Job Id</th>
                                 <th>User</th>
                                 <th>Title</th>
                                 <th>Need Worker</th>

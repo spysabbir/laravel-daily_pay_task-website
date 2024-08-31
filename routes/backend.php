@@ -45,7 +45,7 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('employee/delete/{id}', [EmployeeController::class, 'delete'])->name('employee.delete');
     Route::get('employee/status/{id}', [EmployeeController::class, 'status'])->name('employee.status');
     // User
-    Route::get('user', [BackendController::class, 'userList'])->name('user.index');
+    Route::get('user/active', [BackendController::class, 'userActiveList'])->name('user.active');
     Route::get('user/show/{id}', [BackendController::class, 'userView'])->name('user.show');
     Route::get('user/edit/{id}', [BackendController::class, 'userEdit'])->name('user.edit');
     Route::put('user/update/{id}', [BackendController::class, 'userUpdate'])->name('user.update');
@@ -53,6 +53,9 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('user/trash', [BackendController::class, 'userTrash'])->name('user.trash');
     Route::get('user/restore/{id}', [BackendController::class, 'userRestore'])->name('user.restore');
     Route::get('user/delete/{id}', [BackendController::class, 'userDelete'])->name('user.delete');
+    Route::get('user/inactive', [BackendController::class, 'userInactiveList'])->name('user.inactive');
+    Route::get('user/blocked', [BackendController::class, 'userBlockedList'])->name('user.blocked');
+    Route::get('user/banned', [BackendController::class, 'userBannedList'])->name('user.banned');
     // Category
     Route::resource('category', CategoryController::class);
     Route::get('category-trash', [CategoryController::class, 'trash'])->name('category.trash');
@@ -90,7 +93,8 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('verification-request', [VerificationController::class, 'verificationRequest'])->name('verification.request');
     Route::get('verification-request/{id}', [VerificationController::class, 'verificationRequestShow'])->name('verification.request.show');
     Route::put('verification-request-status-change/{id}', [VerificationController::class, 'verificationRequestStatusChange'])->name('verification.request.status.change');
-    Route::get('verification-request-rejected-data', [VerificationController::class, 'verificationRequestRejectedData'])->name('verification.request.rejected.data');
+    Route::get('verification-request-rejected', [VerificationController::class, 'verificationRequestRejected'])->name('verification.request.rejected');
+    Route::get('verification-request-approved', [VerificationController::class, 'verificationRequestApproved'])->name('verification.request.approved');
     Route::delete('verification-request-delete/{id}', [VerificationController::class, 'verificationRequestDelete'])->name('verification.request.delete');
     // Deposit
     Route::get('deposit-request', [DepositController::class, 'depositRequest'])->name('deposit.request');
@@ -113,6 +117,10 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('running-job-view/{id}', [JobController::class, 'runningJobView'])->name('running.job_view');
     Route::get('job_list-rejected', [JobController::class, 'jobListRejected'])->name('job_list.rejected');
     Route::get('rejected-job-view/{id}', [JobController::class, 'rejectedJobView'])->name('rejected.job_view');
+    Route::get('job_list-canceled', [JobController::class, 'jobListCanceled'])->name('job_list.canceled');
+    Route::get('canceled-job-view/{id}', [JobController::class, 'canceledJobView'])->name('canceled.job_view');
+    Route::get('job_list-completed', [JobController::class, 'jobListCompleted'])->name('job_list.completed');
+    Route::get('completed-job-view/{id}', [JobController::class, 'completedJobView'])->name('completed.job_view');
     Route::put('job-status-update/{id}', [JobController::class, 'jobStatusUpdate'])->name('job_status_update');
 
 });

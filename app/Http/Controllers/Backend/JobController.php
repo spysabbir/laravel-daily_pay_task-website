@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\JobPost;
 use App\Models\User;
+use App\Models\JobProof;
 use App\Notifications\JobPostNotification;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -100,6 +101,10 @@ class JobController extends Controller
                 ->editColumn('user', function ($row) {
                     return $row->user->name;
                 })
+                ->editColumn('need_worker', function ($row) {
+                    $proofCount = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Rejected')->count();
+                    return  '<span class="badge bg-success">' . $proofCount . ' / ' .$row->need_worker . '</span>';
+                })
                 ->editColumn('created_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
@@ -107,11 +112,11 @@ class JobController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user', 'created_at', 'action'])
+                ->rawColumns(['user', 'need_worker', 'created_at', 'action'])
                 ->make(true);
         }
         return view('backend.job_list.running');
@@ -123,12 +128,95 @@ class JobController extends Controller
         return view('backend.job_list.running_show', compact('jobPost'));
     }
 
+    public function jobListCanceled(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = JobPost::where('status', 'Canceled');
+
+            $query->select('job_posts.*')->orderBy('created_at', 'desc');
+
+            $jobList = $query->get();
+
+            return DataTables::of($jobList)
+                ->addIndexColumn()
+                ->editColumn('user', function ($row) {
+                    return $row->user->name;
+                })
+                ->editColumn('need_worker', function ($row) {
+                    $proofCount = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Rejected')->count();
+                    return  '<span class="badge bg-success">' . $proofCount . ' / ' .$row->need_worker . '</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    ';
+                return $btn;
+                })
+                ->rawColumns(['user', 'need_worker', 'created_at', 'action'])
+                ->make(true);
+        }
+        return view('backend.job_list.canceled');
+    }
+
+    public function canceledJobView(string $id)
+    {
+        $jobPost = JobPost::where('id', $id)->first();
+        return view('backend.job_list.canceled_show', compact('jobPost'));
+    }
+
+    public function jobListCompleted(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = JobPost::where('status', 'Completed');
+
+            $query->select('job_posts.*')->orderBy('created_at', 'desc');
+
+            $jobList = $query->get();
+
+            return DataTables::of($jobList)
+                ->addIndexColumn()
+                ->editColumn('user', function ($row) {
+                    return $row->user->name;
+                })
+                ->editColumn('need_worker', function ($row) {
+                    $proofCount = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Rejected')->count();
+                    return  '<span class="badge bg-success">' . $proofCount . ' / ' .$row->need_worker . '</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    ';
+                return $btn;
+                })
+                ->rawColumns(['user', 'need_worker', 'created_at', 'action'])
+                ->make(true);
+        }
+        return view('backend.job_list.completed');
+    }
+
+    public function completedJobView(string $id)
+    {
+        $jobPost = JobPost::where('id', $id)->first();
+        return view('backend.job_list.completed_show', compact('jobPost'));
+    }
+
     public function jobStatusUpdate(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'description' => 'required',
-            'required_proof' => 'required',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'required_proof' => 'required|string',
+            'additional_note' => 'required|string',
             'status' => 'required',
         ]);
 
@@ -152,8 +240,10 @@ class JobController extends Controller
                     'error' => $validator->errors()->toArray()
                 ]);
             }
+        }
 
-            $user = User::findOrFail($jobPost->user_id);
+        $user = User::findOrFail($jobPost->user_id);
+        if ($request->status == 'Rejected' && $jobPost->rejected_at == NULL) {
             $user->update([
                 'deposit_balance' => $user->deposit_balance + $jobPost->total_charge,
             ]);
@@ -170,6 +260,8 @@ class JobController extends Controller
             'approved_by' => $request->status == 'Running' ? auth()->user()->id : NULL,
             'approved_at' => $request->status == 'Running' ? now() : NULL,
         ]);
+
+
 
         $jobPost = JobPost::findOrFail($id);
 

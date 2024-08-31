@@ -75,15 +75,15 @@
                                 <td>{{ $jobPost->updated_at->format('d-m-Y h:i:s A') }}</td>
                             </tr>
                             @if ($jobPost->rejected_at)
-                            <tr>
-                                <td>Rejected At</td>
-                                <td>{{ $jobPost->rejected_at }}</td>
-                            </tr>
-                            <tr>
+                            <tr class="text-warning">
                                 <td>Rejected By</td>
                                 <td>{{ $jobPost->rejectedBy->name }}</td>
                             </tr>
-                            <tr>
+                            <tr class="text-warning">
+                                <td>Rejected At</td>
+                                <td>{{ date('d-m-Y h:i:s A', strtotime($jobPost->rejected_at)) }}</td>
+                            </tr>
+                            <tr class="text-warning">
                                 <td>Rejection Reason</td>
                                 <td>{{ $jobPost->rejection_reason }}</td>
                             </tr>

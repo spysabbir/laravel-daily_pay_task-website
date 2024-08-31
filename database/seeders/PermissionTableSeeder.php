@@ -50,12 +50,15 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'employee.status', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
 
             ['name' => 'UserMenu', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
-            ['name' => 'user.index', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
+            ['name' => 'user.active', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.edit', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.destroy', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.trash', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.restore', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.delete', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
+            ['name' => 'user.inactive', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
+            ['name' => 'user.blocked', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
+            ['name' => 'user.banned', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
 
             ['name' => 'CategoryMenu', 'group_name' => 'CategoryManagement', 'guard_name' => 'web'],
             ['name' => 'category.index', 'group_name' => 'CategoryManagement', 'guard_name' => 'web'],
@@ -106,7 +109,8 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'verification.request', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
             ['name' => 'verification.request.show', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
             ['name' => 'verification.request.status.change', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
-            ['name' => 'verification.request.rejected.data', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
+            ['name' => 'verification.request.rejected', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
+            ['name' => 'verification.request.approved', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
             ['name' => 'verification.request.delete', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
 
             ['name' => 'DepositMenu', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
@@ -124,6 +128,13 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'withdraw.request.rejected', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             ['name' => 'withdraw.request.approved', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             ['name' => 'withdraw.request.delete', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
+
+            ['name' => 'JobPostMenu', 'group_name' => 'JobPostManagement', 'guard_name' => 'web'],
+            ['name' => 'job_list.pending', 'group_name' => 'JobPostManagement', 'guard_name' => 'web'],
+            ['name' => 'job_list.rejected', 'group_name' => 'JobPostManagement', 'guard_name' => 'web'],
+            ['name' => 'job_list.running', 'group_name' => 'JobPostManagement', 'guard_name' => 'web'],
+            ['name' => 'job_list.canceled', 'group_name' => 'JobPostManagement', 'guard_name' => 'web'],
+            ['name' => 'job_list.completed', 'group_name' => 'JobPostManagement', 'guard_name' => 'web'],
         ]);
 
         $this->command->info('Permissions added successfully.');

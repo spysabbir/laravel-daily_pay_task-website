@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Job Post - Pending')
+@section('title', 'Job List - Pending')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Job Post (Pending)</h3>
+                <h3 class="card-title">Job List (Pending)</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -15,8 +15,8 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>Job Id</th>
                                 <th>User</th>
-                                <th>Post Id</th>
                                 <th>Title</th>
                                 <th>Created At</th>
                                 <th>Action</th>
@@ -69,8 +69,8 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'user', name: 'user' },
                 { data: 'id', name: 'id' },
+                { data: 'user', name: 'user' },
                 { data: 'title', name: 'title' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }

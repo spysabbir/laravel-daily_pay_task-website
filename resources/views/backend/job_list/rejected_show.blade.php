@@ -75,18 +75,15 @@
                                 <td>{{ $jobPost->updated_at->format('d-m-Y h:i:s A') }}</td>
                             </tr>
                             @if ($jobPost->rejected_at)
-                            <tr>
-                                <td>Rejected At</td>
-                                <td>{{ $jobPost->rejected_at }}</td>
-                            </tr>
-                            <tr>
+                            <tr class="text-warning">
                                 <td>Rejected By</td>
                                 <td>{{ $jobPost->rejectedBy->name }}</td>
                             </tr>
-                            <tr>
-                                <td>Rejection Reason</td>
-                                <td>{{ $jobPost->rejection_reason }}</td>
+                            <tr class="text-warning">
+                                <td>Rejected At</td>
+                                <td>{{ date('d-m-Y h:i:s A', strtotime($jobPost->rejected_at)) }}</td>
                             </tr>
+                            <input type="hidden" id="set_rejection_reason" value="{{ $jobPost->rejection_reason }}">
                             @endif
                         </tbody>
                     </table>
@@ -133,13 +130,13 @@
                         <select class="form-select" id="job_post_status" name="status">
                             <option value="">-- Select Status --</option>
                             <option value="Running">Running</option>
-                            <option value="Rejected">Rejected</option>
+                            <option value="Rejected" selected>Rejected</option>
                         </select>
                         <span class="text-danger error-text update_status_error"></span>
                     </div>
-                    <div class="mb-3 d-none" id="rejection_reason_div">
+                    <div class="mb-3" id="rejection_reason_div">
                         <label for="rejection_reason" class="form-label">Rejection Reason <span class="text-danger">* Required</span></label>
-                        <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="4" placeholder="Write the reason for rejection"></textarea>
+                        <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="4" placeholder="Write the reason for rejection">{{ $jobPost->rejection_reason }}</textarea>
                         <span class="text-danger error-text update_rejection_reason_error"></span>
                     </div>
                     <button type="submit" class="btn btn-primary">Update</button>

@@ -151,35 +151,71 @@
 
         <li class="nav-item nav-category">User</li>
         @can('UserMenu')
-            @can('user.index')
             <li class="nav-item">
-                <a href="{{ route('backend.user.index') }}" class="nav-link">
+                <a class="nav-link" data-bs-toggle="collapse" href="#UserMenu" role="button" aria-expanded="false" aria-controls="UserMenu">
                     <i class="link-icon" data-feather="user"></i>
                     <span class="link-title">User</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
+                <div class="collapse" id="UserMenu">
+                    <ul class="nav sub-menu">
+                        @can('user.active')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.user.active') }}" class="nav-link">Active</a>
+                        </li>
+                        @endcan
+                        @can('user.inactive')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.user.inactive') }}" class="nav-link">Inactive</a>
+                        </li>
+                        @endcan
+                        @can('user.blocked')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.user.blocked') }}" class="nav-link">Blocked</a>
+                        </li>
+                        @endcan
+                        @can('user.banned')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.user.banned') }}" class="nav-link">Banned</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
             </li>
-            @endcan
         @endcan
 
         @can('VerificationMenu')
-            @can('verification.request')
             <li class="nav-item">
-                <a href="{{ route('backend.verification.request') }}" class="nav-link">
+                <a class="nav-link" data-bs-toggle="collapse" href="#VerificationMenu" role="button" aria-expanded="false" aria-controls="VerificationMenu">
                     <i class="link-icon" data-feather="user-check"></i>
-                    <span class="link-title">Verification Request</span>
+                    <span class="link-title">Verification</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
+                <div class="collapse" id="VerificationMenu">
+                    <ul class="nav sub-menu">
+                        @can('verification.request')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.verification.request') }}" class="nav-link">Pending</a>
+                        </li>
+                        @endcan
+                        @can('verification.request.approved')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.verification.request.approved') }}" class="nav-link">Approved</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
             </li>
-            @endcan
         @endcan
 
         @can('DepositMenu')
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#depositRequest" role="button" aria-expanded="false" aria-controls="depositRequest">
+                <a class="nav-link" data-bs-toggle="collapse" href="#DepositMenu" role="button" aria-expanded="false" aria-controls="DepositMenu">
                     <i class="link-icon" data-feather="credit-card"></i>
-                    <span class="link-title">Deposit request</span>
+                    <span class="link-title">Deposit</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse" id="depositRequest">
+                <div class="collapse" id="DepositMenu">
                     <ul class="nav sub-menu">
                         @can('deposit.request')
                         <li class="nav-item">
@@ -198,12 +234,12 @@
 
         @can('WithdrawMenu')
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#withdrawRequest" role="button" aria-expanded="false" aria-controls="withdrawRequest">
+                <a class="nav-link" data-bs-toggle="collapse" href="#WithdrawMenu" role="button" aria-expanded="false" aria-controls="WithdrawMenu">
                     <i class="link-icon" data-feather="dollar-sign"></i>
-                    <span class="link-title">Withdraw request</span>
+                    <span class="link-title">Withdraw</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse" id="withdrawRequest">
+                <div class="collapse" id="WithdrawMenu">
                     <ul class="nav sub-menu">
                         @can('withdraw.request')
                         <li class="nav-item">
@@ -220,34 +256,44 @@
             </li>
         @endcan
 
-        {{-- @can('JobPostRequestMenu') --}}
+        @can('JobPostMenu')
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#JobPostRequest" role="button" aria-expanded="false" aria-controls="JobPostRequest">
+                <a class="nav-link" data-bs-toggle="collapse" href="#JobPostMenu" role="button" aria-expanded="false" aria-controls="JobPostMenu">
                     <i class="link-icon" data-feather="briefcase"></i>
-                    <span class="link-title">Job Post Request</span>
+                    <span class="link-title">Job Post</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse" id="JobPostRequest">
+                <div class="collapse" id="JobPostMenu">
                     <ul class="nav sub-menu">
-                        {{-- @can('job_list.pending') --}}
+                        @can('job_list.pending')
                         <li class="nav-item">
                             <a href="{{ route('backend.job_list.pending') }}" class="nav-link">Pending</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('job_list.rejected') --}}
+                        @endcan
+                        @can('job_list.rejected')
                         <li class="nav-item">
                             <a href="{{ route('backend.job_list.rejected') }}" class="nav-link">Rejected</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('job_list.running') --}}
+                        @endcan
+                        @can('job_list.running')
                         <li class="nav-item">
                             <a href="{{ route('backend.job_list.running') }}" class="nav-link">Running</a>
                         </li>
-                        {{-- @endcan --}}
+                        @endcan
+                        @can('job_list.canceled')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.job_list.canceled') }}" class="nav-link">Canceled</a>
+                        </li>
+                        @endcan
+                        @can('job_list.completed')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.job_list.completed') }}" class="nav-link">Completed</a>
+                        </li>
+                        @endcan
                     </ul>
                 </div>
             </li>
-        {{-- @endcan --}}
+        @endcan
     @else
         <li class="nav-item nav-category">User</li>
         @if (!Auth::user()->hasVerification('Approved'))

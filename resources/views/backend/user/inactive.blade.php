@@ -1,76 +1,25 @@
 @extends('layouts.template_master')
 
-@section('title', 'User')
+@section('title', 'User List - Inactive')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">User List</h3>
-                <div class="action-btn">
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
-                    <!-- Trash Modal -->
-                    <div class="modal fade trashModel" tabindex="-1" aria-labelledby="trashModelLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="trashModelLabel">Trash</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="table-responsive">
-                                        <table id="trashDataTable" class="table w-100">
-                                            <thead>
-                                                <tr>
-                                                    <td>Sl No</td>
-                                                    <th>Id</th>
-                                                    <th>Name</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <h3 class="card-title">User List - Inactive</h3>
             </div>
             <div class="card-body">
-                <div class="filter mb-3">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="status">Status</label>
-                                <select class="form-select filter_data" id="filter_status">
-                                    <option value="">-- Select Status --</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                    <option value="Blocked">Blocked</option>
-                                    <option value="Banned">Banned</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Id</th>
+                                <th>User Id</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Phone</th>
                                 <th>Last Login</th>
-                                <td>Status</td>
+                                <td>Created At</td>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -149,26 +98,17 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.user.index') }}",
-                data: function (e) {
-                    e.status = $('#filter_status').val();
-                }
+                url: "{{ route('backend.user.inactive') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
-                { data: 'phone', name: 'phone' },
                 { data: 'last_login', name: 'last_login' },
-                { data: 'status', name: 'status' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
-        });
-
-        // Filter Data
-        $('.filter_data').change(function(){
-            $('#allDataTable').DataTable().ajax.reload();
         });
 
         // View Data
@@ -255,66 +195,6 @@
             })
         })
 
-        // Trash Data
-        $('#trashDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            searching: true,
-            ajax: {
-                url: "{{ route('backend.user.trash') }}",
-            },
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'id', name: 'id' },
-                { data: 'name', name: 'name' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
-        });
-
-        // Restore Data
-        $(document).on('click', '.restoreBtn', function () {
-            var id = $(this).data('id');
-            var url = "{{ route('backend.user.restore', ":id") }}";
-            url = url.replace(':id', id)
-            $.ajax({
-                url: url,
-                type: "GET",
-                success: function (response) {
-                    $(".trashModel").modal('hide');
-                    $('#allDataTable').DataTable().ajax.reload();
-                    $('#trashDataTable').DataTable().ajax.reload();
-                    toastr.success('User restore successfully.');
-                },
-            });
-        });
-
-        // Force Delete Data
-        $(document).on('click', '.forceDeleteBtn', function(){
-            var id = $(this).data('id');
-            var url = "{{ route('backend.user.delete', ":id") }}";
-            url = url.replace(':id', id)
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        method: 'GET',
-                        success: function(response) {
-                            $(".trashModel").modal('hide');
-                            $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.error('User force delete successfully.');
-                        }
-                    });
-                }
-            })
-        })
     });
 </script>
 @endsection

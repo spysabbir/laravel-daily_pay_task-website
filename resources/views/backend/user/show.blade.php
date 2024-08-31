@@ -42,8 +42,12 @@
                 <td>
                     @if ($user->status == 'Active')
                         <span class="badge bg-success">Active</span>
+                    @elseif ($user->status == 'Inactive')
+                        <span class="badge bg-dark">Inactive</span>
+                    @elseif ($user->status == 'Blocked')
+                        <span class="badge bg-warning">Blocked</span>
                     @else
-                        <span class="badge bg-danger">Inactive</span>
+                        <span class="badge bg-danger">Banned</span>
                     @endif
                 </td>
             </tr>
@@ -62,14 +66,6 @@
             <tr>
                 <td>Last Login At</td>
                 <td>{{ date('F j, Y  H:i:s A', strtotime($user->last_login_at)) ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-                <td>Created By</td>
-                <td>{{ $user->created_by }}</td>
-            </tr>
-            <tr>
-                <td>Updated By</td>
-                <td>{{ $user->updated_by }}</td>
             </tr>
             <tr>
                 <td>Created At</td>

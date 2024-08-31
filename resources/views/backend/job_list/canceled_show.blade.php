@@ -49,12 +49,16 @@
                     <td>{{ $jobPost->created_at->format('D d-M-Y H:i:s A') }}</td>
                 </tr>
                 <tr>
-                    <th>Approved By</th>
-                    <td>{{ $jobPost->approvedBy->name }}</td>
+                    <th>Canceled By</th>
+                    <td>{{ $jobPost->canceledBy->name }}</td>
                 </tr>
                 <tr>
-                    <th>Approved At</th>
-                    <td>{{ date('D d-M-Y H:i:s A', strtotime($jobPost->approved_at)) }}</td>
+                    <th>Canceled At</th>
+                    <td>{{ date('D d-M-Y H:i:s A', strtotime($jobPost->canceled_at)) }}</td>
+                </tr>
+                <tr>
+                    <th>Canceled Reason</th>
+                    <td>{{ $jobPost->canceled_reason }}</td>
                 </tr>
             </table>
         </div>

@@ -42,6 +42,11 @@ class JobPost extends Model
         return $this->belongsTo(User::class, 'rejected_by');
     }
 
+    public function canceledBy()
+    {
+        return $this->belongsTo(User::class, 'canceled_by');
+    }
+
     public function jobProofs()
     {
         return $this->hasMany(JobProof::class);
