@@ -104,14 +104,14 @@ class PostJobController extends Controller
             $thumbnail_photo_name = null;
         }
 
-        $job_post_charge = (($request->need_worker * $request->worker_charge) + ($request->extra_screenshots * get_default_settings('extra_screenshot_charge'))) + (($request->boosted_time / 15) * get_default_settings('job_boosted_charge'));
+        $job_post_charge = (($request->need_worker * $request->worker_charge) + ($request->extra_screenshots * get_default_settings('job_posting_additional_screenshot_charge'))) + (($request->boosted_time / 15) * get_default_settings('job_posting_boosted_time_charge'));
 
         $site_charge = $job_post_charge * get_default_settings('job_posting_charge_percentage') / 100;
 
         $request->user()->update([
             'deposit_balance' => $request->user()->deposit_balance - ($job_post_charge + $site_charge),
         ]);
-        
+
         JobPost::create([
             'user_id' => $request->user()->id,
             'category_id' => $request->category_id,
@@ -177,7 +177,7 @@ class PostJobController extends Controller
             $thumbnail_photo_name = $jobPost->thumbnail;
         }
 
-        $job_post_charge = (($request->need_worker * $request->worker_charge) + ($request->extra_screenshots * get_default_settings('extra_screenshot_charge'))) + (($request->boosted_time / 15) * get_default_settings('job_boosted_charge'));
+        $job_post_charge = (($request->need_worker * $request->worker_charge) + ($request->extra_screenshots * get_default_settings('job_posting_additional_screenshot_charge'))) + (($request->boosted_time / 15) * get_default_settings('job_posting_boosted_time_charge'));
 
         $site_charge = $job_post_charge * get_default_settings('job_posting_charge_percentage') / 100;
 

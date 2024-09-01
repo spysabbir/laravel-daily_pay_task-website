@@ -9,7 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Withdraw List</h3>
-                    <p class="mb-0">You can Withdraw money by using Bkash, Nagad, Rocket. Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}. Withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }}%. Instant withdraw charge is {{ get_default_settings('instant_withdraw_charge') }} {{ get_site_settings('site_currency_symbol') }}. After submitting the withdraw request, the admin will verify your request and send the money to your account number. If you have any problem, please contact the admin.</p>
+                    <p class="mb-0">You can Withdraw money by using Bkash, Nagad, Rocket. Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}. Withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }} %. Instant withdraw charge is {{ get_default_settings('instant_withdraw_charge') }} {{ get_site_settings('site_currency_symbol') }}. After submitting the withdraw request, the admin will verify your request and send the money to your account number. If you have any problem, please contact the admin.</p>
                 </div>
                 <div class="action-btn">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
@@ -31,9 +31,9 @@
                                                 <option value="Ragular">Ragular</option>
                                                 <option value="Instant">Instant</option>
                                             </select>
-                                            <small class="text-info">
+                                            <small class="text-info d-block">
                                                 <strong id="ragular">Withdraw request will be processed within 24 hours.</strong>
-                                                <strong id="instant">Withdraw request will be processed in 20 minutes. But you will be charged an extra {{ get_default_settings('instant_withdraw_charge') }} {{ get_site_settings('site_currency_symbol') }}.</strong>
+                                                <strong id="instant">Withdraw request will be processed in 30 minutes. But you will be charged an extra {{ get_default_settings('instant_withdraw_charge') }} {{ get_site_settings('site_currency_symbol') }}.</strong>
                                             </small>
                                             <span class="text-danger error-text type_error"></span>
                                         </div>
@@ -54,8 +54,11 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Withdraw Amount</label>
-                                            <input type="number" class="form-control" id="amount" name="amount" placeholder="Withdraw Amount">
-                                            <small class="text-info">Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_withdraw_amount') }}" max="{{ get_default_settings('max_withdraw_amount') }}" placeholder="Withdraw Amount">
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
+                                            <small class="text-info d-block">Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
                                         <div class="mb-3">
@@ -64,7 +67,10 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Payable Amount</label>
-                                            <input type="number" class="form-control" id="payable_amount" placeholder="Payable Amount" disabled>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="payable_amount" placeholder="Payable Amount" disabled>
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -193,14 +199,19 @@
         });
 
         // Calculate Payable Amount
-        $('#amount').keyup(function(){
-            var amount = $(this).val();
+        $('#amount, #type').on('keyup change', function(){
+            var amount = $('#amount').val();
             var instant_withdraw_charge = {{ get_default_settings('instant_withdraw_charge') }};
             var charge = {{ get_default_settings('withdraw_charge_percentage') }};
             var payable_amount = amount - (amount * charge / 100);
+
             if ($('#type').val() == 'Instant') {
-                $('#payable_amount').val(payable_amount - instant_withdraw_charge);
-            }else{
+                if(amount == ''){
+                    $('#payable_amount').val(payable_amount);
+                } else {
+                    $('#payable_amount').val(payable_amount - instant_withdraw_charge);
+                }
+            } else {
                 $('#payable_amount').val(payable_amount);
             }
         });

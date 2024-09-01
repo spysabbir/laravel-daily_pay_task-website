@@ -34,7 +34,7 @@
                                             </select>
                                             <span class="text-danger error-text method_error"></span>
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="mb-3" id="deposit_account_div">
                                             <label for="deposit_account" class="form-label">Deposit Account Number</label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="deposit_account" placeholder="Deposit Account Number" disabled>
@@ -44,7 +44,10 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Deposit Amount</label>
-                                            <input type="number" class="form-control" id="amount" name="amount" placeholder="Deposit Amount">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="amount" name="amount" placeholder="Deposit Amount">
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
                                             <small class="text-info">Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
@@ -154,8 +157,15 @@
         });
 
         // Get Deposit Account
+        $('#deposit_account_div').hide();
         $('#method').change(function(){
             var method = $(this).val();
+            if (method == '') {
+                $('#deposit_account_div').hide();
+            }else{
+                $('#deposit_account_div').show();
+            }
+
             if (method == 'Bkash') {
                 var account = "{{ get_default_settings('deposit_bkash_account') }}";
             }else if (method == 'Nagad') {

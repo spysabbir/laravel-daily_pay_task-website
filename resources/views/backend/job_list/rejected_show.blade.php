@@ -2,7 +2,7 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Job Post Details</h4>
+                <h4 class="card-title">Job Post User Details</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -74,17 +74,6 @@
                                 <td>Updated At</td>
                                 <td>{{ $jobPost->updated_at->format('d-m-Y h:i:s A') }}</td>
                             </tr>
-                            @if ($jobPost->rejected_at)
-                            <tr class="text-warning">
-                                <td>Rejected By</td>
-                                <td>{{ $jobPost->rejectedBy->name }}</td>
-                            </tr>
-                            <tr class="text-warning">
-                                <td>Rejected At</td>
-                                <td>{{ date('d-m-Y h:i:s A', strtotime($jobPost->rejected_at)) }}</td>
-                            </tr>
-                            <input type="hidden" id="set_rejection_reason" value="{{ $jobPost->rejection_reason }}">
-                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -95,52 +84,43 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    Change Status
+                    Job Details
                 </h4>
             </div>
             <div class="card-body">
-                <form class="forms-sample" id="editForm">
-                    @csrf
-                    <input type="hidden" id="job_post_id" value="{{ $jobPost->id }}">
-                    @if ($jobPost->thumbnail)
-                    <div class="mb-3">
-                        <label for="job_thumbnail" class="form-label">Job Thumbnail <span class="text-danger">* Required</span></label>
-                        <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $jobPost->thumbnail }}" alt="Job Thumbnail" class="img-fluid">
-                    </div>
-                    @endif
-                    <div class="mb-3">
-                        <label for="job_title" class="form-label">Job Title <span class="text-danger">* Required</span></label>
-                        <input type="text" class="form-control" id="job_title" value="{{ $jobPost->title }}" name="title">
-                        <span class="text-danger error-text update_title_error"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="job_description" class="form-label">Job Description <span class="text-danger">* Required</span></label>
-                        <textarea class="form-control" id="job_description" name="description" rows="4">{{ $jobPost->description }}</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="job_required_proof" class="form-label">Job Required Proof <span class="text-danger">* Required</span></label>
-                        <textarea class="form-control" id="job_required_proof" name="required_proof" rows="4">{{ $jobPost->required_proof }}</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="job_additional_note" class="form-label">Job Additional Note <span class="text-danger">* Required</span></label>
-                        <textarea class="form-control" id="job_additional_note" name="additional_note" rows="4">{{ $jobPost->additional_note }}</textarea>
-                    </div>
-                    <div class="mb-3 ">
-                        <label for="job_post_status" class="form-label">Job Post Status <span class="text-danger">* Required</span></label>
-                        <select class="form-select" id="job_post_status" name="status">
-                            <option value="">-- Select Status --</option>
-                            <option value="Running">Running</option>
-                            <option value="Rejected" selected>Rejected</option>
-                        </select>
-                        <span class="text-danger error-text update_status_error"></span>
-                    </div>
-                    <div class="mb-3" id="rejection_reason_div">
-                        <label for="rejection_reason" class="form-label">Rejection Reason <span class="text-danger">* Required</span></label>
-                        <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="4" placeholder="Write the reason for rejection">{{ $jobPost->rejection_reason }}</textarea>
-                        <span class="text-danger error-text update_rejection_reason_error"></span>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
+                @if ($jobPost->thumbnail)
+                <div class="mb-3">
+                    <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $jobPost->thumbnail }}" alt="Job Thumbnail" class="img-fluid">
+                </div>
+                @endif
+                <div class="mb-3">
+                    <strong>Job Title: </strong>
+                    <p>{{ $jobPost->title }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Job Description: </strong>
+                    <p>{{ $jobPost->description }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Job Required Proof: </strong>
+                    <p>{{ $jobPost->required_proof }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Job Additional Note: </strong>
+                    <p>{{ $jobPost->additional_note }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Rejected By</strong>
+                    <p>{{ $jobPost->rejectedBy->name }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Rejected At</strong>
+                    <p>{{ date('d-m-Y h:i:s A', strtotime($jobPost->rejected_at)) }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Rejection Reason: </strong>
+                    <p>{{ $jobPost->rejection_reason }}</p>
+                </div>
             </div>
         </div>
     </div>

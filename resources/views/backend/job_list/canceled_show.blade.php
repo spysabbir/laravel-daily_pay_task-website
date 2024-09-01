@@ -50,7 +50,7 @@
                 </tr>
                 <tr>
                     <th>Canceled By</th>
-                    <td>{{ $jobPost->canceledBy->name }}</td>
+                    {{-- <td>{{ $jobPost->canceledBy->name }}</td> --}}
                 </tr>
                 <tr>
                     <th>Canceled At</th>

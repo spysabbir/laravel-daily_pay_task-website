@@ -95,7 +95,7 @@ class VerificationController extends Controller
         }
     }
 
-    public function verificationRequestRejectedData(Request $request)
+    public function verificationRequestRejected(Request $request)
     {
         if ($request->ajax()) {
             $query = Verification::where('status', 'Rejected');
@@ -109,6 +109,11 @@ class VerificationController extends Controller
                 ->editColumn('user_email', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . $row->user->email . '</span>
+                        ';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->editColumn('rejected_by', function ($row) {
@@ -127,7 +132,7 @@ class VerificationController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_email', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_email', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
@@ -142,5 +147,54 @@ class VerificationController extends Controller
         unlink(base_path("public/uploads/verification_photo/").$verification->id_with_face_image);
 
         $verification->delete();
+    }
+
+    public function verificationRequestApproved(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Verification::where('status', 'Approved');
+
+            $query->select('verifications.*')->orderBy('created_at', 'desc');
+
+            $approvedRequest = $query->get();
+
+            return DataTables::of($approvedRequest)
+                ->addIndexColumn()
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        ';
+                })
+                ->editColumn('user_email', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . $row->user->email . '</span>
+                        ';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->editColumn('approved_by', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . $row->approvedBy->name . '</span>
+                        ';
+                })
+                ->editColumn('approved_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->approved_at)) . '</span>
+                        ';
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                    ';
+                return $btn;
+                })
+                ->rawColumns(['user_name', 'user_email', 'created_at', 'approved_by', 'approved_at', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.verification.approved');
     }
 }

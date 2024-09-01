@@ -90,52 +90,6 @@
                 },
             });
         });
-
-        // Rejected Data
-        $(document).on('change', '#job_post_status', function () {
-            var status = $(this).val();
-            var rejection_reason = $('#set_rejection_reason').val();
-            if (status == 'Rejected') {
-                $('#rejection_reason_div').removeClass('d-none');
-                $('#rejection_reason').val(rejection_reason);
-            } else {
-                $('#rejection_reason_div').addClass('d-none');
-                $('#rejection_reason').val('');
-            }
-        });
-
-        // Update Data
-        $("body").on("submit", "#editForm", function(e){
-            e.preventDefault();
-            var id = $('#job_post_id').val();
-            var url = "{{ route('backend.job_status_update', ":id") }}";
-            url = url.replace(':id', id)
-            $.ajax({
-                url: url,
-                type: "PUT",
-                data: $(this).serialize(),
-                beforeSend:function(){
-                    $(document).find('span.error-text').text('');
-                },
-                success: function (response) {
-                    if (response.status == 400) {
-                        $.each(response.error, function(prefix, val){
-                            $('span.update_'+prefix+'_error').text(val[0]);
-                        })
-                    }else{
-                        if (response.status == 401) {
-                            $.each(response.error, function(prefix, val){
-                                $('span.update_'+prefix+'_error').text(val[0]);
-                            })
-                        }else{
-                            $('#rejectedDataTable').DataTable().ajax.reload();
-                            $(".viewModal").modal('hide');
-                            toastr.success('Job post update successfully.');
-                        }
-                    }
-                },
-            });
-        })
     });
 </script>
 @endsection

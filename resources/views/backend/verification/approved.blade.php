@@ -1,52 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Verification Request')
+@section('title', 'Verification Request - Approved')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Verification Request (Pending)</h3>
-                <div class="action-btn">
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".rejectedData">
-                        Rejected Request
-                    </button>
-                    <!-- Verification Request (Reject) Modal -->
-                    <div class="modal fade rejectedData" tabindex="-1" aria-labelledby="rejectedDataLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="rejectedDataLabel">Verification Reject</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="table-responsive">
-                                        <table id="rejectedDataTable" class="table w-100">
-                                            <thead>
-                                                <tr>
-                                                    <td>Sl No</td>
-                                                    <th>User Id</th>
-                                                    <th>User Email</th>
-                                                    <th>Remarks</th>
-                                                    <th>Rejected By</th>
-                                                    <th>Rejected At</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <h3 class="card-title">Verification Request (Approved)</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -58,6 +19,8 @@
                                 <th>User Name</th>
                                 <th>User Email</th>
                                 <th>Created At</th>
+                                <th>Approved By</th>
+                                <th>Approved At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -104,7 +67,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.verification.request') }}",
+                url: "{{ route('backend.verification.request.approved') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -112,6 +75,8 @@
                 { data: 'user_name', name: 'user_name' },
                 { data: 'user_email', name: 'user_email' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'approved_by', name: 'approved_by' },
+                { data: 'approved_at', name: 'approved_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

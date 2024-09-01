@@ -43,6 +43,23 @@ class JobListController extends Controller
                         ';
                         return $workerCharge;
                     })
+                    ->addColumn('boosted_time', function ($row) {
+                        $boostedTime = $row->boosted_time; // Use $row instead of $jobPost
+                        $formattedTime = '';
+
+                        if ($boostedTime < 60) {
+                            $formattedTime = $boostedTime . ' minute' . ($boostedTime > 1 ? 's' : '');
+                        } elseif ($boostedTime >= 60) {
+                            $hours = round($boostedTime / 60, 1);
+                            $formattedTime = $hours . ' hour' . ($hours > 1 ? 's' : '');
+                        }
+
+                        return $formattedTime;
+                    })
+                    ->addColumn('running_day', function ($row) {
+                        $runningDay = $row->running_day . ' day' . ($row->running_day > 1 ? 's' : '');
+                        return $runningDay;
+                    })
                     ->rawColumns(['worker_charge'])
                     ->make(true);
             }
@@ -146,15 +163,32 @@ class JobListController extends Controller
         }
     }
 
-    public function runningJobCanceled($id)
+    public function runningJobCanceled(Request $request, $id)
     {
         $jobPost = JobPost::findOrFail($id);
 
-        $jobPost->status = 'Canceled';
+        $jobProofs = JobProof::where('job_post_id', $id)->where('status', 'Pending')->count();
 
-        $jobPost->save();
+        if ($jobProofs > 0) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'You can not cancel this job. Because some workers are working on this job.'
+            ]);
+        }else {
+            $jobPost->status = 'Canceled';
+            $jobPost->cancellation_reason = $request->message;
+            $jobPost->canceled_by = auth()->user()->id;
+            $jobPost->canceled_at = now();
 
-        return response()->json(['success' => 'Status updated successfully.']);
+            $jobPost->save();
+
+            return response()->json([
+                'status' => 200,
+                'success' => 'Status updated successfully.'
+            ]);
+        }
+
+
     }
 
     public function jobListRunning(Request $request)

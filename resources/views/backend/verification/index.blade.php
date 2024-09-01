@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Verification Request')
+@section('title', 'Verification Request - Pending')
 
 @section('content')
 <div class="row">
@@ -29,6 +29,7 @@
                                                     <th>User Id</th>
                                                     <th>User Email</th>
                                                     <th>Remarks</th>
+                                                    <th>Created At</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
                                                     <th>Action</th>
@@ -171,6 +172,7 @@
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_email', name: 'user_email' },
                 { data: 'remarks', name: 'remarks' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'rejected_at', name: 'rejected_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }

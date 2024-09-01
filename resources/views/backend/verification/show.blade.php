@@ -51,7 +51,7 @@
                             </tr>
                             <tr>
                                 <td>Rejected At</td>
-                                <td>{{ $verification->rejected_at ?? 'N/A' }}</td>
+                                <td>{{ date('F j, Y  H:i:s A', strtotime($verification->rejected_at)) ?? 'N/A' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -60,6 +60,12 @@
         </div>
     </div>
     <div class="col-lg-4">
+        @if ($verification->status == 'Approved')
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">Approved!</h4>
+                <p>This verification request has been approved by <strong>{{ $verification->approvedBy->name }}</strong> at <strong>{{ date('F j, Y  H:i:s A', strtotime($verification->approved_at)) }}</strong></p>
+            </div>
+        @else
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
@@ -87,5 +93,6 @@
                 </form>
             </div>
         </div>
+        @endif
     </div>
 </div>

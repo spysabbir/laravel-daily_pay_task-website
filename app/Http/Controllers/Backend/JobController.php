@@ -71,7 +71,7 @@ class JobController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                     ';
                 return $btn;
                 })
@@ -243,7 +243,7 @@ class JobController extends Controller
         }
 
         $user = User::findOrFail($jobPost->user_id);
-        if ($request->status == 'Rejected' && $jobPost->rejected_at == NULL) {
+        if ($request->status == 'Rejected') {
             $user->update([
                 'deposit_balance' => $user->deposit_balance + $jobPost->total_charge,
             ]);
