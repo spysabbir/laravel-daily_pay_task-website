@@ -57,13 +57,6 @@ class UserController extends Controller
             'id_with_face_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $verification = Verification::where('user_id', $request->user()->id)->first();
-
-        if ($verification) {
-            unlink(base_path("public/uploads/verification_photo/").$verification->id_front_image);
-            unlink(base_path("public/uploads/verification_photo/").$verification->id_with_face_image);
-        }
-
         $manager = new ImageManager(new Driver());
         // id_front_image
         $id_front_image_name = $request->user()->id."-id_front_image".".". $request->file('id_front_image')->getClientOriginalExtension();
@@ -73,23 +66,6 @@ class UserController extends Controller
         $id_with_face_image_name = $request->user()->id."-id_with_face_image".".". $request->file('id_with_face_image')->getClientOriginalExtension();
         $image = $manager->read($request->file('id_with_face_image'));
         $image->toJpeg(80)->save(base_path("public/uploads/verification_photo/").$id_with_face_image_name);
-
-        if ($verification) {
-            $verification->update([
-                'id_type' => $request->id_type,
-                'id_number' => $request->id_number,
-                'id_front_image' => $id_front_image_name,
-                'id_with_face_image' => $id_with_face_image_name,
-                'status' => 'Pending',
-            ]);
-
-            $notification = array(
-                'message' => 'Id Verification request updated successfully.',
-                'alert-type' => 'success'
-            );
-
-            return back()->with($notification);
-        }
 
         Verification::create([
             'user_id' => $request->user()->id,
@@ -101,6 +77,53 @@ class UserController extends Controller
 
         $notification = array(
             'message' => 'Id Verification request submitted successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
+    }
+
+    public function reVerificationStore(Request $request)
+    {
+        $request->validate([
+            'id_type' => 'required|in:NID,Passport,Driving License',
+            'id_number' => 'required|string|max:255|unique:verifications,id_number,'.$request->user()->id.',user_id',
+            'id_front_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'id_with_face_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $verification = Verification::where('id', $request->verification_id)->first();
+
+        $manager = new ImageManager(new Driver());
+        // id_front_image
+        if ($request->file('id_front_image')) {
+            unlink(base_path("public/uploads/verification_photo/").$verification->id_front_image);
+            $id_front_image_name = $request->user()->id."-id_front_image".".". $request->file('id_front_image')->getClientOriginalExtension();
+            $image = $manager->read($request->file('id_front_image'));
+            $image->toJpeg(80)->save(base_path("public/uploads/verification_photo/").$id_front_image_name);
+            $verification->update([
+                'id_front_image' => $id_front_image_name,
+            ]);
+        }
+        // id_with_face_image
+        if ($request->file('id_with_face_image')) {
+            unlink(base_path("public/uploads/verification_photo/").$verification->id_with_face_image);
+            $id_with_face_image_name = $request->user()->id."-id_with_face_image".".". $request->file('id_with_face_image')->getClientOriginalExtension();
+            $image = $manager->read($request->file('id_with_face_image'));
+            $image->toJpeg(80)->save(base_path("public/uploads/verification_photo/").$id_with_face_image_name);
+            $verification->update([
+                'id_with_face_image' => $id_with_face_image_name,
+            ]);
+        }
+
+        $verification->update([
+            'id_type' => $request->id_type,
+            'id_number' => $request->id_number,
+            'status' => 'Pending',
+        ]);
+
+        $notification = array(
+            'message' => 'Id Verification request updated successfully.',
             'alert-type' => 'success'
         );
 

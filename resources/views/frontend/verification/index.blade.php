@@ -68,7 +68,7 @@
                 </p>
                 @else
                 <p class="text-warning">
-                    <strong>Note:</strong> Before verification, Please make sure you have fill up your profile information correctly. <br>
+                    <strong>Note:</strong> Before verification, Please make sure you have fill up your profile information correctly. As per your verification id, your profile information should be matched.
                 </p>
                 @endif
             </div>
@@ -93,24 +93,27 @@
                     @if ($verification && $verification->status === 'Rejected')
                     <div class="alert alert-danger">
                         Your Verification is Rejected <br>
-                        Remarks: {{ $verification->remarks }} <br>
+                        Rejected Reason: {{ $verification->rejected_reason }} <br>
                         <p>
                             <strong>Note:</strong> Please re-submit the verification.
                         </p>
                     </div>
                     @endif
-                    <form class="forms-sample" action="{{ route('verification.store') }}" method="POST" enctype="multipart/form-data">
+                    <form class="forms-sample" action="{{ $verification && $verification->status === 'Rejected' ? route('re-verification.store') : route('verification.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        @if ($verification && $verification->status === 'Rejected')
+                            <input type="hidden" name="verification_id" value="{{ $verification->id }}">
+                            @method('PUT')
+                        @endif
                         <div class="row">
-                            {{-- id_type --}}
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="id_type" class="form-label">Id Type</label>
                                     <select class="form-select" id="id_type" name="id_type">
                                         <option value="">Select Id Type</option>
-                                        <option value="NID" {{ old('id_type') === 'NID' ? 'selected' : '' }}>NID</option>
-                                        <option value="Passport" {{ old('id_type') === 'Passport' ? 'selected' : '' }}>Passport</option>
-                                        <option value="Driving License" {{ old('id_type') === 'Driving License' ? 'selected' : '' }}>Driving License</option>
+                                        <option value="NID" {{ old('id_type', $verification->id_type ?? '') === 'NID' ? 'selected' : '' }}>NID</option>
+                                        <option value="Passport" {{ old('id_type', $verification->id_type ?? '') === 'Passport' ? 'selected' : '' }}>Passport</option>
+                                        <option value="Driving License" {{ old('id_type', $verification->id_type ?? '') === 'Driving License' ? 'selected' : '' }}>Driving License</option>
                                     </select>
                                 </div>
                                 @error('id_type')
@@ -120,7 +123,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="id_number" class="form-label">Id Number</label>
-                                    <input type="text" class="form-control" id="id_number" name="id_number" value="{{ old('id_number') }}" placeholder="Id Number">
+                                    <input type="text" class="form-control" id="id_number" name="id_number" value="{{ old('id_number', $verification->id_number ?? '') }}" placeholder="Enter Id Number">
                                 </div>
                                 @error('id_number')
                                     <span class="text-danger">{{ $message }}</span>
@@ -130,6 +133,7 @@
                                 <div class="mb-3">
                                     <label for="id_front_image" class="form-label">Id Front Image</label>
                                     <input type="file" class="form-control" id="id_front_image" name="id_front_image" accept=".jpg, .jpeg, .png">
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image ?? '' }}" id="id_front_image_preview" class="img-fluid mt-3" style="display: {{ $verification && $verification->id_front_image ? 'block' : 'none' }};">
                                 </div>
                                 @error('id_front_image')
                                     <span class="text-danger">{{ $message }}</span>
@@ -139,6 +143,7 @@
                                 <div class="mb-3">
                                     <label for="id_with_face_image" class="form-label">Id With Face Image</label>
                                     <input type="file" class="form-control" id="id_with_face_image" name="id_with_face_image" accept=".jpg, .jpeg, .png">
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image ?? '' }}" id="id_with_face_image_preview" class="img-fluid mt-3" style="display: {{ $verification && $verification->id_with_face_image ? 'block' : 'none' }};">
                                 </div>
                                 @error('id_with_face_image')
                                     <span class="text-danger">{{ $message }}</span>
@@ -146,7 +151,7 @@
                             </div><!-- Col -->
                         </div><!-- Row -->
                         <div class="row mt-3">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">{{ $verification && $verification->status === 'Rejected' ? 'Re-Submit' : 'Submit' }}</button>
                         </div>
                     </form>
                 @endif
@@ -157,5 +162,24 @@
 @endsection
 
 @section('script')
+<script>
+    $(document).ready(function() {
+        // Image Preview
+        $('#id_front_image').change(function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#id_front_image_preview').attr('src', e.target.result).css('display', 'block');
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
 
+        $('#id_with_face_image').change(function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#id_with_face_image_preview').attr('src', e.target.result).css('display', 'block');
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+    });
+</script>
 @endsection

@@ -65,9 +65,15 @@ class DepositController extends Controller
             ]);
         } else {
             $deposit = Deposit::findOrFail($id);
+            if($request->status == 'Rejected' && empty($request->rejected_reason)) {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'The rejected reason field is required.'
+                ]);
+            }
             $deposit->update([
                 'status' => $request->status,
-                'remarks' => $request->remarks,
+                'rejected_reason' => $request->rejected_reason,
                 'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
                 'rejected_at' => $request->status == 'Rejected' ? now() : NULL,
                 'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,

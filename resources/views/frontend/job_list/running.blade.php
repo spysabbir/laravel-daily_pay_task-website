@@ -150,45 +150,56 @@
             var id = $(this).data('id');
             var url = "{{ route('running_job.canceled', ":id") }}";
             url = url.replace(':id', id)
-            Swal.fire({
-                input: "textarea",
-                inputLabel: "Cancellation Reason",
-                inputPlaceholder: "Type cancellation reason here...",
-                inputAttributes: {
-                    "aria-label": "Type cancellation reason here..."
-                },
-                title: 'Are you sure?',
-                text: "You want to canceled this job!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Canceled it!',
-                preConfirm: () => {
-                    const message = Swal.getInput().value;
-                    if (!message) {
-                        Swal.showValidationMessage('Cancellation Reason is required');
-                    }
-                    return message;
-                }
-            }).then((result) => {
-                if (result.isConfirmed && result.value) {
-                    $.ajax({
-                        url: url,
-                        method: 'POST',
-                        data: { id: id, message: result.value },
-                        success: function(response) {
-                            if (response.status == 400) {
-                                toastr.error(response.error);
-                            }else{
-                                toastr.success('Job Canceled Successfully');
-                                $('#allDataTable').DataTable().ajax.reload();
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: { id: id, message: result.value },
+                success: function(response) {
+                    if (response.status == 404) {
+                        toastr.error(response.error);
+                    }else{
+                        Swal.fire({
+                            input: "textarea",
+                            inputLabel: "Cancellation Reason",
+                            inputPlaceholder: "Type cancellation reason here...",
+                            inputAttributes: {
+                                "aria-label": "Type cancellation reason here..."
+                            },
+                            title: 'Are you sure?',
+                            text: "You want to canceled this job!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, Canceled it!',
+                            preConfirm: () => {
+                                const message = Swal.getInput().value;
+                                if (!message) {
+                                    Swal.showValidationMessage('Cancellation Reason is required');
+                                }
+                                return message;
                             }
-                        }
-                    });
+                        }).then((result) => {
+                            if (result.isConfirmed && result.value) {
+                                $.ajax({
+                                    url: url,
+                                    method: 'POST',
+                                    data: { id: id, message: result.value },
+                                    success: function(response) {
+                                        if (response.status == 400) {
+                                            toastr.error(response.error);
+                                        }else{
+                                            toastr.success('Job Canceled Successfully');
+                                            $('#allDataTable').DataTable().ajax.reload();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
             });
-
         })
 
         // Edit Data

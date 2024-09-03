@@ -28,7 +28,7 @@
                                                     <td>Sl No</td>
                                                     <th>User Id</th>
                                                     <th>User Email</th>
-                                                    <th>Remarks</th>
+                                                    <th>Rejected Reason</th>
                                                     <th>Created At</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
@@ -58,7 +58,7 @@
                                 <th>User Id</th>
                                 <th>User Name</th>
                                 <th>User Email</th>
-                                <th>Created At</th>
+                                <th>Submited At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -150,10 +150,14 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('#pendingDataTable').DataTable().ajax.reload();
-                        $('#rejectedDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
-                        toastr.success('Verification status change successfully.');
+                        if (response.status == 401) {
+                            toastr.error(response.error);
+                        }else{
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            $('#rejectedDataTable').DataTable().ajax.reload();
+                            $(".viewModal").modal('hide');
+                            toastr.success('Verification status change successfully.');
+                        }
                     }
                 },
             });
@@ -171,7 +175,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_email', name: 'user_email' },
-                { data: 'remarks', name: 'remarks' },
+                { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'rejected_at', name: 'rejected_at' },

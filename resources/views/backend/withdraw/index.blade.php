@@ -28,7 +28,7 @@
                                                     <td>Sl No</td>
                                                     <th>User Id</th>
                                                     <th>User Name</th>
-                                                    <th>Remarks</th>
+                                                    <th>Rejected Reason</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
                                                     <th>Action</th>
@@ -157,10 +157,14 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('#pendingDataTable').DataTable().ajax.reload();
-                        $('#rejectedDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
-                        toastr.success('Withdraw status change successfully.');
+                        if (response.status == 401) {
+                            toastr.error(response.error);
+                        }else{
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            $('#rejectedDataTable').DataTable().ajax.reload();
+                            $(".viewModal").modal('hide');
+                            toastr.success('Withdraw status change successfully.');
+                        }
                     }
                 },
             });
@@ -178,7 +182,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
-                { data: 'remarks', name: 'remarks' },
+                { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'rejected_at', name: 'rejected_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }

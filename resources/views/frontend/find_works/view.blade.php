@@ -99,13 +99,13 @@
     </div>
     <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-center">
                 <h3 class="card-title">Buyer Details</h3>
             </div>
             <div class="card-body">
                 <div class="text-center">
-                    <img src="{{ asset('uploads/profile_photo') }}/{{ $workDetails->user->profile_photo }}" alt="Profile photo for {{ $workDetails->user->name }}" class="img-fluid mb-3 rounded-circle">
-                    <p>Name: <span class="text-info">{{ $workDetails->user->name }}</span></p>
+                    <img src="{{ asset('uploads/profile_photo') }}/{{ $workDetails->user->profile_photo }}" alt="Profile photo for {{ $workDetails->user->name }}" class="mb-3 rounded-circle" width="150px" height="150px">
+                    <p>Name: <a href="{{ route('user.profile', encrypt($workDetails->user->id)) }}" class="text-info">{{ $workDetails->user->name }}</a></p>
                     <p>Last Active: <span class="text-info">{{ Carbon\Carbon::parse($workDetails->user->last_login_at)->diffForHumans() }}</span></p>
                     <p>Join Date: <span class="text-info">{{ $workDetails->user->created_at->format('d M, Y') }}</span></p>
                 </div>

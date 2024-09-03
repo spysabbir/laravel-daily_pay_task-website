@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('id_front_image');
             $table->string('id_with_face_image');
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
-            $table->text('remarks')->nullable();
+            $table->text('rejected_reason')->nullable();
             $table->foreignId('approved_by')->nullable();
             $table->foreignId('rejected_by')->nullable();
             $table->timestamp('approved_at')->nullable();

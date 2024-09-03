@@ -11,7 +11,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="pendingDataTable" class="table">
+                    <table id="approvedDataTable" class="table">
                         <thead>
                             <tr>
                                 <th>Sl No</th>
@@ -61,8 +61,8 @@
             }
         });
 
-        // Pending Data
-        $('#pendingDataTable').DataTable({
+        // Approved Data
+        $('#approvedDataTable').DataTable({
             processing: true,
             serverSide: true,
             searching: true,
@@ -93,53 +93,6 @@
                     $('#modalBody').html(response);
                 },
             });
-        });
-
-        // Update Data
-        $("body").on("submit", "#editForm", function(e){
-            e.preventDefault();
-            var id = $('#verification_id').val();
-            var url = "{{ route('backend.verification.request.status.change', ":id") }}";
-            url = url.replace(':id', id)
-            $.ajax({
-                url: url,
-                type: "PUT",
-                data: $(this).serialize(),
-                beforeSend:function(){
-                    $(document).find('span.error-text').text('');
-                },
-                success: function (response) {
-                    if (response.status == 400) {
-                        $.each(response.error, function(prefix, val){
-                            $('span.update_'+prefix+'_error').text(val[0]);
-                        })
-                    }else{
-                        $('#pendingDataTable').DataTable().ajax.reload();
-                        $('#rejectedDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
-                        toastr.success('Verification status change successfully.');
-                    }
-                },
-            });
-        })
-
-        // Rejected Data
-        $('#rejectedDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            searching: true,
-            ajax: {
-                url: "{{ route('backend.verification.request.rejected') }}",
-            },
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'user_id', name: 'user_id' },
-                { data: 'user_email', name: 'user_email' },
-                { data: 'remarks', name: 'remarks' },
-                { data: 'rejected_by', name: 'rejected_by' },
-                { data: 'rejected_at', name: 'rejected_at' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
         });
 
         // Delete Data

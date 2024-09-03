@@ -20,8 +20,11 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/profile/edit', [UserController::class, 'profileEdit'])->name('profile.edit');
     Route::get('/profile/setting', [UserController::class, 'profileSetting'])->name('profile.setting');
 
+    Route::get('/user-profile/{id}', [UserController::class, 'userProfile'])->name('user.profile');
+
     Route::get('/verification', [UserController::class, 'verification'])->name('verification');
     Route::post('/verification', [UserController::class, 'verificationStore'])->name('verification.store');
+    Route::put('/re-verification', [UserController::class, 'reVerificationStore'])->name('re-verification.store');
 
     Route::get('/find-works', [UserController::class, 'findWorks'])->name('find.works');
     Route::get('/work-details/{id}', [UserController::class, 'workDetails'])->name('work.details');
@@ -60,7 +63,6 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/running-job-approved_all/{id}', [JobListController::class, 'runningJobApprovedAll'])->name('running_job.approved_all');
     Route::post('/running-job-selected_item_approved', [JobListController::class, 'runningJobSelectedItemApproved'])->name('running_job.selected_item_approved');
     Route::post('/running-job-selected_item_rejected', [JobListController::class, 'runningJobSelectedItemRejected'])->name('running_job.selected_item_rejected');
-
 
     Route::get('/job-list-completed', [JobListController::class, 'jobListCompleted'])->name('job.list.completed');
 
