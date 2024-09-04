@@ -564,7 +564,7 @@ class UserController extends Controller
                         ';
                     })
                     ->editColumn('worker_charge', function ($row) {
-                        return $row->jobPost->worker_charge . ' ' . get_site_settings('site_currency_symbol') . $row->job_post_id;
+                        return $row->jobPost->worker_charge . ' ' . get_site_settings('site_currency_symbol');
                     })
                     ->editColumn('rating', function ($row) {
                         return $row->rating ? $row->rating->rating . ' <i class="fa-solid fa-star text-warning"></i>' : 'Not Rated';
@@ -661,6 +661,21 @@ class UserController extends Controller
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
+            $reviewedCount = JobProof::where('user_id', Auth::id())->where('reviewed_at', '!=', null)->whereMonth('reviewed_at', now()->month)->count();
+
+            if (30 >= get_default_settings('job_proof_monthly_free_review_time')) {
+                if($request->user()->withdraw_balance < get_default_settings('job_proof_additional_review_charge')){
+                    return response()->json([
+                        'status' => 401,
+                        'error' => 'Insufficient balance in your account to review additional job proof.'
+                    ]);
+                }else{
+                    User::where('id', Auth::id())->update([
+                        'withdraw_balance' => $request->user()->withdraw_balance - get_default_settings('job_proof_additional_review_charge'),
+                    ]);
+                }
+            }
+
             $jobProof = JobProof::findOrFail($id);
 
             $jobProof->status = 'Reviewed';
@@ -705,11 +720,8 @@ class UserController extends Controller
                             </a>
                         ';
                     })
-                    ->editColumn('rejected_reason', function ($row) {
-                        return $row->rejected_reason;
-                    })
-                    ->editColumn('rejected_at', function ($row) {
-                        return date('d M Y h:i A', strtotime($row->rejected_at));
+                    ->editColumn('reviewed_at', function ($row) {
+                        return date('d M Y h:i A', strtotime($row->reviewed_at));
                     })
                     ->addColumn('action', function ($row) {
                         $action = '

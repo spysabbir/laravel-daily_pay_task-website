@@ -134,6 +134,7 @@
         $('#approved_div').hide();
         $('#rejected_div').hide();
         $('input[name="status"]').change(function() {
+            $('.update_status_error').text('');
             if ($(this).val() == 'Rejected') {
                 $('#approved_div').hide();
                 $('#rejected_div').show();

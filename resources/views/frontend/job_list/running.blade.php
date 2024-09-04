@@ -19,9 +19,9 @@
                                 <th>Sl No</th>
                                 <th>Job ID</th>
                                 <th>Title</th>
-                                <th>Work Compleated</th>
-                                <th>Worker Earning</th>
-                                <th>Job Running Day</th>
+                                <th>Approved At</th>
+                                <th>Proof Submitted</th>
+                                <th>Proof Check</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -40,7 +40,7 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="job_post_id">
                                                 <div class="mb-3">
-                                                    <label for="need_worker" class="form-label">Need Worker</label>
+                                                    <label for="need_worker" class="form-label">Need Additional Worker</label>
                                                     <input type="number" class="form-control" id="need_worker" value="0" name="need_worker" placeholder="Need Worker">
                                                     <span class="text-danger error-text update_need_worker_error"></span>
                                                 </div>
@@ -111,9 +111,9 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
-                { data: 'need_worker', name: 'need_worker' },
-                { data: 'worker_charge', name: 'worker_charge' },
-                { data: 'running_day', name: 'running_day' },
+                { data: 'approved_at', name: 'approved_at' },
+                { data: 'proof_submitted', name: 'proof_submitted' },
+                { data: 'proof_check', name: 'proof_check' },
                 { data: 'action', name: 'action' }
             ]
         });
@@ -149,16 +149,16 @@
         $(document).on('click', '.canceledBtn', function(){
             var id = $(this).data('id');
             var url = "{{ route('running_job.canceled', ":id") }}";
-            url = url.replace(':id', id)
+            url = url.replace(':id', id);
 
             $.ajax({
                 url: url,
                 method: 'POST',
-                data: { id: id, message: result.value },
+                data: { id: id, check: true },
                 success: function(response) {
-                    if (response.status == 404) {
+                    if (response.status == 400) {
                         toastr.error(response.error);
-                    }else{
+                    } else {
                         Swal.fire({
                             input: "textarea",
                             inputLabel: "Cancellation Reason",
@@ -167,12 +167,12 @@
                                 "aria-label": "Type cancellation reason here..."
                             },
                             title: 'Are you sure?',
-                            text: "You want to canceled this job!",
+                            text: "You want to cancel this job!",
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, Canceled it!',
+                            confirmButtonText: 'Yes, Cancel it!',
                             preConfirm: () => {
                                 const message = Swal.getInput().value;
                                 if (!message) {
@@ -187,20 +187,20 @@
                                     method: 'POST',
                                     data: { id: id, message: result.value },
                                     success: function(response) {
-                                        if (response.status == 400) {
+                                        if (response.status == 401) {
                                             toastr.error(response.error);
-                                        }else{
-                                            toastr.success('Job Canceled Successfully');
+                                        } else {
                                             $('#allDataTable').DataTable().ajax.reload();
+                                            toastr.error('Job Canceled Successfully');
                                         }
-                                    }
+                                    },
                                 });
                             }
                         });
                     }
-                }
+                },
             });
-        })
+        });
 
         // Edit Data
         $(document).on('click', '.editBtn', function () {

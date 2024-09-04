@@ -37,34 +37,26 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListPending)
                     ->addIndexColumn()
-                    ->editColumn('worker_charge', function ($row) {
-                        $workerCharge = '
-                            <span class="badge bg-primary">' . $row->worker_charge .' '. get_site_settings('site_currency_symbol') . '</span>
+                    ->editColumn('created_at', function ($row) {
+                        return $row->created_at->format('d M Y h:i A');
+                    })
+                    ->addColumn('action', function ($row) {
+                        $actionBtn = '
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                         ';
-                        return $workerCharge;
+                        return $actionBtn;
                     })
-                    ->addColumn('boosted_time', function ($row) {
-                        $boostedTime = $row->boosted_time; // Use $row instead of $jobPost
-                        $formattedTime = '';
-
-                        if ($boostedTime < 60) {
-                            $formattedTime = $boostedTime . ' minute' . ($boostedTime > 1 ? 's' : '');
-                        } elseif ($boostedTime >= 60) {
-                            $hours = round($boostedTime / 60, 1);
-                            $formattedTime = $hours . ' hour' . ($hours > 1 ? 's' : '');
-                        }
-
-                        return $formattedTime;
-                    })
-                    ->addColumn('running_day', function ($row) {
-                        $runningDay = $row->running_day . ' day' . ($row->running_day > 1 ? 's' : '');
-                        return $runningDay;
-                    })
-                    ->rawColumns(['worker_charge'])
+                    ->rawColumns(['action'])
                     ->make(true);
             }
             return view('frontend.job_list.pending');
         }
+    }
+
+    public function jobView($id)
+    {
+        $jobPost = JobPost::findOrFail($id);
+        return view('frontend.job_list.view', compact('jobPost'));
     }
 
     public function jobListRejected(Request $request)
@@ -95,6 +87,7 @@ class JobListController extends Controller
                     ->addColumn('action', function ($row) {
                         $actionBtn = '
                             <a href="' . route('post_job.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
                         return $actionBtn;
                     })
@@ -124,6 +117,25 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListCanceled)
                     ->addIndexColumn()
+                    ->editColumn('proof_submitted', function ($row) {
+                        $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
+                        return  '<span class="badge bg-dark">' . $proofSubmitted . ' / ' . $row->need_worker . '</span>';
+                    })
+                    ->editColumn('proof_check', function ($row) {
+                        $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
+                        $proofCheck = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Pending')->count();
+                        return  '<span class="badge bg-dark">' . $proofCheck . ' / ' . $proofSubmitted . '</span>';
+                    })
+                    ->editColumn('canceled_at', function ($row) {
+                        return $row->canceled_by == auth()->user()->id ? date('d M Y h:i A', strtotime($row->canceled_at)) : 'Canceled by ' . $row->canceledBy->name . ' at ' . date('d M Y h:i A', strtotime($row->canceled_at));
+                    })
+                    ->editColumn('action', function ($row) {
+                        $btn = '
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                        ';
+                        return $btn;
+                    })
+                    ->rawColumns(['proof_submitted', 'proof_check', 'action'])
                     ->make(true);
             }
             return view('frontend.job_list.canceled');
@@ -149,14 +161,27 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListPaused)
                     ->addIndexColumn()
+                    ->editColumn('proof_submitted', function ($row) {
+                        $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
+                        return  '<span class="badge bg-dark">' . $proofSubmitted . ' / ' . $row->need_worker . '</span>';
+                    })
+                    ->editColumn('proof_check', function ($row) {
+                        $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
+                        $proofCheck = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Pending')->count();
+                        return  '<span class="badge bg-dark">' . $proofCheck . ' / ' . $proofSubmitted . '</span>';
+                    })
+                    ->editColumn('paused_at', function ($row) {
+                        return $row->paused_by == auth()->user()->id ? date('d M Y h:i A', strtotime($row->paused_at)) : 'Paused by ' . $row->pausedBy->name . ' at ' . date('d M Y h:i A', strtotime($row->paused_at));
+                    })
                     ->editColumn('action', function ($row) {
                         $btn = '
+                            <a href="' . route('running_job.show', encrypt($row->id)) . '" class="btn btn-success btn-xs">Check</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs resumeBtn">Resume</button>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['proof_submitted', 'proof_check', 'action'])
                     ->make(true);
             }
             return view('frontend.job_list.paused');
@@ -174,7 +199,25 @@ class JobListController extends Controller
                 'status' => 400,
                 'error' => 'You can not cancel this job. Because some workers are working on this job.'
             ]);
-        }else {
+        }
+
+        if ($request->has('check') && $request->check == true) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'Job found. Proceed with cancellation.'
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'message' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 401,
+                'error' => 'Please enter a valid reason.'
+            ]);
+        } else {
             $jobPost->status = 'Canceled';
             $jobPost->cancellation_reason = $request->message;
             $jobPost->canceled_by = auth()->user()->id;
@@ -187,8 +230,6 @@ class JobListController extends Controller
                 'success' => 'Status updated successfully.'
             ]);
         }
-
-
     }
 
     public function jobListRunning(Request $request)
@@ -210,26 +251,28 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListRunning)
                     ->addIndexColumn()
-                    ->editColumn('need_worker', function ($row) {
-                        $proofCount = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Rejected')->count();
-                        return  '<span class="badge bg-dark">' . $proofCount . ' / ' .$row->need_worker . '</span>';
+                    ->editColumn('proof_submitted', function ($row) {
+                        $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
+                        return  '<span class="badge bg-dark">' . $proofSubmitted . ' / ' . $row->need_worker . '</span>';
                     })
-                    ->editColumn('worker_charge', function ($row) {
-                        $workerCharge = '
-                            <span class="badge bg-primary">' . $row->worker_charge .' '. get_site_settings('site_currency_symbol') . '</span>
-                        ';
-                        return $workerCharge;
+                    ->editColumn('proof_check', function ($row) {
+                        $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
+                        $proofCheck = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Pending')->count();
+                        return  '<span class="badge bg-dark">' . $proofCheck . ' / ' . $proofSubmitted . '</span>';
+                    })
+                    ->editColumn('approved_at', function ($row) {
+                        return  date('d M Y h:i A', strtotime($row->approved_at));
                     })
                     ->editColumn('action', function ($row) {
                         $btn = '
                             <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
-                            <a href="' . route('running_job.show', encrypt($row->id)) . '" class="btn btn-info btn-xs">View</a>
+                            <a href="' . route('running_job.show', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['need_worker', 'worker_charge', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_check', 'approved_at', 'action'])
                     ->make(true);
             }
             return view('frontend.job_list.running');
@@ -372,6 +415,14 @@ class JobListController extends Controller
     {
         $jobProofs = JobProof::whereIn('id', $request->id)->get();
 
+        $jobPost = JobPost::findOrFail($jobProofs->first()->job_post_id);
+
+        foreach ($jobProofs as $jobProof) {
+            $user = User::findOrFail($jobProof->user_id);
+            $user->withdraw_balance = $user->withdraw_balance + $jobPost->worker_charge;
+            $user->save();
+        }
+
         foreach ($jobProofs as $jobProof) {
             $jobProof->status = 'Approved';
             $jobProof->approved_at = now();
@@ -475,6 +526,8 @@ class JobListController extends Controller
         if ($jobPost->status == 'Paused') {
             $jobPost->status = 'Running';
         } else if ($jobPost->status == 'Running') {
+            $jobPost->paused_at = now();
+            $jobPost->paused_by = auth()->user()->id;
             $jobPost->status = 'Paused';
         }
 
@@ -502,13 +555,36 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListCompleted)
                     ->addIndexColumn()
-                    ->editColumn('status', function ($row) {
+                    ->editColumn('proof_status', function ($row) {
+                        $approvedProof = JobProof::where('job_post_id', $row->id)->where('status', 'Approved')->count();
+                        $rejectedProof = JobProof::where('job_post_id', $row->id)->where('status', 'Rejected')->count();
+                        $proofStatus = '
+                            <span class="badge bg-success"> Approved: ' . $approvedProof . '</span>
+                            <span class="badge bg-danger"> Rejected: ' . $rejectedProof . '</span>
+                        ';
+                        return $proofStatus;
+                    })
+                    ->editColumn('total_charge', function ($row) {
+                        $workerCharge = '
+                            <span class="badge bg-primary">' . $row->total_charge .' '. get_site_settings('site_currency_symbol') . '</span>
+                        ';
+                        return $workerCharge;
+                    })
+                    ->editColumn('charge_status', function ($row) {
+                        $rejectedProof = JobProof::where('job_post_id', $row->id)->where('status', 'Rejected')->count();
+                        $proofStatus = '
+                            <span class="badge bg-success"> Expencese: ' . $row->total_charge - ($row->worker_charge * $rejectedProof) .' '. get_site_settings('site_currency_symbol') . '</span>
+                            <span class="badge bg-danger"> Return: ' . $row->worker_charge * $rejectedProof .' '. get_site_settings('site_currency_symbol') . '</span>
+                        ';
+                        return $proofStatus;
+                    })
+                    ->addColumn('action', function ($row) {
                         $status = '
-                            <span class="badge bg-info">' . $row->status . '</span>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                         ';
                         return $status;
                     })
-                    ->rawColumns(['status'])
+                    ->rawColumns(['proof_status', 'total_charge', 'charge_status', 'action'])
                     ->make(true);
             }
             return view('frontend.job_list.completed');

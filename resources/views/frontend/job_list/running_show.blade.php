@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Job List - Running')
+@section('title', 'Job Proof List')
 
 @section('content')
 <div class="row">
@@ -11,7 +11,7 @@
                     <h3 class="card-title">Job Details</h3>
                 </div>
                 <div class="action">
-                    <a href="{{ route('job.list.running') }}" class="btn btn-sm btn-primary">Back</a>
+                    <a href="{{ url()->previous() }}" class="btn btn-sm btn-info">Back</a>
                 </div>
             </div>
             <div class="card-body">
@@ -28,7 +28,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Job List - Running</h3>
+                    <h3 class="card-title">Job Proof List</h3>
                 </div>
             </div>
             <div class="card-body">

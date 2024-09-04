@@ -72,6 +72,9 @@
             <div class="mb-3">
                 <label for="reviewed_reason" class="form-label">Reviewed Reason <span class="text-danger">* Required</span></label>
                 <textarea class="form-control" id="reviewed_reason" name="reviewed_reason" rows="3" placeholder="Reviewed Reason"></textarea>
+                <small class="text-warning d-block">
+                    <strong>Note:</strong> Monthly free review limit is {{ get_default_settings('job_proof_monthly_free_review_time') }}. After that, you will be charged {{ get_default_settings('job_proof_additional_review_charge') }} {{ get_site_settings('site_currency_symbol') }} per review.
+                </small>
                 <span class="text-danger error-text update_reviewed_reason_error"></span>
             </div>
             <button type="submit" class="btn btn-primary">Reviewed</button>
@@ -100,9 +103,13 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        toastr.success('Job Proof Reviewed Successfully.')
-                        $('#allDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
+                        if (response.status == 401) {
+                            toastr.error(response.error);
+                        }else{
+                            toastr.success('Job Proof Reviewed Successfully.')
+                            $('#allDataTable').DataTable().ajax.reload();
+                            $(".viewModal").modal('hide');
+                        }
                     }
                 },
             });
