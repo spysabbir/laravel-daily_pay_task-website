@@ -46,7 +46,6 @@
                                 <th>Work Title</th>
                                 <th>Work Compleated</th>
                                 <th>You Earn</th>
-                                <th>Running Day</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -88,7 +87,6 @@
                 { data: 'title', name: 'title' },
                 { data: 'need_worker', name: 'need_worker' },
                 { data: 'worker_charge', name: 'worker_charge' },
-                { data: 'running_day', name: 'running_day' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

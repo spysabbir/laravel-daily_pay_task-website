@@ -21,7 +21,7 @@
                                 <th>Title</th>
                                 <th>Approved At</th>
                                 <th>Proof Submitted</th>
-                                <th>Proof Check</th>
+                                <th>Proof Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -113,7 +113,7 @@
                 { data: 'title', name: 'title' },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'proof_check', name: 'proof_check' },
+                { data: 'proof_status', name: 'proof_status' },
                 { data: 'action', name: 'action' }
             ]
         });

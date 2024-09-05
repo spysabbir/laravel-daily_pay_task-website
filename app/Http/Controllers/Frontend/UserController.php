@@ -383,7 +383,7 @@ class UserController extends Controller
                         ';
                     })
                     ->editColumn('need_worker', function ($row) {
-                        $proofCount = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Rejected')->count();
+                        $proofCount = JobProof::where('job_post_id', $row->id)->count();
                         return $proofCount.' / '.$row->need_worker;
                     })
                     ->editColumn('worker_charge', function ($row) {
@@ -410,7 +410,7 @@ class UserController extends Controller
         $id = decrypt($id);
         $workDetails = JobPost::findOrFail($id);
         $workProofExists = JobProof::where('job_post_id', $id)->where('user_id', Auth::id())->exists();
-        $proofCount = JobProof::where('job_post_id', $id)->where('status', '!=', 'Rejected')->count();
+        $proofCount = JobProof::where('job_post_id', $id)->count();
         return view('frontend.find_works.view', compact('workDetails', 'workProofExists', 'proofCount'));
     }
 
@@ -444,7 +444,7 @@ class UserController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $proofCount = JobProof::where('job_post_id', $id)->where('status', '!=', 'Rejected')->count();
+        $proofCount = JobProof::where('job_post_id', $id)->count();
 
         if ($proofCount >= $workDetails->need_worker) {
             $notification = array(

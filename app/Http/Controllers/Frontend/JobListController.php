@@ -192,12 +192,12 @@ class JobListController extends Controller
     {
         $jobPost = JobPost::findOrFail($id);
 
-        $jobProofs = JobProof::where('job_post_id', $id)->where('status', 'Pending')->count();
+        $jobProofs = JobProof::where('job_post_id', $id)->whereIn('status', ['Pending', 'Reviewed'])->count();
 
         if ($jobProofs > 0) {
             return response()->json([
                 'status' => 400,
-                'error' => 'You can not cancel this job. Because some workers are working on this job.'
+                'error' => 'You can not cancel this job. Because some workers are already submitted proof. If you want to cancel this job, please reject or approve all proof first.'
             ]);
         }
 
@@ -255,10 +255,21 @@ class JobListController extends Controller
                         $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
                         return  '<span class="badge bg-dark">' . $proofSubmitted . ' / ' . $row->need_worker . '</span>';
                     })
-                    ->editColumn('proof_check', function ($row) {
-                        $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
-                        $proofCheck = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Pending')->count();
-                        return  '<span class="badge bg-dark">' . $proofCheck . ' / ' . $proofSubmitted . '</span>';
+                    ->editColumn('proof_status', function ($row) {
+                        $statuses = [
+                            'Pending' => 'bg-warning',
+                            'Approved' => 'bg-success',
+                            'Rejected' => 'bg-danger',
+                            'Reviewed' => 'bg-info'
+                        ];
+                        $proofStatus = '';
+                        foreach ($statuses as $status => $class) {
+                            $count = JobProof::where('job_post_id', $row->id)->where('status', $status)->count();
+                            if ($count > 0) {
+                                $proofStatus .= "<span class=\"badge $class\"> $status: $count</span> ";
+                            }
+                        }
+                        return $proofStatus;
                     })
                     ->editColumn('approved_at', function ($row) {
                         return  date('d M Y h:i A', strtotime($row->approved_at));
@@ -272,7 +283,7 @@ class JobListController extends Controller
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['proof_submitted', 'proof_check', 'approved_at', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_status', 'approved_at', 'action'])
                     ->make(true);
             }
             return view('frontend.job_list.running');

@@ -25,4 +25,14 @@ class JobProof extends Model
     {
         return $this->hasOne(Rating::class, 'job_post_id', 'job_post_id');
     }
+
+    public function rejectedBy()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
 }

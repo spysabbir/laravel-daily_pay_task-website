@@ -73,5 +73,9 @@
             <p class="mb-0"><strong>Reviewed Reason:</strong> {{ $jobProof->reviewed_reason }}</p>
             <p><strong>Reviewed Date:</strong> {{ date('d M Y h:i A', strtotime($jobProof->reviewed_date)) }}</p>
         </div>
+        <div class="mt-3">
+            <strong>Note: </strong>
+            <p class="text-info">Job Proof has been reviewed by Admin and waiting for your action. Please with for Admin's decision. If you have any query, please contact with Admin.</p>
+        </div>
     </div>
 </div>

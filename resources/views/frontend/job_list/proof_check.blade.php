@@ -43,13 +43,40 @@
             <div class="alert alert-success" role="alert">
                 <h4 class="alert-heading">Approved!</h4>
                 <p>Job Proof has been approved.</p>
+                <hr>
+                <p class="mb-0"><strong>Rating:</strong> {{ $jobProof->rating }}</p>
+                <hr>
+                <p>Approved At: {{ date('d M, Y h:i A', strtotime($jobProof->approved_at)) }}</p>
+                <p>Approved By: {{ $jobProof->approvedBy->name }}</p>
             </div>
         @elseif ($jobProof->status == 'Rejected')
             <div class="alert alert-danger" role="alert">
                 <h4 class="alert-heading">Rejected!</h4>
                 <p>Job Proof has been rejected.</p>
                 <hr>
-                <p class="mb-0"><strong>Rejected Reason:</strong> {{ $jobProof->rejected_reason }}</p>
+                <p><strong>Rejected Reason:</strong> {{ $jobProof->rejected_reason }}</p>
+                <p>Rejected At: {{ date('d M, Y h:i A', strtotime($jobProof->rejected_at)) }}</p>
+                <p>Rejected By: {{ $jobProof->rejectedBy->name }}</p>
+            </div>
+        @elseif ($jobProof->status == 'Reviewed')
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Rejected!</h4>
+                <p>Job Proof has been rejected.</p>
+                <hr>
+                <p><strong>Rejected Reason:</strong> {{ $jobProof->rejected_reason }}</p>
+                <p>Rejected At: {{ date('d M, Y h:i A', strtotime($jobProof->rejected_at)) }}</p>
+                <p>Rejected By: {{ $jobProof->rejectedBy->name }}</p>
+            </div>
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Reviewed!</h4>
+                <p>Job Proof has been reviewed.</p>
+                <hr>
+                <p><strong>Reviewed Reason:</strong> {{ $jobProof->reviewed_reason }}</p>
+                <p>Reviewed At: {{ date('d M, Y h:i A', strtotime($jobProof->reviewed_at)) }}</p>
+            </div>
+            <div class="mt-3">
+                <strong>Note: </strong>
+                <p class="text-info">Job Proof has been reviewed by Admin and waiting for your action. Please with for Admin's decision. If you have any query, please contact with Admin.</p>
             </div>
         @else
             <form class="forms-sample" id="editForm">

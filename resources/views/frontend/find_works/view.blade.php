@@ -42,6 +42,8 @@
                     </div>
                 </div>
                 <hr>
+                <h3 class="mb-3">Submit Proof</h3>
+                @if ($proofCount < $workDetails->need_worker)
                 <div class="my-2 border p-3 rounded bg-dark">
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -94,6 +96,11 @@
                     </form>
                     @endif
                 </div>
+                @else
+                <div class="alert alert-warning">
+                    <strong>Sorry! This work has been completed.</strong>
+                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -108,6 +115,7 @@
                     <p>Name: <a href="{{ route('user.profile', encrypt($workDetails->user->id)) }}" class="text-info">{{ $workDetails->user->name }}</a></p>
                     <p>Last Active: <span class="text-info">{{ Carbon\Carbon::parse($workDetails->user->last_login_at)->diffForHumans() }}</span></p>
                     <p>Join Date: <span class="text-info">{{ $workDetails->user->created_at->format('d M, Y') }}</span></p>
+                    <p>Bio: {{ $workDetails->user->bio ?? 'N/A' }}</p>
                 </div>
             </div>
         </div>
@@ -121,17 +129,13 @@
         // Client-side validation
         $('#workForm').submit(function(event) {
             let isValid = true;
-            $('.error-message').text(''); // Clear previous error messages
+            $('.error-message').text('');
 
-            // Validate proof answer
             if ($('#proof_answer').val().trim() === '') {
                 $('#proof_answer_error').text('Proof answer is required.');
                 isValid = false;
-            }else{
-
             }
 
-            // Validate proof photos (if required)
             @for ($i = 0; $i < $workDetails->extra_screenshots + 1; $i++)
                 if ($('#proof_photo_{{ $i }}').val() === '') {
                     $('#proof_photo_{{ $i }}_error').text('Proof photo {{ $i + 1 }} is required.');
@@ -150,17 +154,15 @@
             @endfor
 
             if(isValid){
-                {{ $proofCount = App\Models\JobProof::where('job_post_id', $workDetails->id)->where('status', '!=', 'Rejected')->count() }}
                 if ({{ $proofCount }} >= {{ $workDetails->need_worker }}) {
-                    toastr.warning('Proof submission limit reached!');
+                    toastr.error('Sorry! This work has been completed.');
                     isValid = false;
                 }
             }
 
             if (!isValid) {
-                event.preventDefault(); // Prevent form submission if validation fails
+                event.preventDefault();
             }
-
         });
 
         // Preview proof photos
