@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Carbon\Carbon;
 
-class JobPostNotification extends Notification implements ShouldQueue
+class JobPostCheckNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -27,8 +27,8 @@ class JobPostNotification extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Job Post Status',
-            'message' => 'Now your job post status is ' . $this->jobPost['status'] . ' and the title is ' . $this->jobPost['title'] . '.' . $this->jobPost['status'] == 'Rejected' ? ' The reason is ' . $this->jobPost['rejection_reason'] : '' . ' If you have any questions, please feel free to contact us.',
+            'title' => 'Now your job post status is ' . $this->jobPost['status'],
+            'message' => $this->jobPost['rejection_reason'] ?? 'Thank you for using our application!',
         ];
     }
 
@@ -41,4 +41,5 @@ class JobPostNotification extends Notification implements ShouldQueue
                     ->line('Updated on: ' . Carbon::parse($this->jobPost['created_at'])->format('d-F-Y H:i:s'))
                     ->line('Thank you for using our application!');
     }
+
 }

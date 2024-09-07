@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JobPost;
 use App\Models\User;
 use App\Models\JobProof;
-use App\Notifications\JobPostNotification;
+use App\Notifications\JobPostCheckNotification;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -261,11 +261,7 @@ class JobController extends Controller
             'approved_at' => $request->status == 'Running' ? now() : NULL,
         ]);
 
-
-
-        $jobPost = JobPost::findOrFail($id);
-
-        $user->notify(new JobPostNotification($jobPost));
+        $user->notify(new JobPostCheckNotification($jobPost));
 
         return response()->json([
             'status' => 200,
