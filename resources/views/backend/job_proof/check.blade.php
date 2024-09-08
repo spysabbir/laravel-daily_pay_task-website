@@ -39,6 +39,21 @@
         </div>
     </div>
     <div class="col-lg-4">
+        @if ($jobProof->status == 'Pending')
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Pending</h4>
+                <p>This job proof is pending for approval.</p>
+            </div>
+        @elseif ($jobProof->status == 'Rejected')
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Rejected!</h4>
+                <p>Job Proof has been rejected.</p>
+                <hr>
+                <p><strong>Rejected Reason:</strong> {{ $jobProof->rejected_reason }}</p>
+                <p>Rejected At: {{ date('d M, Y h:i A', strtotime($jobProof->rejected_at)) }}</p>
+                <p>Rejected By: {{ $jobProof->rejectedBy->name }}</p>
+            </div>
+        @elseif ($jobProof->status == 'Reviewed')
         <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading">Rejected!</h4>
             <p>Job Proof has been rejected.</p>
@@ -54,6 +69,8 @@
             <p><strong>Reviewed Reason:</strong> {{ $jobProof->reviewed_reason }}</p>
             <p>Reviewed At: {{ date('d M, Y h:i A', strtotime($jobProof->reviewed_at)) }}</p>
         </div>
+        @endif
+        @if ($jobProof->status == 'Reviewed')
         <div class="mt-3">
             <form class="forms-sample" id="editForm">
                 @csrf
@@ -86,6 +103,7 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
+        @endif
     </div>
 </div>
 
@@ -106,7 +124,7 @@
         $("body").on("submit", "#editForm", function(e){
             e.preventDefault();
             var id = $('#job_proof_id').val();
-            var url = "{{ route('backend.job_proof.reviewed.check.update', ":id") }}";
+            var url = "{{ route('backend.job_proof.check.update', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,

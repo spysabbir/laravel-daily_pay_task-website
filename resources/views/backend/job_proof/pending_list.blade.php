@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Job Proof List - Reviewed')
+@section('title', 'Job Proof List - Pending')
 
 @section('content')
 <div class="row">
@@ -28,7 +28,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Job Proof List - Reviewed</h3>
+                    <h3 class="card-title">Job Proof List - Pending</h3>
                 </div>
             </div>
             <div class="card-body">
@@ -85,7 +85,7 @@
             // serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.job_proof.reviewed.list', encrypt($jobPost->id)) }}",
+                url: "{{ route('backend.job_proof.pending.list', encrypt($jobPost->id)) }}",
                 type: 'GET',
             },
             columns: [

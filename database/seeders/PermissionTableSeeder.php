@@ -135,6 +135,11 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'job_list.running', 'group_name' => 'JobPostManagement', 'guard_name' => 'web'],
             ['name' => 'job_list.canceled', 'group_name' => 'JobPostManagement', 'guard_name' => 'web'],
             ['name' => 'job_list.completed', 'group_name' => 'JobPostManagement', 'guard_name' => 'web'],
+
+            ['name' => 'JobProofMenu', 'group_name' => 'JobProofManagement', 'guard_name' => 'web'],
+            ['name' => 'job_proof.pending', 'group_name' => 'JobProofManagement', 'guard_name' => 'web'],
+            ['name' => 'job_proof.rejected', 'group_name' => 'JobProofManagement', 'guard_name' => 'web'],
+            ['name' => 'job_proof.reviewed', 'group_name' => 'JobProofManagement', 'guard_name' => 'web'],
         ]);
 
         $this->command->info('Permissions added successfully.');

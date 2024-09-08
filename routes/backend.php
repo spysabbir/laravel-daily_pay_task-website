@@ -124,9 +124,12 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::put('job-status-update/{id}', [JobController::class, 'jobStatusUpdate'])->name('job_status_update');
 
     Route::get('job_proof-pending', [JobController::class, 'jobProofPending'])->name('job_proof.pending');
+    Route::get('job_proof-pending-list/{id}', [JobController::class, 'jobProofPendingList'])->name('job_proof.pending.list');
+    Route::get('job_proof-rejected', [JobController::class, 'jobProofRejected'])->name('job_proof.rejected');
+    Route::get('job_proof-rejected-list/{id}', [JobController::class, 'jobProofRejectedList'])->name('job_proof.rejected.list');
     Route::get('job_proof-reviewed', [JobController::class, 'jobProofReviewed'])->name('job_proof.reviewed');
     Route::get('job_proof-reviewed-list/{id}', [JobController::class, 'jobProofReviewedList'])->name('job_proof.reviewed.list');
-    Route::get('job_proof-reviewed-check/{id}', [JobController::class, 'jobProofReviewedCheck'])->name('job_proof.reviewed.check');
-    Route::put('job_proof-reviewed-check-update/{id}', [JobController::class, 'jobProofReviewedCheckUpdate'])->name('job_proof.reviewed.check.update');
+    Route::get('job_proof-check/{id}', [JobController::class, 'jobProofCheck'])->name('job_proof.check');
+    Route::put('job_proof-check-update/{id}', [JobController::class, 'jobProofCheckUpdate'])->name('job_proof.check.update');
 
 });

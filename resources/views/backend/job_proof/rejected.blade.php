@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Job Proof Pending')
+@section('title', 'Job Proof Rejected')
 
 @section('content')
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Job Proof Pending</h3>
+                    <h3 class="card-title">Job Proof Rejected</h3>
                 </div>
             </div>
             <div class="card-body">
@@ -48,7 +48,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.job_proof.pending') }}",
+                url: "{{ route('backend.job_proof.rejected') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },

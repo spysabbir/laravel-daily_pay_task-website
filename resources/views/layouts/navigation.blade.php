@@ -309,6 +309,11 @@
                             <a href="{{ route('backend.job_proof.pending') }}" class="nav-link">Pending</a>
                         </li>
                         {{-- @endcan --}}
+                        {{-- @can('job_proof.rejected') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.job_proof.rejected') }}" class="nav-link">Rejected</a>
+                        </li>
+                        {{-- @endcan --}}
                         {{-- @can('job_proof.reviewed') --}}
                         <li class="nav-item">
                             <a href="{{ route('backend.job_proof.reviewed') }}" class="nav-link">Reviewed</a>
