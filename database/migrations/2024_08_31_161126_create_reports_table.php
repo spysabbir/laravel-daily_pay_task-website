@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('reported_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('reported_by')->constrained('users')->onDelete('cascade');
             $table->longText('reason');
             $table->string('photo')->nullable();
             $table->enum('status', ['Pending', 'Resolved'])->default('Pending');
-            $table->foreignId('resolved_by')->nullable()->constrained('users')->onDelete('cascade');
-            $table->timestamp('resolved_at')->nullable();
             $table->timestamps();
         });
     }

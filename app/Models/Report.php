@@ -21,13 +21,14 @@ class Report extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function reportedUser()
+    public function reported()
     {
-        return $this->belongsTo(User::class, 'reported_user_id');
+        return $this->belongsTo(User::class, 'reported_id');
     }
 
-    public function resolvedBy()
+    public function reportedBy()
     {
-        return $this->belongsTo(User::class, 'resolved_by');
+        return $this->belongsTo(User::class, 'reported_by');
     }
+    
 }

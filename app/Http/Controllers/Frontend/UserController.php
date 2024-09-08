@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Block;
 use App\Models\Category;
 use App\Models\Deposit;
 use App\Models\JobPost;
@@ -17,6 +18,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Stevebauman\Location\Facades\Location;
+use App\Models\Report;
 
 
 class UserController extends Controller
@@ -411,7 +413,8 @@ class UserController extends Controller
         $workDetails = JobPost::findOrFail($id);
         $workProofExists = JobProof::where('job_post_id', $id)->where('user_id', Auth::id())->exists();
         $proofCount = JobProof::where('job_post_id', $id)->count();
-        return view('frontend.find_works.view', compact('workDetails', 'workProofExists', 'proofCount'));
+        $blocked = Block::where('blocked_id', $workDetails->user_id)->where('blocked_by', Auth::id())->exists();
+        return view('frontend.find_works.view', compact('workDetails', 'workProofExists', 'proofCount', 'blocked'));
     }
 
     public function workProofSubmit(Request $request, $id)
@@ -800,5 +803,76 @@ class UserController extends Controller
     public function refferal()
     {
         return view('frontend.refferal.index');
+    }
+
+    public function userProfile($id)
+    {
+        $user = User::findOrFail(decrypt($id));
+        $blocked = Block::where('blocked_id', $user->id)->where('blocked_by', Auth::id())->exists();
+        return view('frontend.user_profile.index', compact('user', 'blocked'));
+    }
+
+    public function blockUser($id)
+    {
+        $blocked = Block::where('blocked_id', $id)->where('blocked_by', Auth::id())->exists();
+
+        if ($blocked) {
+            Block::where('blocked_id', $id)->where('blocked_by', Auth::id())->delete();
+
+            $notification = array(
+                'message' => 'User unblocked successfully.',
+                'alert-type' => 'error'
+            );
+
+            return back()->with($notification);
+        }
+
+        Block::create([
+            'blocked_id' => $id,
+            'blocked_by' => Auth::id(),
+            'blocked_at' => now(),
+        ]);
+
+        $notification = array(
+            'message' => 'User blocked successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
+    }
+
+    public function reportUser(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'reason' => 'required|string|max:5000',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            $photo_name = null;
+            if ($request->file('photo')) {
+                $manager = new ImageManager(new Driver());
+                $photo_name = $id."-report_photo".date('YmdHis').".".$request->file('photo')->getClientOriginalExtension();
+                $image = $manager->read($request->file('photo'));
+                $image->toJpeg(80)->save(base_path("public/uploads/report_photo/").$photo_name);
+            }
+
+            Report::create([
+                'reported_id' => $id,
+                'reported_by' => Auth::id(),
+                'reason' => $request->reason,
+                'photo' => $photo_name,
+                'status' => 'Pending',
+            ]);
+
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
     }
 }

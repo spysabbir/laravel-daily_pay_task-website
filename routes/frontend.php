@@ -21,6 +21,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/profile/setting', [UserController::class, 'profileSetting'])->name('profile.setting');
 
     Route::get('/user-profile/{id}', [UserController::class, 'userProfile'])->name('user.profile');
+    Route::get('/block-user/{id}', [UserController::class, 'blockUser'])->name('block_user');
+    Route::post('/report-user/{id}', [UserController::class, 'reportUser'])->name('report_user');
 
     Route::get('/verification', [UserController::class, 'verification'])->name('verification');
     Route::post('/verification', [UserController::class, 'verificationStore'])->name('verification.store');

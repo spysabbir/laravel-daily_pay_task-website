@@ -110,12 +110,54 @@
                 <h3 class="card-title">Buyer Details</h3>
             </div>
             <div class="card-body">
-                <div class="text-center">
+                <div class="border p-3 text-center mb-3">
                     <img src="{{ asset('uploads/profile_photo') }}/{{ $workDetails->user->profile_photo }}" alt="Profile photo for {{ $workDetails->user->name }}" class="mb-3 rounded-circle" width="150px" height="150px">
                     <p>Name: <a href="{{ route('user.profile', encrypt($workDetails->user->id)) }}" class="text-info">{{ $workDetails->user->name }}</a></p>
                     <p>Last Active: <span class="text-info">{{ Carbon\Carbon::parse($workDetails->user->last_login_at)->diffForHumans() }}</span></p>
                     <p>Join Date: <span class="text-info">{{ $workDetails->user->created_at->format('d M, Y') }}</span></p>
                     <p>Bio: {{ $workDetails->user->bio ?? 'N/A' }}</p>
+                </div>
+                <div class="d-flex align-items-center justify-content-between border p-3">
+                    <button type="button" class="btn btn-primary btn-sm d-flex align-items-center mx-2" data-bs-toggle="modal" data-bs-target=".reportModal">
+                        <i class="icon-md" data-feather="message-circle"></i>
+                        <span class="d-none d-md-block ms-1">Report User</span>
+                    </button>
+                    <!-- Report Modal -->
+                    <div class="modal fade reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="reportModalLabel">Report</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                </div>
+                                <form class="forms-sample" id="reportForm" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="reason" class="form-label">Reason</label>
+                                            <textarea class="form-control" id="reason" name="reason" placeholder="Reason"></textarea>
+                                            <span class="text-danger error-text reason_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="photo" class="form-label">Photo</label>
+                                            <input type="file" class="form-control" id="photo" name="photo">
+                                            <span class="text-danger error-text photo_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Report</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ route('block_user', $workDetails->user->id) }}" class="btn btn-{{ $blocked ? 'danger' : 'warning' }} btn-sm d-flex align-items-center">
+                        <i class="icon-md" data-feather="shield"></i>
+                        <span class="d-none d-md-block ms-1">
+                            {{ $blocked ? 'Unblock User' : 'Block User' }}
+                        </span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -175,6 +217,34 @@
                 reader.readAsDataURL(this.files[0]);
             });
         @endfor
+
+        // Report User
+        $('#reportForm').submit(function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                url: "{{ route('report_user', $workDetails->user->id) }}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                beforeSend: function() {
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+                    if (response.status == 400) {
+                        $.each(response.error, function(prefix, val) {
+                            $('span.'+prefix+'_error').text(val[0]);
+                        });
+                    } else {
+                        $('.reportModal').modal('hide');
+                        $('#reportForm')[0].reset();
+                        toastr.success('User reported successfully.');
+                    }
+                }
+            });
+        });
     });
 </script>
 @endsection

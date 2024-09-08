@@ -11,6 +11,8 @@ class ReportReply extends Model
 
     protected $guarded = [];
 
+    public $timestamps = false;
+
     public function report()
     {
         return $this->belongsTo(Report::class);

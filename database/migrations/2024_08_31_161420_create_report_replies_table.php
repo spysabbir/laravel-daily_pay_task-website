@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('report_id')->constrained()->onDelete('cascade');
             $table->longText('reply');
-            $table->timestamps();
+            $table->foreignId('resolved_by')->nullable();
+            $table->timestamp('resolved_at')->nullable();
         });
     }
 
