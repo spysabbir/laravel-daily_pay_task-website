@@ -21,7 +21,10 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/profile/setting', [UserController::class, 'profileSetting'])->name('profile.setting');
 
     Route::get('/user-profile/{id}', [UserController::class, 'userProfile'])->name('user.profile');
+    Route::get('/block-list', [UserController::class, 'blockList'])->name('block_list');
     Route::get('/block-user/{id}', [UserController::class, 'blockUser'])->name('block_user');
+    Route::get('/report-list', [UserController::class, 'reportList'])->name('report_list');
+    Route::get('/report-view/{id}', [UserController::class, 'reportView'])->name('report_view');
     Route::post('/report-user/{id}', [UserController::class, 'reportUser'])->name('report_user');
 
     Route::get('/verification', [UserController::class, 'verification'])->name('verification');

@@ -323,6 +323,30 @@
                 </div>
             </li>
         {{-- @endcan --}}
+
+        {{-- @can('ReportUserMenu') --}}
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ReportUserMenu" role="button" aria-expanded="false" aria-controls="ReportUserMenu">
+                    <i class="link-icon" data-feather="alert-triangle"></i>
+                    <span class="link-title">Report User</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="ReportUserMenu">
+                    <ul class="nav sub-menu">
+                        {{-- @can('report_user.pending') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.report_user.pending') }}" class="nav-link">Pending</a>
+                        </li>
+                        {{-- @endcan --}}
+                        {{-- @can('report_user.resolved') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.report_user.resolved') }}" class="nav-link">Resolved</a>
+                        </li>
+                        {{-- @endcan --}}
+                    </ul>
+                </div>
+            </li>
+        {{-- @endcan --}}
     @else
         <li class="nav-item nav-category">User</li>
         @if (!Auth::user()->hasVerification('Approved'))
@@ -428,6 +452,20 @@
             <a href="{{ route('refferal') }}" class="nav-link">
                 <i class="link-icon" data-feather="share"></i>
                 <span class="link-title">Refferal</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('block_list') }}" class="nav-link">
+                <i class="link-icon" data-feather="shield"></i>
+                <span class="link-title">Block List</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('report_list') }}" class="nav-link">
+                <i class="link-icon" data-feather="file-text"></i>
+                <span class="link-title">Report List</span>
             </a>
         </li>
     @endif

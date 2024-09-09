@@ -122,7 +122,7 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('job_list-completed', [JobController::class, 'jobListCompleted'])->name('job_list.completed');
     Route::get('completed-job-view/{id}', [JobController::class, 'completedJobView'])->name('completed.job_view');
     Route::put('job-status-update/{id}', [JobController::class, 'jobStatusUpdate'])->name('job_status_update');
-
+    // Job Proof
     Route::get('job_proof-pending', [JobController::class, 'jobProofPending'])->name('job_proof.pending');
     Route::get('job_proof-pending-list/{id}', [JobController::class, 'jobProofPendingList'])->name('job_proof.pending.list');
     Route::get('job_proof-rejected', [JobController::class, 'jobProofRejected'])->name('job_proof.rejected');
@@ -131,5 +131,10 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('job_proof-reviewed-list/{id}', [JobController::class, 'jobProofReviewedList'])->name('job_proof.reviewed.list');
     Route::get('job_proof-check/{id}', [JobController::class, 'jobProofCheck'])->name('job_proof.check');
     Route::put('job_proof-check-update/{id}', [JobController::class, 'jobProofCheckUpdate'])->name('job_proof.check.update');
+    // Report User
+    Route::get('report_user-pending', [BackendController::class, 'reportUserPending'])->name('report_user.pending');
+    Route::get('report_user-resolved', [BackendController::class, 'reportUserResolved'])->name('report_user.resolved');
+    Route::get('report_user-view/{id}', [BackendController::class, 'reportUserView'])->name('report_user.view');
+    Route::post('report_user-reply', [BackendController::class, 'reportUserReply'])->name('report_user.reply');
 
 });

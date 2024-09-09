@@ -19,7 +19,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Stevebauman\Location\Facades\Location;
 use App\Models\Report;
-
+use App\Models\ReportReply;
 
 class UserController extends Controller
 {
@@ -413,7 +413,7 @@ class UserController extends Controller
         $workDetails = JobPost::findOrFail($id);
         $workProofExists = JobProof::where('job_post_id', $id)->where('user_id', Auth::id())->exists();
         $proofCount = JobProof::where('job_post_id', $id)->count();
-        $blocked = Block::where('blocked_id', $workDetails->user_id)->where('blocked_by', Auth::id())->exists();
+        $blocked = Block::where('blocked_user_id', $workDetails->user_id)->where('blocked_by', Auth::id())->exists();
         return view('frontend.find_works.view', compact('workDetails', 'workProofExists', 'proofCount', 'blocked'));
     }
 
@@ -808,16 +808,51 @@ class UserController extends Controller
     public function userProfile($id)
     {
         $user = User::findOrFail(decrypt($id));
-        $blocked = Block::where('blocked_id', $user->id)->where('blocked_by', Auth::id())->exists();
+        $blocked = Block::where('blocked_user_id', $user->id)->where('blocked_by', Auth::id())->exists();
         return view('frontend.user_profile.index', compact('user', 'blocked'));
+    }
+
+    public function blockList(Request $request)
+    {
+        if ($request->ajax()) {
+            $blockedUsers = Block::where('blocked_by', Auth::id());
+
+            $query = $blockedUsers->select('blocks.*');
+
+            $blockedList = $query->get();
+
+            return DataTables::of($blockedList)
+                ->addIndexColumn()
+                ->editColumn('user', function ($row) {
+                    return '
+                        <a href="'.route('user.profile', encrypt($row->blocked->id)).'" title="'.$row->blocked->name.'" class="text-info">
+                            '.$row->blocked->name.'
+                        </a>
+                    ';
+                })
+                ->editColumn('blocked_at', function ($row) {
+                    return date('d M Y h:i A', strtotime($row->blocked_at));
+                })
+                ->addColumn('action', function ($row) {
+                    $action = '
+                    <a href="'.route('block_user', $row->blocked->id).'" title="Unblock" class="btn btn-danger btn-sm">
+                        Unblock
+                    </a>
+                    ';
+                    return $action;
+                })
+                ->rawColumns(['user', 'action'])
+                ->make(true);
+        }
+        return view('frontend.block_list.index');
     }
 
     public function blockUser($id)
     {
-        $blocked = Block::where('blocked_id', $id)->where('blocked_by', Auth::id())->exists();
+        $blocked = Block::where('blocked_user_id', $id)->where('blocked_by', Auth::id())->exists();
 
         if ($blocked) {
-            Block::where('blocked_id', $id)->where('blocked_by', Auth::id())->delete();
+            Block::where('blocked_user_id', $id)->where('blocked_by', Auth::id())->delete();
 
             $notification = array(
                 'message' => 'User unblocked successfully.',
@@ -828,7 +863,7 @@ class UserController extends Controller
         }
 
         Block::create([
-            'blocked_id' => $id,
+            'blocked_user_id' => $id,
             'blocked_by' => Auth::id(),
             'blocked_at' => now(),
         ]);
@@ -839,6 +874,61 @@ class UserController extends Controller
         );
 
         return back()->with($notification);
+    }
+
+    public function reportList(Request $request)
+    {
+        if ($request->ajax()) {
+            $reportedUsers = Report::where('reported_by', Auth::id());
+
+            $query = $reportedUsers->select('reports.*');
+
+            if ($request->status) {
+                $query->where('reports.status', $request->status);
+            }
+
+            $reportedList = $query->get();
+
+            return DataTables::of($reportedList)
+                ->addIndexColumn()
+                ->editColumn('user', function ($row) {
+                    return '
+                        <a href="'.route('user.profile', encrypt($row->reported->id)).'" title="'.$row->reported->name.'" class="text-info">
+                            '.$row->reported->name.'
+                    ';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return date('d M Y h:i A', strtotime($row->created_at));
+                })
+                ->editColumn('status', function ($row) {
+                    if ($row->status == 'Pending') {
+                        $status = '
+                        <span class="badge bg-warning">' . $row->status . '</span>
+                        ';
+                    } else {
+                        $status = '
+                        <span class="badge bg-success">' . $row->status . '</span>
+                        ';
+                    }
+                    return $status;
+                })
+                ->addColumn('action', function ($row) {
+                    $action = '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    ';
+                    return $action;
+                })
+                ->rawColumns(['user', 'status', 'action'])
+                ->make(true);
+        }
+        return view('frontend.report_list.index');
+    }
+
+    public function reportView($id)
+    {
+        $report = Report::findOrFail($id);
+        $report_reply = ReportReply::where('report_id', $id)->first();
+        return view('frontend.report_list.view', compact('report', 'report_reply'));
     }
 
     public function reportUser(Request $request, $id)
@@ -863,7 +953,7 @@ class UserController extends Controller
             }
 
             Report::create([
-                'reported_id' => $id,
+                'reported_user_id' => $id,
                 'reported_by' => Auth::id(),
                 'reason' => $request->reason,
                 'photo' => $photo_name,

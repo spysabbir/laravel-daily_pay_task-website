@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('reported_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('reported_user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('reported_by')->constrained('users')->onDelete('cascade');
             $table->longText('reason');
             $table->string('photo')->nullable();
