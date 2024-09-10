@@ -10,7 +10,7 @@
                 <div>
                     <h3 class="card-title">Work List - Pending</h3>
                     <p class="text-info">
-                        <strong>Note:</strong> You can see only the last 7 days of data.
+                        <strong>Note:</strong> You can see only the last 5 days of data.
                     </p>
                 </div>
                 <div>
@@ -85,10 +85,10 @@
 
         // Set Date Range
         var today = new Date();
-        var beforeSixDays = new Date();
-        beforeSixDays.setDate(today.getDate() - 6);
+        var beforeDays = new Date();
+        beforeDays.setDate(today.getDate() - 4);
         $('#filter_date').attr('max', today.toISOString().split('T')[0]);
-        $('#filter_date').attr('min', beforeSixDays.toISOString().split('T')[0]);
+        $('#filter_date').attr('min', beforeDays.toISOString().split('T')[0]);
 
     });
 </script>

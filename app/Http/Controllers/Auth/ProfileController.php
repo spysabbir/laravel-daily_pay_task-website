@@ -18,12 +18,16 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['nullable', 'string', 'max:255', 'unique:users,username,'.$request->user()->id],
-            'phone' => ['nullable', 'min:11', 'max:14'],
+            'username' => ['nullable', 'string', 'max:255', 'unique:users,username,'.$request->user()->id, 'regex:/^[a-z0-9]+$/'],
+            'phone' => ['nullable', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
             'date_of_birth' => ['required', 'date'],
-            'gender' => ['required', 'string'],
+            'gender' => ['required', 'string']
+        ],
+        [
+            'username.regex' => 'The username can only contain lowercase letters and numbers.',
+            'phone.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
         ]);
 
         $request->user()->update([
@@ -60,7 +64,7 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         $request->validate([
             'account_password' => ['required', 'current_password'],

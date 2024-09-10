@@ -351,7 +351,8 @@ class UserController extends Controller
         } else {
             if ($request->ajax()) {
                 $jobProofs = JobProof::where('user_id', Auth::id())->pluck('job_post_id')->toArray();
-                $query = JobPost::where('status', 'Running')->whereNotIn('id', $jobProofs)->whereNot('user_id', Auth::id());
+                $blockedUsers = Block::where('blocked_by', Auth::id())->pluck('blocked_user_id')->toArray();
+                $query = JobPost::where('status', 'Running')->whereNotIn('id', $jobProofs)->whereNot('user_id', Auth::id())->whereNotIn('user_id', $blockedUsers);
 
                 if ($request->category_id) {
                     $query->where('job_posts.category_id', $request->category_id)->orderBy('created_at', 'desc');
@@ -509,8 +510,6 @@ class UserController extends Controller
                     $query->whereDate('job_proofs.created_at', $request->filter_date);
                 }
 
-                $query->whereDate('job_proofs.created_at', '>', now()->subDays(7));
-
                 $workList = $query->get();
 
                 return DataTables::of($workList)
@@ -572,6 +571,9 @@ class UserController extends Controller
                     ->editColumn('rating', function ($row) {
                         return $row->rating ? $row->rating->rating . ' <i class="fa-solid fa-star text-warning"></i>' : 'Not Rated';
                     })
+                    ->editColumn('bonus', function ($row) {
+                        return $row->bonus ? $row->bonus->amount . ' ' . get_site_settings('site_currency_symbol') : 'No Bonus';
+                    })
                     ->editColumn('approved_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->approved_at));
                     })
@@ -581,7 +583,7 @@ class UserController extends Controller
                         ';
                         return $action;
                     })
-                    ->rawColumns(['title', 'rating', 'action'])
+                    ->rawColumns(['title', 'rating', 'bonus', 'action'])
                     ->make(true);
             }
             return view('frontend.work_list.approved');
@@ -856,7 +858,7 @@ class UserController extends Controller
 
             $notification = array(
                 'message' => 'User unblocked successfully.',
-                'alert-type' => 'error'
+                'alert-type' => 'success'
             );
 
             return back()->with($notification);
@@ -870,7 +872,7 @@ class UserController extends Controller
 
         $notification = array(
             'message' => 'User blocked successfully.',
-            'alert-type' => 'success'
+            'alert-type' => 'error'
         );
 
         return back()->with($notification);

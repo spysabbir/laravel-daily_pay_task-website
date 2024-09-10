@@ -44,7 +44,8 @@
                 <h4 class="alert-heading">Approved!</h4>
                 <p>Job Proof has been approved.</p>
                 <hr>
-                <p class="mb-0"><strong>Rating:</strong> {{ $jobProof->rating }}</p>
+                <h5><strong>Rating:</strong> {{ $jobProof->rating->rating }} <i class="fa-solid fa-star text-warning"></i></h5>
+                <h5><strong>Bonus:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $jobProof->bonus->amount }}</h5>
                 <hr>
                 <p>Approved At: {{ date('d M, Y h:i A', strtotime($jobProof->approved_at)) }}</p>
                 <p>Approved By: {{ $jobProof->approvedBy->name }}</p>
@@ -165,9 +166,16 @@
             if ($(this).val() == 'Rejected') {
                 $('#approved_div').hide();
                 $('#rejected_div').show();
+                $('#bonus').val(0);
+                // Reset rating stars
+                stars.forEach((star) => {
+                    star.classList.remove("active");
+                });
+                ratingInput.value = 0;
             } else {
                 $('#approved_div').show();
                 $('#rejected_div').hide();
+                $('#rejected_reason').val('');
             }
         });
 

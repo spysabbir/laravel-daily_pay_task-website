@@ -37,6 +37,7 @@
                                 <th>Work Title</th>
                                 <th>You Earn</th>
                                 <th>Rating</th>
+                                <th>Bonus</th>
                                 <th>Approved Date</th>
                                 <th>Action</th>
                             </tr>
@@ -94,6 +95,7 @@
                 { data: 'title', name: 'title' },
                 { data: 'worker_charge', name: 'worker_charge' },
                 { data: 'rating', name: 'rating' },
+                { data: 'bonus', name: 'bonus' },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'action', name: 'action' }
             ]

@@ -9,6 +9,7 @@ use App\Models\ReportReply;
 use App\Models\Verification;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Notifications\ReportReplyNotification;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -362,6 +363,10 @@ class BackendController extends Controller
             $report_reply->resolved_by = auth()->user()->id;
             $report_reply->resolved_at = now();
             $report_reply->save();
+
+            $user = User::findOrFail($report->reported_by);
+
+            $user->notify(new ReportReplyNotification($report, $report_reply));
 
             return response()->json([
                 'status' => 200,

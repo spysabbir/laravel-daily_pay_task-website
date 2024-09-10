@@ -16,7 +16,7 @@
             <div class="card-body">
                 <h3 class="mb-3">Title: <span class="text-info">{{ $workDetails->title }}</span></h3>
                 @if ($workDetails->thumbnail)
-                <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $workDetails->thumbnail }}" alt="Thumbnail image for {{ $workDetails->title }}" class="img-fluid">
+                <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $workDetails->thumbnail }}" alt="Thumbnail image for {{ $workDetails->title }}" class="img-fluid my-3">
                 @endif
                 <div class="my-2 border p-3 rounded">
                     <div class="border p-2 rounded bg-dark d-flex align-items-center justify-content-between">
@@ -77,7 +77,7 @@
                                 <input class="form-control" type="file" id="proof_photo_{{ $i }}" name="proof_photos[]" accept=".jpg, .jpeg, .png">
                                 <small class="text-info">* Only jpeg, jpg, png files are allowed. File size must be less than 2 MB.</small>
                                 <span class="text-danger error-message d-block" id="proof_photo_{{ $i }}_error"></span>
-                                <img src="" alt="Proof Photo {{ $i + 1 }}" class="img-fluid" id="proof_photo_preview_{{ $i }}" style="display: none;">
+                                <img src="" alt="Proof Photo {{ $i + 1 }}" class="img-fluid my-2" id="proof_photo_preview_{{ $i }}" style="display: none; width: 180px; height: 180px">
                                 @if ($errors->has('proof_photos.' . $i))
                                     <span class="text-danger">{{ $errors->first('proof_photos.' . $i) }}</span>
                                 @endif

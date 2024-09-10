@@ -19,12 +19,19 @@
                         </div>
                     </div>
                     <div class="d-none d-md-block">
-                        <span class="btn btn-primary btn-icon-text">
-                            <i class="icon-md" data-feather="user"></i>
-                            @foreach (Auth::user()->roles as $role)
-                                {{ $role->name }}
-                            @endforeach
-                        </span>
+                        @php
+                            $statusClasses = [
+                                'Active' => 'btn-primary',
+                                'Inactive' => 'btn-info',
+                                'Blocked' => 'btn-warning',
+                            ];
+                            $status = Auth::user()->status;
+                            $buttonClass = $statusClasses[$status] ?? 'btn-danger';
+                        @endphp
+
+                        <button class="btn {{ $buttonClass }} btn-icon-text">
+                            Status: {{ $status }}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -65,7 +72,7 @@
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Date of Birth:</label>
                     <p class="text-muted">
-                        {{ Auth::user()->date_of_birth ?? 'Not provided' }}
+                        {{ date('j F, Y', strtotime(Auth::user()->date_of_birth)) ?? 'Not provided' }}
                     </p>
                 </div>
                 <div class="mt-3">
@@ -83,13 +90,13 @@
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Last Login:</label>
                     <p class="text-muted">
-                        {{ date('F j, Y  H:i:s A', strtotime(Auth::user()->last_login_at)) ?? 'Not provided' }}
+                        {{ date('j F, Y  H:i:s A', strtotime(Auth::user()->last_login_at)) ?? 'Not provided' }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Joined:</label>
                     <p class="text-muted">
-                        {{ Auth::user()->created_at->format('F j, Y  H:i:s A') }}
+                        {{ Auth::user()->created_at->format('j F, Y  H:i:s A') }}
                     </p>
                 </div>
             </div>
@@ -111,7 +118,7 @@
                             @method('patch')
                             <div class="mb-3">
                                 <label for="userProfilePhoto" class="form-label">Profile Photo</label>
-                                <input type="file" class="form-control" id="userProfilePhoto" name="profile_photo" accept=".jpg, .jpeg, .png, .gif">
+                                <input type="file" class="form-control" id="userProfilePhoto" name="profile_photo" accept=".jpg, .jpeg, .png">
                                 @error('profile_photo')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -124,14 +131,14 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="userName" class="form-label">Username</label>
+                                <label for="userName" class="form-label">Username <small class="text-info">* Username must be unique. The username can only contain lowercase letters and numbers.</small></label>
                                 <input type="text" class="form-control" id="userName" name="username" value="{{ old('username', $user->username) }}" placeholder="Username">
                                 @error('username')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="userPhone" class="form-label">Phone Number</label>
+                                <label for="userPhone" class="form-label">Phone Number <small class="text-info">* The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small></label>
                                 <input type="text" class="form-control" id="userPhone" name="phone" value="{{ old('phone', $user->phone) }}" placeholder="Phone Number">
                                 @error('phone')
                                     <span class="text-danger">{{ $message }}</span>

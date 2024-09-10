@@ -492,12 +492,13 @@ class JobListController extends Controller
             }
 
             $jobProof = JobProof::findOrFail($id);
-
             $jobPost = JobPost::findOrFail($jobProof->job_post_id);
-
             $user = User::findOrFail($jobProof->user_id);
-            $user->withdraw_balance = $user->withdraw_balance + $jobPost->worker_charge + $request->bonus;
-            $user->save();
+
+            if ($request->status == 'Approved') {
+                $user->withdraw_balance = $user->withdraw_balance + $jobPost->worker_charge + $request->bonus;
+                $user->save();
+            }
 
             if ($request->rating) {
                 Rating::create([
@@ -505,14 +506,17 @@ class JobListController extends Controller
                     'job_post_id' => $jobPost->id,
                     'rating' => $request->rating,
                 ]);
-
                 $rating = Rating::where('user_id', $jobProof->user_id)->where('job_post_id', $jobPost->id)->first();
-
                 $user->notify(new RatingNotification($rating));
             }
 
             if ($request->bonus) {
-                $bonus = $request->bonus;
+                Bonus::create([
+                    'user_id' => $jobProof->user_id,
+                    'job_post_id' => $jobPost->id,
+                    'amount' => $request->bonus,
+                ]);
+                $bonus = Bonus::where('user_id', $jobProof->user_id)->where('job_post_id', $jobPost->id)->first();
                 $user->notify(new BonusNotification($bonus));
             }
 

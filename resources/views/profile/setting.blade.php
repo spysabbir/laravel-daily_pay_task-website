@@ -19,8 +19,18 @@
                         </div>
                     </div>
                     <div class="d-none d-md-block">
-                        <button class="btn btn-primary btn-icon-text">
-                            Profile Information
+                        @php
+                            $statusClasses = [
+                                'Active' => 'btn-primary',
+                                'Inactive' => 'btn-info',
+                                'Blocked' => 'btn-warning',
+                            ];
+                            $status = Auth::user()->status;
+                            $buttonClass = $statusClasses[$status] ?? 'btn-danger';
+                        @endphp
+
+                        <button class="btn {{ $buttonClass }} btn-icon-text">
+                            Status: {{ $status }}
                         </button>
                     </div>
                 </div>
@@ -47,6 +57,7 @@
                 <div class="card rounded mt-3">
                     <div class="card-header">
                         <h4 class="card-title">Update Password</h4>
+                        <p class="text-info">NB: The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.</p>
                     </div>
                     <div class="card-body">
                         <form method="post" action="{{ route('password.update') }}" class="forms-sample">
