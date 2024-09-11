@@ -24,16 +24,16 @@
                         {{ App\Models\User::where('referred_by', Auth::user()->id)->count() }} friends joined using your referral link.
                     </h5>
                     <strong class="text-success">
-                        {{ get_default_settings('referal_registion_bonus_amount') * App\Models\User::where('referred_by', Auth::user()->id)->count() }} {{ get_site_settings('site_currency') }} earned from your refferal link.
+                        {{ get_default_settings('referral_registion_bonus_amount') * App\Models\User::where('referred_by', Auth::user()->id)->count() }} {{ get_site_settings('site_currency') }} earned from your refferal link.
                     </strong>
                     <p class="mt-3">
-                        Share your referral link with your friends and earn {{ get_default_settings('referal_registion_bonus_amount') }} {{ get_site_settings('site_currency') }} for each friend that signs up using your link.
+                        Share your referral link with your friends and earn {{ get_default_settings('referral_registion_bonus_amount') }} {{ get_site_settings('site_currency') }} for each friend that signs up using your link.
                     </p>
                     <p class="mt-3">
-                        If your friends sign up using your referral link and work on our platform, you will earn {{ get_default_settings('referal_earning_bonus_percentage') }}% of their every withdrawal amount.
+                        If your friends sign up using your referral link and work on our platform, you will earn {{ get_default_settings('referral_earning_bonus_percentage') }}% of their every withdrawal amount.
                     </p>
                     <p class="mt-3">
-                        Your friends will also get {{ get_default_settings('referal_registion_bonus_amount') }} {{ get_site_settings('site_currency') }} when they sign up using your referral link.
+                        Your friends will also get {{ get_default_settings('referral_registion_bonus_amount') }} {{ get_site_settings('site_currency') }} when they sign up using your referral link.
                     </p>
                     <p class="mt-3">
                         You can also share your referral link on social media platforms like Facebook, Twitter, WhatsApp, etc.

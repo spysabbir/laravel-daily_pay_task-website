@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bonus;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Withdraw;
@@ -97,8 +98,8 @@ class WithdrawController extends Controller
 
             if ($referred && $request->status == 'Approved') {
                 $referred->update([
-                    'referral_bonus_amount' => $referred->referral_bonus_amount + ($withdraw->amount * get_default_settings('referal_earning_bonus_percentage')) / 100,
-                    'withdraw_balance' => $referred->withdraw_balance + ($withdraw->amount * get_default_settings('referal_earning_bonus_percentage')) / 100,
+                    'bonus_amount' => $referred->bonus_amount + ($withdraw->amount * get_default_settings('referral_earning_bonus_percentage')) / 100,
+                    'withdraw_balance' => $referred->withdraw_balance + ($withdraw->amount * get_default_settings('referral_earning_bonus_percentage')) / 100,
                 ]);
             }
 

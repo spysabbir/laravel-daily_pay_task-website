@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('default_settings', function (Blueprint $table) {
             $table->id();
-            $table->decimal('referal_registion_bonus_amount', 10, 2)->nullable();
-            $table->decimal('referal_earning_bonus_percentage', 10, 2)->nullable();
+            $table->decimal('referral_registion_bonus_amount', 10, 2)->nullable();
+            $table->decimal('referral_earning_bonus_percentage', 10, 2)->nullable();
             $table->string('deposit_bkash_account')->nullable();
             $table->string('deposit_rocket_account')->nullable();
             $table->string('deposit_nagad_account')->nullable();

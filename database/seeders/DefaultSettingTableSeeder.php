@@ -14,8 +14,8 @@ class DefaultSettingTableSeeder extends Seeder
     public function run(): void
     {
         $setting = [
-            'referal_registion_bonus_amount' => 10.00,
-            'referal_earning_bonus_percentage' => 2.00,
+            'referral_registion_bonus_amount' => 10.00,
+            'referral_earning_bonus_percentage' => 2.00,
             'deposit_bkash_account' => '01700000000',
             'deposit_rocket_account' => '01700000000',
             'deposit_nagad_account' => '01700000000',

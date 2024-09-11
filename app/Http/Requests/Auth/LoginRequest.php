@@ -27,8 +27,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/'],
+            'password' => ['required', 'string', 'min:8', 'max:20', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
             'g-recaptcha-response' => 'required|captcha',
         ];
     }
@@ -41,6 +41,8 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'email.regex' => 'The email must be follow the format ****@****.***',
+            'password.regex' => 'The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
             'g-recaptcha-response.required' => 'Please verify that you are not a robot.',
             'g-recaptcha-response.captcha' => 'Failed to validate captcha response.',
         ];

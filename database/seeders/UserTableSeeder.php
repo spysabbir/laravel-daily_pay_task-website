@@ -20,7 +20,7 @@ class UserTableSeeder extends Seeder
         $superAdmin = User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@gmail.com',
-            'password' => Hash::make('12345678'),
+            'password' => Hash::make('Ss@12345678'),
             'user_type' => 'Backend',
             'status' => 'Active',
         ]);
@@ -36,7 +36,9 @@ class UserTableSeeder extends Seeder
         $user = User::create([
             'name' => 'User',
             'email' => 'user@gmail.com',
-            'password' => Hash::make('12345678'),
+            'deposit_balance' => 10000,
+            'withdraw_balance' => 10000,
+            'password' => Hash::make('Ss@12345678'),
             'email_verified_at' => now(),
             'user_type' => 'Frontend',
             'status' => 'Active',

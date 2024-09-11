@@ -18,7 +18,7 @@
                 @csrf
                 <div class="mb-3">
                     <label for="userName" class="form-label">
-                        Full Name <span class="text-primary">(As per your verification document)</span>
+                        Full Name <span class="text-primary"><span class="text-danger">*</span> (As per your verification document)</span>
                     </label>
                     <input type="text" class="form-control" id="userName" name="name" value="{{ old('name') }}" placeholder="Name">
                     @error('name')
@@ -26,21 +26,22 @@
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="userEmail" class="form-label">Email Address</label>
+                    <label for="userEmail" class="form-label">Email Address <span class="text-danger">*</span></label>
                     <input type="email" class="form-control" id="userEmail" name="email" value="{{ old('email') }}" placeholder="Email">
                     @error('email')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="userPassword" class="form-label">Password</label>
+                    <label for="userPassword" class="form-label">Password <span class="text-danger">*</span></label>
                     <input type="password" class="form-control" id="userPassword" name="password" placeholder="Password">
+                    <small class="text-info d-block">The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.</small>
                     @error('password')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="userConfirmPassword" class="form-label">Confirm Password</label>
+                    <label for="userConfirmPassword" class="form-label">Confirm Password <span class="text-danger">*</span></label>
                     <input type="password" class="form-control" id="userConfirmPassword" name="password_confirmation" placeholder="Confirm Password">
                     @error('password_confirmation')
                         <span class="text-danger">{{ $message }}</span>
@@ -56,7 +57,7 @@
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="termsConditions" name="terms_conditions">
                         <label class="form-check-label" for="termsConditions">
-                            I agree to the <a href="#" class="text-primary">terms and conditions.</a>
+                            I agree to the <a href="{{ route('terms.and.conditions') }}" class="text-primary">terms and conditions.</a>
                         </label>
                     </div>
                     @error('terms_conditions')

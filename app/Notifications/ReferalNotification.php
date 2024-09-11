@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Carbon\Carbon;
 
-class ReferalNotification extends Notification implements ShouldQueue
+class ReferralNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

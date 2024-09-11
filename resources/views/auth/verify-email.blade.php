@@ -12,7 +12,7 @@
     <div class="col-md-8 ps-md-0">
         <div class="auth-form-wrapper px-4 py-5">
             <span class="noble-ui-logo logo-light d-block mb-2"><span>{{ config('app.name') }}</span></span>
-            <h5 class="text-muted fw-normal mb-4">Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.</h5>
+            <h5 class="text-muted fw-normal mb-4">Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.</h5>
             @if (session('status') == 'verification-link-sent')
             <div class="alert alert-success">
                 A new verification link has been sent to the email address you provided during registration.

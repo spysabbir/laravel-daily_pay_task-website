@@ -14,16 +14,16 @@
                     @csrf
                     <div class="row">
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="referal_registion_bonus_amount" class="form-label">Referal Registion Bonus Amount</label>
-                            <input type="number" class="form-control" id="referal_registion_bonus_amount" name="referal_registion_bonus_amount" value="{{ old('referal_registion_bonus_amount', $defaultSetting->referal_registion_bonus_amount) }}" placeholder="Referal Registion Bonus Amount">
-                            @error('referal_registion_bonus_amount')
+                            <label for="referral_registion_bonus_amount" class="form-label">Referral Registion Bonus Amount</label>
+                            <input type="number" class="form-control" id="referral_registion_bonus_amount" name="referral_registion_bonus_amount" value="{{ old('referral_registion_bonus_amount', $defaultSetting->referral_registion_bonus_amount) }}" placeholder="Referral Registion Bonus Amount">
+                            @error('referral_registion_bonus_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="referal_earning_bonus_percentage" class="form-label">Referal Earning Bonus Percentage</label>
-                            <input type="number" class="form-control" id="referal_earning_bonus_percentage" name="referal_earning_bonus_percentage" value="{{ old('referal_earning_bonus_percentage', $defaultSetting->referal_earning_bonus_percentage) }}" placeholder="Referal Earning Bonus Percentage">
-                            @error('referal_earning_bonus_percentage')
+                            <label for="referral_earning_bonus_percentage" class="form-label">Referral Earning Bonus Percentage</label>
+                            <input type="number" class="form-control" id="referral_earning_bonus_percentage" name="referral_earning_bonus_percentage" value="{{ old('referral_earning_bonus_percentage', $defaultSetting->referral_earning_bonus_percentage) }}" placeholder="Referral Earning Bonus Percentage">
+                            @error('referral_earning_bonus_percentage')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

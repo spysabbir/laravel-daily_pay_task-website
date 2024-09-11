@@ -21,14 +21,14 @@
             <form class="forms-sample" method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="mb-3">
-                    <label for="userEmail" class="form-label">Email address</label>
+                    <label for="userEmail" class="form-label">Email address <span class="text-danger">*</span></label>
                     <input type="email" class="form-control" id="userEmail" name="email" value="{{ old('email') }}" placeholder="Email">
                     @error('email')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="userPassword" class="form-label">Password</label>
+                    <label for="userPassword" class="form-label">Password <span class="text-danger">*</span></label>
                     <input type="password" class="form-control" id="userPassword" name="password" placeholder="Password">
                     @error('password')
                         <span class="text-danger">{{ $message }}</span>

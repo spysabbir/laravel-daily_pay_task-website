@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->string('referral_code')->unique()->nullable();
             $table->string('referred_by')->nullable();
-            $table->decimal('referral_bonus_amount', 20, 2)->default(0);
+            $table->decimal('bonus_amount', 20, 2)->default(0);
             $table->decimal('deposit_balance', 20, 2)->default(0);
             $table->decimal('withdraw_balance', 20, 2)->default(0);
             $table->timestamp('email_verified_at')->nullable();

@@ -41,8 +41,8 @@ class SettingController extends Controller
 
     public function defaultSettingUpdate(Request $request){
         $request->validate([
-            'referal_registion_bonus_amount' => 'required',
-            'referal_earning_bonus_percentage' => 'required',
+            'referral_registion_bonus_amount' => 'required',
+            'referral_earning_bonus_percentage' => 'required',
             'deposit_bkash_account' => 'required',
             'deposit_rocket_account' => 'required',
             'deposit_nagad_account' => 'required',
@@ -66,8 +66,8 @@ class SettingController extends Controller
         $defaultSetting = DefaultSetting::first();
 
         $defaultSetting->update([
-            'referal_registion_bonus_amount' => $request->referal_registion_bonus_amount,
-            'referal_earning_bonus_percentage' => $request->referal_earning_bonus_percentage,
+            'referral_registion_bonus_amount' => $request->referral_registion_bonus_amount,
+            'referral_earning_bonus_percentage' => $request->referral_earning_bonus_percentage,
             'deposit_bkash_account' => $request->deposit_bkash_account,
             'deposit_rocket_account' => $request->deposit_rocket_account,
             'deposit_nagad_account' => $request->deposit_nagad_account,
