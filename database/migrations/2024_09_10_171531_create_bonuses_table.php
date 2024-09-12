@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('bonuses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('job_post_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('bonus_by')->constrained('users')->cascadeOnDelete();
+            $table->string('type');
+            $table->foreignId('job_post_id')->nullable()->constrained()->cascadeOnDelete();
             $table->decimal('amount', 8, 2);
             $table->timestamps();
         });

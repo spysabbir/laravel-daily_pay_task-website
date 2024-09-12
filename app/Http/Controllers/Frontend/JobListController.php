@@ -503,6 +503,7 @@ class JobListController extends Controller
             if ($request->rating) {
                 Rating::create([
                     'user_id' => $jobProof->user_id,
+                    'rated_by' => auth()->user()->id,
                     'job_post_id' => $jobPost->id,
                     'rating' => $request->rating,
                 ]);
@@ -513,6 +514,8 @@ class JobListController extends Controller
             if ($request->bonus) {
                 Bonus::create([
                     'user_id' => $jobProof->user_id,
+                    'bonus_by' => auth()->user()->id,
+                    'type' => 'Job Proof Approved Bonus',
                     'job_post_id' => $jobPost->id,
                     'amount' => $request->bonus,
                 ]);

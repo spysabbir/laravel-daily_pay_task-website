@@ -10,6 +10,7 @@ use App\Models\Withdraw;
 use App\Notifications\WithdrawNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use App\Notifications\BonusNotification;
 
 class WithdrawController extends Controller
 {
@@ -94,13 +95,20 @@ class WithdrawController extends Controller
             ]);
 
             $user = User::where('id', $withdraw->user_id)->first();
-            $referred = User::where('id', $user->referred_by)->first();
+            $referrer = User::where('id', $user->referred_by)->first();
 
-            if ($referred && $request->status == 'Approved') {
-                $referred->update([
-                    'bonus_amount' => $referred->bonus_amount + ($withdraw->amount * get_default_settings('referral_earning_bonus_percentage')) / 100,
-                    'withdraw_balance' => $referred->withdraw_balance + ($withdraw->amount * get_default_settings('referral_earning_bonus_percentage')) / 100,
+            if ($referrer && $request->status == 'Approved') {
+                $referrer->update([
+                    'withdraw_balance' => $referrer->withdraw_balance + ($withdraw->amount * get_default_settings('referral_earning_bonus_percentage')) / 100,
                 ]);
+
+                $referrerBonus = Bonus::create([
+                    'user_id' => $referrer->id,
+                    'bonus_by' => $user->id,
+                    'type' => 'Referral Earning Bonus',
+                    'amount' => ($withdraw->amount * get_default_settings('referral_earning_bonus_percentage')) / 100,
+                ]);
+                $referrer->notify(new BonusNotification($referrerBonus));
             }
 
             $user->notify(new WithdrawNotification($withdraw));

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('rated_by')->constrained('users')->cascadeOnDelete();
             $table->foreignId('job_post_id')->constrained()->cascadeOnDelete();
             $table->integer('rating');
             $table->timestamps();

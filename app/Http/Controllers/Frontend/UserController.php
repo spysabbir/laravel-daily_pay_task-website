@@ -287,56 +287,54 @@ class UserController extends Controller
 
     public function withdrawStore(Request $request)
     {
+        $minWithdrawAmount = get_default_settings('min_withdraw_amount');
+        $maxWithdrawAmount = get_default_settings('max_withdraw_amount');
+        $currencySymbol = get_site_settings('site_currency_symbol');
+        $withdrawChargePercentage = get_default_settings('withdraw_charge_percentage');
+        $instantWithdrawCharge = get_default_settings('instant_withdraw_charge');
+
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:Ragular,Instant',
-            'amount' => 'required|numeric|min:1',
+            'amount' => "required|numeric|min:$minWithdrawAmount|max:$maxWithdrawAmount",
             'method' => 'required|string',
             'number' => 'required|string|min:11|max:14',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'error'=> $validator->errors()->toArray()
+                'error' => $validator->errors()->toArray()
             ]);
-        }else{
-            if ($request->amount < get_default_settings('min_withdraw_amount') || $request->amount > get_default_settings('max_withdraw_amount')) {
-                return response()->json([
-                    'status' => 401,
-                    'error'=> 'The amount must be between '.get_site_settings('site_currency_symbol') .get_default_settings('min_withdraw_amount').' and '.get_site_settings('site_currency_symbol') .get_default_settings('max_withdraw_amount').' to withdraw'
-                ]);
-            }else {
-                if ($request->amount > $request->user()->withdraw_balance) {
-                    return response()->json([
-                        'status' => 402,
-                        'error'=> 'Insufficient balance in your account to withdraw '.get_site_settings('site_currency_symbol') . $request->amount .' . Your current balance is '.get_site_settings('site_currency_symbol') . $request->user()->withdraw_balance
-                    ]);
-                }else {
-                    if ($request->type == 'Instant') {
-                        $payable_amount = $request->amount - ($request->amount * get_default_settings('withdraw_charge_percentage') / 100) - get_default_settings('instant_withdraw_charge');
-                    } else {
-                        $payable_amount = $request->amount - ($request->amount * get_default_settings('withdraw_charge_percentage') / 100);
-                    }
-                    Withdraw::create([
-                        'type' => $request->type,
-                        'user_id' => $request->user()->id,
-                        'amount' => $request->amount,
-                        'method' => $request->method,
-                        'number' => $request->number,
-                        'payable_amount' => $payable_amount,
-                        'status' => 'Pending',
-                    ]);
-
-                    User::where('id', $request->user()->id)->update([
-                        'withdraw_balance' => $request->user()->withdraw_balance - $request->amount,
-                    ]);
-
-                    return response()->json([
-                        'status' => 200,
-                    ]);
-                }
-            }
         }
+
+        if ($request->amount > $request->user()->withdraw_balance) {
+            return response()->json([
+                'status' => 402,
+                'error' => 'Insufficient balance in your account to withdraw ' . $currencySymbol . $request->amount .
+                        '. Your current balance is ' . $currencySymbol . $request->user()->withdraw_balance
+            ]);
+        }
+
+        $payableAmount = $request->amount - ($request->amount * $withdrawChargePercentage / 100);
+        if ($request->type == 'Instant') {
+            $payableAmount -= $instantWithdrawCharge;
+        }
+
+        Withdraw::create([
+            'type' => $request->type,
+            'user_id' => $request->user()->id,
+            'amount' => $request->amount,
+            'method' => $request->method,
+            'number' => $request->number,
+            'payable_amount' => $payableAmount,
+            'status' => 'Pending',
+        ]);
+
+        $request->user()->decrement('withdraw_balance', $request->amount);
+
+        return response()->json([
+            'status' => 200,
+        ]);
     }
 
     public function findWorks(Request $request)
@@ -351,7 +349,7 @@ class UserController extends Controller
         } else {
             if ($request->ajax()) {
                 $jobProofs = JobProof::where('user_id', Auth::id())->pluck('job_post_id')->toArray();
-                $blockedUsers = Block::where('blocked_by', Auth::id())->pluck('blocked_user_id')->toArray();
+                $blockedUsers = Block::where('blocked_by', Auth::id())->pluck('user_id')->toArray();
                 $query = JobPost::where('status', 'Running')->whereNotIn('id', $jobProofs)->whereNot('user_id', Auth::id())->whereNotIn('user_id', $blockedUsers);
 
                 if ($request->category_id) {
@@ -414,7 +412,7 @@ class UserController extends Controller
         $workDetails = JobPost::findOrFail($id);
         $workProofExists = JobProof::where('job_post_id', $id)->where('user_id', Auth::id())->exists();
         $proofCount = JobProof::where('job_post_id', $id)->count();
-        $blocked = Block::where('blocked_user_id', $workDetails->user_id)->where('blocked_by', Auth::id())->exists();
+        $blocked = Block::where('user_id', $workDetails->user_id)->where('blocked_by', Auth::id())->exists();
         return view('frontend.find_works.view', compact('workDetails', 'workProofExists', 'proofCount', 'blocked'));
     }
 
@@ -810,7 +808,7 @@ class UserController extends Controller
     public function userProfile($id)
     {
         $user = User::findOrFail(decrypt($id));
-        $blocked = Block::where('blocked_user_id', $user->id)->where('blocked_by', Auth::id())->exists();
+        $blocked = Block::where('user_id', $user->id)->where('blocked_by', Auth::id())->exists();
         return view('frontend.user_profile.index', compact('user', 'blocked'));
     }
 
@@ -851,10 +849,10 @@ class UserController extends Controller
 
     public function blockUser($id)
     {
-        $blocked = Block::where('blocked_user_id', $id)->where('blocked_by', Auth::id())->exists();
+        $blocked = Block::where('user_id', $id)->where('blocked_by', Auth::id())->exists();
 
         if ($blocked) {
-            Block::where('blocked_user_id', $id)->where('blocked_by', Auth::id())->delete();
+            Block::where('user_id', $id)->where('blocked_by', Auth::id())->delete();
 
             $notification = array(
                 'message' => 'User unblocked successfully.',
@@ -865,7 +863,7 @@ class UserController extends Controller
         }
 
         Block::create([
-            'blocked_user_id' => $id,
+            'user_id' => $id,
             'blocked_by' => Auth::id(),
             'blocked_at' => now(),
         ]);
@@ -955,7 +953,7 @@ class UserController extends Controller
             }
 
             Report::create([
-                'reported_user_id' => $id,
+                'user_id' => $id,
                 'reported_by' => Auth::id(),
                 'reason' => $request->reason,
                 'photo' => $photo_name,

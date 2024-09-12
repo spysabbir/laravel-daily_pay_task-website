@@ -23,7 +23,7 @@ class Report extends Model
 
     public function reported()
     {
-        return $this->belongsTo(User::class, 'reported_user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function reportedBy()
