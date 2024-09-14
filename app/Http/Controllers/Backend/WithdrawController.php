@@ -99,14 +99,14 @@ class WithdrawController extends Controller
 
             if ($referrer && $request->status == 'Approved') {
                 $referrer->update([
-                    'withdraw_balance' => $referrer->withdraw_balance + ($withdraw->amount * get_default_settings('referral_earning_bonus_percentage')) / 100,
+                    'withdraw_balance' => $referrer->withdraw_balance + ($withdraw->amount * get_default_settings('referral_withdrawal_bonus_percentage')) / 100,
                 ]);
 
                 $referrerBonus = Bonus::create([
                     'user_id' => $referrer->id,
                     'bonus_by' => $user->id,
-                    'type' => 'Referral Earning Bonus',
-                    'amount' => ($withdraw->amount * get_default_settings('referral_earning_bonus_percentage')) / 100,
+                    'type' => 'Referral Withdrawal Bonus',
+                    'amount' => ($withdraw->amount * get_default_settings('referral_withdrawal_bonus_percentage')) / 100,
                 ]);
                 $referrer->notify(new BonusNotification($referrerBonus));
             }

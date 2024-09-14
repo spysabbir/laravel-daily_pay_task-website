@@ -67,7 +67,7 @@ class ProfileController extends Controller
     public function destroy(Request $request)
     {
         $request->validate([
-            'account_password' => ['current_password', 'required', 'string', 'min:8', 'max:20', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
+            'account_password' => ['required', 'string', 'min:8', 'max:20', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/', 'current_password'],
 
         ],
         [

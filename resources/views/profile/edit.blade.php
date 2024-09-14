@@ -12,10 +12,10 @@
                 </figure>
                 <div class="d-flex justify-content-between align-items-center position-absolute top-90 w-100 px-2 px-md-4 mt-n4">
                     <div class="d-flex">
-                        <img class="wd-70 rounded-circle" id="userProfilePhotoPreview" src="{{ asset('uploads/profile_photo') }}/{{ Auth::user()->profile_photo }}" alt="profile">
+                        <img class="wd-70 rounded-circle" id="userProfilePhotoPreview" src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="profile">
                         <div>
-                            <h4 class="ms-3 text-dark">{{ Auth::user()->name }}</h4>
-                            <h6 class="ms-3 text-dark">{{ Auth::user()->email }}</h6>
+                            <h4 class="ms-3 text-dark">{{ $user->name }}</h4>
+                            <h6 class="ms-3 text-dark">{{ $user->email }}</h6>
                         </div>
                     </div>
                     <div class="d-none d-md-block">
@@ -25,7 +25,7 @@
                                 'Inactive' => 'btn-info',
                                 'Blocked' => 'btn-warning',
                             ];
-                            $status = Auth::user()->status;
+                            $status = $user->status;
                             $buttonClass = $statusClasses[$status] ?? 'btn-danger';
                         @endphp
 
@@ -60,43 +60,43 @@
                 <div>
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Username:</label>
                     <p class="text-muted">
-                        {{ Auth::user()->username ?? 'Not provided' }}
+                        {{ $user->username ?? 'Not provided' }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Phone:</label>
                     <p class="text-muted">
-                        {{ Auth::user()->phone ?? 'Not provided' }}
+                        {{ $user->phone ?? 'Not provided' }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Date of Birth:</label>
                     <p class="text-muted">
-                        {{ date('j F, Y', strtotime(Auth::user()->date_of_birth)) ?? 'Not provided' }}
+                        {{ $user->date_of_birth ? date('j F, Y', strtotime($user->date_of_birth)) : 'Not provided' }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Gender:</label>
                     <p class="text-muted">
-                        {{ Auth::user()->gender ?? 'Not provided' }}
+                        {{ $user->gender ?? 'Not provided' }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Bio:</label>
                     <p class="text-muted">
-                        {{ Auth::user()->bio ?? 'Not provided' }}
+                        {{ $user->bio ?? 'Not provided' }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Last Login:</label>
                     <p class="text-muted">
-                        {{ date('j F, Y  H:i:s A', strtotime(Auth::user()->last_login_at)) ?? 'Not provided' }}
+                        {{ date('j F, Y  H:i:s A', strtotime($user->last_login_at)) }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Joined:</label>
                     <p class="text-muted">
-                        {{ Auth::user()->created_at->format('j F, Y  H:i:s A') }}
+                        {{ $user->created_at->format('j F, Y  H:i:s A') }}
                     </p>
                 </div>
             </div>

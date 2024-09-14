@@ -36,6 +36,8 @@ class UserTableSeeder extends Seeder
         $user = User::create([
             'name' => 'User',
             'email' => 'user@gmail.com',
+            'date_of_birth' => '2024-01-01',
+            'gender' => 'Male',
             'deposit_balance' => 10000,
             'withdraw_balance' => 10000,
             'password' => Hash::make('Ss@12345678'),
@@ -47,7 +49,7 @@ class UserTableSeeder extends Seeder
         Verification::create([
             'user_id' => $user->id,
             'id_type' => 'NID',
-            'id_number' => 12345678,
+            'id_number' => '0123456789',
             'id_front_image' => 'id_front_image.jpg',
             'id_with_face_image' => 'id_with_face_image.jpg',
             'status' => 'Approved',

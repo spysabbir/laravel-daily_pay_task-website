@@ -28,21 +28,40 @@
                                 <td>ID Number</td>
                                 <td>{{ $verification->id_number }}</td>
                             </tr>
-                            <tr>
-                                <td>Id Front Image</td>
-                                <td>
-                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image }}" alt="Id Front Image" style="width: 120px; height: 120px">
-                                    <a class="mx-2" href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image }}" target="_blank">View Full Image</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Id With Face Image</td>
-                                <td>
-                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image }}" alt="Id With Face Image" style="width: 120px; height: 120px">
-                                    <a class="mx-2" href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image }}" target="_blank">View Full Image</a>                                </td>
-                            </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="mt-3">
+                    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"></li>
+                            <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image }}" class="d-block w-100" alt="Id Front Image">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="mb-2"><strong class="badge bg-dark">Id Front Image</strong></h5>
+                                    <strong><a href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image }}" target="_blank">View Full Image</a></strong>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image }}" class="d-block w-100" alt="Id With Face Image">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="mb-2"><strong class="badge bg-dark">Id With Face Image</strong></h5>
+                                    <strong><a href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image }}" target="_blank">View Full Image</a></strong>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" data-bs-target="#carouselExampleCaptions" role="button" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" data-bs-target="#carouselExampleCaptions" role="button" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

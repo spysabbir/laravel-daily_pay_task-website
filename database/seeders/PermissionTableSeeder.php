@@ -138,6 +138,7 @@ class PermissionTableSeeder extends Seeder
 
             ['name' => 'JobProofMenu', 'group_name' => 'JobProofManagement', 'guard_name' => 'web'],
             ['name' => 'job_proof.pending', 'group_name' => 'JobProofManagement', 'guard_name' => 'web'],
+            ['name' => 'job_proof.approved', 'group_name' => 'JobProofManagement', 'guard_name' => 'web'],
             ['name' => 'job_proof.rejected', 'group_name' => 'JobProofManagement', 'guard_name' => 'web'],
             ['name' => 'job_proof.reviewed', 'group_name' => 'JobProofManagement', 'guard_name' => 'web'],
 

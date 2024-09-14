@@ -15,4 +15,9 @@ class Bonus extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function bonusBy()
+    {
+        return $this->belongsTo(User::class, 'bonus_by');
+    }
 }

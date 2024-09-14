@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Block;
+use App\Models\Bonus;
 use App\Models\Category;
 use App\Models\Deposit;
 use App\Models\JobPost;
@@ -54,7 +55,7 @@ class UserController extends Controller
     {
         $request->validate([
             'id_type' => 'required|in:NID,Passport,Driving License',
-            'id_number' => 'required|string|max:255|unique:verifications,id_number,'.$request->user()->id.',user_id',
+            'id_number' => 'required|string|min:10|unique:verifications,id_number,'.$request->user()->id.',user_id',
             'id_front_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'id_with_face_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -335,6 +336,55 @@ class UserController extends Controller
         return response()->json([
             'status' => 200,
         ]);
+    }
+
+    public function bonus(Request $request)
+    {
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+        } else {
+            if ($request->ajax()) {
+                $query = Bonus::where('user_id', Auth::id());
+
+                if ($request->type) {
+                    $query->where('bonuses.type', $request->type);
+                }
+
+                $query->select('bonuses.*')->orderBy('created_at', 'desc');
+
+                $bonuses = $query->get();
+
+                return DataTables::of($bonuses)
+                    ->addIndexColumn()
+                    ->editColumn('type', function ($row) {
+                        $type = '
+                            <span class="badge bg-primary">' . $row->type . '</span>
+                        ';
+                        return $type;
+                    })
+                    ->editColumn('bonus_by', function ($row) {
+                        return '
+                        <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
+                            '.$row->bonusBy->name.'
+                        </a>
+                    ';
+                    })
+                    ->editColumn('created_at', function ($row) {
+                        return $row->created_at->format('d M Y h:i A');
+                    })
+                    ->rawColumns(['type', 'bonus_by', 'created_at'])
+                    ->make(true);
+            }
+
+            $total_bonus = Bonus::where('user_id', Auth::id())->sum('amount');
+
+            return view('frontend.bonus.index', compact('total_bonus'));
+        }
     }
 
     public function findWorks(Request $request)

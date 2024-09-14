@@ -295,7 +295,7 @@
             </li>
         @endcan
 
-        {{-- @can('JobProofMenu') --}}
+        @can('JobProofMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#JobProofMenu" role="button" aria-expanded="false" aria-controls="JobProofMenu">
                     <i class="link-icon" data-feather="check-circle"></i>
@@ -304,27 +304,32 @@
                 </a>
                 <div class="collapse" id="JobProofMenu">
                     <ul class="nav sub-menu">
-                        {{-- @can('job_proof.pending') --}}
+                        @can('job_proof.pending')
                         <li class="nav-item">
                             <a href="{{ route('backend.job_proof.pending') }}" class="nav-link">Pending</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('job_proof.rejected') --}}
+                        @endcan
+                        @can('job_proof.approved')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.job_proof.approved') }}" class="nav-link">Approved</a>
+                        </li>
+                        @endcan
+                        @can('job_proof.rejected')
                         <li class="nav-item">
                             <a href="{{ route('backend.job_proof.rejected') }}" class="nav-link">Rejected</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('job_proof.reviewed') --}}
+                        @endcan
+                        @can('job_proof.reviewed')
                         <li class="nav-item">
                             <a href="{{ route('backend.job_proof.reviewed') }}" class="nav-link">Reviewed</a>
                         </li>
-                        {{-- @endcan --}}
+                        @endcan
                     </ul>
                 </div>
             </li>
-        {{-- @endcan --}}
+        @endcan
 
-        {{-- @can('ReportUserMenu') --}}
+        @can('ReportUserMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#ReportUserMenu" role="button" aria-expanded="false" aria-controls="ReportUserMenu">
                     <i class="link-icon" data-feather="alert-triangle"></i>
@@ -333,20 +338,20 @@
                 </a>
                 <div class="collapse" id="ReportUserMenu">
                     <ul class="nav sub-menu">
-                        {{-- @can('report_user.pending') --}}
+                        @can('report_user.pending')
                         <li class="nav-item">
                             <a href="{{ route('backend.report_user.pending') }}" class="nav-link">Pending</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('report_user.resolved') --}}
+                        @endcan
+                        @can('report_user.resolved')
                         <li class="nav-item">
                             <a href="{{ route('backend.report_user.resolved') }}" class="nav-link">Resolved</a>
                         </li>
-                        {{-- @endcan --}}
+                        @endcan
                     </ul>
                 </div>
             </li>
-        {{-- @endcan --}}
+        @endcan
     @else
         <li class="nav-item nav-category">User</li>
         @if (!Auth::user()->hasVerification('Approved'))
@@ -433,6 +438,9 @@
                 <ul class="nav sub-menu">
                     <li class="nav-item">
                         <a href="{{ route('deposit') }}" class="nav-link">Deposit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('bonus') }}" class="nav-link">Bonus</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('withdraw') }}" class="nav-link">Withdraw</a>

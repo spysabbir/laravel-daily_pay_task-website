@@ -125,6 +125,8 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     // Job Proof
     Route::get('job_proof-pending', [JobController::class, 'jobProofPending'])->name('job_proof.pending');
     Route::get('job_proof-pending-list/{id}', [JobController::class, 'jobProofPendingList'])->name('job_proof.pending.list');
+    Route::get('job_proof-approved', [JobController::class, 'jobProofApproved'])->name('job_proof.approved');
+    Route::get('job_proof-approved-list/{id}', [JobController::class, 'jobProofApprovedList'])->name('job_proof.approved.list');
     Route::get('job_proof-rejected', [JobController::class, 'jobProofRejected'])->name('job_proof.rejected');
     Route::get('job_proof-rejected-list/{id}', [JobController::class, 'jobProofRejectedList'])->name('job_proof.rejected.list');
     Route::get('job_proof-reviewed', [JobController::class, 'jobProofReviewed'])->name('job_proof.reviewed');

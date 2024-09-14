@@ -17,21 +17,13 @@ use App\Notifications\BonusNotification;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
-    public function create(Request $request): View
+    public function create(Request $request)
     {
         $referral_code = $request->query('ref');
         return view('auth.register', ['referral_code' => $referral_code]);
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $referralBonus = get_default_settings('referral_registration_bonus_amount');
 
@@ -39,7 +31,11 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', 'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/'],
             'password' => [
-                'required', 'string', 'min:8', 'max:20', 'confirmed',
+                'required', 'string', 'min:8', 'max:20',
+                'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/', 'confirmed'
+            ],
+            'password_confirmation' => [
+                'required', 'string', 'min:8', 'max:20',
                 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'
             ],
             'terms_conditions' => 'required',
@@ -49,25 +45,26 @@ class RegisteredUserController extends Controller
         [
             'email.regex' => 'The email must follow the format " ****@****.*** ".',
             'password.regex' => 'The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
+            'password_confirmation.regex' => 'The confirm password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
             'terms_conditions.required' => 'You must agree to the terms and conditions.',
             'referral_code.exists' => 'The referral code is invalid.',
             'g-recaptcha-response.required' => 'Please verify that you are not a robot.',
             'g-recaptcha-response.captcha' => 'Failed to validate captcha response.',
         ]);
 
-        $referrer = optional(User::where('referral_code', $request->referral_code)->first());
+        $referrer = User::where('referral_code', $request->referral_code)->where('user_type', 'Frontend')->first();
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'referral_code' => Str::random(10),
-            'referred_by' => $referrer->id ?? null,
-            'withdraw_balance' => $referrer ? $referralBonus : 0,
+            'referred_by' => $referrer ? $referrer->id : null,
         ]);
 
         if ($referrer) {
             $referrer->increment('withdraw_balance', $referralBonus);
+            $user->update(['withdraw_balance' => $referralBonus]);
 
             $referrerBonus = Bonus::create([
                 'user_id' => $referrer->id,

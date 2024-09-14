@@ -29,7 +29,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="userPassword" class="form-label">Password <span class="text-danger">*</span></label>
-                    <input type="password" class="form-control" id="userPassword" name="password" placeholder="Password">
+                    <input type="password" class="form-control" id="userPassword" value="Ss@12345678" name="password" placeholder="Password">
                     @error('password')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror

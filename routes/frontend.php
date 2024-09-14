@@ -78,6 +78,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/withdraw', [UserController::class, 'withdraw'])->name('withdraw');
     Route::post('/withdraw', [UserController::class, 'withdrawStore'])->name('withdraw.store');
 
+    Route::get('/bonus', [UserController::class, 'bonus'])->name('bonus');
+
     Route::get('/notification', [UserController::class, 'notification'])->name('notification');
     Route::get('/notification/read/{id}', [UserController::class, 'notificationRead'])->name('notification.read');
     Route::get('/notification/read-all', [UserController::class, 'notificationReadAll'])->name('notification.read.all');

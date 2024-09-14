@@ -12,10 +12,10 @@
                 </figure>
                 <div class="d-flex justify-content-between align-items-center position-absolute top-90 w-100 px-2 px-md-4 mt-n4">
                     <div class="d-flex">
-                        <img class="wd-70 rounded-circle" src="{{ asset('uploads/profile_photo') }}/{{ Auth::user()->profile_photo }}" alt="profile">
+                        <img class="wd-70 rounded-circle" src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="profile">
                         <div>
-                            <h4 class="ms-3 text-dark">{{ Auth::user()->name }}</h4>
-                            <h6 class="ms-3 text-dark">{{ Auth::user()->email }}</h6>
+                            <h4 class="ms-3 text-dark">{{ $user->name }}</h4>
+                            <h6 class="ms-3 text-dark">{{ $user->email }}</h6>
                         </div>
                     </div>
                     <div class="d-none d-md-block">
@@ -25,7 +25,7 @@
                                 'Inactive' => 'btn-info',
                                 'Blocked' => 'btn-warning',
                             ];
-                            $status = Auth::user()->status;
+                            $status = $user->status;
                             $buttonClass = $statusClasses[$status] ?? 'btn-danger';
                         @endphp
 

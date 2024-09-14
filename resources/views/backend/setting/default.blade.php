@@ -14,16 +14,16 @@
                     @csrf
                     <div class="row">
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="referral_registion_bonus_amount" class="form-label">Referral Registion Bonus Amount</label>
-                            <input type="number" class="form-control" id="referral_registion_bonus_amount" name="referral_registion_bonus_amount" value="{{ old('referral_registion_bonus_amount', $defaultSetting->referral_registion_bonus_amount) }}" placeholder="Referral Registion Bonus Amount">
-                            @error('referral_registion_bonus_amount')
+                            <label for="referral_registration_bonus_amount" class="form-label">Referral Registration Bonus Amount</label>
+                            <input type="number" class="form-control" id="referral_registration_bonus_amount" name="referral_registration_bonus_amount" value="{{ old('referral_registration_bonus_amount', $defaultSetting->referral_registration_bonus_amount) }}" placeholder="Referral Registration Bonus Amount">
+                            @error('referral_registration_bonus_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="referral_earning_bonus_percentage" class="form-label">Referral Earning Bonus Percentage</label>
-                            <input type="number" class="form-control" id="referral_earning_bonus_percentage" name="referral_earning_bonus_percentage" value="{{ old('referral_earning_bonus_percentage', $defaultSetting->referral_earning_bonus_percentage) }}" placeholder="Referral Earning Bonus Percentage">
-                            @error('referral_earning_bonus_percentage')
+                            <label for="referral_withdrawal_bonus_percentage" class="form-label">Referral Withdrawal Bonus Percentage</label>
+                            <input type="number" class="form-control" id="referral_withdrawal_bonus_percentage" name="referral_withdrawal_bonus_percentage" value="{{ old('referral_withdrawal_bonus_percentage', $defaultSetting->referral_withdrawal_bonus_percentage) }}" placeholder="Referral Withdrawal Bonus Percentage">
+                            @error('referral_withdrawal_bonus_percentage')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
