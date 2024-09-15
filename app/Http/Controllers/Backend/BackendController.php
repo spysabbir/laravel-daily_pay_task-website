@@ -373,4 +373,9 @@ class BackendController extends Controller
             ]);
         }
     }
+
+    public function liveChat()
+    {
+        return view('backend.live_chat.index');
+    }
 }

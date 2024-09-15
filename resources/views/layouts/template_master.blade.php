@@ -432,6 +432,9 @@
 	<script src="{{ asset('template') }}/js/select2.js"></script>
 
     <script src="{{ asset('template') }}/js/wizard.js"></script>
+
+    <script src="{{ asset('template') }}/js/chat.js"></script>
+
 	<!-- End custom js for this page -->
 
     @yield('script')

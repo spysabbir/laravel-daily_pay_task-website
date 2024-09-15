@@ -14,6 +14,7 @@ Route::get('/how-it-works', [FrontendController::class, 'howItWorks'])->name('ho
 Route::get('/referral-program', [FrontendController::class, 'referralProgram'])->name('referral.program');
 Route::get('/privacy-policy', [FrontendController::class, 'privacyPolicy'])->name('privacy.policy');
 Route::get('/terms-and-conditions', [FrontendController::class, 'termsAndConditions'])->name('terms.and.conditions');
+Route::get('/live-chat', [FrontendController::class, 'liveChat'])->name('live.chat');
 
 Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
@@ -85,6 +86,5 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/notification/read-all', [UserController::class, 'notificationReadAll'])->name('notification.read.all');
 
     Route::get('/refferal', [UserController::class, 'refferal'])->name('refferal');
-
 });
 

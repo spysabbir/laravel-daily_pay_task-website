@@ -139,4 +139,7 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('report_user-view/{id}', [BackendController::class, 'reportUserView'])->name('report_user.view');
     Route::post('report_user-reply', [BackendController::class, 'reportUserReply'])->name('report_user.reply');
 
+    Route::get('/live-chat', [BackendController::class, 'liveChat'])->name('live.chat');
+
+
 });
