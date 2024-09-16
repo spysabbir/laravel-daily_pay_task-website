@@ -44,6 +44,14 @@
                 <h4 class="alert-heading">Pending</h4>
                 <p>This job proof is pending for approval.</p>
             </div>
+        @elseif ($jobProof->status == 'Approved')
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">Approved!</h4>
+                <p>Job Proof has been approved.</p>
+                <hr>
+                <p>Approved At: {{ date('d M, Y h:i A', strtotime($jobProof->approved_at)) }}</p>
+                <p>Approved By: {{ $jobProof->approvedBy->name }}</p>
+            </div>
         @elseif ($jobProof->status == 'Rejected')
             <div class="alert alert-danger" role="alert">
                 <h4 class="alert-heading">Rejected!</h4>

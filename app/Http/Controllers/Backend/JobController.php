@@ -326,6 +326,63 @@ class JobController extends Controller
         return view('backend.job_proof.pending_list', compact('jobPost'));
     }
 
+    public function jobProofApproved(Request $request){
+        if ($request->ajax()) {
+            $jobIds = JobProof::where('status', 'Approved')->pluck('job_post_id')->toArray();
+            $query = JobPost::whereIn('id', $jobIds);
+            $query->select('job_posts.*')->orderBy('created_at', 'desc');
+
+            $jobList = $query->get();
+
+            return DataTables::of($jobList)
+                ->addIndexColumn()
+                ->editColumn('action', function ($row) {
+                    $btn = '
+                        <a href="' . route('backend.job_proof.approved.list', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
+                    ';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('backend.job_proof.approved');
+    }
+
+    public function jobProofApprovedList(Request $request, string $id){
+
+        if ($request->ajax()) {
+            $query = JobProof::where('job_post_id', decrypt($id))->where('status', 'Approved');
+
+            $query->select('job_proofs.*');
+
+            $JobProofs = $query->get();
+
+            return DataTables::of($JobProofs)
+                ->editColumn('user', function ($row) {
+                    $userDetail = UserDetail::where('user_id', $row->user_id)->first();
+                    $user = '
+                        <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
+                        <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
+                    ';
+                    return $user;
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->format('d M Y h:i A');
+                })
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['user', 'created_at', 'action'])
+                ->make(true);
+        }
+
+        $jobPost = JobPost::findOrFail(decrypt($id));
+
+        return view('backend.job_proof.approved_list', compact('jobPost'));
+    }
+
     public function jobProofRejected(Request $request){
         if ($request->ajax()) {
             $jobIds = JobProof::where('status', 'Rejected')->pluck('job_post_id')->toArray();

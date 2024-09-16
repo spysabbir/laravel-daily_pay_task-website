@@ -1,29 +1,8 @@
 @extends('layouts.frontend')
 
-@section('title', 'About Us')
+@section('title', 'Contact Us')
 
 @section('content')
-<!-- Page Title Start -->
-<section class="page-title title-bg23">
-    <div class="d-table">
-        <div class="d-table-cell">
-            <h2>Contact Us</h2>
-            <ul>
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
-                <li>Contact Us</li>
-            </ul>
-        </div>
-    </div>
-    <div class="lines">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-    </div>
-</section>
-<!-- Page Title End -->
-
 <!-- Contact Section Start -->
 <div class="contact-card-section ptb-100">
     <div class="container">
@@ -35,13 +14,8 @@
                             <i class='bx bx-phone-call'></i>
                             <ul>
                                 <li>
-                                    <a href="tel:+145664474574">
-                                        +1-456-644-7457
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="tel:17459674567">
-                                        +1-745-967-4567
+                                    <a href="tel:{{ get_site_settings('site_support_phone') }}">
+                                        {{ get_site_settings('site_support_phone') }}
                                     </a>
                                 </li>
                             </ul>
@@ -57,11 +31,6 @@
                                         {{ get_site_settings('site_support_email') }}
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="mailto:{{ get_site_settings('site_support_email') }}">
-                                        {{ get_site_settings('site_support_email') }}
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                     </div>
@@ -71,10 +40,7 @@
                             <i class='bx bx-location-plus' ></i>
                             <ul>
                                 <li>
-                                    123, Denver, USA
-                                </li>
-                                <li>
-                                    Street view 3/B, USA
+                                    {{ get_site_settings('site_address') }}
                                 </li>
                             </ul>
                         </div>

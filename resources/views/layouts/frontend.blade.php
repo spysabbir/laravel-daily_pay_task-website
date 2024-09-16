@@ -27,7 +27,108 @@
         <!-- Title CSS -->
         <title>{{ config('app.name') }} - @yield('title')</title>
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="{{ asset('frontend') }}/img/favicon.png">
+        <link rel="icon" type="image/png" href="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_favicon') }}">
+
+        <style>
+		.msg_card{
+			height: 600px;
+			border-radius: 15px !important;
+			background-color: rgba(0,0,0,0.4) !important;
+		}
+		.msg_card_body{
+			overflow-y: auto;
+		}
+		.type_msg{
+            border: 2px solid #c4c4c4 !important;
+            border-radius: 10px !important;
+		}
+		.user_img{
+			height: 70px;
+			width: 70px;
+			border:1.5px solid #f5f6fa;
+		}
+		.user_img_msg{
+			height: 40px;
+			width: 40px;
+			border:1.5px solid #f5f6fa;
+		}
+        .img_cont{
+            position: relative;
+            height: 70px;
+            width: 70px;
+        }
+        .img_cont_msg{
+            height: 40px;
+            width: 40px;
+        }
+        .online_icon{
+            position: absolute;
+            height: 15px;
+            width:15px;
+            background-color: #4cd137;
+            border-radius: 50%;
+            bottom: 0.2em;
+            right: 0.4em;
+            border:1.5px solid white;
+        }
+        .user_info{
+            margin-top: auto;
+            margin-bottom: auto;
+            margin-left: 15px;
+        }
+        .user_info span{
+            font-size: 20px;
+            color: white;
+        }
+        .user_info p{
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+        }
+        .msg_cotainer{
+            margin-top: auto;
+            margin-bottom: auto;
+            margin-left: 10px;
+            border-radius: 25px;
+            background-color: #82ccdd;
+            padding: 10px;
+            position: relative;
+        }
+        .msg_cotainer_send{
+            margin-top: auto;
+            margin-bottom: auto;
+            margin-right: 10px;
+            border-radius: 25px;
+            background-color: #78e08f;
+            padding: 10px;
+            position: relative;
+        }
+        .msg_time{
+            position: absolute;
+            left: 10px;
+            bottom: -20px;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+        .msg_time_send{
+            position: absolute;
+            right:10px;
+            bottom: -20px;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+        .msg_head{
+            position: relative;
+        }
+        #fileBtn, .send_btn {
+            height: 60px;
+            border-radius: 15px !important;
+            background-color: rgba(0,0,0,0.3) !important;
+            border:0 !important;
+            color: white !important;
+            cursor: pointer;
+            margin: 0 5px !important;
+        }
+        </style>
     </head>
 
     <body>
@@ -59,7 +160,7 @@
             <!-- Menu For Mobile Device -->
             <div class="mobile-nav">
                 <a href="{{ route('index') }}" class="logo">
-                    <img src="{{ asset('frontend') }}/img/logo.png" alt="logo">
+                    <img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="logo">
                 </a>
             </div>
 
@@ -68,7 +169,7 @@
                 <div class="container">
                     <nav class="navbar navbar-expand-lg navbar-light">
                         <a class="navbar-brand" href="{{ route('index') }}">
-                            <img src="{{ asset('frontend') }}/img/logo.png" alt="logo">
+                            <img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="logo">
                         </a>
                         <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
                             <ul class="navbar-nav m-auto">
@@ -97,6 +198,29 @@
             </div>
         </div>
         <!-- Navbar Area End -->
+
+        @if(Route::currentRouteName() != 'index')
+        <!-- Page Title Start -->
+        <section class="page-title title-bg17">
+            <div class="d-table">
+                <div class="d-table-cell">
+                    <h2>@yield('title')</h2>
+                    <ul>
+                        <li>
+                            <a href="{{ route('index') }}">Home</a>
+                        </li>
+                        <li>@yield('title')</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lines">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </section>
+        <!-- Page Title End -->
+        @endif
 
         @yield('content')
 
@@ -135,7 +259,7 @@
 						<div class="footer-widget">
 							<div class="footer-logo">
 								<a href="{{ route('index') }}">
-									<img src="{{ asset('frontend') }}/img/logo.png" alt="logo">
+									<img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="logo">
 								</a>
 							</div>
 
@@ -295,5 +419,7 @@
 		<script src="{{ asset('frontend') }}/js/meanmenu.js"></script>
 		<!-- Custom JS -->
 		<script src="{{ asset('frontend') }}/js/custom.js"></script>
+
+        @yield('script')
     </body>
 </html>

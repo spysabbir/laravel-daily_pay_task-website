@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', 'About Us')
+@section('title', 'Referral Program')
 
 @section('content')
 

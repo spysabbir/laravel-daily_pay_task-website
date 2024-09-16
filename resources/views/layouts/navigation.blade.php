@@ -149,6 +149,17 @@
             @endcan
         @endcan
 
+        {{-- @can('LiveChatMenu') --}}
+            {{-- @can('live.chat') --}}
+            <li class="nav-item">
+                <a href="{{ route('backend.live.chat') }}" class="nav-link">
+                    <i class="link-icon" data-feather="message-circle"></i>
+                    <span class="link-title">Live Chat</span>
+                </a>
+            </li>
+            {{-- @endcan --}}
+        {{-- @endcan --}}
+
         <li class="nav-item nav-category">User</li>
         @can('UserMenu')
             <li class="nav-item">

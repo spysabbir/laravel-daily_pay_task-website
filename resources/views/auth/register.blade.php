@@ -28,6 +28,7 @@
                 <div class="mb-3">
                     <label for="userEmail" class="form-label">Email Address <span class="text-danger">*</span></label>
                     <input type="email" class="form-control" id="userEmail" name="email" value="{{ old('email') }}" placeholder="Email">
+                    <small class="text-info d-block">The email must follow the format " ****@****.*** ".</small>
                     @error('email')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror

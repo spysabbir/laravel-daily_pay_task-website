@@ -3,27 +3,6 @@
 @section('title', 'FAQ')
 
 @section('content')
-<!-- Page Title Start -->
-<section class="page-title title-bg17">
-    <div class="d-table">
-        <div class="d-table-cell">
-            <h2>FAQ</h2>
-            <ul>
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
-                <li>FAQ</li>
-            </ul>
-        </div>
-    </div>
-    <div class="lines">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-    </div>
-</section>
-<!-- Page Title End -->
-
 <!-- Faq Section Start -->
 <section class="faq-section pt-100 pb-70">
     <div class="container">

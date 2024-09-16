@@ -100,24 +100,6 @@
             </div>
         </nav>
 
-        <nav class="settings-sidebar">
-            <div class="sidebar-body">
-                <a href="javaScript:void(0);" class="settings-sidebar-toggler">
-                    <i data-feather="settings"></i>
-                </a>
-                <div class="theme-wrapper">
-                    <h6 class="text-muted mb-2">Light Theme:</h6>
-                    <a class="theme-item" href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}">
-                        <img src="{{ asset('template') }}/images/others/placeholder.jpg" alt="light theme">
-                    </a>
-                    <h6 class="text-muted mb-2">Dark Theme:</h6>
-                    <a class="theme-item active" href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}">
-                        <img src="{{ asset('template') }}/images/others/placeholder.jpg" alt="Dark theme">
-                    </a>
-                </div>
-            </div>
-        </nav>
-
         <!-- partial -->
         <div class="page-wrapper">
 
@@ -127,14 +109,6 @@
                     <i data-feather="menu"></i>
                 </a>
                 <div class="navbar-content">
-                    <form class="search-form">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <i data-feather="search"></i>
-                            </div>
-                            <input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
-                        </div>
-                    </form>
                     @if (auth()->user()->user_type === 'Frontend')
                     <div class="d-flex py-3">
                         <span class="badge bg-primary mt-1 mx-2">
@@ -186,7 +160,9 @@
                                 $deposit = App\Models\Deposit::where('status', 'Pending')->count();
                                 $withdraw = App\Models\Withdraw::where('status', 'Pending')->count();
                                 $jobPost = App\Models\JobPost::where('status', 'Pending')->count();
-                                $backend_notification = $verification + $deposit + $withdraw + $jobPost;
+                                $jobProof = App\Models\JobProof::where('status', 'Review')->count();
+                                $report = App\Models\Report::where('status', 'Pending')->count();
+                                $backend_notification = $verification + $deposit + $withdraw + $jobPost + $jobProof + $report;
                             @endphp
                             <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i data-feather="bell"></i>
@@ -288,6 +264,32 @@
                                                 <strong>Job Post Request</strong>
                                             </p>
                                             <p class="tx-12 text-muted">{{ $jobPost }} Pending</p>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    @if ($jobProof > 0)
+                                    <a href="{{ route('backend.job_proof.reviewed') }}" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                            <i class="icon-sm text-white" data-feather="alert-circle"></i>
+                                        </div>
+                                        <div class="flex-grow-1 me-2">
+                                            <p>
+                                                <strong>Job Proof Request</strong>
+                                            </p>
+                                            <p class="tx-12 text-muted">{{ $jobProof }} Reviewed</p>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    @if ($report > 0)
+                                    <a href="{{ route('backend.report_user.pending') }}" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                            <i class="icon-sm text-white" data-feather="alert-circle"></i>
+                                        </div>
+                                        <div class="flex-grow-1 me-2">
+                                            <p>
+                                                <strong>Report User Request</strong>
+                                            </p>
+                                            <p class="tx-12 text-muted">{{ $report }} Pending</p>
                                         </div>
                                     </a>
                                     @endif

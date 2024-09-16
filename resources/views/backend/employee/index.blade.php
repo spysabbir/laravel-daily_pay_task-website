@@ -284,10 +284,10 @@
                 url: url,
                 type: "GET",
                 success: function (response) {
-                    $('#employee_id').val(response.user.id);
+                    $('#employee_id').val(response.employee.id);
                     $('#employee_role').val(response.role.id);
-                    $('#employee_name').val(response.user.name);
-                    $('#employee_email').val(response.user.email);
+                    $('#employee_name').val(response.employee.name);
+                    $('#employee_email').val(response.employee.email);
                 },
             });
         });

@@ -376,6 +376,7 @@ class BackendController extends Controller
 
     public function liveChat()
     {
-        return view('backend.live_chat.index');
+        $users = User::where('user_type', 'Frontend')->where('status', 'Active')->get();
+        return view('backend.live_chat.index', compact('users'));
     }
 }

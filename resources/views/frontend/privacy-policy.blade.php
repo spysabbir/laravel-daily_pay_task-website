@@ -3,27 +3,6 @@
 @section('title', 'Privacy Policy')
 
 @section('content')
-<!-- Page Title Start -->
-<section class="page-title title-bg20">
-    <div class="d-table">
-        <div class="d-table-cell">
-            <h2>Privacy and Policy</h2>
-            <ul>
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
-                <li>Privacy and Policy</li>
-            </ul>
-        </div>
-    </div>
-    <div class="lines">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-    </div>
-</section>
-<!-- Page Title End -->
-
 <!-- Privacy Section Start -->
 <div class="privacy-section pt-100 pb-100">
     <div class="container">

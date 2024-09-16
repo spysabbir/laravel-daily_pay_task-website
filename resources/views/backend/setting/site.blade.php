@@ -15,19 +15,19 @@
                     <div class="row">
                         <div class="col-lg-6 mb-3">
                             <label for="site_logo" class="form-label">Site Logo</label>
-                            <input type="file" class="form-control" name="site_logo" id="site_logo">
+                            <input type="file" class="form-control" name="site_logo" id="site_logo" accept=".jpg, .jpeg, .png">
                             @error('site_logo')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
-                            <img width="100" height="80" class="mt-1 rounded" src="{{asset('uploads/setting_photo')}}/{{$siteSetting->site_logo}}" id="site_logoPreview"  alt="Site Logo">
+                            <img width="100" height="80" class="mt-2 rounded" src="{{asset('uploads/setting_photo')}}/{{$siteSetting->site_logo}}" id="site_logoPreview"  alt="Site Logo">
                         </div>
                         <div class="col-lg-6 mb-3">
                             <label for="site_favicon" class="form-label">Site Favicon</label>
-                            <input type="file" class="form-control" name="site_favicon" id="site_favicon">
+                            <input type="file" class="form-control" name="site_favicon" id="site_favicon" accept=".jpg, .jpeg, .png">
                             @error('site_favicon')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
-                            <img width="80" height="80" class="mt-1 rounded" src="{{asset('uploads/setting_photo')}}/{{$siteSetting->site_favicon}}" id="site_faviconPreview"  alt="Site Favicon">
+                            <img width="80" height="80" class="mt-2 rounded" src="{{asset('uploads/setting_photo')}}/{{$siteSetting->site_favicon}}" id="site_faviconPreview"  alt="Site Favicon">
                         </div>
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="site_name" class="form-label">Site Name</label>

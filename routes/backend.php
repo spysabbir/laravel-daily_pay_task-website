@@ -18,9 +18,9 @@ use App\Http\Controllers\Backend\WithdrawController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type:Backend'])->group(function() {
-    Route::get('/dashboard', [BackendController::class, 'dashboard'])->name('dashboard');
-    Route::get('/profile/edit', [BackendController::class, 'profileEdit'])->name('profile.edit');
-    Route::get('/profile/setting', [BackendController::class, 'profileSetting'])->name('profile.setting');
+    Route::get('dashboard', [BackendController::class, 'dashboard'])->name('dashboard');
+    Route::get('profile/edit', [BackendController::class, 'profileEdit'])->name('profile.edit');
+    Route::get('profile/setting', [BackendController::class, 'profileSetting'])->name('profile.setting');
     // Role & Permission
     Route::resource('role', RoleController::class);
     Route::resource('permission', PermissionController::class);
@@ -139,7 +139,5 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('report_user-view/{id}', [BackendController::class, 'reportUserView'])->name('report_user.view');
     Route::post('report_user-reply', [BackendController::class, 'reportUserReply'])->name('report_user.reply');
 
-    Route::get('/live-chat', [BackendController::class, 'liveChat'])->name('live.chat');
-
-
+    Route::get('live-chat', [BackendController::class, 'liveChat'])->name('live.chat');
 });

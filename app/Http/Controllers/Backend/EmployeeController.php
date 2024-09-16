@@ -18,57 +18,35 @@ class EmployeeController extends Controller
             $query = User::where('user_type', 'Backend');
 
             if ($request->role) {
-                $query->whereHas('roles', function ($query) use ($request) {
-                    $query->where('roles.id', $request->role);
-                });
+                $query->whereHas('roles', fn($q) => $q->where('roles.id', $request->role));
             }
 
             if ($request->status) {
                 $query->where('users.status', $request->status);
             }
 
-            $query->select('users.*')->orderBy('created_at', 'desc');
-
-            $allEmployee = $query->get();
+            $allEmployee = $query->orderBy('created_at', 'desc')->get();
 
             return DataTables::of($allEmployee)
                 ->addIndexColumn()
-                ->addColumn('roles', function ($row) {
-                    $roles = $row->roles;
-                    $badgeTags = '';
-                    foreach ($roles as $role) {
-                        $badgeTags .= '<span class="badge bg-info mr-1">' . $role->name . '</span>';
-                    }
-                    return $badgeTags;
-                })
-                ->editColumn('status', function ($row) {
-                    if ($row->status == 'Active') {
-                        $status = '
-                        <span class="badge bg-success">' . $row->status . '</span>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs statusBtn">Deactive</button>
-                        ';
-                    } else {
-                        $status = '
-                        <span class="badge text-white bg-warning">' . $row->status . '</span>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-success btn-xs statusBtn">Active</button>
-                        ';
-                    }
-                    return $status;
-                })
+                ->addColumn('roles', fn($row) => $row->roles->map(fn($role) => '<span class="badge bg-primary">' . $role->name . '</span>')->implode(' '))
+                ->editColumn('status', fn($row) => '
+                    <span class="badge bg-' . ($row->status == 'Active' ? 'success' : 'warning') . '">' . $row->status . '</span>
+                    <button type="button" class="btn btn-' . ($row->status == 'Active' ? 'warning' : 'success') . ' btn-xs statusBtn">' . ($row->status == 'Active' ? 'Deactivate' : 'Activate') . '</button>
+                ')
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    ';
-                return $btn;
+                    $btns = '<button type="button" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    if (!$row->roles->contains('name', 'Super Admin')) {
+                        $btns .= '<button type="button" class="btn btn-info btn-xs editBtn">Edit</button>';
+                    }
+                    $btns .= '<button type="button" class="btn btn-danger btn-xs deleteBtn">Delete</button>';
+                    return $btns;
                 })
                 ->rawColumns(['roles', 'status', 'action'])
                 ->make(true);
         }
 
         $roles = Role::all();
-
         return view('backend.employee.index', compact('roles'));
     }
 

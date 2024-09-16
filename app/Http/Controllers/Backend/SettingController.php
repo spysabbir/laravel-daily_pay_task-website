@@ -103,8 +103,8 @@ class SettingController extends Controller
 
     public function siteSettingUpdate(Request $request){
         $request->validate([
-            'site_logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'site_favicon' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'site_logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'site_favicon' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'site_name' => 'required',
             'site_url' => 'required',
             'site_timezone' => 'required',
@@ -116,10 +116,6 @@ class SettingController extends Controller
             'site_support_phone' => 'required',
             'site_address' => 'required',
         ]);
-
-        $this->changeEnv("APP_NAME", "'$request->site_name'");
-        $this->changeEnv("APP_URL", "'$request->site_url'");
-        $this->changeEnv("APP_TIMEZONE", "'$request->site_timezone'");
 
         $siteSetting = SiteSetting::first();
 
@@ -155,7 +151,8 @@ class SettingController extends Controller
             $manager = new ImageManager(new Driver());
             $site_logo_name = "Site-Logo".".". $request->file('site_logo')->getClientOriginalExtension();
             $image = $manager->read($request->file('site_logo'));
-            $image->toJpeg(80)->save(base_path("public/uploads/setting_photo/").$site_logo_name);
+            $image->scale(width: 100, height: 30);
+            $image->toPng()->save(base_path("public/uploads/setting_photo/").$site_logo_name);
             $siteSetting->update([
                 'site_logo' => $site_logo_name
             ]);
@@ -169,11 +166,16 @@ class SettingController extends Controller
             $manager = new ImageManager(new Driver());
             $site_favicon_name = "Site-Favicon".".". $request->file('site_favicon')->getClientOriginalExtension();
             $image = $manager->read($request->file('site_favicon'));
-            $image->toJpeg(80)->save(base_path("public/uploads/setting_photo/").$site_favicon_name);
+            $image->scale(width: 25, height: 25);
+            $image->toPng()->save(base_path("public/uploads/setting_photo/").$site_favicon_name);
             $siteSetting->update([
                 'site_favicon' => $site_favicon_name
             ]);
         }
+
+        $this->changeEnv("APP_NAME", "'$request->site_name'");
+        $this->changeEnv("APP_URL", "'$request->site_url'");
+        $this->changeEnv("APP_TIMEZONE", "'$request->site_timezone'");
 
         $notification = array(
             'message' => 'Site setting updated successfully.',
