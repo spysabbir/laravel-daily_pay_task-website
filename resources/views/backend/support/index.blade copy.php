@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Live Chat')
+@section('title', 'Support')
 
 @section('content')
 <div class="row chat-wrapper">
@@ -40,7 +40,7 @@
                                         <a class="nav-link active" id="chats-tab" data-bs-toggle="tab" data-bs-target="#chats" role="tab" aria-controls="chats" aria-selected="true">
                                         <div class="d-flex flex-row flex-lg-column flex-xl-row align-items-center justify-content-center">
                                             <i data-feather="message-square" class="icon-sm me-sm-2 me-lg-0 me-xl-2 mb-md-1 mb-xl-0"></i>
-                                            <p class="d-none d-sm-block">Chats</p>
+                                            <p class="d-none d-sm-block">Supports</p>
                                         </div>
                                         </a>
                                     </li>
@@ -56,23 +56,27 @@
                                 <div class="tab-content mt-3">
                                     <div class="tab-pane fade show active" id="chats" role="tabpanel" aria-labelledby="chats-tab">
                                         <div>
-                                            <p class="text-muted mb-1">Recent chats</p>
+                                            <p class="text-muted mb-1">Recent Supports</p>
                                             <ul class="list-unstyled chat-list px-1">
-                                                @foreach ($users as $user)
+                                                @foreach ($supportUsers as $user)
+                                                @php
+                                                    $supports = App\Models\Support::where('sender_id', $user->id)->get();
+                                                    $support = App\Models\Support::where('sender_id', $user->id)->orderBy('created_at', 'desc')->first();
+                                                @endphp
                                                 <li class="chat-item pe-1">
-                                                    <a href="javascript:;" class="d-flex align-items-center">
+                                                    <a href="javascript:;" class="d-flex align-items-center select-user" data-id="{{ $user->id }}">
                                                         <figure class="mb-0 me-2">
-                                                            <img src="https://via.placeholder.com/37x37" class="img-xs rounded-circle" alt="user">
+                                                            <img src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" class="img-xs rounded-circle" alt="user">
                                                             <div class="status online"></div>
                                                         </figure>
                                                         <div class="d-flex justify-content-between flex-grow-1 border-bottom">
                                                             <div>
                                                                 <p class="text-body fw-bolder">{{ $user->name }}</p>
-                                                                <p class="text-muted tx-13">Hi, How are you?</p>
+                                                                <p class="text-muted tx-13">{{ $support->message }}</p>
                                                             </div>
                                                             <div class="d-flex flex-column align-items-end">
-                                                                <p class="text-muted tx-13 mb-1">4:32 PM</p>
-                                                                <div class="badge rounded-pill bg-primary ms-auto">5</div>
+                                                                <p class="text-muted tx-13 mb-1">{{ $support->created_at->diffForHumans() }}</p>
+                                                                <div class="badge rounded-pill bg-primary ms-auto">{{ $supports->count() }}</div>
                                                             </div>
                                                         </div>
                                                     </a>

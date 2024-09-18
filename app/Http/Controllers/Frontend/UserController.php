@@ -21,6 +21,10 @@ use Illuminate\Support\Facades\Validator;
 use Stevebauman\Location\Facades\Location;
 use App\Models\Report;
 use App\Models\ReportReply;
+use App\Models\Support;
+use App\Events\SupportEvent;
+use App\Events\MessageEvent;
+
 
 class UserController extends Controller
 {
@@ -1012,6 +1016,48 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => 200,
+            ]);
+        }
+    }
+
+    public function support(){
+        $supports = Support::where('sender_id', Auth::id())->orWhere('receiver_id', Auth::id())->orderBy('created_at', 'desc')->get();
+
+        return view('frontend.support.index' , compact('supports'));
+    }
+
+    public function supportSendMessage(Request $request){
+        $validator = Validator::make($request->all(), [
+            'message' => 'required|string|max:5000',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            $photo_name = null;
+            if ($request->file('photo')) {
+                $manager = new ImageManager(new Driver());
+                $photo_name = Auth::id()."-support_photo_".date('YmdHis').".".$request->file('photo')->getClientOriginalExtension();
+                $image = $manager->read($request->file('photo'));
+                $image->toJpeg(80)->save(base_path("public/uploads/support_photo/").$photo_name);
+            }
+
+            $support = Support::create([
+                'sender_id' => Auth::id(),
+                'receiver_id' => 1,
+                'message' => $request->message,
+                'photo' => $photo_name,
+            ]);
+
+            SupportEvent::dispatch($support);
+
+            return response()->json([
+                'status' => 200,
+                'support' => $support,
             ]);
         }
     }

@@ -86,5 +86,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/notification/read-all', [UserController::class, 'notificationReadAll'])->name('notification.read.all');
 
     Route::get('/refferal', [UserController::class, 'refferal'])->name('refferal');
+
+    Route::get('/support', [UserController::class, 'support'])->name('support');
+    Route::post('/support-send-message', [UserController::class, 'supportSendMessage'])->name('support.send-message');
 });
 

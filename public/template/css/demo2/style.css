@@ -24434,9 +24434,9 @@ div.tox .btn-group-lg > .btn-icon-text.tox-button .btn-icon-append,
   }
 }
 
-.chat-wrapper {
+/* .chat-wrapper {
   height: calc(100vh - 60px - 102px);
-}
+} */
 @media (max-width: 991px) {
   .chat-wrapper {
     min-height: 100%;

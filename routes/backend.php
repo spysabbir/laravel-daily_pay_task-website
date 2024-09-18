@@ -139,5 +139,8 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('report_user-view/{id}', [BackendController::class, 'reportUserView'])->name('report_user.view');
     Route::post('report_user-reply', [BackendController::class, 'reportUserReply'])->name('report_user.reply');
 
-    Route::get('live-chat', [BackendController::class, 'liveChat'])->name('live.chat');
+    Route::get('support', [BackendController::class, 'support'])->name('support');
+    Route::get('/get-user-chat/{userId}', [BackendController::class, 'getUserChat'])->name('get.user.support.list');
+    Route::post('/support-send-message-reply/{userId}', [BackendController::class, 'supportSendMessageReply'])->name('support.send-message.reply');
+
 });

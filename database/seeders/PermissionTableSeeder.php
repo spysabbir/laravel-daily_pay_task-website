@@ -145,6 +145,9 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'ReportUserMenu', 'group_name' => 'ReportUserManagement', 'guard_name' => 'web'],
             ['name' => 'report_user.pending', 'group_name' => 'ReportUserManagement', 'guard_name' => 'web'],
             ['name' => 'report_user.resolved', 'group_name' => 'ReportUserManagement', 'guard_name' => 'web'],
+
+            ['name' => 'SupportMenu', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
+            ['name' => 'support', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
         ]);
 
         $this->command->info('Permissions added successfully.');

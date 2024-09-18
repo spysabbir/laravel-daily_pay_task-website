@@ -149,12 +149,12 @@
             @endcan
         @endcan
 
-        {{-- @can('LiveChatMenu') --}}
-            {{-- @can('live.chat') --}}
+        {{-- @can('SupportMenu') --}}
+            {{-- @can('support') --}}
             <li class="nav-item">
-                <a href="{{ route('backend.live.chat') }}" class="nav-link">
+                <a href="{{ route('backend.support') }}" class="nav-link">
                     <i class="link-icon" data-feather="message-circle"></i>
-                    <span class="link-title">Live Chat</span>
+                    <span class="link-title">Support</span>
                 </a>
             </li>
             {{-- @endcan --}}
@@ -485,6 +485,13 @@
             <a href="{{ route('report_list') }}" class="nav-link">
                 <i class="link-icon" data-feather="file-text"></i>
                 <span class="link-title">Report List</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('support') }}" class="nav-link">
+                <i class="link-icon" data-feather="message-circle"></i>
+                <span class="link-title">Support</span>
             </a>
         </li>
     @endif

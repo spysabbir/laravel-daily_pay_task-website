@@ -3,15 +3,19 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Deposit;
 use App\Models\Report;
 use App\Models\ReportReply;
-use App\Models\Verification;
+use App\Models\Support;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Notifications\ReportReplyNotification;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use App\Events\SupportEvent;
+
 
 class BackendController extends Controller
 {
@@ -374,9 +378,70 @@ class BackendController extends Controller
         }
     }
 
-    public function liveChat()
+    public function support()
     {
         $users = User::where('user_type', 'Frontend')->where('status', 'Active')->get();
-        return view('backend.live_chat.index', compact('users'));
+        $supportUserIds = Support::select('sender_id')->groupBy('sender_id')->get();
+        $supportUsers = User::whereIn('id', $supportUserIds)->where('user_type', 'Frontend')->where('status', 'Active')->get();
+        return view('backend.support.index', compact('users', 'supportUsers'));
+    }
+
+    public function getUserChat($userId)
+    {
+        $user = User::find($userId);
+        $messages = Support::where('sender_id', $userId)->orWhere('receiver_id', $userId)->orderBy('created_at', 'asc')->get();
+
+        // Format the response for the front-end
+        $formattedMessages = $messages->map(function ($message) use ($user) {
+            return [
+                'text' => $message->message,
+                'time' => $message->created_at->format('g:i A'),
+                'profile_photo' => asset('uploads/profile_photo/' . $user->profile_photo),
+                'sender_type' => $message->sender_id == auth()->id() ? 'me' : 'friend',
+            ];
+        });
+
+        return response()->json([
+            'name' => $user->name,
+            'profile_photo' => asset('uploads/profile_photo/' . $user->profile_photo),
+            'role' => 'User', // If the role is available
+            'messages' => $formattedMessages
+        ]);
+    }
+
+    public function supportSendMessageReply(Request $request, $userId){
+        $validator = Validator::make($request->all(), [
+            'message' => 'required|string|max:5000',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            $photo_name = null;
+            if ($request->file('photo')) {
+                $manager = new ImageManager(new Driver());
+                $photo_name = Auth::id()."-support_photo_".date('YmdHis').".".$request->file('photo')->getClientOriginalExtension();
+                $image = $manager->read($request->file('photo'));
+                $image->toJpeg(80)->save(base_path("public/uploads/support_photo/").$photo_name);
+            }
+
+            $support = Support::create([
+                'sender_id' => Auth::id(),
+                'receiver_id' => $userId,
+                'message' => $request->message,
+                'photo' => $photo_name,
+            ]);
+
+            SupportEvent::dispatch($support);
+
+            return response()->json([
+                'status' => 200,
+                'support' => $support,
+            ]);
+        }
     }
 }
