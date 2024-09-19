@@ -386,10 +386,16 @@ class BackendController extends Controller
         return view('backend.support.index', compact('users', 'supportUsers'));
     }
 
-    public function getUserChat($userId)
+    public function getSupportUsers($userId)
     {
         $user = User::find($userId);
         $messages = Support::where('sender_id', $userId)->orWhere('receiver_id', $userId)->orderBy('created_at', 'asc')->get();
+
+        // Update the status of the messages to read
+        $messages->where('receiver_id', Auth::id())->where('status', 'Unread')->each(function ($message) {
+            $message->status = 'Read';
+            $message->save();
+        });
 
         // Format the response for the front-end
         $formattedMessages = $messages->map(function ($message) use ($user) {
@@ -436,6 +442,11 @@ class BackendController extends Controller
                 'photo' => $photo_name,
             ]);
 
+            Support::where('receiver_id', Auth::id())->where('status', 'Unread')->each(function ($message) {
+                $message->status = 'Read';
+                $message->save();
+            });
+
             SupportEvent::dispatch($support);
 
             return response()->json([
@@ -443,5 +454,17 @@ class BackendController extends Controller
                 'support' => $support,
             ]);
         }
+    }
+
+    public function getLatestSupportUsers()
+    {
+        $supportUserIds = Support::select('sender_id')->groupBy('sender_id')->get();
+        $supportUsers = User::whereIn('id', $supportUserIds)->where('user_type', 'Frontend')->where('status', 'Active')->get();// Get users who have support messages
+        foreach ($supportUsers as $user) {
+            $user->message = Support::where('sender_id', $user->id)->latest()->first()->message;
+            $user->send_at = Support::where('sender_id', $user->id)->latest()->first()->created_at->format('g:i A');
+            $user->support_count = Support::where('sender_id', $user->id)->where('status', 'Unread')->count();
+        }
+        return response()->json(['supportUsers' => $supportUsers]);
     }
 }

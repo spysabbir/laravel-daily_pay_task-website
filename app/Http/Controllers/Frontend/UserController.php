@@ -1021,7 +1021,12 @@ class UserController extends Controller
     }
 
     public function support(){
-        $supports = Support::where('sender_id', Auth::id())->orWhere('receiver_id', Auth::id())->orderBy('created_at', 'desc')->get();
+        $supports = Support::where('sender_id', Auth::id())->orWhere('receiver_id', Auth::id())->get();
+
+        Support::where('receiver_id', Auth::id())->where('status', 'Unread')->each(function ($message) {
+            $message->status = 'Read';
+            $message->save();
+        });
 
         return view('frontend.support.index' , compact('supports'));
     }
@@ -1052,6 +1057,11 @@ class UserController extends Controller
                 'message' => $request->message,
                 'photo' => $photo_name,
             ]);
+
+            Support::where('receiver_id', Auth::id())->where('status', 'Unread')->each(function ($message) {
+                $message->status = 'Read';
+                $message->save();
+            });
 
             SupportEvent::dispatch($support);
 

@@ -21,6 +21,9 @@
                                         </figure>
                                         <div>
                                             <h6>{{ Auth::user()->name }}</h6>
+                                            <p class="text-muted tx-13">
+                                                Id: {{ Auth::user()->id }}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -40,19 +43,30 @@
                                 <ul class="nav nav-tabs nav-fill mt-3" role="tablist">
                                     <li class="nav-item">
                                         <a class="nav-link active" id="chats-tab" data-bs-toggle="tab" data-bs-target="#chats" role="tab" aria-controls="chats" aria-selected="true">
-                                            <i data-feather="message-square"></i> Supports
+                                            <div class="d-flex flex-row flex-lg-column flex-xl-row align-items-center justify-content-center">
+                                                <i data-feather="message-square" class="icon-sm me-sm-2 me-lg-0 me-xl-2 mb-md-1 mb-xl-0"></i>
+                                                <p class="d-none d-sm-block">Supports</p>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts" role="tab" aria-controls="contacts" aria-selected="false">
+                                        <div class="d-flex flex-row flex-lg-column flex-xl-row align-items-center justify-content-center">
+                                            <i data-feather="users" class="icon-sm me-sm-2 me-lg-0 me-xl-2 mb-md-1 mb-xl-0"></i>
+                                            <p class="d-none d-sm-block">User</p>
+                                        </div>
                                         </a>
                                     </li>
                                 </ul>
 
                                 <div class="tab-content mt-3">
                                     <div class="tab-pane fade show active" id="chats" role="tabpanel">
-                                        <p class="text-muted mb-1">Recent Supports</p>
+                                        <p class="text-muted mb-1 text-center border">Recent Supports</p>
                                         <ul class="list-unstyled chat-list px-1">
                                             @foreach ($supportUsers as $user)
                                                 @php
                                                     $support = App\Models\Support::where('sender_id', $user->id)->latest()->first();
-                                                    $supportsCount = App\Models\Support::where('sender_id', $user->id)->count();
+                                                    $supportsCount = App\Models\Support::where('sender_id', $user->id)->where('status', 'Unread')->count();
                                                 @endphp
                                                 <li class="chat-item">
                                                     <a href="javascript:;" class="d-flex align-items-center select-user" data-id="{{ $user->id }}">
@@ -65,10 +79,39 @@
                                                                 <p class="text-body fw-bolder">{{ $user->name }}</p>
                                                                 <p class="text-muted">{{ $support->message ?? 'No messages yet' }}</p>
                                                             </div>
-                                                            <div class="badge bg-primary ms-auto">{{ $supportsCount }}</div>
+                                                            <div class="d-flex flex-column align-items-end">
+                                                                <p class="text-muted tx-13 mb-1">{{ $support->created_at->diffForHumans() }}</p>
+                                                                <div class="badge rounded-pill bg-primary ms-auto">{{ $supportsCount }}</div>
+                                                            </div>
                                                         </div>
                                                     </a>
                                                 </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="contacts" role="tabpanel" aria-labelledby="contacts-tab">
+                                        <p class="text-muted mb-1 text-center border">All User</p>
+                                        <ul class="list-unstyled chat-list px-1">
+                                            @foreach ($users as $user)
+                                            <li class="chat-item pe-1">
+                                                <a href="javascript:;" class="d-flex align-items-center select-user" data-id="{{ $user->id }}">
+                                                    <figure class="mb-0 me-2">
+                                                        <img src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" class="img-xs rounded-circle" alt="user">
+                                                        <div class="status offline"></div>
+                                                    </figure>
+                                                    <div class="d-flex align-items-center justify-content-between flex-grow-1 border-bottom">
+                                                        <div>
+                                                            <p class="text-body">{{ $user->name }}</p>
+                                                            <div class="d-flex align-items-center">
+                                                                <p class="text-muted tx-13">Front-end Developer</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex align-items-end text-body">
+                                                            <i data-feather="message-square" class="icon-md text-primary me-2"></i>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -78,25 +121,32 @@
                     </div>
 
                     <!-- Main Chat Area -->
-                    <div class="col-lg-8 chat-content">
+                    <div class="col-lg-8 chat-content d-none">
+                        <!-- User ID -->
+                        <input type="hidden" id="userId" value="">
+                        <!-- Chat Header -->
                         <div class="chat-header border-bottom pb-2">
-                            <div class="d-flex align-items-center">
-                                <figure class="mb-0 me-2">
-                                    <img src="" class="img-sm rounded-circle" alt="User Image">
-                                </figure>
-                                <div>
-                                    <p class="user-name"></p>
-                                    <p class="text-muted tx-13"></p>
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <i data-feather="corner-up-left" id="backToChatList" class="icon-lg me-2 ms-n2 text-muted d-lg-none"></i>
+                                    <figure class="mb-0 me-2">
+                                        <img src="{{ asset('uploads/profile_photo/default_profile_photo.png') }}" class="img-sm rounded-circle" alt="User Image">
+                                        <div class="status online"></div>
+                                        <div class="status online"></div>
+                                    </figure>
+                                    <div>
+                                        <p class="user-name">User</p>
+                                        <p class="text-muted tx-13">User</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
+                        <!-- Chat Body -->
                         <div class="chat-body">
                             <ul class="messages">
                                 <!-- Messages will load here -->
                             </ul>
                         </div>
-
                         <!-- Message Form -->
                         <div class="chat-footer">
                             <form enctype="multipart/form-data" id="sendMessageReplyForm">
@@ -123,6 +173,11 @@
                                 <span class="text-danger error-text message_error"></span>
                                 <span class="text-danger error-text photo_error"></span>
                             </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 empty-chat">
+                        <div class="alert alert-info text-center" role="alert">
+                            <strong>Choose a user to start chat</strong>
                         </div>
                     </div>
                 </div>
@@ -152,58 +207,20 @@
         }
     });
 
-    // AJAX: Send message
-    $('#sendMessageReplyForm').submit(function(e) {
-        e.preventDefault();
-        let formData = new FormData(this);
-        let userId = 2; // Replace with dynamic user ID as needed
-        let url = "{{ route('backend.support.send-message.reply', ':id') }}".replace(':id', userId);
-
-        $.ajax({
-            url: url,
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            beforeSend: function() {
-                $('span.error-text').text('');
-            },
-            success: function(response) {
-                if (response.status === 400) {
-                    $.each(response.errors, function(prefix, val) {
-                        $('span.' + prefix + '_error').text(val[0]);
-                    });
-                } else {
-                    const messageHtml = `
-                        <li class="message-item me">
-                            <img src="{{ asset('uploads/profile_photo') }}/${response.support.sender_profile}" class="img-xs rounded-circle" alt="avatar">
-                            <div class="content">
-                                <div class="message">
-                                    <div class="bubble">
-                                        <p>${response.support.message}</p>
-                                        ${response.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${response.support.photo}" style="max-width: 100px;">` : ''}
-                                    </div>
-                                    <span>${new Date(response.support.created_at).toLocaleString()}</span>
-                                </div>
-                            </div>
-                        </li>`;
-
-                    $('.messages').append(messageHtml);
-
-                    // Clear form
-                    $('textarea[name="message"]').val('');
-                    $('#fileInput').val('');
-                    $('#imagePreviewContainer').hide();
-                    $('#imagePreview').attr('src', '');
-                }
-            }
-        });
-    });
-
-    // Load User's Chat
-    $('.select-user').on('click', function() {
+    // Use event delegation to handle click on dynamically loaded .select-user
+    $(document).on('click', '.select-user', function() {
         const userId = $(this).data('id');
-        const url = "{{ route('backend.get.user.support.list', ':id') }}".replace(':id', userId);
+        $('#userId').val(userId);
+
+        if (userId) {
+            $('.chat-content').removeClass('d-none');
+            $('.empty-chat').addClass('d-none');
+        } else {
+            $('.chat-content').addClass('d-none');
+            $('.empty-chat').removeClass('d-none');
+        }
+
+        const url = "{{ route('backend.get.support.users', ':id') }}".replace(':id', userId);
 
         $.ajax({
             url: url,
@@ -236,26 +253,124 @@
         });
     });
 
+    // AJAX: Send message
+    $('#sendMessageReplyForm').submit(function(e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        let userId = $('#userId').val();
+        let url = "{{ route('backend.support.send-message.reply', ':id') }}".replace(':id', userId);
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+                $('span.error-text').text('');
+            },
+            success: function(response) {
+                if (response.status === 400) {
+                    $.each(response.errors, function(prefix, val) {
+                        $('span.' + prefix + '_error').text(val[0]);
+                    });
+                } else {
+                    var profile_photo = "{{ Auth::user()->profile_photo }}";
+                    const messageHtml = `
+                        <li class="message-item me">
+                            <img src="{{ asset('uploads/profile_photo') }}/${profile_photo}" class="img-xs rounded-circle" alt="avatar">
+                            <div class="content">
+                                <div class="message">
+                                    <div class="bubble">
+                                        <p>${response.support.message}</p>
+                                        ${response.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${response.support.photo}" style="max-width: 100px;">` : ''}
+                                    </div>
+                                    <span>${new Date(response.support.created_at).toLocaleString()}</span>
+                                </div>
+                            </div>
+                        </li>`;
+
+                    $('.messages').append(messageHtml);
+
+                    // Clear form
+                    $('textarea[name="message"]').val('');
+                    $('#fileInput').val('');
+                    $('#imagePreviewContainer').hide();
+                    $('#imagePreview').attr('src', '');
+
+                    // Scroll to bottom
+                    $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 1000);
+
+                    // Refresh recent support list
+                    loadRecentSupports();
+                }
+            }
+        });
+    });
+
     // Listen for real-time messages with Echo
-    window.Echo.channel('support')
+    window.onload = () => {
+        window.Echo.channel('support')
         .listen('SupportEvent', function(data) {
-            if (data.support.receiver_id === 2) { // Replace 2 with dynamic user ID
-                const messageHtml = `
-                    <li class="message-item">
-                        <img src="{{ asset('uploads/profile_photo') }}/${data.support.sender_profile}" class="img-xs rounded-circle" alt="avatar">
+            if (data.support.receiver_id === {{ Auth::user()->id }}) {
+                $('.messages').append(`
+                    <li class="message-item friend">
+                        <img src="{{ asset('uploads/profile_photo') }}/${data.support.receiver_photo}" class="img-xs rounded-circle" alt="avatar">
                         <div class="content">
                             <div class="message">
                                 <div class="bubble">
-                                    <p>${data.support.message}</p>
-                                    ${data.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" style="max-width: 100px;">` : ''}
+                                    <p class='mb-2'>${data.support.message}</p>
+                                    ${data.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : ''}
                                 </div>
-                                <span>${new Date(data.support.created_at).toLocaleString()}</span>
+                                <span>${data.support.created_at}</span>
                             </div>
                         </div>
-                    </li>`;
+                    </li>
+                `);
 
-                $('.messages').append(messageHtml);
+                // Scroll to bottom
+                $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 1000);
+
+                // Refresh recent support list
+                loadRecentSupports();
             }
         });
+    };
+
+    // Function to load recent supports
+    function loadRecentSupports() {
+        $.ajax({
+            url: "{{ route('backend.get.latest.support.users') }}",
+            method: 'GET',
+            success: function(response) {
+                const supportList = $('#chats .chat-list');
+                supportList.empty(); // Clear existing list
+                response.supportUsers.forEach(function(user) {
+                    console.log(user);
+
+                    const supportItem = `
+                        <li class="chat-item">
+                            <a href="javascript:;" class="d-flex align-items-center select-user" data-id="${user.id}">
+                                <figure class="mb-0 me-2">
+                                    <img src="{{ asset('uploads/profile_photo') }}/${user.profile_photo}" class="img-xs rounded-circle" alt="user">
+                                    <div class="status online"></div>
+                                </figure>
+                                <div class="d-flex justify-content-between flex-grow-1 border-bottom">
+                                    <div>
+                                        <p class="text-body fw-bolder">${user.name}</p>
+                                        <p class="text-muted">${user.message}</p>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-end">
+                                        <p class="text-muted tx-13 mb-1">${user.send_at}</p>
+                                        <div class="badge rounded-pill bg-primary ms-auto">${user.support_count}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>`;
+                    supportList.append(supportItem);
+                });
+            }
+        });
+    }
 </script>
 @endsection

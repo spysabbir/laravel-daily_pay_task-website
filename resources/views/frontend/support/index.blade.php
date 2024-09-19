@@ -4,8 +4,8 @@
 @section('title', 'Support')
 
 @section('content')
-<div class="row chat-wrapper">
-    <div class="col-md-12 grid-margin stretch-card">
+<div class="row chat-wrapper justify-content-center">
+    <div class="col-md-8 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="chat-content">
@@ -27,9 +27,9 @@
                     </div>
                     <div class="chat-body">
                         <ul class="messages" id="chatBox">
-                            @foreach ($supports as $support)
+                            @forelse ($supports as $support)
                             @if ($support->sender_id  === Auth::user()->id)
-                            <li class="message-item me">
+                            <li class="message-item friend">
                                 <img src="{{ asset('uploads/profile_photo') }}/{{ $support->sender->profile_photo }}" class="img-xs rounded-circle" alt="avatar">
                                 <div class="content">
                                     <div class="message">
@@ -41,9 +41,8 @@
                                 </div>
                             </li>
                             @endif
-
                             @if ($support->receiver_id  === Auth::user()->id)
-                            <li class="message-item friend">
+                            <li class="message-item me">
                                 <img src="{{ asset('uploads/profile_photo') }}/{{ $support->receiver->profile_photo }}" class="img-xs rounded-circle" alt="avatar">
                                 <div class="content">
                                     <div class="message">
@@ -55,7 +54,11 @@
                                 </div>
                             </li>
                             @endif
-                            @endforeach
+                            @empty
+                                <div class="alert alert-primary text-center" id="noMessage">
+                                    <strong>No message found!</strong>
+                                </div>
+                            @endforelse
                         </ul>
                     </div>
                     <div class="chat-footer border-top pt-2">
@@ -80,8 +83,10 @@
                                     </button>
                                 </div>
                             </div>
-                            <span class="text-danger error-text message_error"></span>
-                            <span class="text-danger error-text photo_error"></span>
+                            <div class="mt-2 text-center">
+                                <span class="text-danger error-text message_error"></span>
+                                <span class="text-danger error-text photo_error"></span>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -133,13 +138,14 @@
                         $('span.'+prefix+'_error').text(val[0]);
                     })
                 } else {
+                    $('#noMessage').addClass('d-none');
                     var profile_photo = '{{ Auth::user()->profile_photo }}';
                     var created_at = new Date(response.support.created_at).toLocaleString();
                     var support_photo = response.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${response.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : '';
 
                     if (response.support.sender_id === {{ Auth::user()->id }}) {
                         $('#chatBox').append(`
-                            <li class="message-item me">
+                            <li class="message-item friend">
                                 <img src="{{ asset('uploads/profile_photo') }}/${profile_photo}" class="img-xs rounded-circle" alt="avatar">
                                 <div class="content">
                                     <div class="message">
@@ -158,6 +164,9 @@
                     $('#fileInput').val('');
                     $('#imagePreview').attr('src', '');
                     $('#imagePreviewContainer').hide();
+
+                    // Scroll to the bottom of the chatBox
+                    $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 1000);
                 }
             },
         });
@@ -166,24 +175,27 @@
     // Listen for new messages using Echo
     window.onload = () => {
         window.Echo.channel('support')
-            .listen('SupportEvent', function(data) {
-                if (data.support.receiver_id === {{ Auth::user()->id }}) {
-                    $('#chatBox').append(`
-                        <li class="message-item friend">
-                            <img src="{{ asset('uploads/profile_photo') }}/${data.support.receiver_photo}" class="img-xs rounded-circle" alt="avatar">
-                            <div class="content">
-                                <div class="message">
-                                    <div class="bubble">
-                                        <p class='mb-2'>${data.support.message}</p>
-                                        ${data.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : ''}
-                                    </div>
-                                    <span>${data.support.created_at}</span>
+        .listen('SupportEvent', function(data) {
+            if (data.support.receiver_id === {{ Auth::user()->id }}) {
+                $('#chatBox').append(`
+                    <li class="message-item me">
+                        <img src="{{ asset('uploads/profile_photo') }}/${data.support.receiver_photo}" class="img-xs rounded-circle" alt="avatar">
+                        <div class="content">
+                            <div class="message">
+                                <div class="bubble">
+                                    <p class='mb-2'>${data.support.message}</p>
+                                    ${data.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : ''}
                                 </div>
+                                <span>${data.support.created_at}</span>
                             </div>
-                        </li>
-                    `);
-                }
-            });
+                        </div>
+                    </li>
+                `);
+            }
+
+            // Scroll to the bottom of the chatBox
+            $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 1000);
+        });
     }
 </script>
 @endsection

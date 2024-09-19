@@ -140,7 +140,8 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::post('report_user-reply', [BackendController::class, 'reportUserReply'])->name('report_user.reply');
 
     Route::get('support', [BackendController::class, 'support'])->name('support');
-    Route::get('/get-user-chat/{userId}', [BackendController::class, 'getUserChat'])->name('get.user.support.list');
+    Route::get('/get/support/users/{userId}', [BackendController::class, 'getSupportUsers'])->name('get.support.users');
+    Route::get('/get/latest/support/users', [BackendController::class, 'getLatestSupportUsers'])->name('get.latest.support.users');
     Route::post('/support-send-message-reply/{userId}', [BackendController::class, 'supportSendMessageReply'])->name('support.send-message.reply');
 
 });
