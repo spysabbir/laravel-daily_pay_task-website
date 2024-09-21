@@ -3,13 +3,21 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Subscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Category;
+use App\Models\JobPost;
 
 class FrontendController extends Controller
 {
     public function index()
     {
-        return view('frontend/index');
+        $popularJobPostCategories = Category::where('status', 'Active')->limit(8)->get();
+
+        $latestJobPosts = JobPost::where('status', 'Running')->orderBy('id', 'desc')->limit(6)->get();
+
+        return view('frontend/index', compact('popularJobPostCategories', 'latestJobPosts'));
     }
 
     public function aboutUs()
@@ -50,5 +58,29 @@ class FrontendController extends Controller
     public function liveChat()
     {
         return view('frontend/live-chat');
+    }
+
+    public function subscribe(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:subscribers,email|regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/',
+        ],
+        [
+            'email.regex' => 'The email must follow the format " ****@****.*** ".',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            Subscriber::create([
+                'email' => $request->email,
+            ]);
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
     }
 }

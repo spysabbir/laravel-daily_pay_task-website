@@ -160,7 +160,7 @@
             <!-- Menu For Mobile Device -->
             <div class="mobile-nav">
                 <a href="{{ route('index') }}" class="logo">
-                    <img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="logo">
+                    <img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="{{ config('app.name') }} logo">
                 </a>
             </div>
 
@@ -169,24 +169,24 @@
                 <div class="container">
                     <nav class="navbar navbar-expand-lg navbar-light">
                         <a class="navbar-brand" href="{{ route('index') }}">
-                            <img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="logo">
+                            <img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="{{ config('app.name') }} logo">
                         </a>
                         <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
                             <ul class="navbar-nav m-auto">
                                 <li class="nav-item">
-                                    <a href="{{ route('index') }}" class="nav-link">Home</a>
+                                    <a href="{{ route('index') }}" class="nav-link {{ Route::currentRouteName() == 'index' ? 'active' : '' }}">Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('about.us') }}" class="nav-link">About</a>
+                                    <a href="{{ route('about.us') }}" class="nav-link {{ Route::currentRouteName() == 'about.us' ? 'active' : '' }}">About Us</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('contact.us') }}" class="nav-link">Contact Us</a>
+                                    <a href="{{ route('contact.us') }}" class="nav-link {{ Route::currentRouteName() == 'contact.us' ? 'active' : '' }}">Contact Us</a>
                                 </li>
                             </ul>
 
                             <div class="other-option">
                                 @auth()
-                                    <a href="{{ route('dashboard') }}" class="signin-btn">Dashboard</a>
+                                    <a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}" class="signin-btn">Dashboard</a>
                                 @else
                                 <a href="{{ route('register') }}" class="signup-btn">Register</a>
                                 <a href="{{ route('login') }}" class="signin-btn">Login</a>
@@ -230,20 +230,20 @@
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <div class="section-title">
-                            <h2>Get New Job Notifications</h2>
-                            <p>Subscribe & get all related jobs notification</p>
+                            <h2>Get The Notification</h2>
+                            <p>Subscribe to our newsletter to get all the latest news, updates and offers.</p>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <form class="newsletter-form" data-toggle="validator">
-                            <input type="email" class="form-control" placeholder="Enter your email" name="EMAIL" required autocomplete="off">
-
-                            <button class="default-btn sub-btn" type="submit">
-                                Subscribe
-                            </button>
-
-                            <div id="validator-newsletter" class="form-result"></div>
+                        <div class="alert alert-success mb-3" style="display: none;" id="subscribed">
+                            <strong>Success!</strong> You have successfully subscribed.
+                        </div>
+                        <form class="newsletter-form" id="subscribeForm" action="{{ route('subscribe') }}" method="POST">
+                            @csrf
+                            <input type="email" class="form-control" placeholder="Enter your email" name="email">
+                            <span class="text-danger error-text email_error"></span>
+                            <button class="default-btn sub-btn" type="submit">Subscribe</button>
                         </form>
                     </div>
                 </div>
@@ -259,11 +259,13 @@
 						<div class="footer-widget">
 							<div class="footer-logo">
 								<a href="{{ route('index') }}">
-									<img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="logo">
+									<img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="{{ config('app.name') }} logo">
 								</a>
 							</div>
 
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed eiusmod tempor incididunt ut labore et dolore magna. Sed eiusmod tempor incididunt ut.</p>
+							<p>
+                                {{ get_site_settings('site_description') }}
+                            </p>
 
 							<div class="footer-social">
 								<a href="{{ get_site_settings('site_facebook_url') }}" target="_blank"><i class='bx bxl-facebook'></i></a>
@@ -389,6 +391,7 @@
 				</div>
 			</div>
 		</footer>
+
         <div class="copyright-text text-center">
             <p>© {{ date('Y') }} <a href="{{ route('index') }}">{{ config('app.name') }}</a>. All Rights Reserved.</p>
         </div>

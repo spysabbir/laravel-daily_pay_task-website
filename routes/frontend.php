@@ -16,6 +16,8 @@ Route::get('/privacy-policy', [FrontendController::class, 'privacyPolicy'])->nam
 Route::get('/terms-and-conditions', [FrontendController::class, 'termsAndConditions'])->name('terms.and.conditions');
 Route::get('/live-chat', [FrontendController::class, 'liveChat'])->name('live.chat');
 
+Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('subscribe');
+
 Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile/edit', [UserController::class, 'profileEdit'])->name('profile.edit');

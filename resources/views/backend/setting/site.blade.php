@@ -37,6 +37,20 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="site_tagline" class="form-label">Site Tagline</label>
+                            <input type="text" class="form-control" id="site_tagline" name="site_tagline" value="{{ old('site_tagline', $siteSetting->site_tagline) }}" placeholder="Site Tagline">
+                            @error('site_tagline')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="site_description" class="form-label">Site Description</label>
+                            <textarea class="form-control" id="site_description" name="site_description" rows="4" placeholder="Site Description">{{ old('site_description', $siteSetting->site_description) }}</textarea>
+                            @error('site_description')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="site_url" class="form-label">Site Url</label>
                             <input type="text" class="form-control" id="site_url" name="site_url" value="{{ old('site_url', $siteSetting->site_url) }}" placeholder="Site Url">
                             @error('site_url')

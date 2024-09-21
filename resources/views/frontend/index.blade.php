@@ -9,12 +9,11 @@
         <div class="d-table-cell">
             <div class="container">
                 <div class="banner-text">
-                    <span>Find Jobs, Employment & Career Opportunities</span>
-                    <h1>Job Board for Hiring Creative Designers</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse.</p>
-
+                    <span>Wellcome to {{ config('app.name') }}</span>
+                    <h1>{{ get_site_settings('site_tagline') }}</h1>
+                    <p>{{ get_site_settings('site_description') }}</p>
                     <div class="theme-btn">
-                        <a href="{{ route('live.chat') }}" class="default-btn">Live Chat</a>
+                        <a href="{{ route('contact.us') }}" class="default-btn">Contact Us</a>
                     </div>
                 </div>
             </div>
@@ -35,7 +34,7 @@
                 <div class="why-choose-text pt-100 pb-70">
                     <div class="section-title">
                         <h2>Why You Choose {{ config('app.name') }}?</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolorei.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus</p>
                     </div>
 
                     <div class="row">
@@ -95,89 +94,22 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>Popular Jobs Category</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices.</p>
         </div>
 
         <div class="row">
+            @foreach ($popularJobPostCategories as $category)
+            @php
+                $job_count = \App\Models\JobPost::where('category_id', $category->id)->where('status', 'Running')->count();
+            @endphp
             <div class="col-lg-3 col-sm-6">
-                <a href="job-list.html">
-                    <div class="category-item">
-                        <i class="flaticon-wrench-and-screwdriver-in-cross"></i>
-                        <h3>Construction</h3>
-                        <p>6 new Job</p>
-                    </div>
-                </a>
+                <div class="category-item">
+                    <i class="flaticon-wrench-and-screwdriver-in-cross"></i>
+                    <h3>{{ $category->name }}</h3>
+                    <p>{{ $job_count }} new Job</p>
+                </div>
             </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <a href="job-list.html">
-                    <div class="category-item">
-                        <i class="flaticon-accounting"></i>
-                        <h3>Finance</h3>
-                        <p>8 new Job</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <a href="job-list.html">
-                    <div class="category-item">
-                        <i class="flaticon-heart"></i>
-                        <h3>Healthcare</h3>
-                        <p>9 new Job</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <a href="job-list.html">
-                    <div class="category-item">
-                        <i class="flaticon-computer-1"></i>
-                        <h3>Graphic Design</h3>
-                        <p>6 new Job</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <a href="job-list.html">
-                    <div class="category-item">
-                        <i class="flaticon-research"></i>
-                        <h3>Banking Jobs</h3>
-                        <p>5 new Job</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <a href="job-list.html">
-                    <div class="category-item">
-                        <i class="flaticon-worker"></i>
-                        <h3>Automotive</h3>
-                        <p>12 new Job</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <a href="job-list.html">
-                    <div class="category-item">
-                        <i class="flaticon-graduation-cap"></i>
-                        <h3>Education</h3>
-                        <p>15 new Job</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <a href="job-list.html">
-                    <div class="category-item">
-                        <i class="flaticon-computer"></i>
-                        <h3>Data Analysis</h3>
-                        <p>5 new Job</p>
-                    </div>
-                </a>
-            </div>
+            @endforeach
         </div>
     </div>
 </div>
@@ -192,6 +124,7 @@
         </div>
 
         <div class="row">
+            @foreach ($latestJobPosts as $item)
             <div class="col-sm-6">
                 <div class="job-card">
                     <div class="row align-items-center">
@@ -241,251 +174,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-sm-6">
-                <div class="job-card">
-                    <div class="row align-items-center">
-                        <div class="col-lg-3">
-                            <div class="thumb-img">
-                                <a href="job-details.html">
-                                    <img src="{{ asset('frontend') }}/img/company-logo/2.png" alt="company logo">
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <div class="job-info">
-                                <h3>
-                                    <a href="job-details.html">Data Entry</a>
-                                </h3>
-                                <ul>
-                                    <li>Via <a href="#">Techno Inc.</a></li>
-                                    <li>
-                                        <i class='bx bx-location-plus'></i>
-                                        Street 40/A, London
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-filter-alt' ></i>
-                                        Data Entry
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-briefcase' ></i>
-                                        Freelance
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3">
-                            <div class="job-save">
-                                <a href="#">
-                                    <i class='bx bx-heart'></i>
-                                </a>
-                                <p>
-                                    <i class='bx bx-stopwatch' ></i>
-                                    3 Hr Ago
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6">
-                <div class="job-card">
-                    <div class="row align-items-center">
-                        <div class="col-lg-3">
-                            <div class="thumb-img">
-                                <a href="job-details.html">
-                                    <img src="{{ asset('frontend') }}/img/company-logo/3.png" alt="company logo">
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <div class="job-info">
-                                <h3>
-                                    <a href="job-details.html">Graphic Designer</a>
-                                </h3>
-                                <ul>
-                                    <li>Via <a href="#">Devon Design</a></li>
-                                    <li>
-                                        <i class='bx bx-location-plus'></i>
-                                        West Sight, USA
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-filter-alt' ></i>
-                                        Graphics
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-briefcase' ></i>
-                                        Freelance
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3">
-                            <div class="job-save">
-                                <a href="#">
-                                    <i class='bx bx-heart'></i>
-                                </a>
-                                <p>
-                                    <i class='bx bx-stopwatch' ></i>
-                                    4 Hr Ago
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6">
-                <div class="job-card">
-                    <div class="row align-items-center">
-                        <div class="col-lg-3">
-                            <div class="thumb-img">
-                                <a href="job-details.html">
-                                    <img src="{{ asset('frontend') }}/img/company-logo/4.png" alt="company logo">
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <div class="job-info">
-                                <h3>
-                                    <a href="job-details.html">Web Developer</a>
-                                </h3>
-                                <ul>
-                                    <li>Via <a href="#">MegaNews</a></li>
-                                    <li>
-                                        <i class='bx bx-location-plus'></i>
-                                        San Francisco, California
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-filter-alt' ></i>
-                                        Development
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-briefcase' ></i>
-                                        Freelance
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3">
-                            <div class="job-save">
-                                <a href="#">
-                                    <i class='bx bx-heart'></i>
-                                </a>
-                                <p>
-                                    <i class='bx bx-stopwatch' ></i>
-                                    5 Hr Ago
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6">
-                <div class="job-card">
-                    <div class="row align-items-center">
-                        <div class="col-lg-3">
-                            <div class="thumb-img">
-                                <a href="job-details.html">
-                                    <img src="{{ asset('frontend') }}/img/company-logo/5.png" alt="company logo">
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <div class="job-info">
-                                <h3>
-                                    <a href="job-details.html">Digital Marketor</a>
-                                </h3>
-                                <ul>
-                                    <li>Via <a href="#">AB Marketer LTD</a></li>
-                                    <li>
-                                        <i class='bx bx-location-plus'></i>
-                                        Wellesley Rd, London
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-filter-alt' ></i>
-                                        Marketing
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-briefcase' ></i>
-                                        Freelance
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3">
-                            <div class="job-save">
-                                <a href="#">
-                                    <i class='bx bx-heart'></i>
-                                </a>
-                                <p>
-                                    <i class='bx bx-stopwatch' ></i>
-                                    6 Hr Ago
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6">
-                <div class="job-card">
-                    <div class="row align-items-center">
-                        <div class="col-lg-3">
-                            <div class="thumb-img">
-                                <a href="job-details.html">
-                                    <img src="{{ asset('frontend') }}/img/company-logo/6.png" alt="company logo">
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <div class="job-info">
-                                <h3>
-                                    <a href="job-details.html">UI/UX Designer</a>
-                                </h3>
-                                <ul>
-                                    <li>Via <a href="#">Design Hunter</a></li>
-                                    <li>
-                                        <i class='bx bx-location-plus'></i>
-                                        Zoo Rd, London
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-filter-alt' ></i>
-                                        Accountancy
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-briefcase' ></i>
-                                        Freelance
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3">
-                            <div class="job-save">
-                                <a href="#">
-                                    <i class='bx bx-heart'></i>
-                                </a>
-                                <p>
-                                    <i class='bx bx-stopwatch' ></i>
-                                    8 Hr Ago
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -583,23 +272,6 @@
     </div>
 </section>
 <!-- Companies Section End -->
-
-<!-- Process Video Start -->
-<div class="video-section ptb-100">
-    <div class="d-table">
-        <div class="d-table-cell">
-            <div class="container">
-                <div class="video-text text-center">
-                    <h2>Our Working Process</h2>
-                    <a href="https://www.youtube.com/watch?v=LXb3EKWsInQ" class="popup-youtube">
-                        <i class='bx bx-play'></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Process Video End -->
 
 <!-- Job Info Section Start -->
 <div class="job-info-two pt-100 pb-70">

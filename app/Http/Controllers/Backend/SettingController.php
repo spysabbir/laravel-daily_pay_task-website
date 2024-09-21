@@ -106,6 +106,8 @@ class SettingController extends Controller
             'site_logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'site_favicon' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'site_name' => 'required',
+            'site_tagline' => 'required',
+            'site_description' => 'required',
             'site_url' => 'required',
             'site_timezone' => 'required',
             'site_currency' => 'required',
@@ -121,6 +123,8 @@ class SettingController extends Controller
 
         $siteSetting->update([
             'site_name' => $request->site_name,
+            'site_tagline' => $request->site_tagline,
+            'site_description' => $request->site_description,
             'site_url' => $request->site_url,
             'site_timezone' => $request->site_timezone,
             'site_currency' => $request->site_currency,

@@ -15,6 +15,8 @@ class SiteSettingTableSeeder extends Seeder
     {
         $setting = [
             'site_name' => 'Daily Earnings',
+            'site_tagline' => 'Daily Earnings is a platform to earn money online. ',
+            'site_description' => 'You can earn money by completing tasks, watching videos, and referring friends.',
             'site_url' => 'http://127.0.0.1:8000',
             'site_timezone' => 'Asia/Dhaka',
             'site_currency' => 'BDT',
