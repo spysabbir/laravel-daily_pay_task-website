@@ -105,6 +105,15 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'faq.restore', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
             ['name' => 'faq.delete', 'group_name' => 'FaqManagement', 'guard_name' => 'web'],
 
+            ['name' => 'TestimonialMenu', 'group_name' => 'TestimonialManagement', 'guard_name' => 'web'],
+            ['name' => 'testimonial.index', 'group_name' => 'TestimonialManagement', 'guard_name' => 'web'],
+            ['name' => 'testimonial.create', 'group_name' => 'TestimonialManagement', 'guard_name' => 'web'],
+            ['name' => 'testimonial.edit', 'group_name' => 'TestimonialManagement', 'guard_name' => 'web'],
+            ['name' => 'testimonial.destroy', 'group_name' => 'TestimonialManagement', 'guard_name' => 'web'],
+            ['name' => 'testimonial.trash', 'group_name' => 'TestimonialManagement', 'guard_name' => 'web'],
+            ['name' => 'testimonial.restore', 'group_name' => 'TestimonialManagement', 'guard_name' => 'web'],
+            ['name' => 'testimonial.delete', 'group_name' => 'TestimonialManagement', 'guard_name' => 'web'],
+
             ['name' => 'VerificationMenu', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
             ['name' => 'verification.request', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],
             ['name' => 'verification.request.show', 'group_name' => 'VerificationManagement', 'guard_name' => 'web'],

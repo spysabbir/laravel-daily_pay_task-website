@@ -13,6 +13,7 @@ use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\SubCategoryController;
+use App\Http\Controllers\Backend\TestimonialController;
 use App\Http\Controllers\Backend\VerificationController;
 use App\Http\Controllers\Backend\WithdrawController;
 use Illuminate\Support\Facades\Route;
@@ -89,6 +90,12 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('faq/restore/{id}', [FaqController::class, 'restore'])->name('faq.restore');
     Route::get('faq/delete/{id}', [FaqController::class, 'delete'])->name('faq.delete');
     Route::get('faq/status/{id}', [FaqController::class, 'status'])->name('faq.status');
+    // Testimonial
+    Route::resource('testimonial', TestimonialController::class);
+    Route::get('testimonial-trash', [TestimonialController::class, 'trash'])->name('testimonial.trash');
+    Route::get('testimonial/restore/{id}', [TestimonialController::class, 'restore'])->name('testimonial.restore');
+    Route::get('testimonial/delete/{id}', [TestimonialController::class, 'delete'])->name('testimonial.delete');
+    Route::get('testimonial/status/{id}', [TestimonialController::class, 'status'])->name('testimonial.status');
     // Verification
     Route::get('verification-request', [VerificationController::class, 'verificationRequest'])->name('verification.request');
     Route::get('verification-request/{id}', [VerificationController::class, 'verificationRequestShow'])->name('verification.request.show');
@@ -138,7 +145,7 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('report_user-resolved', [BackendController::class, 'reportUserResolved'])->name('report_user.resolved');
     Route::get('report_user-view/{id}', [BackendController::class, 'reportUserView'])->name('report_user.view');
     Route::post('report_user-reply', [BackendController::class, 'reportUserReply'])->name('report_user.reply');
-
+    // Support
     Route::get('support', [BackendController::class, 'support'])->name('support');
     Route::get('/get/support/users/{userId}', [BackendController::class, 'getSupportUsers'])->name('get.support.users');
     Route::get('/get/latest/support/users', [BackendController::class, 'getLatestSupportUsers'])->name('get.latest.support.users');

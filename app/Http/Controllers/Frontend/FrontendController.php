@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subscriber;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
@@ -17,7 +18,9 @@ class FrontendController extends Controller
 
         $latestJobPosts = JobPost::where('status', 'Running')->orderBy('id', 'desc')->limit(6)->get();
 
-        return view('frontend/index', compact('popularJobPostCategories', 'latestJobPosts'));
+        $testimonials = Testimonial::where('status', 'Active')->get();
+
+        return view('frontend/index', compact('popularJobPostCategories', 'latestJobPosts', 'testimonials'));
     }
 
     public function aboutUs()

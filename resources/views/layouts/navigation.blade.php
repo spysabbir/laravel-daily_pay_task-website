@@ -149,6 +149,17 @@
             @endcan
         @endcan
 
+        {{-- @can('TestimonialMenu') --}}
+            {{-- @can('testimonial.index') --}}
+            <li class="nav-item">
+                <a href="{{ route('backend.testimonial.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="message-square"></i>
+                    <span class="link-title">Testimonial</span>
+                </a>
+            </li>
+            {{-- @endcan --}}
+        {{-- @endcan --}}
+
         {{-- @can('SupportMenu') --}}
             {{-- @can('support') --}}
             <li class="nav-item">
