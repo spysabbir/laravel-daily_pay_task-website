@@ -8,6 +8,7 @@ use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
+use App\Models\Contact;
 use App\Models\JobPost;
 
 class FrontendController extends Controller
@@ -80,6 +81,39 @@ class FrontendController extends Controller
         }else{
             Subscriber::create([
                 'email' => $request->email,
+            ]);
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
+    }
+    
+    public function contactStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|max:255|email|regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/',
+            'phone' => ['nullable', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ],
+        [
+            'email.regex' => 'The email must follow the format " ****@****.*** ".',
+            'phone.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            Contact::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'subject' => $request->subject,
+                'message' => $request->message,
             ]);
             return response()->json([
                 'status' => 200,

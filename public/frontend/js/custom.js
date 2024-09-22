@@ -82,18 +82,6 @@ jQuery(function ($) {
         }
     })
 
-
-    // Magnific JS
-    $('.popup-youtube').magnificPopup({
-		disableOn: 320,
-		type: 'iframe',
-		mainClass: 'mfp-fade',
-		removalDelay: 160,
-		preloader: false,
-
-		fixedContentPos: false
-    });
-
     // Subscribe form
     $('#subscribeForm').submit(function(event) {
         event.preventDefault();

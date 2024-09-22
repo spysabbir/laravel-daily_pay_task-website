@@ -151,6 +151,10 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('/get/support/users/{userId}', [BackendController::class, 'getSupportUsers'])->name('get.support.users');
     Route::get('/get/latest/support/users', [BackendController::class, 'getLatestSupportUsers'])->name('get.latest.support.users');
     Route::post('/support-send-message-reply/{userId}', [BackendController::class, 'supportSendMessageReply'])->name('support.send-message.reply');
+    // Contact
+    Route::get('contact', [BackendController::class, 'contact'])->name('contact');
+    Route::get('contact-view/{id}', [BackendController::class, 'contactView'])->name('contact.view');
+    Route::get('contact-delete/{id}', [BackendController::class, 'contactDelete'])->name('contact.delete');
     // Subscriber
     Route::get('subscriber', [SubscriberController::class, 'subscriber'])->name('subscriber.index');
     Route::get('subscriber-delete/{id}', [SubscriberController::class, 'subscriberDelete'])->name('subscriber.delete');

@@ -171,6 +171,17 @@
             {{-- @endcan --}}
         {{-- @endcan --}}
 
+        {{-- @can('ContactMenu') --}}
+            {{-- @can('contact') --}}
+            <li class="nav-item">
+                <a href="{{ route('backend.contact') }}" class="nav-link">
+                    <i class="link-icon" data-feather="phone"></i>
+                    <span class="link-title">Contact</span>
+                </a>
+            </li>
+            {{-- @endcan --}}
+        {{-- @endcan --}}
+
         <li class="nav-item nav-category">User</li>
         @can('UserMenu')
             <li class="nav-item">

@@ -57,49 +57,49 @@
     <div class="container">
         <div class="contact-area">
             <h3>Lets' Talk With Us</h3>
-            <form id="contactForm">
+            <div class="alert alert-success mb-3" style="display: none;" id="contactSuccessMessage">
+                <strong>Success!</strong> Your message has been sent successfully.
+            </div>
+            <form id="contactForm" class="contact-form" action="{{ route('contact.store') }}" method="POST">
+                @csrf
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <input type="text" name="name" id="name" class="form-control" required data-error="Please enter your name" placeholder="Your Name">
-                            <div class="help-block with-errors"></div>
+                            <input type="text" name="name" class="form-control" placeholder="Your Name">
+                            <span class="text-danger error-text name_error"></span>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <input type="email" name="email" id="email" class="form-control" required data-error="Please enter your email" placeholder="Your Email">
-                            <div class="help-block with-errors"></div>
+                            <input type="email" name="email" class="form-control" placeholder="Your Email">
+                            <span class="text-danger error-text email_error"></span>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <input type="number" name="number" id="number" class="form-control" required data-error="Please enter your number" placeholder="Phone Number">
-                            <div class="help-block with-errors"></div>
+                            <input type="text" name="phone" class="form-control" placeholder="Your Phone">
+                            <span class="text-danger error-text phone_error"></span>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <input type="text" name="subject" id="subject" class="form-control" required data-error="Please enter your subject" placeholder="Your Subject">
-                            <div class="help-block with-errors"></div>
+                            <input type="text" name="subject" class="form-control" placeholder="Your Subject">
+                            <span class="text-danger error-text subject_error"></span>
                         </div>
                     </div>
 
                     <div class="col-lg-12 col-md-12">
                         <div class="form-group">
-                            <textarea name="message" class="form-control message-field" id="message" cols="30" rows="7" required data-error="Please type your message" placeholder="Write Message"></textarea>
-                            <div class="help-block with-errors"></div>
+                            <textarea name="message" class="form-control message-field" cols="30" rows="7" placeholder="Your Message"></textarea>
+                            <span class="text-danger error-text message_error"></span>
                         </div>
                     </div>
 
                     <div class="col-lg-12 col-md-12 text-center">
-                        <button type="submit" class="default-btn contact-btn">
-                            Send Message
-                        </button>
-                        <div id="msgSubmit" class="h3 alert-text text-center hidden"></div>
-                        <div class="clearfix"></div>
+                        <button type="submit" class="default-btn contact-btn">Send Message</button>
                     </div>
                 </div>
             </form>

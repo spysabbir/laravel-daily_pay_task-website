@@ -17,6 +17,7 @@ Route::get('/terms-and-conditions', [FrontendController::class, 'termsAndConditi
 Route::get('/live-chat', [FrontendController::class, 'liveChat'])->name('live.chat');
 
 Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('subscribe');
+Route::post('/contact-store', [FrontendController::class, 'contactStore'])->name('contact.store');
 
 Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');

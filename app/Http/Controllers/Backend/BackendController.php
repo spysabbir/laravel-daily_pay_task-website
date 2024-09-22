@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Events\SupportEvent;
-
+use App\Models\Contact;
 
 class BackendController extends Controller
 {
@@ -466,5 +466,61 @@ class BackendController extends Controller
             $user->support_count = Support::where('sender_id', $user->id)->where('status', 'Unread')->count();
         }
         return response()->json(['supportUsers' => $supportUsers]);
+    }
+
+    public function contact(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Contact::select('contacts.*');
+
+            $query->orderBy('created_at', 'desc');
+
+            if ($request->status) {
+                $query->where('status', $request->status);
+            }
+
+            $allContact = $query->get();
+
+            return DataTables::of($allContact)
+                ->addIndexColumn()
+                ->editColumn('status', function ($row) {
+                    if ($row->status == 'Read') {
+                        return '<span class="badge text-white bg-success">Read</span>';
+                    } else {
+                        return '<span class="badge text-white bg-danger">Unread</span>';
+                    }
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-info bg-dark">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
+                    ';
+                return $btn;
+                })
+                ->rawColumns(['status', 'created_at', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.contact.index');
+    }
+
+    public function contactView(string $id)
+    {
+        $contact = Contact::where('id', $id)->first();
+        $contact->status = 'Read';
+        $contact->save();
+
+        return view('backend.contact.show', compact('contact'));
+    }
+
+    public function contactDelete(string $id)
+    {
+        $contact = Contact::findOrFail($id);
+        $contact->delete();
     }
 }

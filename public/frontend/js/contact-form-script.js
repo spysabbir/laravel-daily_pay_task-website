@@ -1,1 +1,33 @@
-!function(e){"use strict";function a(){e("#contactForm").removeClass().addClass("shake animated").one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend",function(){e(this).removeClass()})}function t(a,t){if(a)var n="h4 tada animated text-success";else n="h4 text-danger";e("#msgSubmit").removeClass().addClass(n).text(t)}e("#contactForm").validator().on("submit",function(n){var s,i,o,m,r;n.isDefaultPrevented()?(a(),t(!1,"Did you fill in the form properly?")):(n.preventDefault(),s=e("#name").val(),i=e("#email").val(),o=e("#msg_subject").val(),m=e("#phone_number").val(),r=e("#message").val(),e.ajax({type:"POST",url:"assets/php/form-process.php",data:"name="+s+"&email="+i+"&msg_subject="+o+"&phone_number="+m+"&message="+r,success:function(n){"success"==n?(e("#contactForm")[0].reset(),t(!0,"Message Submitted!")):(a(),t(!1,n))}}))})}(jQuery);
+jQuery(function ($) {
+    'use strict';
+
+    // Subscribe form
+    $('#contactForm').submit(function(event) {
+        event.preventDefault();
+        var formData = $(this).serialize();
+        var url = $(this).attr('action');
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            beforeSend:function(){
+                $(document).find('span.error-text').text('');
+            },
+            success: function(response) {
+                if (response.status == 400) {
+                    $.each(response.error, function(prefix, val){
+                        $('span.'+prefix+'_error').text(val[0]);
+                    })
+                }else{
+                    $('#contactForm')[0].reset();
+                    $('#contactSuccessMessage').show();
+                    setTimeout(function(){
+                        $('#contactSuccessMessage').hide();
+                    }, 3000);
+                }
+            }
+        });
+    });
+
+}(jQuery));
