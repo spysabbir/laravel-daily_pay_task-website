@@ -13,6 +13,7 @@ use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\SubCategoryController;
+use App\Http\Controllers\Backend\SubscriberController;
 use App\Http\Controllers\Backend\TestimonialController;
 use App\Http\Controllers\Backend\VerificationController;
 use App\Http\Controllers\Backend\WithdrawController;
@@ -150,5 +151,12 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('/get/support/users/{userId}', [BackendController::class, 'getSupportUsers'])->name('get.support.users');
     Route::get('/get/latest/support/users', [BackendController::class, 'getLatestSupportUsers'])->name('get.latest.support.users');
     Route::post('/support-send-message-reply/{userId}', [BackendController::class, 'supportSendMessageReply'])->name('support.send-message.reply');
+    // Subscriber
+    Route::get('subscriber', [SubscriberController::class, 'subscriber'])->name('subscriber.index');
+    Route::get('subscriber-delete/{id}', [SubscriberController::class, 'subscriberDelete'])->name('subscriber.delete');
+    Route::get('subscriber-newsletter', [SubscriberController::class, 'subscriberNewsletter'])->name('subscriber.newsletter');
+    Route::post('subscriber-newsletter-send', [SubscriberController::class, 'subscriberNewsletterSend'])->name('subscriber.newsletter.send');
+    Route::get('subscriber-newsletter-view/{id}', [SubscriberController::class, 'subscriberNewsletterView'])->name('subscriber.newsletter.view');
+    Route::get('subscriber-newsletter-delete/{id}', [SubscriberController::class, 'subscriberNewsletterDelete'])->name('subscriber.newsletter.delete');
 
 });

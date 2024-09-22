@@ -374,6 +374,30 @@
                 </div>
             </li>
         @endcan
+
+        {{-- @can('SubscriberMenu') --}}
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#SubscriberMenu" role="button" aria-expanded="false" aria-controls="SubscriberMenu">
+                    <i class="link-icon" data-feather="users"></i>
+                    <span class="link-title">Subscriber</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="SubscriberMenu">
+                    <ul class="nav sub-menu">
+                        {{-- @can('subscriber.index') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.subscriber.index') }}" class="nav-link">Subscriber</a>
+                        </li>
+                        {{-- @endcan --}}
+                        {{-- @can('subscriber.newsletter') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.subscriber.newsletter') }}" class="nav-link">Newsletter</a>
+                        </li>
+                        {{-- @endcan --}}
+                    </ul>
+                </div>
+            </li>
+        {{-- @endcan --}}
     @else
         <li class="nav-item nav-category">User</li>
         @if (!Auth::user()->hasVerification('Approved'))
