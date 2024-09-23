@@ -55,31 +55,6 @@
     <!-- End layout styles -->
 
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/toastr/toastr.css" >
-
-    <style>
-        .dataTables_wrapper .dt-buttons button {
-            background-color: #f8f9fa;
-        }
-        .dataTables_wrapper .dt-buttons button:hover {
-            background-color: #f8f9fa;
-        }
-
-
-        .rating-box .stars {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-        .stars i {
-            color: #e6e6e6;
-            font-size: 35px;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        .stars i.active {
-            color: #ff9c1a;
-        }
-    </style>
 </head>
 <body>
 	<div class="main-wrapper">
@@ -99,8 +74,9 @@
                 @include('layouts.navigation')
             </div>
         </nav>
+        <!-- end sidebar -->
 
-        <!-- partial -->
+        <!-- main -->
         <div class="page-wrapper">
 
             <!-- navbar -->
@@ -109,6 +85,14 @@
                     <i data-feather="menu"></i>
                 </a>
                 <div class="navbar-content">
+                    <form class="search-form">
+						<div class="input-group">
+                            <div class="input-group-text">
+                                <i data-feather="search"></i>
+                            </div>
+							<input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
+						</div>
+					</form>
                     @if (auth()->user()->user_type === 'Frontend')
                     <div class="d-flex py-3">
                         <span class="badge bg-primary mt-1 mx-2">
@@ -131,26 +115,40 @@
                                 <i data-feather="mail"></i>
                             </a>
                             <div class="dropdown-menu p-0" aria-labelledby="messageDropdown">
+                                @php
+                                    if (Auth::user()->isFrontendUser()) {
+                                        $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', Auth::user()->id)->get();
+                                    } else {
+                                        $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', 1)->get();
+                                    }
+                                @endphp
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
-                                    <p>9 New Messages</p>
-                                    <a href="javascript:;" class="text-muted">Clear all</a>
+                                    <p>{{ $supports->count() }} New Messages</p>
                                 </div>
                                 <div class="p-1">
-                                <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
-                                    <div class="me-3">
-                                    <img class="wd-30 ht-30 rounded-circle" src="https://via.placeholder.com/30x30" alt="userr">
-                                    </div>
-                                    <div class="d-flex justify-content-between flex-grow-1">
-                                    <div class="me-4">
-                                        <p>Leonardo Payne</p>
-                                        <p class="tx-12 text-muted">Project status</p>
-                                    </div>
-                                    <p class="tx-12 text-muted">2 min ago</p>
-                                    </div>
-                                </a>
+                                    @forelse ($supports as $support)
+                                    <a href="{{ Auth::user()->isFrontendUser() ? route('support') : route('backend.support') }}" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="me-3">
+                                            <img class="wd-30 ht-30 rounded-circle" src="{{ asset('uploads/profile_photo') }}/{{ $support->sender->profile_photo }}" alt="userr">
+                                        </div>
+                                        <div class="d-flex justify-content-between flex-grow-1">
+                                            <div class="me-4">
+                                                <p>{{ $support->message }}</p>
+                                                <p class="tx-12 text-info">{{ $support->photo ? 'Attachment' : '' }}</p>
+                                            </div>
+                                            <p class="tx-12 text-muted">{{ $support->created_at->diffForHumans() }}</p>
+                                        </div>
+                                    </a>
+                                    @empty
+                                    <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="flex-grow-1 me-2">
+                                            <p class="text-center">No new messages</p>
+                                        </div>
+                                    </a>
+                                    @endforelse
                                 </div>
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
-                                    <a href="javascript:;">View all</a>
+                                    <a href="{{ Auth::user()->isFrontendUser() ? route('support') : route('backend.support') }}">View all</a>
                                 </div>
                             </div>
                         </li>
@@ -346,8 +344,9 @@
                     </ul>
                 </div>
             </nav>
-            <!-- partial -->
+            <!-- end navbar -->
 
+            <!-- content -->
             <div class="page-content">
 
                 <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
@@ -361,14 +360,6 @@
                             <i data-feather="calendar" class=" text-primary"></i></span>
                             <input type="text" class="form-control border-primary bg-transparent" disabled>
                         </div>
-                        <button type="button" class="btn btn-outline-primary btn-icon-text me-2 mb-2 mb-md-0">
-                            <i class="btn-icon-prepend" data-feather="printer"></i>
-                            Print Report
-                        </button>
-                        <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
-                            <i class="btn-icon-prepend" data-feather="download-cloud"></i>
-                            Download Report
-                        </button>
                     </div>
                     @else
                     <nav class="page-breadcrumb">
@@ -383,22 +374,24 @@
                 @yield('content')
 
             </div>
+            <!-- end content -->
 
-            <!-- partial:partials/_footer.html -->
+            <!-- footer -->
             <footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
                 <p class="text-muted mb-1 mb-md-0">Copyright © {{ date('Y') }} <a href="{{ config('app.url') }}" target="_blank">{{ config('app.name') }}</a>.</p>
                 <p class="text-muted">Handcrafted With <i class="mb-1 text-primary ms-1 icon-sm" data-feather="heart"></i></p>
             </footer>
-            <!-- partial -->
+            <!-- end footer -->
 
         </div>
+        <!-- end main -->
 	</div>
 
 	<!-- core:js -->
 	<script src="{{ asset('template') }}/vendors/core/core.js"></script>
-	<!-- endinject -->
+    <!-- end core:js -->
 
-	<!-- Plugin js for this page -->
+	<!-- Plugin js for all pages -->
     <script src="{{ asset('template') }}/vendors/chartjs/Chart.min.js"></script>
     <script src="{{ asset('template') }}/vendors/jquery.flot/jquery.flot.js"></script>
     <script src="{{ asset('template') }}/vendors/jquery.flot/jquery.flot.resize.js"></script>
@@ -418,15 +411,14 @@
     <script src="{{ asset('template') }}/vendors/toastr/toastr.min.js"></script>
 
     <script src="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.min.js"></script>
-
-	<!-- End plugin js for this page -->
+	<!-- End plugin js for all pages -->
 
 	<!-- inject:js -->
 	<script src="{{ asset('template') }}/vendors/feather-icons/feather.min.js"></script>
 	<script src="{{ asset('template') }}/js/template.js"></script>
-	<!-- endinject -->
+	<!-- end inject:js -->
 
-	<!-- Custom js for this page -->
+	<!-- Custom js for all pages -->
     <script src="{{ asset('template') }}/js/dashboard-dark.js"></script>
     <script src="{{ asset('template') }}/js/datepicker.js"></script>
 
@@ -437,10 +429,15 @@
 
     <script src="{{ asset('template') }}/js/chat.js"></script>
 
-	<!-- End custom js for this page -->
+    <script src="{{ asset('template') }}/js/chartjs-dark.js"></script>
+    <script src="{{ asset('template') }}/js/apexcharts-dark.js"></script>
+	<!-- End custom js for all page -->
 
+    <!-- Page wise script -->
     @yield('script')
+    <!-- End page wise script -->
 
+    <!-- Toastr -->
     <script>
         $(document).ready(function() {
             @if(Session::has('message'))
@@ -462,5 +459,6 @@
             @endif
         });
     </script>
+    <!-- End Toastr -->
 </body>
 </html>

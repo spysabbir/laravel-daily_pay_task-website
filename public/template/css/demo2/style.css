@@ -25705,3 +25705,27 @@ div.tox .tox-dialog__body {
   width: 100%;
 }
 /*# sourceMappingURL=../maps/demo2/style.css.map */
+
+
+.dataTables_wrapper .dt-buttons button {
+    background-color: #f8f9fa;
+}
+.dataTables_wrapper .dt-buttons button:hover {
+    background-color: #f8f9fa;
+}
+
+
+.rating-box .stars {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+.stars i {
+    color: #e6e6e6;
+    font-size: 35px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.stars i.active {
+    color: #ff9c1a;
+}

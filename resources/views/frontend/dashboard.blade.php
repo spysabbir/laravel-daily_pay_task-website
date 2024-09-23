@@ -15,7 +15,7 @@
     <hr>
     <div class="mb-0">
         <a href="{{ route('verification') }}" class="btn btn-info btn-sm">Status Check</a>
-        <a href="javascript:;" class="btn btn-primary btn-sm">Contact Us</a>
+        <a href="{{ route('support') }}" class="btn btn-primary btn-sm">Contact Us</a>
     </div>
 </div>
 @elseif (Auth::user()->hasVerification('Rejected'))
@@ -30,7 +30,7 @@
     <hr>
     <div class="mb-0">
         <a href="{{ route('verification') }}" class="btn btn-danger btn-sm">Re-Verify</a>
-        <a href="javascript:;" class="btn btn-primary btn-sm">Contact Us</a>
+        <a href="{{ route('support') }}" class="btn btn-primary btn-sm">Contact Us</a>
     </div>
 </div>
 @elseif (Auth::user()->hasVerification('Approved'))
@@ -51,7 +51,7 @@
     <hr>
     <div class="mb-0">
         <a href="{{ route('verification') }}" class="btn btn-warning btn-sm">Verify Now</a>
-        <a href="javascript:;" class="btn btn-primary btn-sm">Contact Us</a>
+        <a href="{{ route('support') }}" class="btn btn-primary btn-sm">Contact Us</a>
     </div>
 </div>
 @endif
@@ -67,7 +67,7 @@
     </p>
 	<hr>
 	<div class="mb-0">
-        <a href="javascript:;" class="btn btn-danger btn-sm">Contact Us</a>
+        <a href="{{ route('support') }}" class="btn btn-danger btn-sm">Contact Us</a>
     </div>
 </div>
 @endif
@@ -83,10 +83,25 @@
     </p>
 	<hr>
 	<div class="mb-0">
-        <a href="javascript:;" class="btn btn-danger btn-sm">Contact Us</a>
+        <a href="{{ route('support') }}" class="btn btn-danger btn-sm">Contact Us</a>
     </div>
 </div>
 @endif
+
+<div class="example mb-5">
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+</div>
+
+<div class="example mb-5">
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar bg-warning" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-12 col-xl-12 stretch-card">
@@ -165,44 +180,34 @@
 </div> <!-- row -->
 
 <div class="row">
-    <div class="col-12 col-xl-12 grid-margin stretch-card">
-        <div class="card overflow-hidden">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-baseline mb-4 mb-md-3">
-                    <h6 class="card-title mb-0">Revenue</h6>
-                </div>
-                <div class="row align-items-start">
-                    <div class="col-md-7">
-                        <p class="text-muted tx-13 mb-3 mb-md-0">Revenue is the income that a business has from its normal business activities, usually from the sale of goods and services to customers.</p>
-                    </div>
-                    <div class="col-md-5 d-flex justify-content-md-end">
-                        <div class="btn-group mb-3 mb-md-0" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-outline-primary">Today</button>
-                            <button type="button" class="btn btn-outline-primary d-none d-md-block">Week</button>
-                            <button type="button" class="btn btn-primary">Month</button>
-                            <button type="button" class="btn btn-outline-primary">Year</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="revenueChart" ></div>
-            </div>
-        </div>
-    </div>
-</div> <!-- row -->
-
-<div class="row">
-    <div class="col-lg-7 col-xl-8 grid-margin stretch-card">
+    <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-baseline mb-2">
-                    <h6 class="card-title mb-0">Monthly sales</h6>
-                </div>
-                <p class="text-muted">Sales are activities related to selling or the number of goods or services sold in a given time period.</p>
-                <div id="monthlySalesChart"></div>
+                <h6 class="card-title">Pie chart</h6>
+                <div id="apexPie"></div>
             </div>
         </div>
     </div>
-    <div class="col-lg-5 col-xl-4 grid-margin stretch-card">
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Line chart</h6>
+                <div id="apexLine"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Pie chart</h6>
+                <canvas id="chartjsPie"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline">
@@ -229,32 +234,23 @@
             </div>
         </div>
     </div>
-</div> <!-- row -->
+</div>
 
 <div class="row">
-    <div class="col-lg-5 col-xl-4 grid-margin grid-margin-xl-0 stretch-card">
+    <div class="col-lg-7 col-xl-8 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
-                    <h6 class="card-title mb-0">Inbox</h6>
+                    <h6 class="card-title mb-0">Monthly sales</h6>
                 </div>
-                <div class="d-flex flex-column">
-                    <a href="javascript:;" class="d-flex align-items-center border-bottom pb-3">
-                        <div class="me-3">
-                            <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35" alt="user">
-                        </div>
-                        <div class="w-100">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="text-body mb-2">Leonardo Payne</h6>
-                                <p class="text-muted tx-12">12.30 PM</p>
-                            </div>
-                            <p class="text-muted tx-13">Hey! there I'm available...</p>
-                        </div>
-                    </a>
-                </div>
+                <p class="text-muted">Sales are activities related to selling or the number of goods or services sold in a given time period.</p>
+                <div id="monthlySalesChart"></div>
             </div>
         </div>
     </div>
+</div> <!-- row -->
+
+<div class="row">
     <div class="col-lg-7 col-xl-8 stretch-card">
         <div class="card">
             <div class="card-body">
@@ -274,55 +270,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>NobleUI jQuery</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td><span class="badge bg-danger">Released</span></td>
-                                <td>Leonardo Payne</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>NobleUI Angular</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td><span class="badge bg-success">Review</span></td>
-                                <td>Carl Henson</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>NobleUI ReactJs</td>
-                                <td>01/05/2022</td>
-                                <td>10/09/2022</td>
-                                <td><span class="badge bg-info">Pending</span></td>
-                                <td>Jensen Combs</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>NobleUI VueJs</td>
-                                <td>01/01/2022</td>
-                                <td>31/11/2022</td>
-                                <td><span class="badge bg-warning">Work in Progress</span>
-                                </td>
-                                <td>Amiah Burton</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>NobleUI Laravel</td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td><span class="badge bg-danger">Coming soon</span></td>
-                                <td>Yaretzi Mayo</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>NobleUI NodeJs</td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td><span class="badge bg-primary">Coming soon</span></td>
-                                <td>Carl Henson</td>
-                            </tr>
                             <tr>
                                 <td class="border-bottom">3</td>
                                 <td class="border-bottom">NobleUI EmberJs</td>
