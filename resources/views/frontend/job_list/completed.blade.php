@@ -19,7 +19,7 @@
                                 <th>Sl No</th>
                                 <th>Job ID</th>
                                 <th>Title</th>
-                                <th>Need Worker</th>
+                                <th>Proof Submitted</th>
                                 <th>Proof Status</th>
                                 <th>Total Charge</th>
                                 <th>Charge Status</th>
@@ -75,7 +75,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
-                { data: 'need_worker', name: 'need_worker' },
+                { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
                 { data: 'total_charge', name: 'total_charge' },
                 { data: 'charge_status', name: 'charge_status' },

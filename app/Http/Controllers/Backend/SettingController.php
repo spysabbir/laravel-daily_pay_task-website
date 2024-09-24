@@ -105,26 +105,41 @@ class SettingController extends Controller
         $request->validate([
             'site_logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'site_favicon' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-            'site_name' => 'required',
-            'site_tagline' => 'required',
-            'site_description' => 'required',
-            'site_url' => 'required',
-            'site_timezone' => 'required',
-            'site_currency' => 'required',
-            'site_currency_symbol' => 'required',
-            'site_main_email' => 'required',
-            'site_support_email' => 'required',
-            'site_main_phone' => 'required',
-            'site_support_phone' => 'required',
-            'site_address' => 'required',
+            'site_name' => 'required|string|max:255',
+            'site_url' => 'required|string|max:255|url',
+            'site_tagline' => 'required|string|max:255',
+            'site_description' => 'required|string',
+            'site_timezone' => 'required|in:UTC,Asia/Dhaka',
+            'site_currency' => 'required|in:USD,BDT',
+            'site_currency_symbol' => 'required|in:$,৳',
+            'site_main_email' => 'required|email|max:255|regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{3}$/',
+            'site_support_email' => 'required|email|max:255|regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{3}$/',
+            'site_main_phone' => ['required', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+            'site_support_phone' => ['required', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+            'site_address' => 'required|string|max:255',
+            'site_notice' => 'nullable|string',
+            'site_facebook_url' => 'nullable|url',
+            'site_twitter_url' => 'nullable|url',
+            'site_instagram_url' => 'nullable|url',
+            'site_linkedin_url' => 'nullable|url',
+            'site_pinterest_url' => 'nullable|url',
+            'site_youtube_url' => 'nullable|url',
+            'site_whatsapp_url' => 'nullable|url',
+            'site_telegram_url' => 'nullable|url',
+            'site_tiktok_url' => 'nullable|url',
+        ], [
+            'site_main_email.regex' => 'The email must follow the format "****@****.***".',
+            'site_support_email.regex' => 'The email must follow the format "****@****.***".',
+            'site_main_phone.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
+            'site_support_phone.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
         ]);
 
         $siteSetting = SiteSetting::first();
 
         $siteSetting->update([
             'site_name' => $request->site_name,
-            'site_tagline' => $request->site_tagline,
-            'site_description' => $request->site_description,
+            // 'site_tagline' => $request->site_tagline,
+            // 'site_description' => $request->site_description,
             'site_url' => $request->site_url,
             'site_timezone' => $request->site_timezone,
             'site_currency' => $request->site_currency,
@@ -285,6 +300,14 @@ class SettingController extends Controller
             'mail_encryption' => 'required',
             'mail_from_address' => 'required',
         ]);
+
+        $this->changeEnv("MAIL_MAILER", "'$request->mail_mailer'");
+        $this->changeEnv("MAIL_HOST", "'$request->mail_host'");
+        $this->changeEnv("MAIL_PORT", "'$request->mail_port'");
+        $this->changeEnv("MAIL_USERNAME", "'$request->mail_username'");
+        $this->changeEnv("MAIL_PASSWORD", "'$request->mail_password'");
+        $this->changeEnv("MAIL_ENCRYPTION", "'$request->mail_encryption'");
+        $this->changeEnv("MAIL_FROM_ADDRESS", "'$request->mail_from_address'");
 
         $mailSetting = MailSetting::first();
         $mailSetting->update([

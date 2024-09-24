@@ -94,19 +94,13 @@
 						</div>
 					</form>
                     @if (auth()->user()->user_type === 'Frontend')
-                    <div class="d-flex py-3">
-                        <span class="badge bg-primary mt-1 mx-2">
-                            Deposit Balance
-                            <strong class="badge bg-light text-dark">
-                                {{ get_site_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}
-                            </strong>
-                        </span>
-                        <span class="badge bg-success mt-1 mx-2">
-                            Withdraw Balance
-                            <strong class="badge bg-light text-dark">
-                                {{ get_site_settings('site_currency_symbol') }} {{ auth::user()->withdraw_balance }}
-                            </strong>
-                        </span>
+                    <div class="d-xl-flex py-xl-3">
+                        <div class="badge bg-primary mx-1">
+                            <h5 class="">Deposit Balance: <strong class="bg-dark px-1 rounded">{{ get_site_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}</strong></h5>
+                        </div>
+                        <div class="badge bg-success mx-1">
+                            <h5 class="">Withdraw Balance: <strong class="bg-dark px-1 rounded">{{ get_site_settings('site_currency_symbol') }} {{ auth::user()->withdraw_balance }}</strong></h5>
+                        </div>
                     </div>
                     @endif
                     <ul class="navbar-nav">

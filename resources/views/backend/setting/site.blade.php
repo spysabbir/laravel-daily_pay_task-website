@@ -37,27 +37,27 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="site_tagline" class="form-label">Site Tagline</label>
-                            <input type="text" class="form-control" id="site_tagline" name="site_tagline" value="{{ old('site_tagline', $siteSetting->site_tagline) }}" placeholder="Site Tagline">
-                            @error('site_tagline')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                        </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="site_description" class="form-label">Site Description</label>
-                            <textarea class="form-control" id="site_description" name="site_description" rows="4" placeholder="Site Description">{{ old('site_description', $siteSetting->site_description) }}</textarea>
-                            @error('site_description')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                        </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="site_url" class="form-label">Site Url</label>
                             <input type="text" class="form-control" id="site_url" name="site_url" value="{{ old('site_url', $siteSetting->site_url) }}" placeholder="Site Url">
                             @error('site_url')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-2 col-sm-6 mb-3">
+                        <div class="col-lg-6 mb-3">
+                            <label for="site_tagline" class="form-label">Site Tagline</label>
+                            <input type="text" class="form-control" id="site_tagline" name="site_tagline" value="{{ old('site_tagline', $siteSetting->site_tagline) }}" placeholder="Site Tagline">
+                            @error('site_tagline')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-12 mb-3">
+                            <label for="site_description" class="form-label">Site Description</label>
+                            <textarea class="form-control" id="site_description" name="site_description" rows="4" placeholder="Site Description">{{ old('site_description', $siteSetting->site_description) }}</textarea>
+                            @error('site_description')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_timezone" class="form-label">Time Zone</label>
                             <select class="form-select" name="site_timezone" id="site_timezone">
                                 <option value="">Select Time Zone</option>
@@ -68,7 +68,7 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="col-lg-2 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_currency" class="form-label">Site Currency</label>
                             <select class="form-select" name="site_currency" id="site_currency">
                                 <option value="">Select Currency</option>
@@ -79,7 +79,7 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-2 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_currency_symbol" class="form-label">Site Currency Symbol</label>
                             <select class="form-select" name="site_currency_symbol" id="site_currency_symbol">
                                 <option value="">Select Currency Symbol</option>
@@ -120,7 +120,7 @@
                         </div><!-- Col -->
                         <div class="col-lg-12 col-sm-6 mb-3">
                             <label for="site_address" class="form-label">Site Address</label>
-                            <textarea class="form-control" id="site_address" name="site_address" rows="4" placeholder="Site Address">{{ old('site_address', $siteSetting->site_address) }}</textarea>
+                            <input type="text" class="form-control" id="site_address" name="site_address" value="{{ old('site_address', $siteSetting->site_address) }}" placeholder="Site Address">
                         </div><!-- Col -->
                         <div class="col-lg-12 col-sm-6 mb-3">
                             <label for="site_notice" class="form-label">Site Notice</label>

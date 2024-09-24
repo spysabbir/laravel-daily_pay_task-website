@@ -6,12 +6,15 @@
 <div class="row">
     <div class="col-md-8 grid-margin stretch-card">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title">Work Details</h3>
-                <div class="d-flex">
-                    <h4 class="mx-2">Work Compleated : <strong class="badge bg-primary">{{ $proofCount }} / {{ $workDetails->need_worker }}</strong></h4>
-                    <h4 class="mx-2">You Eern : <strong class="badge bg-primary">{{ $workDetails->worker_charge }} {{ get_site_settings('site_currency_symbol') }}</strong></h4>
+                <div class="d-flex align-items-center">
+                    <h4>Proof Submitted: </h4>
+                    <div class="progress mx-1" style="width: 250px">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $proofCount == 0 ? 'primary' : 'success' }}" role="progressbar" style="width: {{ $proofCount == 0 ? 100 : round(($proofCount / $workDetails->need_worker) * 100, 2) }}%" aria-valuenow="{{ $proofCount }}" aria-valuemin="0" aria-valuemax="{{ $workDetails->need_worker }}">{{ $proofCount }}/{{ $workDetails->need_worker }}</div>
+                    </div>
                 </div>
+                <h4 class="mx-2">You Eern: <strong class="badge bg-primary">{{ $workDetails->worker_charge }} {{ get_site_settings('site_currency_symbol') }}</strong></h4>
             </div>
             <div class="card-body">
                 <h3 class="mb-3">Title: <span class="text-info">{{ $workDetails->title }}</span></h3>

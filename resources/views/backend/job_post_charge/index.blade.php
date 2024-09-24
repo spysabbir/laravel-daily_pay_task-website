@@ -47,12 +47,18 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="min_charges" class="form-label">Working Min Charge</label>
-                                            <input type="text" class="form-control" id="min_charges" name="working_min_charge" placeholder="Working Min Charge">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="min_charges" name="working_min_charge" placeholder="Working Min Charge">
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
                                             <span class="text-danger error-text working_min_charge_error"></span>
                                         </div>
                                         <div class="mb-3">
                                             <label for="max_charges" class="form-label">Working Max Charge</label>
-                                            <input type="text" class="form-control" id="max_charges" name="working_max_charge" placeholder="Working Max Charge">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="max_charges" name="working_max_charge" placeholder="Working Max Charge">
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
                                             <span class="text-danger error-text working_max_charge_error"></span>
                                         </div>
                                     </div>
@@ -170,12 +176,18 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="working_min_charge" class="form-label">Working Min Charge</label>
-                                                    <input type="text" class="form-control" id="working_min_charge" name="working_min_charge" placeholder="Working Min Charge">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="working_min_charge" name="working_min_charge" placeholder="Working Min Charge">
+                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                    </div>
                                                     <span class="text-danger error-text update_working_min_charge_error"></span>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="working_max_charge" class="form-label">Working Max Charge</label>
-                                                    <input type="text" class="form-control" id="working_max_charge" name="working_max_charge" placeholder="Working Max Charge">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="working_max_charge" name="working_max_charge" placeholder="Working Max Charge">
+                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                    </div>
                                                     <span class="text-danger error-text update_working_max_charge_error"></span>
                                                 </div>
                                             </div>

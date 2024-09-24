@@ -22545,9 +22545,6 @@ body {
     width: 100%;
     left: 0;
   }
-  .navbar .navbar-content {
-    width: calc(100% - 70px - 1px);
-  }
 }
 .navbar .sidebar-toggler {
   height: 100%;
@@ -22617,7 +22614,7 @@ body {
 }
 @media (max-width: 991px) {
   .navbar .navbar-content {
-    width: calc(100% - 70px - 1px);
+    width: calc(90% - 70px - 1px);
   }
 }
 .navbar .navbar-content .navbar-nav {

@@ -16,12 +16,32 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Events\SupportEvent;
 use App\Models\Contact;
+use App\Models\JobPost;
+use App\Models\Withdraw;
 
 class BackendController extends Controller
 {
     public function dashboard()
     {
-        return view('backend.dashboard');
+        $totalUsers = User::where('user_type', 'Frontend')->count();
+        $activeUsers = User::where('user_type', 'Frontend')->where('status', 'Active')->count();
+
+        $totalJobPost = JobPost::count();
+        $runningJobPost = JobPost::where('status', 'Running')->count();
+
+        $totalDeposit = Withdraw::where('status', 'Approved')->sum('amount');
+        $totalWithdraw = Withdraw::where('status', 'Approved')->sum('amount');
+
+        $totalData = [
+            'totalUsers' => $totalUsers,
+            'totalJobPost' => $totalJobPost,
+            'activeUsers' => $activeUsers,
+            'runningJobPost' => $runningJobPost,
+            'totalDeposit' => $totalDeposit,
+            'totalWithdraw' => $totalWithdraw,
+        ];
+
+        return view('backend.dashboard' , compact('totalData'));
     }
 
     public function profileEdit(Request $request)

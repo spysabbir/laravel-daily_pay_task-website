@@ -438,8 +438,14 @@ class UserController extends Controller
                         ';
                     })
                     ->editColumn('need_worker', function ($row) {
-                        $proofCount = JobProof::where('job_post_id', $row->id)->count();
-                        return $proofCount.' / '.$row->need_worker;
+                        $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
+                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->need_worker) * 100, 2) : 100;
+                        $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                        return '
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->need_worker . '">' . $proofSubmitted . '/' . $row->need_worker . '</div>
+                        </div>
+                        ';
                     })
                     ->editColumn('worker_charge', function ($row) {
                         return $row->worker_charge . ' ' . get_site_settings('site_currency_symbol');
@@ -452,7 +458,7 @@ class UserController extends Controller
                         ';
                         return $action;
                     })
-                    ->rawColumns(['title', 'action'])
+                    ->rawColumns(['title', 'need_worker', 'action'])
                     ->make(true);
             }
             $categories = Category::where('status', 'Active')->get();

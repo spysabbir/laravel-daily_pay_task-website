@@ -10,15 +10,15 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-baseline">
-                        <h6 class="card-title mb-0">New Customers</h6>
+                        <h6 class="card-title mb-0">Total User</h6>
                     </div>
                     <div class="row">
                         <div class="col-6 col-md-12 col-xl-5">
-                            <h3 class="mb-2">3,897</h3>
+                            <h3 class="mb-2">{{ $totalData['totalUsers'] }}</h3>
                             <div class="d-flex align-items-baseline">
                                 <p class="text-success">
-                                    <span>+3.3%</span>
-                                    <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    <span>{{ $totalData['activeUsers'] }}</span>
+                                    <i data-feather="arrow-up" class="icon-sm mb-1"></i>Active
                                 </p>
                             </div>
                         </div>
@@ -33,15 +33,15 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-baseline">
-                        <h6 class="card-title mb-0">New Orders</h6>
+                        <h6 class="card-title mb-0">Totat Job Post</h6>
                     </div>
                     <div class="row">
                         <div class="col-6 col-md-12 col-xl-5">
-                            <h3 class="mb-2">35,084</h3>
+                            <h3 class="mb-2">{{ $totalData['totalJobPost'] }}</h3>
                             <div class="d-flex align-items-baseline">
                                 <p class="text-danger">
-                                    <span>-2.8%</span>
-                                    <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                    <span>{{ $totalData['runningJobPost'] }}</span>
+                                    <i data-feather="arrow-down" class="icon-sm mb-1"></i>Running
                                 </p>
                             </div>
                         </div>
@@ -80,6 +80,25 @@
 </div> <!-- row -->
 
 <div class="row">
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Pie chart</h6>
+                <div id="apexPie"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Line chart</h6>
+                <div id="apexLine"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-12 col-xl-12 grid-margin stretch-card">
         <div class="card overflow-hidden">
             <div class="card-body">
@@ -89,14 +108,6 @@
                 <div class="row align-items-start">
                     <div class="col-md-7">
                         <p class="text-muted tx-13 mb-3 mb-md-0">Revenue is the income that a business has from its normal business activities, usually from the sale of goods and services to customers.</p>
-                    </div>
-                    <div class="col-md-5 d-flex justify-content-md-end">
-                        <div class="btn-group mb-3 mb-md-0" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-outline-primary">Today</button>
-                            <button type="button" class="btn btn-outline-primary d-none d-md-block">Week</button>
-                            <button type="button" class="btn btn-primary">Month</button>
-                            <button type="button" class="btn btn-outline-primary">Year</button>
-                        </div>
                     </div>
                 </div>
                 <div id="revenueChart" ></div>
@@ -127,14 +138,14 @@
                 <div class="row mb-3">
                     <div class="col-6 d-flex justify-content-end">
                         <div>
-                            <label class="d-flex align-items-center justify-content-end tx-10 text-uppercase fw-bolder">Total storage <span class="p-1 ms-1 rounded-circle bg-secondary"></span></label>
-                            <h5 class="fw-bolder mb-0 text-end">8TB</h5>
+                            <label class="d-flex align-items-center justify-content-end tx-10 text-uppercase fw-bolder">Total Deposit <span class="p-1 ms-1 rounded-circle bg-secondary"></span></label>
+                            <h5 class="fw-bolder mb-0 text-end">{{ $totalData['totalDeposit'] }}</h5>
                         </div>
                     </div>
                     <div class="col-6">
                         <div>
-                            <label class="d-flex align-items-center tx-10 text-uppercase fw-bolder"><span class="p-1 me-1 rounded-circle bg-primary"></span> Used storage</label>
-                            <h5 class="fw-bolder mb-0">~5TB</h5>
+                            <label class="d-flex align-items-center tx-10 text-uppercase fw-bolder"><span class="p-1 me-1 rounded-circle bg-primary"></span> Total Withdraw</label>
+                            <h5 class="fw-bolder mb-0">{{ $totalData['totalWithdraw'] }}</h5>
                         </div>
                     </div>
                 </div>
@@ -174,7 +185,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
-                    <h6 class="card-title mb-0">Projects</h6>
+                    <h6 class="card-title mb-0">Recent Job Post</h6>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
@@ -189,55 +200,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>NobleUI jQuery</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td><span class="badge bg-danger">Released</span></td>
-                                <td>Leonardo Payne</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>NobleUI Angular</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td><span class="badge bg-success">Review</span></td>
-                                <td>Carl Henson</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>NobleUI ReactJs</td>
-                                <td>01/05/2022</td>
-                                <td>10/09/2022</td>
-                                <td><span class="badge bg-info">Pending</span></td>
-                                <td>Jensen Combs</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>NobleUI VueJs</td>
-                                <td>01/01/2022</td>
-                                <td>31/11/2022</td>
-                                <td><span class="badge bg-warning">Work in Progress</span>
-                                </td>
-                                <td>Amiah Burton</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>NobleUI Laravel</td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td><span class="badge bg-danger">Coming soon</span></td>
-                                <td>Yaretzi Mayo</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>NobleUI NodeJs</td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td><span class="badge bg-primary">Coming soon</span></td>
-                                <td>Carl Henson</td>
-                            </tr>
                             <tr>
                                 <td class="border-bottom">3</td>
                                 <td class="border-bottom">NobleUI EmberJs</td>

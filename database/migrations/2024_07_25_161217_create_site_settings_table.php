@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('site_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('site_name')->nullable();
+            $table->string('site_name');
             $table->string('site_tagline')->nullable();
             $table->text('site_description')->nullable();
-            $table->string('site_url')->nullable();
-            $table->string('site_timezone')->nullable();
-            $table->string('site_currency')->nullable();
-            $table->string('site_currency_symbol')->nullable();
+            $table->string('site_url');
+            $table->enum('site_timezone', ['UTC', 'Asia/Dhaka']);
+            $table->enum('site_currency', ['USD', 'BDT'])->nullable();
+            $table->enum('site_currency_symbol', ['$', '৳'])->nullable();
             $table->string('site_logo')->nullable();
             $table->string('site_favicon')->nullable();
             $table->string('site_main_email')->nullable();
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('site_main_phone')->nullable();
             $table->string('site_support_phone')->nullable();
             $table->string('site_address')->nullable();
-            $table->longText('site_notice')->nullable();
+            $table->text('site_notice')->nullable();
             $table->string('site_facebook_url')->nullable();
             $table->string('site_twitter_url')->nullable();
             $table->string('site_instagram_url')->nullable();

@@ -20,7 +20,6 @@
                                 <th>Job ID</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
-                                <th>Proof Check</th>
                                 <th>Cancellation Reason</th>
                                 <th>Canceled At</th>
                                 <th>Action</th>
@@ -76,7 +75,6 @@
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'proof_check', name: 'proof_check' },
                 { data: 'cancellation_reason', name: 'cancellation_reason' },
                 { data: 'canceled_at', name: 'canceled_at' },
                 { data: 'action', name: 'action' },
