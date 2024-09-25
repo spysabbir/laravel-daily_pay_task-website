@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
 use App\Models\Contact;
 use App\Models\JobPost;
+use App\Models\User;
+use App\Models\Withdraw;
 
 class FrontendController extends Controller
 {
@@ -21,7 +23,14 @@ class FrontendController extends Controller
 
         $testimonials = Testimonial::where('status', 'Active')->get();
 
-        return view('frontend/index', compact('popularJobPostCategories', 'latestJobPosts', 'testimonials'));
+        $topBuyers = JobPost::where('status', 'Running')->orderBy('id', 'desc')->limit(4)->get();
+
+        $totalJobPosts = JobPost::count();
+        $runningJobPosts = JobPost::where('status', 'Running')->count();
+        $totalUser = User::count();
+        $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
+
+        return view('frontend/index', compact('popularJobPostCategories', 'latestJobPosts', 'testimonials', 'topBuyers', 'totalJobPosts', 'runningJobPosts', 'totalUser', 'totalWithdrawal'));
     }
 
     public function aboutUs()
@@ -87,7 +96,7 @@ class FrontendController extends Controller
             ]);
         }
     }
-    
+
     public function contactStore(Request $request)
     {
         $validator = Validator::make($request->all(), [

@@ -158,6 +158,9 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'SupportMenu', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
             ['name' => 'support', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
 
+            ['name' => 'ContactMenu', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
+            ['name' => 'support', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
+
             ['name' => 'SubscriberMenu', 'group_name' => 'SubscriberManagement', 'guard_name' => 'web'],
             ['name' => 'subscriber.index', 'group_name' => 'SubscriberManagement', 'guard_name' => 'web'],
             ['name' => 'subscriber.delete', 'group_name' => 'SubscriberManagement', 'guard_name' => 'web'],

@@ -82,7 +82,7 @@
             </div>
 
             <div class="col-lg-4 col-sm-8 offset-sm-2 offset-lg-0">
-                <img src="{{ asset('frontend') }}/img/choose.png" alt="why choose image">
+                <img src="{{ asset('frontend') }}/img/choose.jpg" alt="why choose image">
             </div>
         </div>
     </div>
@@ -124,36 +124,39 @@
         </div>
 
         <div class="row">
-            @foreach ($latestJobPosts as $item)
+            @foreach ($latestJobPosts as $jobPost)
             <div class="col-sm-6">
                 <div class="job-card">
                     <div class="row align-items-center">
                         <div class="col-lg-3">
+                            @if ($jobPost->thumbnail)
                             <div class="thumb-img">
-                                <a href="job-details.html">
-                                    <img src="{{ asset('frontend') }}/img/company-logo/1.png" alt="company logo">
-                                </a>
+                                <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $jobPost->thumbnail }}" alt="Thumbnail">
                             </div>
+                            @else
+                            <div class="thumb-img">
+                                <img src="{{ asset('frontend/img/job_post_default.jpg') }}" alt="Thumbnail">
+                            </div>
+                            @endif
                         </div>
 
                         <div class="col-lg-6">
                             <div class="job-info">
                                 <h3>
-                                    <a href="job-details.html">Post-Room Operate</a>
+                                    {{ $jobPost->title }}
                                 </h3>
                                 <ul>
-                                    <li>Via <a href="#">Tourt Design LTD</a></li>
-                                    <li>
-                                        <i class='bx bx-location-plus'></i>
-                                        Wellesley Rd, London
-                                    </li>
-                                    <li>
-                                        <i class='bx bx-filter-alt' ></i>
-                                        Accountancy
-                                    </li>
                                     <li>
                                         <i class='bx bx-briefcase' ></i>
-                                        Freelance
+                                        <strong>Category: {{ $jobPost->category->name }}</strong>
+                                    </li>
+                                    <li>
+                                        <i class='bx bx-male-female'></i>
+                                        <strong>Worker Needed: {{ $jobPost->need_worker }}</strong>
+                                    </li>
+                                    <li>
+                                        <i class='bx bx-calendar' ></i>
+                                        <strong>Approved At: {{ date('d M, Y', strtotime($jobPost->approved_at)) }}</strong>
                                     </li>
                                 </ul>
                             </div>
@@ -161,14 +164,20 @@
 
                         <div class="col-lg-3">
                             <div class="job-save">
-                                <span>Full Time</span>
-                                <a href="#">
-                                    <i class='bx bx-heart'></i>
-                                </a>
-                                <p>
-                                    <i class='bx bx-stopwatch' ></i>
-                                    1 Hr Ago
-                                </p>
+                                <span>
+                                    <strong class="text-success">
+                                        Worker Eern:
+                                        <br>
+                                        {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->worker_charge }}
+                                    </strong>
+                                </span>
+                                <span>
+                                    <strong>
+                                        Running:
+                                        <br>
+                                        {{ $jobPost->running_day }} Days
+                                    </strong>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -184,90 +193,30 @@
 <section class="company-section pt-100 pb-70">
     <div class="container">
         <div class="section-title text-center">
-            <h2>Top Companies</h2>
+            <h2>Top Buyer</h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
         </div>
 
         <div class="row">
+            @foreach ($topBuyers as $buyer)
             <div class="col-lg-3 col-sm-6">
                 <div class="company-card">
                     <div class="company-logo">
-                        <a href="job-grid.html">
-                            <img src="{{ asset('frontend') }}/img/top-company/1.png" alt="company logo">
-                        </a>
+                        <img src="{{ asset('uploads/profile_photo') }}/{{ $buyer->user->profile_photo }}" alt="User Profile" style="width: 80px; height: 80px">
                     </div>
                     <div class="company-text">
-                        <h3>Trophy  & Sans</h3>
+                        <h3>{{ $buyer->user->name }}</h3>
                         <p>
-                            <i class='bx bx-location-plus'></i>
-                            Green Lanes, London
+                            <i class='bx bx-calendar'></i>
+                            Join: {{ date('d M, Y', strtotime($buyer->user->created_at)) }}
                         </p>
-                        <a href="job-grid.html" class="company-btn">
-                            25 Open Position
-                        </a>
+                        <span class="company-btn">
+                            0 Job Post
+                        </span>
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <div class="company-card">
-                    <div class="company-logo">
-                        <a href="job-grid.html">
-                            <img src="{{ asset('frontend') }}/img/top-company/2.png" alt="company logo">
-                        </a>
-                    </div>
-                    <div class="company-text">
-                        <h3>Trout Design</h3>
-                        <p>
-                            <i class='bx bx-location-plus'></i>
-                            Park Avenue, Mumbai
-                        </p>
-                        <a href="job-grid.html" class="company-btn">
-                            35 Open Position
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <div class="company-card">
-                    <div class="company-logo">
-                        <a href="job-grid.html">
-                            <img src="{{ asset('frontend') }}/img/top-company/3.png" alt="company logo">
-                        </a>
-                    </div>
-                    <div class="company-text">
-                        <h3>Resland LTD</h3>
-                        <p>
-                            <i class='bx bx-location-plus'></i>
-                            Betas Quence, London
-                        </p>
-                        <a href="job-grid.html" class="company-btn">
-                            20 Open Position
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-sm-6">
-                <div class="company-card">
-                <div class="company-logo">
-                    <a href="job-grid.html">
-                        <img src="{{ asset('frontend') }}/img/top-company/4.png" alt="company logo">
-                    </a>
-                </div>
-                <div class="company-text">
-                    <h3>Lawn Hopper</h3>
-                    <p>
-                    <i class='bx bx-location-plus'></i>
-                    Wellesley Rd, London
-                    </p>
-                    <a href="job-grid.html" class="company-btn">
-                    45 Open Position
-                    </a>
-                </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -285,7 +234,7 @@
                             <h5 class="mt-0">Looking For a Job</h5>
                             <p>Your next role could be with one of these top leading organizations</p>
 
-                            <a href="job-list.html">
+                            <a href="{{ route('login') }}">
                                 Apply Now
                                 <i class='bx bx-chevrons-right'></i>
                             </a>
@@ -302,7 +251,7 @@
                             <h5 class="mt-0">Are You Recruiting?</h5>
                             <p>Your next role could be with one of these top leading organizations</p>
 
-                            <a href="post-job.html">
+                            <a href="{{ route('login') }}">
                                 Apply Now
                                 <i class='bx bx-chevrons-right'></i>
                             </a>
@@ -322,32 +271,29 @@
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
                     <i class="flaticon-resume"></i>
-                    <h2><span>1225</span></h2>
-                    <p>Job Posted</p>
+                    <h2><span>{{ $totalJobPosts }}</span></h2>
+                    <p>Total Job Post</p>
                 </div>
             </div>
-
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
                     <i class="flaticon-recruitment"></i>
-                    <h2><span>145</span></h2>
-                    <p>Job Filed</p>
+                    <h2><span>{{ $runningJobPosts }}</span></h2>
+                    <p>Running Job</p>
                 </div>
             </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="counter-text">
-                    <i class="flaticon-portfolio"></i>
-                    <h2><span>170</span></h2>
-                    <p>Company</p>
-                </div>
-            </div>
-
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
                     <i class="flaticon-employee"></i>
-                    <h2><span>125</span></h2>
-                    <p>Members</p>
+                    <h2><span>{{ $totalUser }}</span></h2>
+                    <p>Total User</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="counter-text">
+                    <i class="flaticon-portfolio"></i>
+                    <h2><span>{{ $totalWithdrawal }}</span></h2>
+                    <p>Total Withdrawal</p>
                 </div>
             </div>
         </div>

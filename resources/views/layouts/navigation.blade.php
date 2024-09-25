@@ -10,47 +10,47 @@
     @if (Auth::user()->user_type === 'Backend')
         <li class="nav-item nav-category">Super Admin</li>
         @can('SettingMenu')
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#setting" role="button" aria-expanded="false" aria-controls="setting">
-                <i class="link-icon" data-feather="settings"></i>
-                <span class="link-title">Setting</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-            </a>
-            <div class="collapse" id="setting">
-                <ul class="nav sub-menu">
-                    @can('site.setting')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.site.setting') }}" class="nav-link">Site</a>
-                    </li>
-                    @endcan
-                    @can('default.setting')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.default.setting') }}" class="nav-link">Default</a>
-                    </li>
-                    @endcan
-                    @can('seo.setting')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.seo.setting') }}" class="nav-link">Seo</a>
-                    </li>
-                    @endcan
-                    @can('mail.setting')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.mail.setting') }}" class="nav-link">Mail</a>
-                    </li>
-                    @endcan
-                    @can('sms.setting')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.sms.setting') }}" class="nav-link">Sms</a>
-                    </li>
-                    @endcan
-                    @can('captcha.setting')
-                    <li class="nav-item">
-                        <a href="{{ route('backend.captcha.setting') }}" class="nav-link">Captcha</a>
-                    </li>
-                    @endcan
-                </ul>
-            </div>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#setting" role="button" aria-expanded="false" aria-controls="setting">
+                    <i class="link-icon" data-feather="settings"></i>
+                    <span class="link-title">Setting</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="setting">
+                    <ul class="nav sub-menu">
+                        @can('site.setting')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.site.setting') }}" class="nav-link">Site</a>
+                        </li>
+                        @endcan
+                        @can('default.setting')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.default.setting') }}" class="nav-link">Default</a>
+                        </li>
+                        @endcan
+                        @can('seo.setting')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.seo.setting') }}" class="nav-link">Seo</a>
+                        </li>
+                        @endcan
+                        @can('mail.setting')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.mail.setting') }}" class="nav-link">Mail</a>
+                        </li>
+                        @endcan
+                        @can('sms.setting')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.sms.setting') }}" class="nav-link">Sms</a>
+                        </li>
+                        @endcan
+                        @can('captcha.setting')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.captcha.setting') }}" class="nav-link">Captcha</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
         @endcan
 
         <li class="nav-item nav-category">Admin</li>
@@ -149,38 +149,38 @@
             @endcan
         @endcan
 
-        {{-- @can('TestimonialMenu') --}}
-            {{-- @can('testimonial.index') --}}
+        @can('TestimonialMenu')
+            @can('testimonial.index')
             <li class="nav-item">
                 <a href="{{ route('backend.testimonial.index') }}" class="nav-link">
                     <i class="link-icon" data-feather="message-square"></i>
                     <span class="link-title">Testimonial</span>
                 </a>
             </li>
-            {{-- @endcan --}}
-        {{-- @endcan --}}
+            @endcan
+        @endcan
 
-        {{-- @can('SupportMenu') --}}
-            {{-- @can('support') --}}
+        @can('SupportMenu')
+            @can('support')
             <li class="nav-item">
                 <a href="{{ route('backend.support') }}" class="nav-link">
                     <i class="link-icon" data-feather="message-circle"></i>
                     <span class="link-title">Support</span>
                 </a>
             </li>
-            {{-- @endcan --}}
-        {{-- @endcan --}}
+            @endcan
+        @endcan
 
-        {{-- @can('ContactMenu') --}}
-            {{-- @can('contact') --}}
+        @can('ContactMenu')
+            @can('contact')
             <li class="nav-item">
                 <a href="{{ route('backend.contact') }}" class="nav-link">
                     <i class="link-icon" data-feather="phone"></i>
                     <span class="link-title">Contact</span>
                 </a>
             </li>
-            {{-- @endcan --}}
-        {{-- @endcan --}}
+            @endcan
+        @endcan
 
         <li class="nav-item nav-category">User</li>
         @can('UserMenu')
@@ -386,7 +386,7 @@
             </li>
         @endcan
 
-        {{-- @can('SubscriberMenu') --}}
+        @can('SubscriberMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#SubscriberMenu" role="button" aria-expanded="false" aria-controls="SubscriberMenu">
                     <i class="link-icon" data-feather="users"></i>
@@ -408,7 +408,7 @@
                     </ul>
                 </div>
             </li>
-        {{-- @endcan --}}
+        @endcan
     @else
         <li class="nav-item nav-category">User</li>
         @if (!Auth::user()->hasVerification('Approved'))

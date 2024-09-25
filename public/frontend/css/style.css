@@ -522,7 +522,9 @@ h3 {
 }
 
 .job-card .thumb-img img {
-  max-width: 40px;
+  max-width: 115px;
+  max-height: 80px;
+  padding: 5px;
 }
 
 .job-card .job-info h3 {
