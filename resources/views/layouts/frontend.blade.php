@@ -29,106 +29,7 @@
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_favicon') }}">
 
-        <style>
-		.msg_card{
-			height: 600px;
-			border-radius: 15px !important;
-			background-color: rgba(0,0,0,0.4) !important;
-		}
-		.msg_card_body{
-			overflow-y: auto;
-		}
-		.type_msg{
-            border: 2px solid #c4c4c4 !important;
-            border-radius: 10px !important;
-		}
-		.user_img{
-			height: 70px;
-			width: 70px;
-			border:1.5px solid #f5f6fa;
-		}
-		.user_img_msg{
-			height: 40px;
-			width: 40px;
-			border:1.5px solid #f5f6fa;
-		}
-        .img_cont{
-            position: relative;
-            height: 70px;
-            width: 70px;
-        }
-        .img_cont_msg{
-            height: 40px;
-            width: 40px;
-        }
-        .online_icon{
-            position: absolute;
-            height: 15px;
-            width:15px;
-            background-color: #4cd137;
-            border-radius: 50%;
-            bottom: 0.2em;
-            right: 0.4em;
-            border:1.5px solid white;
-        }
-        .user_info{
-            margin-top: auto;
-            margin-bottom: auto;
-            margin-left: 15px;
-        }
-        .user_info span{
-            font-size: 20px;
-            color: white;
-        }
-        .user_info p{
-            font-size: 14px;
-            color: rgba(255,255,255,0.6);
-        }
-        .msg_cotainer{
-            margin-top: auto;
-            margin-bottom: auto;
-            margin-left: 10px;
-            border-radius: 25px;
-            background-color: #82ccdd;
-            padding: 10px;
-            position: relative;
-        }
-        .msg_cotainer_send{
-            margin-top: auto;
-            margin-bottom: auto;
-            margin-right: 10px;
-            border-radius: 25px;
-            background-color: #78e08f;
-            padding: 10px;
-            position: relative;
-        }
-        .msg_time{
-            position: absolute;
-            left: 10px;
-            bottom: -20px;
-            color: rgba(255,255,255,0.5);
-            font-size: 12px;
-        }
-        .msg_time_send{
-            position: absolute;
-            right:10px;
-            bottom: -20px;
-            color: rgba(255,255,255,0.5);
-            font-size: 12px;
-        }
-        .msg_head{
-            position: relative;
-        }
-        #fileBtn, .send_btn {
-            height: 60px;
-            border-radius: 15px !important;
-            background-color: rgba(0,0,0,0.3) !important;
-            border:0 !important;
-            color: white !important;
-            cursor: pointer;
-            margin: 0 5px !important;
-        }
-        </style>
+        {!! NoCaptcha::renderJs() !!}
     </head>
 
     <body>
@@ -241,8 +142,8 @@
                         </div>
                         <form class="newsletter-form" id="subscribeForm" action="{{ route('subscribe') }}" method="POST">
                             @csrf
-                            <input type="email" class="form-control" placeholder="Enter your email" name="email">
-                            <span class="text-danger error-text email_error"></span>
+                            <input type="email" class="form-control" placeholder="Enter your email" name="subscribe_email">
+                            <span class="text-warning error-text subscribe_email_error"></span>
                             <button class="default-btn sub-btn" type="submit">Subscribe</button>
                         </form>
                     </div>

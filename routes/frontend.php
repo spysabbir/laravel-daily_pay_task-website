@@ -14,7 +14,6 @@ Route::get('/how-it-works', [FrontendController::class, 'howItWorks'])->name('ho
 Route::get('/referral-program', [FrontendController::class, 'referralProgram'])->name('referral.program');
 Route::get('/privacy-policy', [FrontendController::class, 'privacyPolicy'])->name('privacy.policy');
 Route::get('/terms-and-conditions', [FrontendController::class, 'termsAndConditions'])->name('terms.and.conditions');
-Route::get('/live-chat', [FrontendController::class, 'liveChat'])->name('live.chat');
 
 Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('subscribe');
 Route::post('/contact-store', [FrontendController::class, 'contactStore'])->name('contact.store');

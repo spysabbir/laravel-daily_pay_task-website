@@ -88,6 +88,7 @@
             </div>
         </div>
     </div>
+    @if (Auth::user()->isFrontendUser())
     <div class="col-xl-6 col-lg-12 grid-margin">
         <div class="card rounded">
             <div class="card-body">
@@ -120,5 +121,6 @@
             </div>
         </div>
     </div>
+    @endif
 </div>
 @endsection

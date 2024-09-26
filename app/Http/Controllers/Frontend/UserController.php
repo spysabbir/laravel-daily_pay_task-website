@@ -36,6 +36,8 @@ class UserController extends Controller
         return view('frontend/dashboard');
     }
 
+    // Profile.............................................................................................................
+
     public function profileEdit(Request $request)
     {
         $user = $request->user();
@@ -47,6 +49,15 @@ class UserController extends Controller
         $user = $request->user();
         return view('profile.setting', compact('user'));
     }
+
+    public function userProfile($id)
+    {
+        $user = User::findOrFail(decrypt($id));
+        $blocked = Block::where('user_id', $user->id)->where('blocked_by', Auth::id())->exists();
+        return view('frontend.user_profile.index', compact('user', 'blocked'));
+    }
+
+    // Verification.............................................................................................................
 
     public function verification(Request $request)
     {
@@ -137,6 +148,8 @@ class UserController extends Controller
         return back()->with($notification);
     }
 
+    // Deposit.............................................................................................................
+
     public function deposit(Request $request)
     {
         $user = User::findOrFail(Auth::id());
@@ -225,6 +238,8 @@ class UserController extends Controller
             }
         }
     }
+
+    // Withdraw.............................................................................................................
 
     public function withdraw(Request $request)
     {
@@ -342,6 +357,8 @@ class UserController extends Controller
         ]);
     }
 
+    // Bonus.............................................................................................................
+
     public function bonus(Request $request)
     {
         $user = User::findOrFail(Auth::id());
@@ -390,6 +407,8 @@ class UserController extends Controller
             return view('frontend.bonus.index', compact('total_bonus'));
         }
     }
+
+    // Work.............................................................................................................
 
     public function findWorks(Request $request)
     {
@@ -806,6 +825,8 @@ class UserController extends Controller
         return view('frontend.work_list.reviewed_check', compact('jobProof' , 'jobPost'));
     }
 
+    // Notification.............................................................................................................
+
     public function notification(Request $request)
     {
         if ($request->ajax()) {
@@ -860,17 +881,14 @@ class UserController extends Controller
         return redirect()->route('notification');
     }
 
+    // Refferal.............................................................................................................
+
     public function refferal()
     {
         return view('frontend.refferal.index');
     }
 
-    public function userProfile($id)
-    {
-        $user = User::findOrFail(decrypt($id));
-        $blocked = Block::where('user_id', $user->id)->where('blocked_by', Auth::id())->exists();
-        return view('frontend.user_profile.index', compact('user', 'blocked'));
-    }
+    // Block.............................................................................................................
 
     public function blockList(Request $request)
     {
@@ -935,6 +953,8 @@ class UserController extends Controller
 
         return back()->with($notification);
     }
+
+    // Report.............................................................................................................
 
     public function reportList(Request $request)
     {
@@ -1025,6 +1045,8 @@ class UserController extends Controller
             ]);
         }
     }
+
+    // Support.............................................................................................................
 
     public function support(){
         $supports = Support::where('sender_id', Auth::id())->orWhere('receiver_id', Auth::id())->get();

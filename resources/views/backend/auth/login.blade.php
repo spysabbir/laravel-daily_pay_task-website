@@ -22,7 +22,7 @@
                 @csrf
                 <div class="mb-3">
                     <label for="userEmail" class="form-label">Email address <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="userEmail" name="email" value="{{ old('email') }}" placeholder="Email">
+                    <input type="email" class="form-control" id="userEmail" name="email" value="superadmin@gmail.com" placeholder="Email">
                     @error('email')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -49,12 +49,11 @@
                 <div>
                     <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white">Login</button>
                     @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="btn text-primary btn-icon-text mb-2 mb-md-0">
+                    <a href="{{ route('backend.password.request') }}" class="btn text-primary btn-icon-text mb-2 mb-md-0">
                         Forgot your password?
                     </a>
                     @endif
                 </div>
-                <a href="{{ route('register') }}" class="d-block mt-3 text-muted">Not a user? Sign up</a>
             </form>
         </div>
     </div>

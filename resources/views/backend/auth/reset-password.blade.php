@@ -16,13 +16,7 @@
             <form class="forms-sample" method="POST" action="{{ route('password.store') }}">
                 @csrf
                 <input type="hidden" name="token" value="{{ $request->route('token') }}">
-                <div class="mb-3">
-                    <label for="userEmail" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="userEmail" name="email" value="{{ old('email', $request->email) }}" placeholder="Email">
-                    @error('email')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
+                <input type="hidden" name="email" value="{{ $request->email }}">
                 <div class="mb-3">
                     <label for="userPassword" class="form-label">Password</label>
                     <input type="password" class="form-control" id="userPassword" name="password" placeholder="Password">

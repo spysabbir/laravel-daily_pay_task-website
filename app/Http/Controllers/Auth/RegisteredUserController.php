@@ -6,21 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Bonus;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
 use Illuminate\Support\Str;
 use App\Notifications\ReferralNotification;
 use App\Notifications\BonusNotification;
 
 class RegisteredUserController extends Controller
 {
-    public function create(Request $request)
+    public function register(Request $request)
     {
         $referral_code = $request->query('ref');
-        return view('auth.register', ['referral_code' => $referral_code]);
+        return view('frontend.auth.register', ['referral_code' => $referral_code]);
     }
 
     public function store(Request $request)

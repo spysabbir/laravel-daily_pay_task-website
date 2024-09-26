@@ -3,40 +3,36 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
 class NewPasswordController extends Controller
 {
-    /**
-     * Display the password reset view.
-     */
-    public function create(Request $request): View
+    public function passwordReset(Request $request): View
     {
-        return view('auth.reset-password', ['request' => $request]);
+        return view('frontend.auth.reset-password', ['request' => $request]);
     }
 
-    /**
-     * Handle an incoming new password request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    public function backendPasswordReset(Request $request): View
+    {
+        return view('backend.auth.reset-password', ['request' => $request]);
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'token' => ['required'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/'],
+            'email' => ['required'],
             'password' => ['required', 'string', 'min:8', 'max:20', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/', 'confirmed'],
             'password_confirmation' => ['required', 'string', 'min:8', 'max:20', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
         ],
         [
-            'email.regex' => 'The email must be follow the format ****@****.***',
             'password.regex' => 'The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
             'password_confirmation.regex' => 'The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
         ]);
@@ -59,9 +55,16 @@ class NewPasswordController extends Controller
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
-        return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                            ->withErrors(['email' => __($status)]);
+        if ($status == Password::PASSWORD_RESET) {
+            $user = User::where('email', $request->email)->first();
+            if ($user->user_type == 'Frontend') {
+                return redirect()->route('login')->with('status', __($status));
+            } else {
+                return redirect()->route('backend.login')->with('status', __($status));
+            }
+        } else {
+            return back()->withInput($request->only('email'))
+                ->withErrors(['email' => __($status)]);
+        }
     }
 }
