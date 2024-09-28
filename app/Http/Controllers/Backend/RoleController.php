@@ -31,10 +31,20 @@ class RoleController extends Controller
             return DataTables::of($roles)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
+                    if ($row->name == 'Super Admin') {
+                        if (auth()->user()->hasRole('Super Admin')) {
+                            $btn = '
+                                <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
+                            ';
+                        } else {
+                            $btn = '<span class="badge bg-dark">N/A</span>';
+                        }
+                    } else {
+                        $btn = '
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
                         ';
+                    }
                     return $btn;
                 })
                 ->rawColumns(['action'])

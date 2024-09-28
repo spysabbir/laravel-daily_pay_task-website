@@ -84,16 +84,64 @@
         @endcan
 
         @can('EmployeeMenu')
-            @can('employee.index')
             <li class="nav-item">
-                <a href="{{ route('backend.employee.index') }}" class="nav-link">
+                <a class="nav-link" data-bs-toggle="collapse" href="#EmployeeMenu" role="button" aria-expanded="false" aria-controls="EmployeeMenu">
                     <i class="link-icon" data-feather="users"></i>
                     <span class="link-title">Employee</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
+                <div class="collapse" id="EmployeeMenu">
+                    <ul class="nav sub-menu">
+                        @can('employee.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.employee.index') }}" class="nav-link">Active</a>
+                        </li>
+                        @endcan
+                        @can('employee.inactive')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.employee.inactive') }}" class="nav-link">Inactive</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
             </li>
-            @endcan
         @endcan
 
+        @can('UserMenu')
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#UserMenu" role="button" aria-expanded="false" aria-controls="UserMenu">
+                    <i class="link-icon" data-feather="user"></i>
+                    <span class="link-title">User</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="UserMenu">
+                    <ul class="nav sub-menu">
+                        @can('user.active')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.user.active') }}" class="nav-link">Active</a>
+                        </li>
+                        @endcan
+                        @can('user.inactive')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.user.inactive') }}" class="nav-link">Inactive</a>
+                        </li>
+                        @endcan
+                        @can('user.blocked')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.user.blocked') }}" class="nav-link">Blocked</a>
+                        </li>
+                        @endcan
+                        @can('user.banned')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.user.banned') }}" class="nav-link">Banned</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
+
+        <li class="nav-item nav-category">Editor</li>
         @can('CategoryMenu')
             @can('category.index')
             <li class="nav-item">
@@ -160,6 +208,31 @@
             @endcan
         @endcan
 
+        @can('SubscriberMenu')
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#SubscriberMenu" role="button" aria-expanded="false" aria-controls="SubscriberMenu">
+                    <i class="link-icon" data-feather="users"></i>
+                    <span class="link-title">Subscriber</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="SubscriberMenu">
+                    <ul class="nav sub-menu">
+                        {{-- @can('subscriber.index') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.subscriber.index') }}" class="nav-link">Subscriber</a>
+                        </li>
+                        {{-- @endcan --}}
+                        {{-- @can('subscriber.newsletter') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.subscriber.newsletter') }}" class="nav-link">Newsletter</a>
+                        </li>
+                        {{-- @endcan --}}
+                    </ul>
+                </div>
+            </li>
+        @endcan
+
+        <li class="nav-item nav-category">Service Agent</li>
         @can('SupportMenu')
             @can('support')
             <li class="nav-item">
@@ -182,34 +255,23 @@
             @endcan
         @endcan
 
-        <li class="nav-item nav-category">User</li>
-        @can('UserMenu')
+        @can('ReportUserMenu')
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#UserMenu" role="button" aria-expanded="false" aria-controls="UserMenu">
-                    <i class="link-icon" data-feather="user"></i>
-                    <span class="link-title">User</span>
+                <a class="nav-link" data-bs-toggle="collapse" href="#ReportUserMenu" role="button" aria-expanded="false" aria-controls="ReportUserMenu">
+                    <i class="link-icon" data-feather="alert-triangle"></i>
+                    <span class="link-title">Report User</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse" id="UserMenu">
+                <div class="collapse" id="ReportUserMenu">
                     <ul class="nav sub-menu">
-                        @can('user.active')
+                        @can('report_user.pending')
                         <li class="nav-item">
-                            <a href="{{ route('backend.user.active') }}" class="nav-link">Active</a>
+                            <a href="{{ route('backend.report_user.pending') }}" class="nav-link">Pending</a>
                         </li>
                         @endcan
-                        @can('user.inactive')
+                        @can('report_user.resolved')
                         <li class="nav-item">
-                            <a href="{{ route('backend.user.inactive') }}" class="nav-link">Inactive</a>
-                        </li>
-                        @endcan
-                        @can('user.blocked')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.user.blocked') }}" class="nav-link">Blocked</a>
-                        </li>
-                        @endcan
-                        @can('user.banned')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.user.banned') }}" class="nav-link">Banned</a>
+                            <a href="{{ route('backend.report_user.resolved') }}" class="nav-link">Resolved</a>
                         </li>
                         @endcan
                     </ul>
@@ -217,6 +279,7 @@
             </li>
         @endcan
 
+        <li class="nav-item nav-category">Moderator</li>
         @can('VerificationMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#VerificationMenu" role="button" aria-expanded="false" aria-controls="VerificationMenu">
@@ -357,54 +420,6 @@
                             <a href="{{ route('backend.job_proof.reviewed') }}" class="nav-link">Reviewed</a>
                         </li>
                         @endcan
-                    </ul>
-                </div>
-            </li>
-        @endcan
-
-        @can('ReportUserMenu')
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#ReportUserMenu" role="button" aria-expanded="false" aria-controls="ReportUserMenu">
-                    <i class="link-icon" data-feather="alert-triangle"></i>
-                    <span class="link-title">Report User</span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="ReportUserMenu">
-                    <ul class="nav sub-menu">
-                        @can('report_user.pending')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.report_user.pending') }}" class="nav-link">Pending</a>
-                        </li>
-                        @endcan
-                        @can('report_user.resolved')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.report_user.resolved') }}" class="nav-link">Resolved</a>
-                        </li>
-                        @endcan
-                    </ul>
-                </div>
-            </li>
-        @endcan
-
-        @can('SubscriberMenu')
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#SubscriberMenu" role="button" aria-expanded="false" aria-controls="SubscriberMenu">
-                    <i class="link-icon" data-feather="users"></i>
-                    <span class="link-title">Subscriber</span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="SubscriberMenu">
-                    <ul class="nav sub-menu">
-                        {{-- @can('subscriber.index') --}}
-                        <li class="nav-item">
-                            <a href="{{ route('backend.subscriber.index') }}" class="nav-link">Subscriber</a>
-                        </li>
-                        {{-- @endcan --}}
-                        {{-- @can('subscriber.newsletter') --}}
-                        <li class="nav-item">
-                            <a href="{{ route('backend.subscriber.newsletter') }}" class="nav-link">Newsletter</a>
-                        </li>
-                        {{-- @endcan --}}
                     </ul>
                 </div>
             </li>

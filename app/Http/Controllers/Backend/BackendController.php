@@ -77,15 +77,19 @@ class BackendController extends Controller
                         <span class="badge text-info bg-dark">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
+                ->editColumn('status', function ($row) {
+                    return '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Check Status</button>
+                        ';
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
                     <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                     <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
                     ';
                 return $btn;
                 })
-                ->rawColumns(['last_login', 'created_at', 'action'])
+                ->rawColumns(['last_login', 'created_at', 'status', 'action'])
                 ->make(true);
         }
 
@@ -206,12 +210,10 @@ class BackendController extends Controller
         return view('backend.user.show', compact('user'));
     }
 
-    public function userEdit(string $id)
+    public function userStatus(string $id)
     {
         $user = User::where('id', $id)->first();
-        return response()->json([
-            'user' => $user,
-        ]);
+        return view('backend.user.status', compact('user'));
     }
 
     public function userUpdate(Request $request, string $id)

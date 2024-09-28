@@ -42,6 +42,7 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::post('captcha/setting/update', [SettingController::class, 'captchaSettingUpdate'])->name('captcha.setting.update');
     // Employee
     Route::resource('employee', EmployeeController::class);
+    Route::get('employee-inactive', [EmployeeController::class, 'inactive'])->name('employee.inactive');
     Route::get('employee-trash', [EmployeeController::class, 'trash'])->name('employee.trash');
     Route::get('employee/restore/{id}', [EmployeeController::class, 'restore'])->name('employee.restore');
     Route::get('employee/delete/{id}', [EmployeeController::class, 'delete'])->name('employee.delete');
@@ -49,7 +50,7 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     // User
     Route::get('user/active', [BackendController::class, 'userActiveList'])->name('user.active');
     Route::get('user/show/{id}', [BackendController::class, 'userView'])->name('user.show');
-    Route::get('user/edit/{id}', [BackendController::class, 'userEdit'])->name('user.edit');
+    Route::get('user/status/{id}', [BackendController::class, 'userStatus'])->name('user.status');
     Route::put('user/update/{id}', [BackendController::class, 'userUpdate'])->name('user.update');
     Route::delete('user/destroy/{id}', [BackendController::class, 'userDestroy'])->name('user.destroy');
     Route::get('user/trash', [BackendController::class, 'userTrash'])->name('user.trash');

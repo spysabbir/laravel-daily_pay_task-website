@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Employee')
+@section('title', 'Employee - Active')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Employee List</h3>
+                <h3 class="card-title">Employee List - Active</h3>
                 <div class="action-btn">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
                     <!-- Create Modal -->
@@ -26,7 +26,9 @@
                                             <select class="form-select" id="role" name="role">
                                                 <option value="">-- Select Role --</option>
                                                 @foreach ($roles as $role)
-                                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                    @if (auth()->user()->hasRole('Super Admin') || $role->name !== 'Super Admin')
+                                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                             <span class="text-danger error-text role_error"></span>
@@ -55,38 +57,6 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
-                    <!-- Trash Modal -->
-                    <div class="modal fade trashModel" tabindex="-1" aria-labelledby="trashModelLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="trashModelLabel">Trash</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="table-responsive">
-                                        <table id="trashDataTable" class="table w-100">
-                                            <thead>
-                                                <tr>
-                                                    <td>Sl No</td>
-                                                    <th>Name</th>
-                                                    <th>Role</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -98,18 +68,10 @@
                                 <select class="form-select filter_data" id="filter_role">
                                     <option value="">-- Select Role --</option>
                                     @foreach ($roles as $role)
-                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        @if (auth()->user()->hasRole('Super Admin') || $role->name !== 'Super Admin')
+                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        @endif
                                     @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="status">Status</label>
-                                <select class="form-select filter_data" id="filter_status">
-                                    <option value="">-- Select Status --</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
                                 </select>
                             </div>
                         </div>
@@ -164,7 +126,9 @@
                                                     <select class="form-select" id="employee_role" name="role">
                                                         <option value="">-- Select Role --</option>
                                                         @foreach ($roles as $role)
-                                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                            @if (auth()->user()->hasRole('Super Admin') || $role->name !== 'Super Admin')
+                                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                            @endif
                                                         @endforeach
                                                     </select>
                                                     <span class="text-danger error-text update_role_error"></span>
@@ -341,67 +305,6 @@
                             $('#allDataTable').DataTable().ajax.reload();
                             $('#trashDataTable').DataTable().ajax.reload();
                             toastr.warning('Employee soft delete successfully.');
-                        }
-                    });
-                }
-            })
-        })
-
-        // Trash Data
-        $('#trashDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            searching: true,
-            ajax: {
-                url: "{{ route('backend.employee.trash') }}",
-            },
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'name', name: 'name' },
-                { data: 'roles', name: 'roles' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
-        });
-
-        // Restore Data
-        $(document).on('click', '.restoreBtn', function () {
-            var id = $(this).data('id');
-            var url = "{{ route('backend.employee.restore', ":id") }}";
-            url = url.replace(':id', id)
-            $.ajax({
-                url: url,
-                type: "GET",
-                success: function (response) {
-                    $(".trashModel").modal('hide');
-                    $('#allDataTable').DataTable().ajax.reload();
-                    $('#trashDataTable').DataTable().ajax.reload();
-                    toastr.success('Employee restore successfully.');
-                },
-            });
-        });
-
-        // Force Delete Data
-        $(document).on('click', '.forceDeleteBtn', function(){
-            var id = $(this).data('id');
-            var url = "{{ route('backend.employee.delete', ":id") }}";
-            url = url.replace(':id', id)
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        method: 'GET',
-                        success: function(response) {
-                            $(".trashModel").modal('hide');
-                            $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.error('Employee force delete successfully.');
                         }
                     });
                 }

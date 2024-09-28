@@ -15,14 +15,10 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = User::where('user_type', 'Backend');
+            $query = User::where('user_type', 'Backend')->with('roles')->where('status', 'Active')->whereNot('id', 1);
 
             if ($request->role) {
                 $query->whereHas('roles', fn($q) => $q->where('roles.id', $request->role));
-            }
-
-            if ($request->status) {
-                $query->where('users.status', $request->status);
             }
 
             $allEmployee = $query->orderBy('created_at', 'desc')->get();
@@ -30,24 +26,25 @@ class EmployeeController extends Controller
             return DataTables::of($allEmployee)
                 ->addIndexColumn()
                 ->addColumn('roles', fn($row) => $row->roles->map(fn($role) => '<span class="badge bg-primary">' . $role->name . '</span>')->implode(' '))
-                ->editColumn('status', fn($row) => '
-                    <span class="badge bg-' . ($row->status == 'Active' ? 'success' : 'warning') . '">' . $row->status . '</span>
-                    <button type="button" class="btn btn-' . ($row->status == 'Active' ? 'warning' : 'success') . ' btn-xs statusBtn">' . ($row->status == 'Active' ? 'Deactivate' : 'Activate') . '</button>
-                ')
+                ->editColumn('status', function ($row) {
+                    return '
+                        <span class="mx-2 badge bg-' . ($row->status == 'Active' ? 'success' : 'warning') . '">' . $row->status . '</span>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-' . ($row->status == 'Active' ? 'warning' : 'success') . ' btn-xs statusBtn">' . ($row->status == 'Active' ? 'Deactivate' : 'Activate') . '</button>
+                    ';
+                })
                 ->addColumn('action', function ($row) {
-                    $btns = '<button type="button" class="btn btn-primary btn-xs viewBtn">View</button>';
-                    if (!$row->roles->contains('name', 'Super Admin')) {
-                        $btns .= '<button type="button" class="btn btn-info btn-xs editBtn">Edit</button>';
-                    }
-                    $btns .= '<button type="button" class="btn btn-danger btn-xs deleteBtn">Delete</button>';
-                    return $btns;
+                    return '
+                        <button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>
+                        <button type="button" data-id="' . $row->id . '" data-bs-toggle="modal" data-bs-target=".editModal" class="btn btn-info btn-xs editBtn">Edit</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
+                    ';
                 })
                 ->rawColumns(['roles', 'status', 'action'])
                 ->make(true);
         }
 
         $roles = Role::all();
-        return view('backend.employee.index', compact('roles'));
+        return view('backend.employee.active', compact('roles'));
     }
 
     public function store (Request $request)
@@ -86,10 +83,7 @@ class EmployeeController extends Controller
     public function show(string $id)
     {
         $employee = User::where('id', $id)->first();
-        foreach($employee->roles as $role) {
-            $employee_role = $role;
-        }
-        return view('backend.employee.show', compact('employee', 'employee_role'));
+        return view('backend.employee.show', compact('employee'));
     }
 
     public function edit(string $id)
@@ -172,7 +166,7 @@ class EmployeeController extends Controller
                 ->make(true);
         }
 
-        return view('backend.employee.index');
+        return view('backend.employee.active');
     }
 
     public function restore(string $id)
@@ -202,5 +196,39 @@ class EmployeeController extends Controller
 
         $user->updated_by = auth()->user()->id;
         $user->save();
+    }
+
+    public function inactive(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = User::where('user_type', 'Backend')->where('status', 'Inactive')->with('roles');
+
+            if ($request->role) {
+                $query->whereHas('roles', fn($q) => $q->where('roles.id', $request->role));
+            }
+
+            $allEmployee = $query->orderBy('created_at', 'desc')->get();
+
+            return DataTables::of($allEmployee)
+                ->addIndexColumn()
+                ->addColumn('roles', fn($row) => $row->roles->map(fn($role) => '<span class="badge bg-primary">' . $role->name . '</span>')->implode(' '))
+                ->editColumn('status', function ($row) {
+                    return '
+                        <span class="mx-2 badge bg-' . ($row->status == 'Active' ? 'success' : 'warning') . '">' . $row->status . '</span>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-' . ($row->status == 'Active' ? 'warning' : 'success') . ' btn-xs statusBtn">' . ($row->status == 'Active' ? 'Deactivate' : 'Activate') . '</button>
+                    ';
+                })
+                ->addColumn('action', function ($row) {
+                    return  '
+                        <button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
+                    ';
+                })
+                ->rawColumns(['roles', 'status', 'action'])
+                ->make(true);
+        }
+
+        $roles = Role::all();
+        return view('backend.employee.inactive', compact('roles'));
     }
 }

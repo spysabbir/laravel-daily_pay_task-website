@@ -41,8 +41,16 @@ class RolePermissionController extends Controller
                     return $badgeTags;
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="'.route('backend.role-permission.edit', $row->id).'" class="btn btn-info btn-xs">Edit</a>
+                    if ($row->name == 'Super Admin') {
+                        if (auth()->user()->hasRole('Super Admin')) {
+                            $btn = '<a href="'.route('backend.role-permission.edit', $row->id).'" class="btn btn-info btn-xs">Edit</a>';
+                        } else {
+                            $btn = '<span class="badge bg-dark">N/A</span>';
+                        }
+                    } else {
+                        $btn = '<a href="'.route('backend.role-permission.edit', $row->id).'" class="btn btn-info btn-xs">Edit</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>';
+                    }
                     return $btn;
                 })
                 ->rawColumns(['permissions', 'action'])

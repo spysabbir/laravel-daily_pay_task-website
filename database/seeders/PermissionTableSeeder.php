@@ -41,6 +41,7 @@ class PermissionTableSeeder extends Seeder
 
             ['name' => 'EmployeeMenu', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
             ['name' => 'employee.index', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
+            ['name' => 'employee.inactive', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
             ['name' => 'employee.create', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
             ['name' => 'employee.edit', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
             ['name' => 'employee.destroy', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],

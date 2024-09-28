@@ -65,11 +65,11 @@
             </tr>
             <tr>
                 <td>Created By</td>
-                <td>{{ $employee->created_by }}</td>
+                <td>{{ $employee->createdBy->name ?? 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Updated By</td>
-                <td>{{ $employee->updated_by }}</td>
+                <td>{{ $employee->updatedBy->name ?? 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Created At</td>

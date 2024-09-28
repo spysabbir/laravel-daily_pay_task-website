@@ -43,9 +43,9 @@ class SettingController extends Controller
         $request->validate([
             'referral_registration_bonus_amount' => 'required',
             'referral_withdrawal_bonus_percentage' => 'required',
-            'deposit_bkash_account' => 'required',
-            'deposit_rocket_account' => 'required',
-            'deposit_nagad_account' => 'required',
+            'deposit_bkash_account' => ['required', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'], // Bangladeshi Phone Number
+            'deposit_rocket_account' => ['required', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+            'deposit_nagad_account' => ['required', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
             'min_deposit_amount' => 'required',
             'max_deposit_amount' => 'required',
             'instant_withdraw_charge' => 'required',
@@ -61,6 +61,11 @@ class SettingController extends Controller
             'job_proof_monthly_free_review_time' => 'required',
             'job_proof_additional_review_charge' => 'required',
             'user_max_blocked_time' => 'required',
+        ],
+        [
+            'deposit_bkash_account.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
+            'deposit_rocket_account.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
+            'deposit_nagad_account.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
         ]);
 
         $defaultSetting = DefaultSetting::first();

@@ -15,15 +15,11 @@ return new class extends Migration
         Schema::create('user_statuses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('status');
-            $table->string('reason');
-            $table->timestamp('expiry_date');
-            $table->foreignId('approved_by')->constrained('users');
-            $table->timestamp('approved_at')->useCurrent();
-            $table->foreignId('restored_by')->nullable()->constrained('users');
-            $table->timestamp('restored_at')->nullable();
-            $table->foreignId('cancelled_by')->nullable()->constrained('users');
-            $table->timestamp('cancelled_at')->nullable();
+            $table->enum('status', ['Active', 'Blocked', 'Banned']);
+            $table->text('reason');
+            $table->timestamp('expiry_date')->nullable();
+            $table->foreignId('created_by')->constrained('users');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

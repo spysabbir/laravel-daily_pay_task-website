@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'User List - Active')
+@section('title', 'Employee - Inactive')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">User List - Active</h3>
+                <h3 class="card-title">Employee List - Inactive</h3>
                 <div class="action-btn">
                     <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
                     <!-- Trash Modal -->
@@ -24,8 +24,8 @@
                                             <thead>
                                                 <tr>
                                                     <td>Sl No</td>
-                                                    <th>Id</th>
                                                     <th>Name</th>
+                                                    <th>Role</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -44,17 +44,33 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="role">Role</label>
+                                <select class="form-select filter_data" id="filter_role">
+                                    <option value="">-- Select Role --</option>
+                                    @foreach ($roles as $role)
+                                        @if (auth()->user()->hasRole('Super Admin') || $role->name !== 'Super Admin')
+                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>User Id</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Last Login</th>
-                                <td>Created At</td>
-                                <th>Status</th>
+                                <th>Phone</th>
+                                <th>Roles</th>
+                                <td>Status</td>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -66,24 +82,6 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="viewModalLabel">View</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                        </div>
-                                        <div class="modal-body" id="modalBody">
-
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Status Modal -->
-                            <div class="modal fade statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="statusModalLabel">Status</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                         </div>
                                         <div class="modal-body" id="modalBody">
@@ -119,71 +117,38 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.user.active') }}",
+                url: "{{ route('backend.employee.inactive') }}",
+                data: function (e) {
+                    e.role = $('#filter_role').val();
+                    e.status = $('#filter_status').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'id', name: 'id' },
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
-                { data: 'last_login', name: 'last_login' },
-                { data: 'created_at', name: 'created_at' },
+                { data: 'phone', name: 'phone' },
+                { data: 'roles', name: 'roles' },
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#allDataTable').DataTable().ajax.reload();
+        });
+
         // View Data
         $(document).on('click', '.viewBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.user.show', ":id") }}";
+            var url = "{{ route('backend.employee.show', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
-                },
-            });
-        });
-
-        // Status Data
-        $(document).on('click', '.statusBtn', function () {
-            var id = $(this).data('id');
-            var url = "{{ route('backend.user.status', ":id") }}";
-            url = url.replace(':id', id)
-            $.ajax({
-                url: url,
-                type: "GET",
-                success: function (response) {
-                    $('#modalBody').html(response);
-                },
-            });
-        });
-
-        // Update Data
-        $('#editForm').submit(function (event) {
-            event.preventDefault();
-            var id = $('#user_id').val();
-            var url = "{{ route('backend.user.update', ":id") }}";
-            url = url.replace(':id', id)
-            $.ajax({
-                url: url,
-                type: "PUT",
-                data: $(this).serialize(),
-                beforeSend:function(){
-                    $(document).find('span.error-text').text('');
-                },
-                success: function (response) {
-                    if (response.status == 400) {
-                        $.each(response.error, function(prefix, val){
-                            $('span.update_'+prefix+'_error').text(val[0]);
-                        })
-                    }else{
-                        $(".editModal").modal('hide');
-                        $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('User update successfully.');
-                    }
                 },
             });
         });
@@ -191,7 +156,7 @@
         // Soft Delete Data
         $(document).on('click', '.deleteBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('backend.user.destroy', ":id") }}";
+            var url = "{{ route('backend.employee.destroy', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -209,7 +174,7 @@
                         success: function(response) {
                             $('#allDataTable').DataTable().ajax.reload();
                             $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.warning('User soft delete successfully.');
+                            toastr.warning('Employee soft delete successfully.');
                         }
                     });
                 }
@@ -222,12 +187,12 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.user.trash') }}",
+                url: "{{ route('backend.employee.trash') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'id', name: 'id' },
                 { data: 'name', name: 'name' },
+                { data: 'roles', name: 'roles' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
@@ -235,7 +200,7 @@
         // Restore Data
         $(document).on('click', '.restoreBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.user.restore', ":id") }}";
+            var url = "{{ route('backend.employee.restore', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -244,7 +209,7 @@
                     $(".trashModel").modal('hide');
                     $('#allDataTable').DataTable().ajax.reload();
                     $('#trashDataTable').DataTable().ajax.reload();
-                    toastr.success('User restore successfully.');
+                    toastr.success('Employee restore successfully.');
                 },
             });
         });
@@ -252,7 +217,7 @@
         // Force Delete Data
         $(document).on('click', '.forceDeleteBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('backend.user.delete', ":id") }}";
+            var url = "{{ route('backend.employee.delete', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -270,12 +235,27 @@
                         success: function(response) {
                             $(".trashModel").modal('hide');
                             $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.error('User force delete successfully.');
+                            toastr.error('Employee force delete successfully.');
                         }
                     });
                 }
             })
         })
+
+        // Status Change Data
+        $(document).on('click', '.statusBtn', function () {
+            var id = $(this).data('id');
+            var url = "{{ route('backend.employee.status', ":id") }}";
+            url = url.replace(':id', id)
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    $('#allDataTable').DataTable().ajax.reload();
+                    toastr.success('Employee status change successfully.');
+                },
+            });
+        });
     });
 </script>
 @endsection

@@ -35,22 +35,21 @@
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="deposit_bkash_account" class="form-label">Deposit Bkash Account</label>
-
-                            <input type="text" class="form-control" id="deposit_bkash_account" name="deposit_bkash_account" value="{{ old('deposit_bkash_account', $defaultSetting->deposit_bkash_account) }}" placeholder="Deposit Bkash Account">
+                            <input type="number" class="form-control" id="deposit_bkash_account" name="deposit_bkash_account" value="{{ old('deposit_bkash_account', $defaultSetting->deposit_bkash_account) }}" placeholder="Deposit Bkash Account">
                             @error('deposit_bkash_account')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="deposit_rocket_account" class="form-label">Deposit Rocket Account</label>
-                            <input type="text" class="form-control" id="deposit_rocket_account" name="deposit_rocket_account" value="{{ old('deposit_rocket_account', $defaultSetting->deposit_rocket_account) }}" placeholder="Deposit Rocket Account">
+                            <input type="number" class="form-control" id="deposit_rocket_account" name="deposit_rocket_account" value="{{ old('deposit_rocket_account', $defaultSetting->deposit_rocket_account) }}" placeholder="Deposit Rocket Account">
                             @error('deposit_rocket_account')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="deposit_nagad_account" class="form-label">Deposit Nagad Account</label>
-                            <input type="text" class="form-control" id="deposit_nagad_account" name="deposit_nagad_account" value="{{ old('deposit_nagad_account', $defaultSetting->deposit_nagad_account) }}" placeholder="Deposit Nagad Account">
+                            <input type="number" class="form-control" id="deposit_nagad_account" name="deposit_nagad_account" value="{{ old('deposit_nagad_account', $defaultSetting->deposit_nagad_account) }}" placeholder="Deposit Nagad Account">
                             @error('deposit_nagad_account')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
