@@ -53,7 +53,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Last Login</th>
-                                <td>Created At</td>
+                                <th>Created At</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -80,13 +80,13 @@
 
                             <!-- Status Modal -->
                             <div class="modal fade statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
+                                <div class="modal-dialog modal-xl">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="statusModalLabel">Status</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                         </div>
-                                        <div class="modal-body" id="modalBody">
+                                        <div class="modal-body" id="statusModalBody">
 
                                         </div>
                                         <div class="modal-footer">
@@ -156,20 +156,20 @@
                 url: url,
                 type: "GET",
                 success: function (response) {
-                    $('#modalBody').html(response);
+                    $('#statusModalBody').html(response);
                 },
             });
         });
 
         // Update Data
-        $('#editForm').submit(function (event) {
-            event.preventDefault();
+        $("body").on("submit", "#statusForm", function(e){
+            e.preventDefault();
             var id = $('#user_id').val();
-            var url = "{{ route('backend.user.update', ":id") }}";
+            var url = "{{ route('backend.user.status.update', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
-                type: "PUT",
+                type: "POST",
                 data: $(this).serialize(),
                 beforeSend:function(){
                     $(document).find('span.error-text').text('');
@@ -180,13 +180,14 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $(".editModal").modal('hide');
+                        $('#statusForm')[0].reset();
+                        $(".statusModal").modal('hide');
                         $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('User update successfully.');
+                        toastr.success('User status update successfully.');
                     }
                 },
             });
-        });
+        })
 
         // Soft Delete Data
         $(document).on('click', '.deleteBtn', function(){

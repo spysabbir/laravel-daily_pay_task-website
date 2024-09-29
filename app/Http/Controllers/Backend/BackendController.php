@@ -17,7 +17,9 @@ use Intervention\Image\Drivers\Gd\Driver;
 use App\Events\SupportEvent;
 use App\Models\Contact;
 use App\Models\JobPost;
+use App\Models\UserStatus;
 use App\Models\Withdraw;
+use App\Notifications\UserStatusNotification;
 
 class BackendController extends Controller
 {
@@ -79,7 +81,7 @@ class BackendController extends Controller
                 })
                 ->editColumn('status', function ($row) {
                     return '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Check Status</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -119,7 +121,6 @@ class BackendController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
                     <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                     <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
                     ';
@@ -153,15 +154,19 @@ class BackendController extends Controller
                         <span class="badge text-info bg-dark">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
+                ->editColumn('status', function ($row) {
+                    return '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>
+                        ';
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
                     <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                     <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
                     ';
                 return $btn;
                 })
-                ->rawColumns(['last_login', 'created_at', 'action'])
+                ->rawColumns(['last_login', 'created_at', 'status', 'action'])
                 ->make(true);
         }
 
@@ -189,15 +194,19 @@ class BackendController extends Controller
                         <span class="badge text-info bg-dark">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
+                ->editColumn('status', function ($row) {
+                    return '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>
+                        ';
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
                     <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                     <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
                     ';
                 return $btn;
                 })
-                ->rawColumns(['last_login', 'created_at', 'action'])
+                ->rawColumns(['last_login', 'created_at', 'status', 'action'])
                 ->make(true);
         }
 
@@ -213,31 +222,44 @@ class BackendController extends Controller
     public function userStatus(string $id)
     {
         $user = User::where('id', $id)->first();
-        return view('backend.user.status', compact('user'));
+        $userStatuses = UserStatus::where('user_id', $id)->get();
+        return view('backend.user.status', compact('user', 'userStatuses'));
     }
 
-    public function userUpdate(Request $request, string $id)
+    public function userStatusUpdate(Request $request, string $id)
     {
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'status' => 'required',
-        ]);
+            'reason' => 'required',
+        ];
+
+        if ($request->status == 'Blocked') {
+            $rules['blocked_duration'] = 'required|date';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 400,
-                'error' => $validator->errors()->toArray()
-            ]);
-        } else {
-            $user = User::findOrFail($id);
-            $user->update([
-                'status' => $request->status,
-                'updated_by' => auth()->user()->id,
-            ]);
-
-            return response()->json([
-                'status' => 200,
-            ]);
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         }
+
+        $userStatus = UserStatus::create([
+            'user_id' => $id,
+            'status' => $request->status,
+            'reason' => $request->reason,
+            'blocked_duration' => $request->blocked_duration ?? null,
+            'created_by' => auth()->user()->id,
+            'created_at' => now(),
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->notify(new UserStatusNotification($userStatus));
+
+        $user = User::findOrFail($id);
+        $user->status = $request->status;
+        $user->save();
+
+        return response()->json(['status' => 200, 'message' => 'User status updated successfully']);
     }
 
     public function userDestroy(string $id)

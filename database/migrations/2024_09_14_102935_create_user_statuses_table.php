@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('status', ['Active', 'Blocked', 'Banned']);
             $table->text('reason');
-            $table->timestamp('expiry_date')->nullable();
+            $table->timestamp('blocked_duration')->nullable();
+            $table->timestamp('blocked_resolved')->nullable();
             $table->foreignId('created_by')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
         });

@@ -51,7 +51,7 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('user/active', [BackendController::class, 'userActiveList'])->name('user.active');
     Route::get('user/show/{id}', [BackendController::class, 'userView'])->name('user.show');
     Route::get('user/status/{id}', [BackendController::class, 'userStatus'])->name('user.status');
-    Route::put('user/update/{id}', [BackendController::class, 'userUpdate'])->name('user.update');
+    Route::post('user/status/update/{id}', [BackendController::class, 'userStatusUpdate'])->name('user.status.update');
     Route::delete('user/destroy/{id}', [BackendController::class, 'userDestroy'])->name('user.destroy');
     Route::get('user/trash', [BackendController::class, 'userTrash'])->name('user.trash');
     Route::get('user/restore/{id}', [BackendController::class, 'userRestore'])->name('user.restore');
