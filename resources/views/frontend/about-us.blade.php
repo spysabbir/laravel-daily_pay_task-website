@@ -13,9 +13,9 @@
                         <h2>How We Started</h2>
                     </div>
 
-                    <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+                    <p>Micro Tasks Portal was founded to provide individuals with flexible earning opportunities in a fast-paced digital world. Inspired by the gig economy, we aimed to create a user-friendly platform where anyone can complete simple tasks and earn extra income. Our mission is to empower users to maximize their potential!</p>
 
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
+                    <p>Micro Tasks Portal was created to empower individuals to earn money easily by completing simple tasks in their spare time.</p>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -40,8 +40,8 @@
                 <div class="use-text">
                     <span>1</span>
                     <i class='flaticon-website'></i>
-                    <h3>Browse Job</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
+                    <h3>Simple Registration</h3>
+                    <p>Quickly create your account with an easy sign-up process to start exploring tasks.</p>
                 </div>
             </div>
 
@@ -49,8 +49,8 @@
                 <div class="use-text">
                     <span>2</span>
                     <i class='flaticon-recruitment'></i>
-                    <h3>Find Your Vaccancy</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
+                    <h3>Intuitive Navigation</h3>
+                    <p>Effortlessly browse and filter tasks by category or popularity to find what suits you best.</p>
                 </div>
             </div>
 
@@ -58,8 +58,8 @@
                 <div class="use-text">
                     <span>3</span>
                     <i class='flaticon-login'></i>
-                    <h3>Submit Resume</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
+                    <h3>Fast Completion and Payout</h3>
+                    <p>Complete tasks at your own pace and enjoy prompt payouts for your efforts.</p>
                 </div>
             </div>
         </div>
@@ -72,31 +72,31 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>Why You Choose Us Among Other Job Site?</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus</p>
+            <p>Micro Tasks Portal stands out with its user-friendly interface, diverse task offerings, and quick payouts. Enjoy flexible earning opportunities that fit your schedule, along with a supportive community that helps you maximize your income effortlessly. Join us today!</p>
         </div>
 
         <div class="row">
             <div class="col-lg-4 col-sm-6">
                 <div class="choose-card">
                     <i class="flaticon-resume"></i>
-                    <h3>Advertise Job</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore   </p>
+                    <h3>User-Friendly Experience</h3>
+                    <p>Our platform is designed for simplicity, making it easy for users to find and complete tasks quickly. A seamless interface ensures you spend less time navigating and more time earning.</p>
                 </div>
             </div>
 
             <div class="col-lg-4 col-sm-6">
                 <div class="choose-card">
                     <i class="flaticon-recruitment"></i>
-                    <h3>Recruiter Profiles</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore   </p>
+                    <h3>Diverse Opportunities</h3>
+                    <p>We offer a wide range of tasks tailored to different skills and interests, from surveys and data entry to content moderation. This variety keeps your earning potential high and your experience engaging.</p>
                 </div>
             </div>
 
             <div class="col-lg-4 col-sm-6 offset-sm-3 offset-lg-0">
                 <div class="choose-card">
                     <i class="flaticon-employee"></i>
-                    <h3>Find Your Dream Job</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore   </p>
+                    <h3>Quick Payouts</h3>
+                    <p>At Micro Tasks Portal, we prioritize timely payments. Enjoy hassle-free earnings with fast payout options, ensuring you receive your rewards as soon as possible, making your efforts truly worthwhile.</p>
                 </div>
             </div>
         </div>
@@ -114,14 +114,12 @@
                         <h2>Grow Your Business Faster With Premium Advertising</h2>
                     </div>
 
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy.
-                    </p>
+                    <p>Unlock your brand’s potential with premium advertising on Micro Tasks Portal. Reach a targeted audience eager to engage with your services. Our platform offers flexible ad placements, allowing you to showcase your offerings effectively. Boost visibility, drive traffic, and accelerate growth with our tailored advertising solutions today!</p>
 
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. Consectetur adipiscing elit.
-                    </p>
+                    <p>Accelerate your business growth with premium advertising on Micro Tasks Portal. Connect with a targeted audience and showcase your services effectively. Enjoy flexible ad placements that enhance visibility and drive traffic, helping you achieve your marketing goals quickly and efficiently!</p>
 
                     <div class="theme-btn">
-                        <a href="#" class="default-btn">Checkout More</a>
+                        <a href="{{ route('contact.us') }}" class="default-btn">Contact Us</a>
                     </div>
                 </div>
             </div>
@@ -143,32 +141,29 @@
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
                     <i class="flaticon-resume"></i>
-                    <h2><span>1225</span></h2>
-                    <p>Job Posted</p>
+                    <h2><span>{{ $totalJobPosts }}</span></h2>
+                    <p>Total Job Post</p>
                 </div>
             </div>
-
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
                     <i class="flaticon-recruitment"></i>
-                    <h2><span>145</span></h2>
-                    <p>Job Filed</p>
+                    <h2><span>{{ $runningJobPosts }}</span></h2>
+                    <p>Running Job</p>
                 </div>
             </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="counter-text">
-                    <i class="flaticon-portfolio"></i>
-                    <h2><span>170</span></h2>
-                    <p>Company</p>
-                </div>
-            </div>
-
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
                     <i class="flaticon-employee"></i>
-                    <h2><span>125</span></h2>
-                    <p>Members</p>
+                    <h2><span>{{ $totalUser }}</span></h2>
+                    <p>Total User</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="counter-text">
+                    <i class="flaticon-portfolio"></i>
+                    <h2><span>{{ $totalWithdrawal }}</span></h2>
+                    <p>Total Withdrawal</p>
                 </div>
             </div>
         </div>
@@ -181,12 +176,12 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>What Client’s Say About Us</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+            <p>Clients love Micro Tasks Portal for its user-friendly design and diverse task selection. They highlight the quick payouts and flexible earning opportunities, enabling them to maximize their income effortlessly. Our supportive community keeps them engaged and motivated to succeed!</p>
         </div>
 
         <div class="row">
             <div class="testimonial-slider-two owl-carousel owl-theme">
-                @forelse ($testimonials as $testimonial)
+                @foreach ($testimonials as $testimonial)
                 <div class="testimonial-items">
                     <div class="testimonial-text">
                         <i class='flaticon-left-quotes-sign'></i>
@@ -197,18 +192,7 @@
                         <p>{{ $testimonial->designation }}</p>
                     </div>
                 </div>
-                @empty
-                <div class="testimonial-items">
-                    <div class="testimonial-text">
-                        <i class='flaticon-left-quotes-sign'></i>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
-                    </div>
-                    <div class="testimonial-info-text">
-                        <h3>John Doe</h3>
-                        <p>Web Developer</p>
-                    </div>
-                </div>
-                @endforelse
+                @endforeach
             </div>
         </div>
     </div>

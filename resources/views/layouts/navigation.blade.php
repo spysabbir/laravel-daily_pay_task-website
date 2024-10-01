@@ -217,16 +217,16 @@
                 </a>
                 <div class="collapse" id="SubscriberMenu">
                     <ul class="nav sub-menu">
-                        {{-- @can('subscriber.index') --}}
+                        @can('subscriber.index')
                         <li class="nav-item">
                             <a href="{{ route('backend.subscriber.index') }}" class="nav-link">Subscriber</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('subscriber.newsletter') --}}
+                        @endcan
+                        @can('subscriber.newsletter')
                         <li class="nav-item">
                             <a href="{{ route('backend.subscriber.newsletter') }}" class="nav-link">Newsletter</a>
                         </li>
-                        {{-- @endcan --}}
+                        @endcan
                     </ul>
                 </div>
             </li>

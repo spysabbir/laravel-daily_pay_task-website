@@ -28,6 +28,11 @@
                                                     <td>Sl No</td>
                                                     <th>User Id</th>
                                                     <th>User Name</th>
+                                                    <th>Method</th>
+                                                    <th>Number</th>
+                                                    <th>Transaction Id</th>
+                                                    <th>Amount</th>
+                                                    <th>Created At</th>
                                                     <th>Rejected Reason</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
@@ -56,9 +61,9 @@
                                 <th>Sl No</th>
                                 <th>User Id</th>
                                 <th>User Name</th>
-                                <th>Deposit Amount</th>
                                 <th>Method</th>
                                 <th>Number</th>
+                                <th>Deposit Amount</th>
                                 <th>Transaction Id</th>
                                 <th>Created At</th>
                                 <th>Action</th>
@@ -113,10 +118,10 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
-                { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number' },
                 { data: 'transaction_id', name: 'transaction_id' },
+                { data: 'amount', name: 'amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
@@ -156,8 +161,9 @@
                         })
                     }else{
                         if (response.status == 401) {
-                            toastr.error(response.error);
+                            $('.update_rejected_reason_error').text(response.error);
                         }else{
+                            $(".rejectedData").modal('hide');
                             $('#pendingDataTable').DataTable().ajax.reload();
                             $('#rejectedDataTable').DataTable().ajax.reload();
                             $(".viewModal").modal('hide');
@@ -180,6 +186,11 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
+                { data: 'method', name: 'method' },
+                { data: 'number', name: 'number' },
+                { data: 'transaction_id', name: 'transaction_id' },
+                { data: 'amount', name: 'amount' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'rejected_at', name: 'rejected_at' },

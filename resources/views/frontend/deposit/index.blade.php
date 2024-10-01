@@ -45,7 +45,7 @@
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Deposit Amount</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="amount" name="amount" placeholder="Deposit Amount">
+                                                <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_deposit_amount') }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount">
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                             <small class="text-info">Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
@@ -85,12 +85,23 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="status">Status</label>
+                                <label for="status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Pending">Pending</option>
                                     <option value="Approved">Approved</option>
                                     <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="method" class="form-label">Deposit Method</label>
+                                <select class="form-select filter_data" id="filter_method">
+                                    <option value="">-- Select Deposit Method --</option>
+                                    <option value="Bkash">Bkash</option>
+                                    <option value="Nagad">Nagad</option>
+                                    <option value="Rocket">Rocket</option>
                                 </select>
                             </div>
                         </div>
@@ -101,10 +112,10 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Amount</th>
                                 <th>Deposit Method</th>
                                 <th>Deposit Number</th>
                                 <th>Transaction Id</th>
+                                <th>Amount</th>
                                 <th>Created At</th>
                                 <td>Status</td>
                             </tr>
@@ -138,14 +149,15 @@
                 url: "{{ route('deposit') }}",
                 data: function (e) {
                     e.status = $('#filter_status').val();
+                    e.method = $('#filter_method').val();
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number'},
                 { data: 'transaction_id', name: 'transaction_id' },
+                { data: 'amount', name: 'amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'status', name: 'status' },
             ]

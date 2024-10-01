@@ -37,7 +37,11 @@ class FrontendController extends Controller
     public function aboutUs()
     {
         $testimonials = Testimonial::where('status', 'Active')->get();
-        return view('frontend/about-us', compact('testimonials'));
+        $totalJobPosts = JobPost::count();
+        $runningJobPosts = JobPost::where('status', 'Running')->count();
+        $totalUser = User::count();
+        $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
+        return view('frontend/about-us', compact('testimonials', 'totalJobPosts', 'runningJobPosts', 'totalUser', 'totalWithdrawal'));
     }
 
     public function contactUs()

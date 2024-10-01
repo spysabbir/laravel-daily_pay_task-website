@@ -9,12 +9,12 @@
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
-                                <td>Full Name</td>
-                                <td>{{ $deposit->user->name }}</td>
+                                <td>User ID</td>
+                                <td>{{ $deposit->user->id }}</td>
                             </tr>
                             <tr>
-                                <td>Deposit Amount</td>
-                                <td>{{ $deposit->amount }}</td>
+                                <td>Full Name</td>
+                                <td>{{ $deposit->user->name }}</td>
                             </tr>
                             <tr>
                                 <td>Deposit Method</td>
@@ -27,6 +27,12 @@
                             <tr>
                                 <td>Transaction ID</td>
                                 <td>{{ $deposit->transaction_id }}</td>
+                            </tr>
+                            <tr>
+                                <td>Deposit Amount</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ get_site_settings('site_currency_symbol') . ' ' .$deposit->amount }}</span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Created At</td>
@@ -61,6 +67,7 @@
                     <div class="mb-3" id="rejected_reason_div" style="display: none;">
                         <label for="deposit_rejected_reason" class="form-label">Rejected Reason</label>
                         <textarea class="form-control" id="deposit_rejected_reason" name="rejected_reason" rows="4" placeholder="Rejected Reason"></textarea>
+                        <span class="text-danger error-text update_rejected_reason_error"></span>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>

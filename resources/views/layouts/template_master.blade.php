@@ -62,7 +62,7 @@
         <nav class="sidebar">
             <div class="sidebar-header">
                 <a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}" class="sidebar-brand">
-                    <span>{{ config('app.name') }}</span>
+                    <img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="{{ config('app.name') }} logo">
                 </a>
                 <div class="sidebar-toggler not-active">
                     <span></span>
@@ -98,7 +98,7 @@
                         <div class="badge bg-primary mx-1">
                             <h5 class="">Deposit Balance: <strong class="bg-dark px-1 rounded">{{ get_site_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}</strong></h5>
                         </div>
-                        <div class="badge bg-success mx-1">
+                        <div class="badge bg-success mx-1" id="withdraw_balance_div">
                             <h5 class="">Withdraw Balance: <strong class="bg-dark px-1 rounded">{{ get_site_settings('site_currency_symbol') }} {{ auth::user()->withdraw_balance }}</strong></h5>
                         </div>
                     </div>

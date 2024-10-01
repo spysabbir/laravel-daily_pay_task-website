@@ -96,12 +96,33 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="status">Status</label>
+                                <label for="filter_type" class="form-label">Withdraw Type</label>
+                                <select class="form-select filter_data" id="filter_type">
+                                    <option value="">-- Select Withdraw Type --</option>
+                                    <option value="Ragular">Ragular</option>
+                                    <option value="Instant">Instant</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Pending">Pending</option>
                                     <option value="Approved">Approved</option>
                                     <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_method" class="form-label">Deposit Method</label>
+                                <select class="form-select filter_data" id="filter_method">
+                                    <option value="">-- Select Deposit Method --</option>
+                                    <option value="Bkash">Bkash</option>
+                                    <option value="Nagad">Nagad</option>
+                                    <option value="Rocket">Rocket</option>
                                 </select>
                             </div>
                         </div>
@@ -113,9 +134,9 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>Withdraw Type</th>
-                                <th>Withdraw Amount</th>
                                 <th>Withdraw Method</th>
                                 <th>Withdraw Number</th>
+                                <th>Withdraw Amount</th>
                                 <th>Payable Amount</th>
                                 <th>Created At</th>
                                 <td>Status</td>
@@ -179,14 +200,16 @@
                 url: "{{ route('withdraw') }}",
                 data: function (e) {
                     e.status = $('#filter_status').val();
+                    e.method = $('#filter_method').val();
+                    e.type = $('#filter_type').val();
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'type', name: 'type' },
-                { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number'},
+                { data: 'amount', name: 'amount' },
                 { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'status', name: 'status' },
@@ -238,6 +261,7 @@
                             $('.createModel').modal('hide');
                             $('#createForm')[0].reset();
                             $('#allDataTable').DataTable().ajax.reload();
+                            $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
                             toastr.success('Withdraw request sent successfully.');
                         }else{
                             toastr.error(response.error);

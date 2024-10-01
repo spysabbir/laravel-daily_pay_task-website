@@ -28,6 +28,9 @@ class DepositController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
                 ->editColumn('created_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
@@ -39,7 +42,7 @@ class DepositController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_name', 'created_at', 'action'])
+                ->rawColumns(['user_name', 'amount', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -111,6 +114,9 @@ class DepositController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
                 ->editColumn('rejected_by', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . $row->rejectedBy->name . '</span>
@@ -121,13 +127,25 @@ class DepositController extends Controller
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->rejected_at)) . '</span>
                         ';
                 })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
+                        <form method="POST" style="display:inline;" id="editForm">
+                            <input type="hidden" id="deposit_id" value="' . $row->id . '">
+                            <input type="hidden" name="_token" value="' . csrf_token() . '">
+                            <input type="hidden" name="_method" value="PUT">
+                            <input type="hidden" name="status" value="Approved">
+                            <button type="submit" class="btn btn-success btn-xs">Approve</button>
+                        </form>
                     ';
-                return $btn;
+                    return $btn;
                 })
-                ->rawColumns(['user_name', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_name', 'amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
@@ -150,6 +168,9 @@ class DepositController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
                 ->editColumn('approved_by', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . $row->approvedBy->name . '</span>
@@ -160,7 +181,7 @@ class DepositController extends Controller
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
-                ->rawColumns(['user_name', 'approved_by', 'approved_at'])
+                ->rawColumns(['user_name', 'amount', 'approved_by', 'approved_at'])
                 ->make(true);
         }
 

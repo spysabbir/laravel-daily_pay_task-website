@@ -167,23 +167,46 @@ class UserController extends Controller
                     $query->where('deposits.status', $request->status);
                 }
 
+                if ($request->method){
+                    $query->where('deposits.method', $request->method);
+                }
+
                 $query->select('deposits.*')->orderBy('created_at', 'desc');
 
                 $deposits = $query->get();
 
                 return DataTables::of($deposits)
                     ->addIndexColumn()
+                    ->editColumn('amount', function ($row) {
+                        return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                    })
+                    ->editColumn('method', function ($row) {
+                        if ($row->method == 'Bkash') {
+                            $method = '
+                            <span class="badge bg-primary">' . $row->method . '</span>
+                            ';
+                        } else if ($row->method == 'Nagad') {
+                            $method = '
+                            <span class="badge bg-success">' . $row->method . '</span>
+                            ';
+                        } else {
+                            $method = '
+                            <span class="badge bg-info">' . $row->method . '</span>
+                            ';
+                        }
+                        return $method;
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
                             $status = '
-                            <span class="badge bg-success">' . $row->status . '</span>
+                            <span class="badge bg-info text-white">' . $row->status . '</span>
                             ';
                         } else if ($row->status == 'Approved') {
                             $status = '
-                            <span class="badge text-white bg-info">' . $row->status . '</span>
+                            <span class="badge bg-success">' . $row->status . '</span>
                             ';
                         } else {
                             $status = '
@@ -192,7 +215,7 @@ class UserController extends Controller
                         }
                         return $status;
                     })
-                    ->rawColumns(['created_at', 'status'])
+                    ->rawColumns(['method', 'amount', 'created_at', 'status'])
                     ->make(true);
             }
 
@@ -258,6 +281,14 @@ class UserController extends Controller
                     $query->where('withdraws.status', $request->status);
                 }
 
+                if ($request->method){
+                    $query->where('withdraws.method', $request->method);
+                }
+
+                if ($request->type){
+                    $query->where('withdraws.type', $request->type);
+                }
+
                 $query->select('withdraws.*')->orderBy('created_at', 'desc');
 
                 $withdraws = $query->get();
@@ -276,17 +307,39 @@ class UserController extends Controller
                         }
                         return $type;
                     })
+                    ->editColumn('amount', function ($row) {
+                        return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                    })
+                    ->editColumn('payable_amount', function ($row) {
+                        return '<span class="badge bg-dark">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                    })
+                    ->editColumn('method', function ($row) {
+                        if ($row->method == 'Bkash') {
+                            $method = '
+                            <span class="badge bg-primary">' . $row->method . '</span>
+                            ';
+                        } else if ($row->method == 'Nagad') {
+                            $method = '
+                            <span class="badge bg-success">' . $row->method . '</span>
+                            ';
+                        } else {
+                            $method = '
+                            <span class="badge bg-info">' . $row->method . '</span>
+                            ';
+                        }
+                        return $method;
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
                             $status = '
-                            <span class="badge bg-success">' . $row->status . '</span>
+                            <span class="badge bg-info text-white">' . $row->status . '</span>
                             ';
                         } else if ($row->status == 'Approved') {
                             $status = '
-                            <span class="badge text-white bg-info">' . $row->status . '</span>
+                            <span class="badge bg-success">' . $row->status . '</span>
                             ';
                         } else {
                             $status = '
@@ -295,7 +348,7 @@ class UserController extends Controller
                         }
                         return $status;
                     })
-                    ->rawColumns(['type', 'created_at', 'status'])
+                    ->rawColumns(['type', 'method', 'amount', 'payable_amount', 'created_at', 'status'])
                     ->make(true);
             }
 
@@ -354,6 +407,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 200,
+            'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
         ]);
     }
 
@@ -395,10 +449,13 @@ class UserController extends Controller
                         </a>
                     ';
                     })
+                    ->editColumn('amount', function ($row) {
+                        return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
-                    ->rawColumns(['type', 'bonus_by', 'created_at'])
+                    ->rawColumns(['type', 'bonus_by', 'amount', 'created_at'])
                     ->make(true);
             }
 

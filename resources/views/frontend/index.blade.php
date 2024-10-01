@@ -34,7 +34,7 @@
                 <div class="why-choose-text pt-100 pb-70">
                     <div class="section-title">
                         <h2>Why You Choose {{ config('app.name') }}?</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus</p>
+                        <p>Micro Tasks Portal provides the flexibility to earn on your own schedule. Complete simple tasks for quick payouts, and enjoy a supportive community. Turn your spare time into cash and explore diverse opportunities to boost your income effortlessly!</p>
                     </div>
 
                     <div class="row">
@@ -42,8 +42,8 @@
                             <div class="media">
                                 <i class="flaticon-group align-self-top mr-3"></i>
                                 <div class="media-body">
-                                    <h5 class="mt-0">Best Talented People</h5>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                    <h5 class="mt-0">Flexibility</h5>
+                                    <p>Work on your own schedule and complete tasks whenever it’s convenient for you.</p>
                                 </div>
                             </div>
                         </div>
@@ -52,8 +52,8 @@
                             <div class="media">
                                 <i class="flaticon-research align-self-top mr-3"></i>
                                 <div class="media-body">
-                                    <h5 class="mt-0">Easy To Find Canditate</h5>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                    <h5 class="mt-0">Simple Tasks</h5>
+                                    <p>Enjoy a variety of easy-to-complete tasks that require minimal time and effort.</p>
                                 </div>
                             </div>
                         </div>
@@ -62,8 +62,8 @@
                             <div class="media">
                                 <i class="flaticon-discussion align-self-top mr-3"></i>
                                 <div class="media-body">
-                                    <h5 class="mt-0">Easy To Communicate</h5>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                    <h5 class="mt-0">Quick Earnings</h5>
+                                    <p>Start earning money immediately with fast payouts for completed tasks.</p>
                                 </div>
                             </div>
                         </div>
@@ -72,8 +72,8 @@
                             <div class="media">
                                 <i class="flaticon-recruitment align-self-top mr-3"></i>
                                 <div class="media-body">
-                                    <h5 class="mt-0">Global Recruitment Option</h5>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                    <h5 class="mt-0">Community Support</h5>
+                                    <p>Join a vibrant community of earners and share tips to maximize your profits.</p>
                                 </div>
                             </div>
                         </div>
@@ -94,7 +94,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>Popular Jobs Category</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices.</p>
+            <p>Discover our Popular Jobs Category at Micro Tasks Portal, featuring in-demand tasks like online surveys, data entry, and content moderation. These easy, rewarding opportunities cater to various skills and interests, making it simple to earn extra cash on your schedule!</p>
         </div>
 
         <div class="row">
@@ -120,7 +120,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>Jobs You May Be Interested In</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices.</p>
+            <p>Explore our curated list of tasks tailored to your skills and preferences. From online surveys to data entry, discover opportunities that match your interests. Find rewarding jobs that fit your schedule and start earning extra income today!</p>
         </div>
 
         <div class="row">
@@ -194,7 +194,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>Top Buyer</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+            <p>Meet our Top Buyer section, showcasing the most sought-after tasks on Micro Tasks Portal. These high-demand jobs offer excellent rewards and quick payouts. Join today to capitalize on popular opportunities and maximize your earnings with the best tasks available!</p>
         </div>
 
         <div class="row">
@@ -231,10 +231,10 @@
                     <div class="media">
                         <i class='flaticon-group align-self-start mr-3'></i>
                         <div class="media-body">
-                            <h5 class="mt-0">Looking For a Job</h5>
-                            <p>Your next role could be with one of these top leading organizations</p>
+                            <h5 class="mt-0">Looking For a Task</h5>
+                            <p>Browse our diverse selection of tasks tailored to your skills. Start earning extra income easily and conveniently today!</p>
 
-                            <a href="{{ route('login') }}">
+                            <a href="{{ route('find.works') }}">
                                 Apply Now
                                 <i class='bx bx-chevrons-right'></i>
                             </a>
@@ -248,10 +248,10 @@
                     <div class="media">
                         <i class='flaticon-resume align-self-start mr-3'></i>
                         <div class="media-body">
-                            <h5 class="mt-0">Are You Recruiting?</h5>
-                            <p>Your next role could be with one of these top leading organizations</p>
+                            <h5 class="mt-0">Posting a Task</h5>
+                            <p>Post your task and connect with skilled workers eager to complete your job. Get quality results and quick turnaround times!</p>
 
-                            <a href="{{ route('login') }}">
+                            <a href="{{ route('post.job') }}">
                                 Apply Now
                                 <i class='bx bx-chevrons-right'></i>
                             </a>
@@ -306,7 +306,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>What Client’s Say About Us</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus</p>
+            <p>Our clients love Micro Tasks Portal for its user-friendly interface and diverse task options. They appreciate the quick payouts and the flexibility to earn on their own schedules. Join our community and see why they keep coming back!</p>
         </div>
 
         <div class="row">
