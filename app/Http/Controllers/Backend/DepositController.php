@@ -17,6 +17,10 @@ class DepositController extends Controller
         if ($request->ajax()) {
             $query = Deposit::where('status', 'Pending');
 
+            if ($request->method){
+                $query->where('deposits.method', $request->method);
+            }
+
             $query->select('deposits.*')->orderBy('created_at', 'desc');
 
             $pendingRequest = $query->get();
@@ -28,12 +32,28 @@ class DepositController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('method', function ($row) {
+                    if ($row->method == 'Bkash') {
+                        $method = '
+                        <span class="badge bg-primary">' . $row->method . '</span>
+                        ';
+                    } else if ($row->method == 'Nagad') {
+                        $method = '
+                        <span class="badge bg-warning">' . $row->method . '</span>
+                        ';
+                    }else {
+                        $method = '
+                        <span class="badge bg-success">' . $row->method . '</span>
+                        ';
+                    }
+                    return $method;
+                })
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -42,7 +62,7 @@ class DepositController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_name', 'amount', 'created_at', 'action'])
+                ->rawColumns(['user_name', 'method', 'amount', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -114,8 +134,29 @@ class DepositController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('method', function ($row) {
+                    if ($row->method == 'Bkash') {
+                        $method = '
+                        <span class="badge bg-primary">' . $row->method . '</span>
+                        ';
+                    } else if ($row->method == 'Nagad') {
+                        $method = '
+                        <span class="badge bg-warning">' . $row->method . '</span>
+                        ';
+                    }else {
+                        $method = '
+                        <span class="badge bg-success">' . $row->method . '</span>
+                        ';
+                    }
+                    return $method;
+                })
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
                 })
                 ->editColumn('rejected_by', function ($row) {
                     return '
@@ -124,12 +165,7 @@ class DepositController extends Controller
                 })
                 ->editColumn('rejected_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->rejected_at)) . '</span>
-                        ';
-                })
-                ->editColumn('created_at', function ($row) {
-                    return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->rejected_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -145,7 +181,7 @@ class DepositController extends Controller
                     ';
                     return $btn;
                 })
-                ->rawColumns(['user_name', 'amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_name', 'method', 'amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
@@ -156,6 +192,10 @@ class DepositController extends Controller
     {
         if ($request->ajax()) {
             $query = Deposit::where('status', 'Approved');
+
+            if ($request->method){
+                $query->where('deposits.method', $request->method);
+            }
 
             $query->select('deposits.*')->orderBy('approved_at', 'desc');
 
@@ -168,20 +208,65 @@ class DepositController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('method', function ($row) {
+                    if ($row->method == 'Bkash') {
+                        $method = '
+                        <span class="badge bg-primary">' . $row->method . '</span>
+                        ';
+                    } else if ($row->method == 'Nagad') {
+                        $method = '
+                        <span class="badge bg-warning">' . $row->method . '</span>
+                        ';
+                    } else if ($row->method == 'Rocket') {
+                        $method = '
+                        <span class="badge bg-info">' . $row->method . '</span>
+                        ';
+                    } else {
+                        $method = '
+                        <span class="badge bg-success">' . $row->method . '</span>
+                        ';
+                    }
+                    return $method;
+                })
+                ->editColumn('number', function ($row) {
+                    if ($row->number) {
+                        $number = $row->number;
+                    } else {
+                        $number = 'N/A';
+                    }
+                    return $number;
+                })
+                ->editColumn('transaction_id', function ($row) {
+                    if ($row->transaction_id) {
+                        $transaction_id = $row->transaction_id;
+                    } else {
+                        $transaction_id = 'N/A';
+                    }
+                    return $transaction_id;
+                })
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
                 })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->format('d M Y h:i A');
+                })
                 ->editColumn('approved_by', function ($row) {
-                    return '
-                        <span class="badge text-dark bg-light">' . $row->approvedBy->name . '</span>
-                        ';
+                    if ($row->approvedBy) {
+                        return '
+                            <span class="badge text-dark bg-light">' . $row->approvedBy->name . '</span>'
+                            ;
+                    } else {
+                        return '
+                            <span class="badge text-warning bg-light">N/A</span>'
+                            ;
+                    }
                 })
                 ->editColumn('approved_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->approved_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
-                ->rawColumns(['user_name', 'amount', 'approved_by', 'approved_at'])
+                ->rawColumns(['user_name', 'method', 'number', 'transaction_id', 'amount', 'approved_by', 'approved_at'])
                 ->make(true);
         }
 

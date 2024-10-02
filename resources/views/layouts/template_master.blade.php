@@ -95,7 +95,7 @@
 					</form>
                     @if (auth()->user()->user_type === 'Frontend')
                     <div class="d-xl-flex py-xl-3">
-                        <div class="badge bg-primary mx-1">
+                        <div class="badge bg-primary mx-1" id="deposit_balance_div">
                             <h5 class="">Deposit Balance: <strong class="bg-dark px-1 rounded">{{ get_site_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}</strong></h5>
                         </div>
                         <div class="badge bg-success mx-1" id="withdraw_balance_div">

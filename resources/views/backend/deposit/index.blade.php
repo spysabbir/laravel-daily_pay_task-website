@@ -32,7 +32,7 @@
                                                     <th>Number</th>
                                                     <th>Transaction Id</th>
                                                     <th>Amount</th>
-                                                    <th>Created At</th>
+                                                    <th>Submitted Date</th>
                                                     <th>Rejected Reason</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
@@ -54,6 +54,19 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="method" class="form-label">Deposit Method</label>
+                            <select class="form-select filter_data" id="filter_method">
+                                <option value="">-- Select Deposit Method --</option>
+                                <option value="Bkash">Bkash</option>
+                                <option value="Nagad">Nagad</option>
+                                <option value="Rocket">Rocket</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="pendingDataTable" class="table">
                         <thead>
@@ -63,9 +76,9 @@
                                 <th>User Name</th>
                                 <th>Method</th>
                                 <th>Number</th>
-                                <th>Deposit Amount</th>
                                 <th>Transaction Id</th>
-                                <th>Created At</th>
+                                <th>Deposit Amount</th>
+                                <th>Submitted Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -113,6 +126,9 @@
             searching: true,
             ajax: {
                 url: "{{ route('backend.deposit.request') }}",
+                data: function (e) {
+                    e.method = $('#filter_method').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -125,6 +141,11 @@
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#pendingDataTable').DataTable().ajax.reload();
         });
 
         // View Data

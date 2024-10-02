@@ -9,16 +9,16 @@
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
+                                <td>User ID</td>
+                                <td>{{ $withdraw->user->id }}</td>
+                            </tr>
+                            <tr>
                                 <td>Full Name</td>
                                 <td>{{ $withdraw->user->name }}</td>
                             </tr>
                             <tr>
                                 <td>Type</td>
                                 <td>{{ $withdraw->type }}</td>
-                            </tr>
-                            <tr>
-                                <td>Withdraw Amount</td>
-                                <td>{{ $withdraw->amount }}</td>
                             </tr>
                             <tr>
                                 <td>Withdraw Method</td>
@@ -29,12 +29,20 @@
                                 <td>{{ $withdraw->number }}</td>
                             </tr>
                             <tr>
-                                <td>Payable Amount</td>
-                                <td>{{ $withdraw->payable_amount }}</td>
+                                <td>Withdraw Amount</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ get_site_settings('site_currency_symbol') . ' ' .$withdraw->amount }}</span>
+                                </td>
                             </tr>
                             <tr>
-                                <td>Created At</td>
-                                <td>{{ $withdraw->created_at }}</td>
+                                <td>Payable Amount</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ get_site_settings('site_currency_symbol') . ' ' .$withdraw->payable_amount }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Submitted Date</td>
+                                <td>{{ $withdraw->created_at->format('d M Y h:i A') }}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('deposits', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->decimal('amount', 10, 2);
             $table->string('method');
-            $table->string('number');
-            $table->string('transaction_id');
+            $table->string('number')->nullable();
+            $table->string('transaction_id')->nullable();
+            $table->decimal('amount', 10, 2);
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
             $table->text('rejected_reason')->nullable();
             $table->foreignId('approved_by')->nullable();

@@ -10,6 +10,22 @@
                 <h3 class="card-title">Deposit Request (Approved)</h3>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="method" class="form-label">Deposit Method</label>
+                                <select class="form-select filter_data" id="filter_method">
+                                    <option value="">-- Select Deposit Method --</option>
+                                    <option value="Bkash">Bkash</option>
+                                    <option value="Nagad">Nagad</option>
+                                    <option value="Rocket">Rocket</option>
+                                    <option value="Withdrawal Balance">Withdrawal Balance</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="approvedDataTable" class="table">
                         <thead>
@@ -21,6 +37,7 @@
                                 <th>Number</th>
                                 <th>Transaction Id</th>
                                 <th>Amount</th>
+                                <th>Submitted Date</th>
                                 <th>Approved By</th>
                                 <th>Approved At</th>
                             </tr>
@@ -52,6 +69,9 @@
             searching: true,
             ajax: {
                 url: "{{ route('backend.deposit.request.approved') }}",
+                data: function (e) {
+                    e.method = $('#filter_method').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -61,9 +81,15 @@
                 { data: 'number', name: 'number' },
                 { data: 'transaction_id', name: 'transaction_id' },
                 { data: 'amount', name: 'amount' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'approved_by', name: 'approved_by' },
                 { data: 'approved_at', name: 'approved_at' },
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#approvedDataTable').DataTable().ajax.reload();
         });
     });
 </script>

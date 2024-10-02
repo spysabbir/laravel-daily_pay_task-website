@@ -10,6 +10,31 @@
                 <h3 class="card-title">Withdraw Request (Approved)</h3>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_type" class="form-label">Withdraw Type</label>
+                                <select class="form-select filter_data" id="filter_type">
+                                    <option value="">-- Select Withdraw Type --</option>
+                                    <option value="Ragular">Ragular</option>
+                                    <option value="Instant">Instant</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_method" class="form-label">Deposit Method</label>
+                                <select class="form-select filter_data" id="filter_method">
+                                    <option value="">-- Select Deposit Method --</option>
+                                    <option value="Bkash">Bkash</option>
+                                    <option value="Nagad">Nagad</option>
+                                    <option value="Rocket">Rocket</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="approvedDataTable" class="table">
                         <thead>
@@ -18,10 +43,11 @@
                                 <th>User Id</th>
                                 <th>User Name</th>
                                 <th>Type</th>
-                                <th>Withdraw Amount</th>
                                 <th>Method</th>
                                 <th>Number</th>
+                                <th>Withdraw Amount</th>
                                 <th>Payable Amount</th>
+                                <th>Submitted Date</th>
                                 <th>Approved By</th>
                                 <th>Approved At</th>
                             </tr>
@@ -53,19 +79,29 @@
             searching: true,
             ajax: {
                 url: "{{ route('backend.withdraw.request.approved') }}",
+                data: function (e) {
+                    e.method = $('#filter_method').val();
+                    e.type = $('#filter_type').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
                 { data: 'type', name: 'type' },
-                { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number' },
+                { data: 'amount', name: 'amount' },
                 { data: 'payable_amount', name: 'payable_amount' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'approved_by', name: 'approved_by' },
                 { data: 'approved_at', name: 'approved_at' },
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#approvedDataTable').DataTable().ajax.reload();
         });
     });
 </script>

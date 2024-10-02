@@ -19,7 +19,15 @@ class WithdrawController extends Controller
         if ($request->ajax()) {
             $query = Withdraw::where('status', 'Pending');
 
-            $query->select('withdraws.*')->orderBy('created_at', 'desc');
+            if ($request->method){
+                $query->where('withdraws.method', $request->method);
+            }
+
+            if ($request->type){
+                $query->where('withdraws.type', $request->type);
+            }
+
+            $query->select('withdraws.*')->orderBy('type', 'desc')->orderBy('created_at', 'desc');
 
             $pendingRequest = $query->get();
 
@@ -42,9 +50,31 @@ class WithdrawController extends Controller
                     }
                     return $type;
                 })
+                ->editColumn('method', function ($row) {
+                    if ($row->method == 'Bkash') {
+                        $method = '
+                        <span class="badge bg-primary">' . $row->method . '</span>
+                        ';
+                    } else if ($row->method == 'Nagad') {
+                        $method = '
+                        <span class="badge bg-success">' . $row->method . '</span>
+                        ';
+                    } else {
+                        $method = '
+                        <span class="badge bg-info">' . $row->method . '</span>
+                        ';
+                    }
+                    return $method;
+                })
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -53,7 +83,7 @@ class WithdrawController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_name', 'type', 'created_at', 'action'])
+                ->rawColumns(['user_name', 'type', 'method', 'amount', 'payable_amount', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -135,6 +165,45 @@ class WithdrawController extends Controller
                         <span class="badge text-dark bg-light">' . $row->user->name . '</span>
                         ';
                 })
+                ->editColumn('type', function ($row) {
+                    if ($row->type == 'Ragular') {
+                        $type = '
+                        <span class="badge bg-dark">' . $row->type . '</span>
+                        ';
+                    } else {
+                        $type = '
+                        <span class="badge bg-primary">' . $row->type . '</span>
+                        ';
+                    }
+                    return $type;
+                })
+                ->editColumn('method', function ($row) {
+                    if ($row->method == 'Bkash') {
+                        $method = '
+                        <span class="badge bg-primary">' . $row->method . '</span>
+                        ';
+                    } else if ($row->method == 'Nagad') {
+                        $method = '
+                        <span class="badge bg-success">' . $row->method . '</span>
+                        ';
+                    } else {
+                        $method = '
+                        <span class="badge bg-info">' . $row->method . '</span>
+                        ';
+                    }
+                    return $method;
+                })
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
                 ->editColumn('rejected_by', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . $row->rejectedBy->name . '</span>
@@ -148,10 +217,17 @@ class WithdrawController extends Controller
                 ->addColumn('action', function ($row) {
                     $btn = '
                     <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
+                    <form method="POST" style="display:inline;" id="editForm">
+                        <input type="hidden" id="withdraw_id" value="' . $row->id . '">
+                        <input type="hidden" name="_token" value="' . csrf_token() . '">
+                        <input type="hidden" name="_method" value="PUT">
+                        <input type="hidden" name="status" value="Approved">
+                        <button type="submit" class="btn btn-success btn-xs">Approve</button>
+                    </form>
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_name', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_name', 'type', 'method', 'amount', 'payable_amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
@@ -162,6 +238,14 @@ class WithdrawController extends Controller
     {
         if ($request->ajax()) {
             $query = Withdraw::where('status', 'Approved');
+
+            if ($request->method){
+                $query->where('withdraws.method', $request->method);
+            }
+
+            if ($request->type){
+                $query->where('withdraws.type', $request->type);
+            }
 
             $query->select('withdraws.*')->orderBy('approved_at', 'desc');
 
@@ -186,6 +270,33 @@ class WithdrawController extends Controller
                     }
                     return $type;
                 })
+                ->editColumn('method', function ($row) {
+                    if ($row->method == 'Bkash') {
+                        $method = '
+                        <span class="badge bg-primary">' . $row->method . '</span>
+                        ';
+                    } else if ($row->method == 'Nagad') {
+                        $method = '
+                        <span class="badge bg-success">' . $row->method . '</span>
+                        ';
+                    } else {
+                        $method = '
+                        <span class="badge bg-info">' . $row->method . '</span>
+                        ';
+                    }
+                    return $method;
+                })
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
                 ->editColumn('approved_by', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . $row->approvedBy->name . '</span>
@@ -196,7 +307,7 @@ class WithdrawController extends Controller
                         <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
-                ->rawColumns(['user_name', 'type', 'approved_by', 'approved_at'])
+                ->rawColumns(['user_name', 'type', 'method', 'amount', 'payable_amount', 'created_at', 'approved_by', 'approved_at'])
                 ->make(true);
         }
 

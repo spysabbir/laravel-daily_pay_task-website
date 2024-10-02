@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->enum('type', ['Ragular', 'Instant']);
-            $table->decimal('amount', 10, 2);
             $table->string('method');
             $table->string('number');
             $table->decimal('payable_amount', 10, 2);
+            $table->decimal('amount', 10, 2);
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
             $table->text('rejected_reason')->nullable();
             $table->foreignId('approved_by')->nullable();

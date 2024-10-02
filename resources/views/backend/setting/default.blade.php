@@ -75,6 +75,16 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="withdrawal_balance_deposit_charge_percentage" class="form-label">Withdrawal Balance Deposit Charge Percentage</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="withdrawal_balance_deposit_charge_percentage" name="withdrawal_balance_deposit_charge_percentage" value="{{ old('withdrawal_balance_deposit_charge_percentage', $defaultSetting->withdrawal_balance_deposit_charge_percentage) }}" placeholder="Withdrawal Balance Deposit Charge Percentage">
+                                <span class="input-group-text input-group-addon">%</span>
+                            </div>
+                            @error('withdrawal_balance_deposit_charge_percentage')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="instant_withdraw_charge" class="form-label">Instant Withdraw Charge</label>
                             <div class="input-group">
                                 <input type="number" class="form-control" id="instant_withdraw_charge" name="instant_withdraw_charge" value="{{ old('instant_withdraw_charge', $defaultSetting->instant_withdraw_charge) }}" placeholder="Instant Withdraw Charge">

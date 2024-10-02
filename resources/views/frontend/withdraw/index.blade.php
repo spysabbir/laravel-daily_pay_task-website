@@ -12,13 +12,13 @@
                     <p class="mb-0">You can Withdraw money by using Bkash, Nagad, Rocket. Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}. Withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }} %. Instant withdraw charge is {{ get_default_settings('instant_withdraw_charge') }} {{ get_site_settings('site_currency_symbol') }}. After submitting the withdraw request, the admin will verify your request and send the money to your account number. If you have any problem, please contact the admin.</p>
                 </div>
                 <div class="action-btn">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel">Withdraw <i data-feather="plus-circle"></i></button>
                     <!-- Create Modal -->
                     <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="createModelLabel">Create</h5>
+                                    <h5 class="modal-title" id="createModelLabel">Withdraw</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                 </div>
                                 <form class="forms-sample" id="createForm">
@@ -32,8 +32,8 @@
                                                 <option value="Instant">Instant</option>
                                             </select>
                                             <small class="text-info d-block">
-                                                <strong id="ragular">Withdraw request will be processed within 24 hours.</strong>
-                                                <strong id="instant">Withdraw request will be processed in 30 minutes. But you will be charged an extra {{ get_default_settings('instant_withdraw_charge') }} {{ get_site_settings('site_currency_symbol') }}.</strong>
+                                                <strong id="ragular">Note: Withdraw request will be processed within 24 hours.</strong>
+                                                <strong id="instant">Note: Withdraw request will be processed in 30 minutes. But you will be charged an extra {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}.</strong>
                                             </small>
                                             <span class="text-danger error-text type_error"></span>
                                         </div>
@@ -49,7 +49,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="number" class="form-label">Withdraw Number</label>
-                                            <input type="text" class="form-control" id="number" name="number" placeholder="Withdraw Number">
+                                            <input type="number" class="form-control" id="number" name="number" placeholder="Withdraw Number">
                                             <span class="text-danger error-text number_error"></span>
                                         </div>
                                         <div class="mb-3">
@@ -58,24 +58,27 @@
                                                 <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_withdraw_amount') }}" max="{{ get_default_settings('max_withdraw_amount') }}" placeholder="Withdraw Amount">
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
-                                            <small class="text-info d-block">Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
+                                            <small class="text-info d-block">Note: Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Withdraw Charge Percentage</label>
-                                            <input type="text" class="form-control" value="{{ get_default_settings('withdraw_charge_percentage') }} %" disabled>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" value="{{ get_default_settings('withdraw_charge_percentage') }}" disabled>
+                                                <span class="input-group-text input-group-addon">%</span>
+                                            </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Payable Amount</label>
+                                            <label class="form-label">Payable Withdraw Amount</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="payable_amount" placeholder="Payable Amount" disabled>
+                                                <input type="number" class="form-control" id="payable_withdraw_amount" placeholder="Payable Withdraw Amount" disabled>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Create</button>
+                                        <button type="submit" class="btn btn-primary">Withdraw</button>
                                     </div>
                                 </form>
                             </div>
@@ -106,23 +109,23 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_status" class="form-label">Status</label>
-                                <select class="form-select filter_data" id="filter_status">
-                                    <option value="">-- Select Status --</option>
-                                    <option value="Pending">Pending</option>
-                                    <option value="Approved">Approved</option>
-                                    <option value="Rejected">Rejected</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
                                 <label for="filter_method" class="form-label">Deposit Method</label>
                                 <select class="form-select filter_data" id="filter_method">
                                     <option value="">-- Select Deposit Method --</option>
                                     <option value="Bkash">Bkash</option>
                                     <option value="Nagad">Nagad</option>
                                     <option value="Rocket">Rocket</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_status" class="form-label">Status</label>
+                                <select class="form-select filter_data" id="filter_status">
+                                    <option value="">-- Select Status --</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Rejected">Rejected</option>
                                 </select>
                             </div>
                         </div>
@@ -138,8 +141,9 @@
                                 <th>Withdraw Number</th>
                                 <th>Withdraw Amount</th>
                                 <th>Payable Amount</th>
-                                <th>Created At</th>
-                                <td>Status</td>
+                                <th>Submitted Date</th>
+                                <th>Approved / Rejected Date</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -171,7 +175,7 @@
                 var amount = $('#amount').val();
                 var charge = {{ get_default_settings('withdraw_charge_percentage') }};
                 var payable_amount = amount - (amount * charge / 100);
-                $('#payable_amount').val(payable_amount);
+                $('#payable_withdraw_amount').val(payable_amount);
             }else if ($('#type').val() == 'Instant') {
                 $('#ragular').hide();
                 $('#instant').show();
@@ -180,9 +184,9 @@
                 var instant_withdraw_charge = {{ get_default_settings('instant_withdraw_charge') }};
                 var payable_amount = amount - (amount * charge / 100);
                 if(amount == ''){
-                        $('#payable_amount').val(payable_amount);
+                        $('#payable_withdraw_amount').val(payable_amount);
                     }else{
-                        $('#payable_amount').val(payable_amount - instant_withdraw_charge);
+                        $('#payable_withdraw_amount').val(payable_amount - instant_withdraw_charge);
                     }
             }else{
                 $('#ragular').hide();
@@ -212,6 +216,7 @@
                 { data: 'amount', name: 'amount' },
                 { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'approved_or_rejected_at', name: 'approved_or_rejected_at' },
                 { data: 'status', name: 'status' },
             ]
         });
@@ -230,12 +235,12 @@
 
             if ($('#type').val() == 'Instant') {
                 if(amount == ''){
-                    $('#payable_amount').val(payable_amount);
+                    $('#payable_withdraw_amount').val(payable_amount);
                 } else {
-                    $('#payable_amount').val(payable_amount - instant_withdraw_charge);
+                    $('#payable_withdraw_amount').val(payable_amount - instant_withdraw_charge);
                 }
             } else {
-                $('#payable_amount').val(payable_amount);
+                $('#payable_withdraw_amount').val(payable_amount);
             }
         });
 

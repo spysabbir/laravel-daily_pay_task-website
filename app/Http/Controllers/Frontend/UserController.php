@@ -187,17 +187,51 @@ class UserController extends Controller
                             ';
                         } else if ($row->method == 'Nagad') {
                             $method = '
-                            <span class="badge bg-success">' . $row->method . '</span>
+                            <span class="badge bg-warning">' . $row->method . '</span>
+                            ';
+                        } else if ($row->method == 'Rocket') {
+                            $method = '
+                            <span class="badge bg-info">' . $row->method . '</span>
                             ';
                         } else {
                             $method = '
-                            <span class="badge bg-info">' . $row->method . '</span>
+                            <span class="badge bg-success">' . $row->method . '</span>
                             ';
                         }
                         return $method;
                     })
+                    ->editColumn('number', function ($row) {
+                        if ($row->number) {
+                            $number = $row->number;
+                        } else {
+                            $number = 'N/A';
+                        }
+                        return $number;
+                    })
+                    ->editColumn('transaction_id', function ($row) {
+                        if ($row->transaction_id) {
+                            $transaction_id = $row->transaction_id;
+                        } else {
+                            $transaction_id = 'N/A';
+                        }
+                        return $transaction_id;
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
+                    })
+                    ->addColumn('approved_or_rejected_at', function ($row) {
+                        if ($row->status == 'Approved') {
+                            if ($row->method == 'Withdrawal Balance') {
+                                $date = date('d M Y h:i A', strtotime($row->created_at));
+                            } else {
+                                $date = date('d M Y h:i A', strtotime($row->approved_at));
+                            }
+                        } else if ($row->status == 'Rejected') {
+                            $date = date('d M Y h:i A', strtotime($row->rejected_at));
+                        } else {
+                            $date = 'N/A';
+                        }
+                        return $date;
                     })
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
@@ -215,7 +249,7 @@ class UserController extends Controller
                         }
                         return $status;
                     })
-                    ->rawColumns(['method', 'amount', 'created_at', 'status'])
+                    ->rawColumns(['method', 'number', 'amount', 'created_at', 'approved_or_rejected_at', 'status'])
                     ->make(true);
             }
 
@@ -227,11 +261,17 @@ class UserController extends Controller
 
     public function depositStore(Request $request)
     {
+        $minDepositAmount = get_default_settings('min_deposit_amount');
+        $maxDepositAmount = get_default_settings('max_deposit_amount');
+
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|numeric|min:1',
-            'method' => 'required|string|max:255',
-            'number' => 'required|string|min:11|max:14',
+            'amount' => "required|numeric|min:$minDepositAmount|max:$maxDepositAmount",
+            'method' => 'required|in:Bkash,Nagad,Rocket',
+            'number' => ['required', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
             'transaction_id' => 'required|string|max:255',
+        ],
+        [
+            'number.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
         ]);
 
         if($validator->fails()){
@@ -240,23 +280,62 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            if ($request->amount < get_default_settings('min_deposit_amount') || $request->amount > get_default_settings('max_deposit_amount')) {
+            Deposit::create([
+                'user_id' => $request->user()->id,
+                'amount' => $request->amount,
+                'method' => $request->method,
+                'number' => $request->number,
+                'transaction_id' => $request->transaction_id,
+                'status' => 'Pending',
+            ]);
+
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
+    }
+
+    public function withdrawalBalanceDepositStore(Request $request)
+    {
+        $minDepositAmount = get_default_settings('min_deposit_amount');
+        $maxDepositAmount = get_default_settings('max_deposit_amount');
+        $currencySymbol = get_site_settings('site_currency_symbol');
+
+        $validator = Validator::make($request->all(), [
+            'deposit_amount' => "required|numeric|min:$minDepositAmount|max:$maxDepositAmount",
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            if ($request->deposit_amount > $request->user()->withdraw_balance) {
                 return response()->json([
                     'status' => 401,
-                    'error'=> 'The amount must be between '.get_site_settings('site_currency_symbol') .get_default_settings('min_deposit_amount').' and '.get_site_settings('site_currency_symbol') .get_default_settings('max_deposit_amount') .' to deposit'
+                    'error'=> 'Insufficient balance in your account to deposit ' . $currencySymbol .' '. $request->deposit_amount .
+                            '. Your current balance is ' . $currencySymbol .' '. $request->user()->withdraw_balance
                 ]);
             }else {
+                $deposit_amount = $request->deposit_amount - ($request->deposit_amount * get_default_settings('withdrawal_balance_deposit_charge_percentage') / 100);
+
                 Deposit::create([
                     'user_id' => $request->user()->id,
-                    'amount' => $request->amount,
-                    'method' => $request->method,
-                    'number' => $request->number,
-                    'transaction_id' => $request->transaction_id,
-                    'status' => 'Pending',
+                    'method' => 'Withdrawal Balance',
+                    'amount' => $deposit_amount,
+                    'status' => 'Approved',
                 ]);
+
+                $request->user()->increment('deposit_balance', $deposit_amount);
+                $request->user()->decrement('withdraw_balance', $request->deposit_amount);
+                $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
 
                 return response()->json([
                     'status' => 200,
+                    'deposit_balance' => number_format($request->user()->deposit_balance, 2, '.', ''),
+                    'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
+                    'total_deposit' => $total_deposit,
                 ]);
             }
         }
@@ -332,6 +411,16 @@ class UserController extends Controller
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
+                    ->addColumn('approved_or_rejected_at', function ($row) {
+                        if ($row->status == 'Approved') {
+                            $date = date('d M Y h:i A', strtotime($row->approved_at));
+                        } else if ($row->status == 'Rejected') {
+                            $date = date('d M Y h:i A', strtotime($row->rejected_at));
+                        } else {
+                            $date = 'N/A';
+                        }
+                        return $date;
+                    })
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
                             $status = '
@@ -348,7 +437,7 @@ class UserController extends Controller
                         }
                         return $status;
                     })
-                    ->rawColumns(['type', 'method', 'amount', 'payable_amount', 'created_at', 'status'])
+                    ->rawColumns(['type', 'method', 'amount', 'payable_amount', 'created_at', 'approved_or_rejected_at', 'status'])
                     ->make(true);
             }
 
@@ -369,8 +458,11 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:Ragular,Instant',
             'amount' => "required|numeric|min:$minWithdrawAmount|max:$maxWithdrawAmount",
-            'method' => 'required|string',
-            'number' => 'required|string|min:11|max:14',
+            'method' => 'required|in:Bkash,Nagad,Rocket',
+            'number' => ['required', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+        ],
+        [
+            'number.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
         ]);
 
         if ($validator->fails()) {

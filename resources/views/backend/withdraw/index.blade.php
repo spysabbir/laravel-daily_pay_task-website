@@ -28,6 +28,12 @@
                                                     <td>Sl No</td>
                                                     <th>User Id</th>
                                                     <th>User Name</th>
+                                                    <th>Type</th>
+                                                    <th>Method</th>
+                                                    <th>Number</th>
+                                                    <th>Withdraw Amount</th>
+                                                    <th>Payable Amount</th>
+                                                    <th>Submitted Date</th>
                                                     <th>Rejected Reason</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
@@ -49,6 +55,31 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_type" class="form-label">Withdraw Type</label>
+                                <select class="form-select filter_data" id="filter_type">
+                                    <option value="">-- Select Withdraw Type --</option>
+                                    <option value="Ragular">Ragular</option>
+                                    <option value="Instant">Instant</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_method" class="form-label">Deposit Method</label>
+                                <select class="form-select filter_data" id="filter_method">
+                                    <option value="">-- Select Deposit Method --</option>
+                                    <option value="Bkash">Bkash</option>
+                                    <option value="Nagad">Nagad</option>
+                                    <option value="Rocket">Rocket</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="pendingDataTable" class="table">
                         <thead>
@@ -57,11 +88,11 @@
                                 <th>User Id</th>
                                 <th>User Name</th>
                                 <th>Type</th>
-                                <th>Withdraw Amount</th>
                                 <th>Method</th>
                                 <th>Number</th>
+                                <th>Withdraw Amount</th>
                                 <th>Payable Amount</th>
-                                <th>Created At</th>
+                                <th>Submitted Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -109,19 +140,28 @@
             searching: true,
             ajax: {
                 url: "{{ route('backend.withdraw.request') }}",
+                data: function (e) {
+                    e.method = $('#filter_method').val();
+                    e.type = $('#filter_type').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
                 { data: 'type', name: 'type' },
-                { data: 'amount', name: 'amount' },
                 { data: 'method', name: 'method' },
                 { data: 'number', name: 'number' },
+                { data: 'amount', name: 'amount' },
                 { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#pendingDataTable').DataTable().ajax.reload();
         });
 
         // View Data
@@ -160,6 +200,7 @@
                         if (response.status == 401) {
                             toastr.error(response.error);
                         }else{
+                            $(".rejectedData").modal('hide');
                             $('#pendingDataTable').DataTable().ajax.reload();
                             $('#rejectedDataTable').DataTable().ajax.reload();
                             $(".viewModal").modal('hide');
@@ -182,6 +223,12 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
+                { data: 'type', name: 'type' },
+                { data: 'method', name: 'method' },
+                { data: 'number', name: 'number' },
+                { data: 'amount', name: 'amount' },
+                { data: 'payable_amount', name: 'payable_amount' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'rejected_at', name: 'rejected_at' },

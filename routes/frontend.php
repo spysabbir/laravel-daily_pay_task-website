@@ -77,6 +77,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
 
     Route::get('/deposit', [UserController::class, 'deposit'])->name('deposit');
     Route::post('/deposit', [UserController::class, 'depositStore'])->name('deposit.store');
+    Route::post('withdrawal/balance/deposit', [UserController::class, 'withdrawalBalanceDepositStore'])->name('withdrawal.balance.deposit.store');
 
     Route::get('/withdraw', [UserController::class, 'withdraw'])->name('withdraw');
     Route::post('/withdraw', [UserController::class, 'withdrawStore'])->name('withdraw.store');

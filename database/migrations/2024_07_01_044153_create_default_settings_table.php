@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('deposit_nagad_account')->nullable();
             $table->decimal('min_deposit_amount', 10, 2)->nullable();
             $table->decimal('max_deposit_amount', 10, 2)->nullable();
+            $table->decimal('withdrawal_balance_deposit_charge_percentage', 10, 2)->nullable();
             $table->decimal('instant_withdraw_charge', 10, 2)->nullable();
             $table->decimal('withdraw_charge_percentage', 10, 2)->nullable();
             $table->decimal('min_withdraw_amount', 10, 2)->nullable();

@@ -35,8 +35,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Created At</td>
-                                <td>{{ $deposit->created_at }}</td>
+                                <td>Submitted Date</td>
+                                <td>{{ $deposit->created_at->format('d M Y h:i A') }}</td>
                             </tr>
                         </tbody>
                     </table>
