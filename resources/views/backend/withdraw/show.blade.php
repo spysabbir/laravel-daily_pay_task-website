@@ -73,6 +73,7 @@
                     <div class="mb-3" id="rejected_reason_div" style="display: none;">
                         <label for="withdraw_rejected_reason" class="form-label">Rejected Reason</label>
                         <textarea class="form-control" id="withdraw_rejected_reason" name="rejected_reason" rows="4" placeholder="Rejected Reason"></textarea>
+                        <span class="text-danger error-text update_rejected_reason_error"></span>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>

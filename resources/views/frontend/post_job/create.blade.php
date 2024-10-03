@@ -29,7 +29,7 @@
                         <section>
                             @if (Auth::user()->deposit_balance < get_default_settings('job_posting_min_budget'))
                             <div class="alert alert-warning">
-                                Your current balance is {{ Auth::user()->deposit_balance }} {{ get_site_settings('site_currency_symbol') }}. You need to pay {{ get_default_settings('job_posting_min_budget') }} {{ get_site_settings('site_currency_symbol') }} to post a job. Your balance is not enough to post a job. Please deposit now to post a job.
+                                Your current balance is {{ get_site_settings('site_currency_symbol') }} {{ Auth::user()->deposit_balance }}. You need to pay {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('job_posting_min_budget') }} to post a job. Your balance is not enough to post a job. Please deposit now to post a job.
                                 <a href="{{ route('deposit') }}" class="text-primary">Deposit Now</a>
                             </div>
                             @endif
@@ -131,8 +131,8 @@
                                 </label>
                                 <input type="file" class="form-control" name="thumbnail" id="thumbnail" accept=".jpg, .jpeg, .png">
                                 <div id="thumbnailError" class="text-danger"></div>
-                                <small class="text-info"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
-                                <img src="" alt="" id="thumbnailPreview" class="img-fluid mt-2 d-block" style="display:none;" alt="Thumbnail">
+                                <small class="text-info d-block"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
+                                <img src="" alt="Thumbnail" id="thumbnailPreview" class="mt-2" style="height: 320px; display: none;" alt="Thumbnail">
                             </div>
                         </section>
 
@@ -164,7 +164,7 @@
                                             Additional screenshots are required <small class="text-danger">* Required </small>
                                         </label>
                                         <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="0" required>
-                                        <small class="text-info">* Additional screenshot charge is {{ get_default_settings('job_posting_additional_screenshot_charge') }} {{ get_site_settings('site_currency_symbol') }}. Note: You get 1 screenshot for free.</small>
+                                        <small class="text-info">* Additional screenshot charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('job_posting_additional_screenshot_charge') }}. Note: You get 1 screenshot for free.</small>
                                         <div class="invalid-feedback">Please enter how many additional screenshots are required</div>
                                     </div>
                                     <div class="mb-3">

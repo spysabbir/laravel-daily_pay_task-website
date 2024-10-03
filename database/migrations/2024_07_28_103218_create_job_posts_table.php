@@ -23,13 +23,13 @@ return new class extends Migration
             $table->text('additional_note');
             $table->string('thumbnail')->nullable();
             $table->integer('need_worker');
-            $table->integer('worker_charge');
+            $table->decimal('worker_charge', 8, 2)->default(0);
             $table->integer('extra_screenshots');
             $table->integer('boosted_time');
             $table->integer('running_day');
-            $table->integer('charge');
-            $table->integer('site_charge');
-            $table->integer('total_charge');
+            $table->decimal('charge', 8, 2)->default(0);
+            $table->decimal('site_charge', 8, 2)->default(0);
+            $table->decimal('total_charge', 8, 2)->default(0);
             $table->enum('status', ['Pending', 'Rejected', 'Running', 'Canceled', 'Paused', 'Completed']);
             $table->integer('rejected_by')->nullable();
             $table->integer('approved_by')->nullable();

@@ -235,9 +235,9 @@
             if (method == 'Bkash') {
                 var account = "{{ get_default_settings('deposit_bkash_account') }}";
             }else if (method == 'Nagad') {
-                var account = "{{ get_default_settings('deposit_bkash_account') }}";
+                var account = "{{ get_default_settings('deposit_nagad_account') }}";
             }else if (method == 'Rocket') {
-                var account = "{{ get_default_settings('deposit_bkash_account') }}";
+                var account = "{{ get_default_settings('deposit_rocket_account') }}";
             }else{
                 var account = '';
             }

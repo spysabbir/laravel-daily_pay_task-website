@@ -35,7 +35,7 @@ class VerificationController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -120,7 +120,7 @@ class VerificationController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->editColumn('rejected_by', function ($row) {
@@ -130,7 +130,7 @@ class VerificationController extends Controller
                 })
                 ->editColumn('rejected_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->rejected_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->rejected_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -179,7 +179,7 @@ class VerificationController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->editColumn('approved_by', function ($row) {
@@ -189,7 +189,7 @@ class VerificationController extends Controller
                 })
                 ->editColumn('approved_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->approved_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {

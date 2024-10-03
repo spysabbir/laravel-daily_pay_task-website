@@ -133,7 +133,7 @@
                                 <div class="mb-3">
                                     <label for="id_front_image" class="form-label">Id Front Image</label>
                                     <input type="file" class="form-control" id="id_front_image" name="id_front_image" accept=".jpg, .jpeg, .png">
-                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image ?? '' }}" id="id_front_image_preview" class="img-fluid mt-3" style="display: {{ $verification && $verification->id_front_image ? 'block' : 'none' }};">
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image ?? '' }}" id="id_front_image_preview" class="img-fluid mt-3" style="height: 280px; display: {{ $verification && $verification->id_front_image ? 'block' : 'none' }};">
                                 </div>
                                 @error('id_front_image')
                                     <span class="text-danger">{{ $message }}</span>
@@ -143,7 +143,7 @@
                                 <div class="mb-3">
                                     <label for="id_with_face_image" class="form-label">Id With Face Image</label>
                                     <input type="file" class="form-control" id="id_with_face_image" name="id_with_face_image" accept=".jpg, .jpeg, .png">
-                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image ?? '' }}" id="id_with_face_image_preview" class="img-fluid mt-3" style="display: {{ $verification && $verification->id_with_face_image ? 'block' : 'none' }};">
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image ?? '' }}" id="id_with_face_image_preview" class="img-fluid mt-3" style="height: 280px; display: {{ $verification && $verification->id_with_face_image ? 'block' : 'none' }};">
                                 </div>
                                 @error('id_with_face_image')
                                     <span class="text-danger">{{ $message }}</span>

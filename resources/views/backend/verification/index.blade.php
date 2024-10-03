@@ -28,8 +28,8 @@
                                                     <td>Sl No</td>
                                                     <th>User Id</th>
                                                     <th>User Email</th>
+                                                    <th>Submited At</th>
                                                     <th>Rejected Reason</th>
-                                                    <th>Created At</th>
                                                     <th>Rejected By</th>
                                                     <th>Rejected At</th>
                                                     <th>Action</th>
@@ -175,8 +175,8 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_email', name: 'user_email' },
-                { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'rejected_at', name: 'rejected_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }

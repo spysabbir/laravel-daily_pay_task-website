@@ -171,13 +171,6 @@ class DepositController extends Controller
                 ->addColumn('action', function ($row) {
                     $btn = '
                         <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                        <form method="POST" style="display:inline;" id="editForm">
-                            <input type="hidden" id="deposit_id" value="' . $row->id . '">
-                            <input type="hidden" name="_token" value="' . csrf_token() . '">
-                            <input type="hidden" name="_method" value="PUT">
-                            <input type="hidden" name="status" value="Approved">
-                            <button type="submit" class="btn btn-success btn-xs">Approve</button>
-                        </form>
                     ';
                     return $btn;
                 })

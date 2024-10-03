@@ -85,6 +85,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>Withdraw Id</th>
                                 <th>User Id</th>
                                 <th>User Name</th>
                                 <th>Type</th>
@@ -147,6 +148,7 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'id', name: 'id' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
                 { data: 'type', name: 'type' },
@@ -184,6 +186,7 @@
             var id = $('#withdraw_id').val();
             var url = "{{ route('backend.withdraw.request.status.change', ":id") }}";
             url = url.replace(':id', id)
+            console.log(id);
             $.ajax({
                 url: url,
                 type: "PUT",
@@ -197,15 +200,12 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        if (response.status == 401) {
-                            toastr.error(response.error);
-                        }else{
-                            $(".rejectedData").modal('hide');
-                            $('#pendingDataTable').DataTable().ajax.reload();
-                            $('#rejectedDataTable').DataTable().ajax.reload();
-                            $(".viewModal").modal('hide');
-                            toastr.success('Withdraw status change successfully.');
-                        }
+                        $("#editForm")[0].reset();
+                        $(".rejectedData").modal('hide');
+                        $('#pendingDataTable').DataTable().ajax.reload();
+                        $('#rejectedDataTable').DataTable().ajax.reload();
+                        $(".viewModal").modal('hide');
+                        toastr.success('Withdraw status change successfully.');
                     }
                 },
             });

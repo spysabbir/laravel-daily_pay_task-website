@@ -535,11 +535,18 @@ class UserController extends Controller
                         return $type;
                     })
                     ->editColumn('bonus_by', function ($row) {
-                        return '
-                        <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
-                            '.$row->bonusBy->name.'
-                        </a>
-                    ';
+                        if ($row->type == 'Job Proof Approved Bonus') {
+                            $bonus_by = '
+                            <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
+                                '.$row->bonusBy->name.'
+                            </a>
+                            ';
+                        } else {
+                            $bonus_by = '
+                            <span class="badge bg-primary">'.get_site_settings('site_name').'</span>
+                            ';
+                        }
+                        return $bonus_by;
                     })
                     ->editColumn('amount', function ($row) {
                         return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';

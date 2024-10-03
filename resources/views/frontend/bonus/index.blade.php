@@ -43,7 +43,7 @@
                                 <th>Bonus Type</th>
                                 <th>Bonus By</th>
                                 <th>Amount</th>
-                                <th>Created At</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>

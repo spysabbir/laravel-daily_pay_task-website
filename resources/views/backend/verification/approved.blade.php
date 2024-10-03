@@ -18,7 +18,7 @@
                                 <th>User Id</th>
                                 <th>User Name</th>
                                 <th>User Email</th>
-                                <th>Created At</th>
+                                <th>Submited At</th>
                                 <th>Approved By</th>
                                 <th>Approved At</th>
                                 <th>Action</th>

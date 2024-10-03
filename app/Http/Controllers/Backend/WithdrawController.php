@@ -100,54 +100,59 @@ class WithdrawController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'status' => 'required',
+            'rejected_reason' => 'required_if:status,Rejected',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'error' => $validator->errors()->toArray()
+                'error' => $validator->errors()->toArray(),
             ]);
-        } else {
-            $withdraw = Withdraw::findOrFail($id);
-            if($request->status == 'Rejected' && empty($request->rejected_reason)) {
-                return response()->json([
-                    'status' => 401,
-                    'error' => 'The rejected reason field is required.'
-                ]);
-            }
-            $withdraw->update([
-                'status' => $request->status,
-                'rejected_reason' => $request->rejected_reason,
-                'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
-                'rejected_at' => $request->status == 'Rejected' ? now() : NULL,
-                'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,
-                'approved_at' => $request->status == 'Approved' ? now() : NULL,
-            ]);
+        }
 
-            $user = User::where('id', $withdraw->user_id)->first();
-            $referrer = User::where('id', $user->referred_by)->first();
+        $withdraw = Withdraw::findOrFail($id);
+        $user = User::findOrFail($withdraw->user_id);
+        $referrer = $user->referred_by ? User::find($user->referred_by) : null;
 
-            if ($referrer && $request->status == 'Approved') {
+        $withdraw->update([
+            'status' => $request->status,
+            'rejected_reason' => $request->status === 'Rejected' ? $request->rejected_reason : null,
+            'rejected_by' => $request->status === 'Rejected' ? auth()->user()->id : null,
+            'rejected_at' => $request->status === 'Rejected' ? now() : null,
+            'approved_by' => $request->status === 'Approved' ? auth()->user()->id : null,
+            'approved_at' => $request->status === 'Approved' ? now() : null,
+        ]);
+
+        if ($request->status === 'Approved') {
+            if ($referrer) {
+                $bonusAmount = ($withdraw->amount * get_default_settings('referral_withdrawal_bonus_percentage')) / 100;
+
                 $referrer->update([
-                    'withdraw_balance' => $referrer->withdraw_balance + ($withdraw->amount * get_default_settings('referral_withdrawal_bonus_percentage')) / 100,
+                    'withdraw_balance' => $referrer->withdraw_balance + $bonusAmount,
                 ]);
 
                 $referrerBonus = Bonus::create([
                     'user_id' => $referrer->id,
                     'bonus_by' => $user->id,
                     'type' => 'Referral Withdrawal Bonus',
-                    'amount' => ($withdraw->amount * get_default_settings('referral_withdrawal_bonus_percentage')) / 100,
+                    'amount' => $bonusAmount,
                 ]);
+
                 $referrer->notify(new BonusNotification($referrerBonus));
             }
-
-            $user->notify(new WithdrawNotification($withdraw));
-
-            return response()->json([
-                'status' => 200,
+        } elseif ($request->status === 'Rejected') {
+            $user->update([
+                'withdraw_balance' => $user->withdraw_balance + $withdraw->amount,
             ]);
         }
+
+        $user->notify(new WithdrawNotification($withdraw));
+
+        return response()->json([
+            'status' => 200,
+        ]);
     }
+
 
     public function withdrawRequestRejected(Request $request)
     {
@@ -211,19 +216,12 @@ class WithdrawController extends Controller
                 })
                 ->editColumn('rejected_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->rejected_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->rejected_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '
                     <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    <form method="POST" style="display:inline;" id="editForm">
-                        <input type="hidden" id="withdraw_id" value="' . $row->id . '">
-                        <input type="hidden" name="_token" value="' . csrf_token() . '">
-                        <input type="hidden" name="_method" value="PUT">
-                        <input type="hidden" name="status" value="Approved">
-                        <button type="submit" class="btn btn-success btn-xs">Approve</button>
-                    </form>
                     ';
                 return $btn;
                 })

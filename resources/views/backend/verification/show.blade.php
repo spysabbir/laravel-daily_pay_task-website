@@ -9,16 +9,20 @@
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
+                                <td>User ID</td>
+                                <td>{{ $verification->user->id }}</td>
+                            </tr>
+                            <tr>
                                 <td>Full Name</td>
                                 <td>{{ $verification->user->name }}</td>
                             </tr>
                             <tr>
                                 <td>Date of Birth</td>
-                                <td>{{ $verification->user->date_of_birth }}</td>
+                                <td>{{ $verification->user->date_of_birth ? date('F j, Y', strtotime($verification->user->date_of_birth)) : 'Not Found' }}</td>
                             </tr>
                             <tr>
                                 <td>Gender</td>
-                                <td>{{ $verification->user->gender }}</td>
+                                <td>{{ $verification->user->gender ?? 'Not Found' }}</td>
                             </tr>
                             <tr>
                                 <td>Id Type</td>
