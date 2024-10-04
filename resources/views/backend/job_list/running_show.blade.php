@@ -2,12 +2,16 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Job Post User Details</h4>
+                <h4 class="card-title">Job Post Details - Id: {{ $jobPost->id }}</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <tbody>
+                            <tr>
+                                <td>User Id</td>
+                                <td>{{ $jobPost->user->id }}</td>
+                            </tr>
                             <tr>
                                 <td>User Name</td>
                                 <td>{{ $jobPost->user->name }}</td>
@@ -33,38 +37,56 @@
                                 <td>{{ $jobPost->need_worker }}</td>
                             </tr>
                             <tr>
-                                <td>Worker Charge</td>
-                                <td>{{ $jobPost->worker_charge }} {{ get_site_settings('site_currency_symbol') }}</td>
+                                <td>Each Worker Charge</td>
+                                <td>{{ get_site_settings('site_currency_symbol') }} {{ $jobPost->worker_charge }}</span></td>
                             </tr>
                             <tr>
-                                <td>Extra Screenshots</td>
-                                <td>{{ $jobPost->extra_screenshots }}</td>
-                            </tr>
-                            <tr>
-                                <td>Boosted Time</td>
                                 <td>
-                                    @if($jobPost->boosted_time < 60)
-                                        {{ $jobPost->boosted_time }} minute{{ $jobPost->boosted_time > 1 ? 's' : '' }}
-                                    @elseif($jobPost->boosted_time >= 60)
-                                        {{ round($jobPost->boosted_time / 60, 1) }} hour{{ round($jobPost->boosted_time / 60, 1) > 1 ? 's' : '' }}
-                                    @endif
+                                    Screenshots
+                                </td>
+                                <td>
+                                    Free: 1 + Extra: {{ $jobPost->extra_screenshots }} = Total: {{ 1 + $jobPost->extra_screenshots }} Screenshot{{ $jobPost->extra_screenshots + 1 > 1 ? 's' : '' }} <br>
+                                    <span class="text-primary">( Charge: {{ $jobPost->extra_screenshots }} * {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('job_posting_additional_screenshot_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->extra_screenshots * get_default_settings('job_posting_additional_screenshot_charge') }} )</span>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Running Day</td>
+                                <td>
+                                    Boosted Time
+                                </td>
+                                <td>
+                                    @if($jobPost->boosted_time < 60)
+                                        {{ $jobPost->boosted_time }} Minute{{ $jobPost->boosted_time > 1 ? 's' : '' }} <br>
+                                    @elseif($jobPost->boosted_time >= 60)
+                                        {{ round($jobPost->boosted_time / 60, 1) }} Hour{{ round($jobPost->boosted_time / 60, 1) > 1 ? 's' : '' }} <br>
+                                    @endif
+                                    <span class="text-primary">( Charge: {{ $jobPost->boosted_time }} * {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('job_posting_boosted_time_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->boosted_time / 15 * get_default_settings('job_posting_boosted_time_charge') }} )</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Running Day
+                                </td>
                                 <td>{{ $jobPost->running_day }} Days</td>
                             </tr>
                             <tr>
-                                <td>Job Cost</td>
-                                <td>{{ $jobPost->charge }} {{ get_site_settings('site_currency_symbol') }}</td>
+                                <td>Job Charge</td>
+                                <td>
+                                    <span class="text-primary">50 * {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->worker_charge }} + {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->extra_screenshots * get_default_settings('job_posting_additional_screenshot_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->boosted_time / 15 * get_default_settings('job_posting_boosted_time_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->charge }}</span>
+                                </td>
                             </tr>
                             <tr>
-                                <td>Site Cost <span class="text-info">( {{ get_default_settings('job_posting_charge_percentage') }} % )</span></td>
-                                <td>{{ $jobPost->site_charge }} {{ get_site_settings('site_currency_symbol') }}</td>
+                                <td>
+                                    Site Charge
+                                </td>
+                                <td>
+                                    <span class="text-primary">{{ get_site_settings('site_currency_symbol') }} {{ $jobPost->charge }} * {{ get_default_settings('job_posting_charge_percentage') }} % = {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->site_charge }}</span>
+                                </td>
                             </tr>
                             <tr>
-                                <td>Total Cost</td>
-                                <td>{{ $jobPost->total_charge }} {{ get_site_settings('site_currency_symbol') }}</td>
+                                <td>Total Charge</td>
+                                <td>
+                                    <span class="text-primary">{{ get_site_settings('site_currency_symbol') }} {{ $jobPost->charge }} + {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->site_charge }} = {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->total_charge }}</span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Created At</td>
@@ -81,6 +103,10 @@
         </div>
     </div>
     <div class="col-lg-6">
+        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <strong>Approved!</strong> This job post has been approved by <strong>{{ $jobPost->approvedBy->name }}</strong> at <strong>{{ date('d-m-Y h:i:s A', strtotime($jobPost->approved_at)) }}</strong>
+        </div>
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">

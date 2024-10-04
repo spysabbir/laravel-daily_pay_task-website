@@ -18,7 +18,7 @@
                                 <th>Job Id</th>
                                 <th>User</th>
                                 <th>Title</th>
-                                <th>Created At</th>
+                                <th>Submited At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

@@ -137,6 +137,7 @@
                                             toastr.error(response.error);
                                         } else {
                                             $('#allDataTable').DataTable().ajax.reload();
+                                            $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                                             toastr.error('Job Canceled Successfully');
                                         }
                                     },

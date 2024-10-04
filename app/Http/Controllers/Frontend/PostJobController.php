@@ -143,6 +143,7 @@ class PostJobController extends Controller
 
     public function postJobEdit($id)
     {
+        $id = decrypt($id);
         $categories = Category::where('status', 'Active')->get();
         $jobPost = JobPost::findOrFail($id);
         return view('frontend.post_job.edit', compact('categories', 'jobPost'));

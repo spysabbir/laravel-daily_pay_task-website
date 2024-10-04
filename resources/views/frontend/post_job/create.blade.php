@@ -28,7 +28,7 @@
                         <h2>Notice</h2>
                         <section>
                             @if (Auth::user()->deposit_balance < get_default_settings('job_posting_min_budget'))
-                            <div class="alert alert-warning">
+                            <div class="alert alert-warning mb-3">
                                 Your current balance is {{ get_site_settings('site_currency_symbol') }} {{ Auth::user()->deposit_balance }}. You need to pay {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('job_posting_min_budget') }} to post a job. Your balance is not enough to post a job. Please deposit now to post a job.
                                 <a href="{{ route('deposit') }}" class="text-primary">Deposit Now</a>
                             </div>
@@ -36,7 +36,7 @@
                             <h4 class="mb-3">
                                 <strong>Important Notice:</strong>
                             </h4>
-                            <p class="mb-3">
+                            <div class="mb-3">
                                 <strong>1. </strong> Please fill out the form carefully. Once you submit the form, you can't edit it. <br>
                                 <strong>2. </strong> You can't cancel the job once you submit it. <br>
                                 <strong>3. </strong> You can't get a refund once you submit the job. <br>
@@ -51,7 +51,7 @@
                                 <strong>12. </strong> You can't change the job need worker if you want to decrease it. <br>
                                 <strong>13. </strong> Youy job is not aproved if you provide wrong information. <br>
                                 <strong>14. </strong> You job is not submit if your total job Charge is not 100. <br>
-                            </p>
+                            </div>
                         </section>
 
                         <!-- Category Section -->
@@ -183,7 +183,7 @@
                                             <option value="300">5 Hours</option>
                                             <option value="360">6 Hours</option>
                                         </select>
-                                        <small class="text-info">* Every 15 minutes boost Charges {{ get_default_settings('job_posting_boosted_time_charge') }} {{ get_site_settings('site_currency_symbol') }}. When the job is boosted, it will be shown at the top of the job list.</small>
+                                        <small class="text-info">* Every 15 minutes boost Charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('job_posting_boosted_time_charge') }}. When the job is boosted, it will be shown at the top of the job list.</small>
                                         <div class="invalid-feedback">Please enter the boosted time.</div>
                                     </div>
                                 </div>
@@ -222,13 +222,13 @@
                                             <input type="number" class="form-control" id="total_job_charge" readonly>
                                             <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                         </div>
-                                        <small class="text-info">* Total job Charge must be {{ get_default_settings('job_posting_min_budget') }} {{ get_site_settings('site_currency_symbol') }}.</small>
+                                        <small class="text-info">* Total job Charge must be {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('job_posting_min_budget') }}.</small>
                                     </div>
                                 </div>
                             </div>
                             @if (Auth::user()->deposit_balance < get_default_settings('job_posting_min_budget'))
                             <div class="alert alert-warning">
-                                Your current balance is {{ Auth::user()->deposit_balance }} {{ get_site_settings('site_currency_symbol') }}. You need to pay {{ get_default_settings('job_posting_min_budget') }} {{ get_site_settings('site_currency_symbol') }} to post a job. Your balance is not enough to post a job. Please deposit now to post a job.
+                                Your current balance is {{ get_site_settings('site_currency_symbol') }} {{ Auth::user()->deposit_balance }}. You need to pay {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('job_posting_min_budget') }} to post a job. Your balance is not enough to post a job. Please deposit now to post a job.
                                 <a href="{{ route('deposit') }}" class="text-primary">Deposit Now</a>
                             </div>
                             @endif
@@ -336,7 +336,7 @@
                 var total_job_charge = parseFloat($('#total_job_charge').val());
 
                 if(total_job_charge < job_posting_min_budget) {
-                    toastr.warning('Your total job Charge must be ' + job_posting_min_budget + ' {{ get_site_settings('site_currency_symbol') }}.');
+                    toastr.warning('Your total job charge must be ' + ' {{ get_site_settings('site_currency_symbol') }} ' + job_posting_min_budget + '. Please increase the job charge to post a job.');
                     isValid = false;
                 }else if (total_job_charge > user_deposit_balance) {
                     toastr.warning('Your balance is not enough to post a job. Please deposit now to post a job.');
@@ -437,8 +437,8 @@
                         $('#worker_charge').val(response.working_min_charge);
                         $('#worker_charge').attr('min', response.working_min_charge);
                         $('#worker_charge').attr('max', response.working_max_charge);
-                        $('#min_charge').text(response.working_min_charge + ' {{ get_site_settings('site_currency_symbol') }}');
-                        $('#max_charge').text(response.working_max_charge + ' {{ get_site_settings('site_currency_symbol') }}');
+                        $('#min_charge').text(' {{ get_site_settings('site_currency_symbol') }} ' + response.working_min_charge);
+                        $('#max_charge').text(' {{ get_site_settings('site_currency_symbol') }} ' + response.working_max_charge);
                     }
 
                     calculateTotalJobCharge();

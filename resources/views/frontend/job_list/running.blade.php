@@ -32,7 +32,7 @@
                                 <div class="modal-dialog modal-md">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel">Edit</h5>
+                                            <h5 class="modal-title" id="editModalLabel">Update</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                         </div>
                                         <form class="forms-sample" id="editForm">
@@ -41,7 +41,7 @@
                                                 <input type="hidden" id="job_post_id">
                                                 <div class="mb-3">
                                                     <label for="need_worker" class="form-label">Need Additional Worker</label>
-                                                    <input type="number" class="form-control" id="need_worker" value="0" name="need_worker" placeholder="Need Worker">
+                                                    <input type="number" class="form-control" id="need_worker" value="0" name="need_worker" min="1" placeholder="Need Worker">
                                                     <span class="text-danger error-text update_need_worker_error"></span>
                                                 </div>
                                                 <div class="mb-3">
@@ -75,7 +75,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Edit</button>
+                                                <button type="submit" class="btn btn-primary">Update</button>
                                             </div>
                                         </form>
                                     </div>
@@ -191,6 +191,7 @@
                                             toastr.error(response.error);
                                         } else {
                                             $('#allDataTable').DataTable().ajax.reload();
+                                            $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                                             toastr.error('Job Canceled Successfully');
                                         }
                                     },
@@ -242,6 +243,7 @@
                             $('#editForm')[0].reset();
                             $(".editModal").modal('hide');
                             $('#allDataTable').DataTable().ajax.reload();
+                            $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                             toastr.success('Job Updated Successfully');
                         }
                     }
@@ -249,8 +251,8 @@
             });
         });
 
-        // Worker Charge Calculation
-        $(document).on('keyup', '#need_worker', function(){
+        // Worker Charge Calculation keyup and change event
+        $(document).on('change keyup', '#need_worker', function(){
             var need_worker = $(this).val();
             var worker_charge = $('#worker_charge').val();
             var job_charge = need_worker * worker_charge;

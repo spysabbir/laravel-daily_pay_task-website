@@ -18,8 +18,10 @@
                                 <th>Job Id</th>
                                 <th>User</th>
                                 <th>Title</th>
-                                <th>Need Worker</th>
-                                <th>Created At</th>
+                                <th>Proof Submitted</th>
+                                <th>Proof Status</th>
+                                <th>Submited At</th>
+                                <th>Approved At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -73,8 +75,10 @@
                 { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
                 { data: 'title', name: 'title' },
-                { data: 'need_worker', name: 'need_worker' },
+                { data: 'proof_submitted', name: 'proof_submitted' },
+                { data: 'proof_status', name: 'proof_status' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'approved_at', name: 'approved_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

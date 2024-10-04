@@ -30,7 +30,7 @@ class JobController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -67,7 +67,17 @@ class JobController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->editColumn('rejected_by', function ($row) {
+                    return '
+                        <span class="badge bg-info text-dark">' . $row->rejectedBy->name . '</span>
+                        ';
+                })
+                ->editColumn('rejected_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->rejected_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -76,7 +86,7 @@ class JobController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user', 'created_at', 'action'])
+                ->rawColumns(['user', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
         return view('backend.job_list.rejected');
@@ -102,13 +112,44 @@ class JobController extends Controller
                 ->editColumn('user', function ($row) {
                     return $row->user->name;
                 })
-                ->editColumn('need_worker', function ($row) {
-                    $proofCount = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Rejected')->count();
-                    return  '<span class="badge bg-success">' . $proofCount . ' / ' .$row->need_worker . '</span>';
+                ->editColumn('proof_submitted', function ($row) {
+                    $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->need_worker) * 100, 2) : 100;
+                    $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    return '
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->need_worker . '">' . $proofSubmitted . '/' . $row->need_worker . '</div>
+                    </div>
+                    ';
+                })
+                ->editColumn('proof_status', function ($row) {
+                    $statuses = [
+                        'Pending' => 'bg-warning',
+                        'Approved' => 'bg-success',
+                        'Rejected' => 'bg-danger',
+                        'Reviewed' => 'bg-info'
+                    ];
+                    $proofStatus = '';
+                    $proofCount = JobProof::where('job_post_id', $row->id)->count();
+                    if ($proofCount === 0) {
+                        return '<span class="badge bg-secondary">Proof not submitted yet.</span>';
+                    }
+                    foreach ($statuses as $status => $class) {
+                        $count = JobProof::where('job_post_id', $row->id)->where('status', $status)->count();
+                        if ($count > 0) {
+                            $proofStatus .= "<span class=\"badge $class\"> $status: $count</span> ";
+                        }
+                    }
+                    return $proofStatus;
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->editColumn('approved_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -117,7 +158,7 @@ class JobController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user', 'need_worker', 'created_at', 'action'])
+                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'approved_at', 'action'])
                 ->make(true);
         }
         return view('backend.job_list.running');
@@ -143,13 +184,44 @@ class JobController extends Controller
                 ->editColumn('user', function ($row) {
                     return $row->user->name;
                 })
-                ->editColumn('need_worker', function ($row) {
-                    $proofCount = JobProof::where('job_post_id', $row->id)->where('status', '!=', 'Rejected')->count();
-                    return  '<span class="badge bg-success">' . $proofCount . ' / ' .$row->need_worker . '</span>';
+                ->editColumn('proof_submitted', function ($row) {
+                    $proofSubmitted = JobProof::where('job_post_id', $row->id)->count();
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->need_worker) * 100, 2) : 100;
+                    $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    return '
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->need_worker . '">' . $proofSubmitted . '/' . $row->need_worker . '</div>
+                    </div>
+                    ';
+                })
+                ->editColumn('proof_status', function ($row) {
+                    $statuses = [
+                        'Pending' => 'bg-warning',
+                        'Approved' => 'bg-success',
+                        'Rejected' => 'bg-danger',
+                        'Reviewed' => 'bg-info'
+                    ];
+                    $proofStatus = '';
+                    $proofCount = JobProof::where('job_post_id', $row->id)->count();
+                    if ($proofCount === 0) {
+                        return '<span class="badge bg-secondary">Proof not submitted yet.</span>';
+                    }
+                    foreach ($statuses as $status => $class) {
+                        $count = JobProof::where('job_post_id', $row->id)->where('status', $status)->count();
+                        if ($count > 0) {
+                            $proofStatus .= "<span class=\"badge $class\"> $status: $count</span> ";
+                        }
+                    }
+                    return $proofStatus;
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->editColumn('canceled_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->canceled_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -158,7 +230,7 @@ class JobController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user', 'need_worker', 'created_at', 'action'])
+                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'canceled_at', 'action'])
                 ->make(true);
         }
         return view('backend.job_list.canceled');

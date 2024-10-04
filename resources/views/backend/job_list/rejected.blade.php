@@ -18,7 +18,9 @@
                                 <th>Job Id</th>
                                 <th>User</th>
                                 <th>Title</th>
-                                <th>Created At</th>
+                                <th>Submited At</th>
+                                <th>Rejected By</th>
+                                <th>Rejected At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -73,6 +75,8 @@
                 { data: 'user', name: 'user' },
                 { data: 'title', name: 'title' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'rejected_by', name: 'rejected_by' },
+                { data: 'rejected_at', name: 'rejected_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

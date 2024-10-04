@@ -19,8 +19,9 @@
                                 <th>Sl No</th>
                                 <th>Job ID</th>
                                 <th>Title</th>
-                                <th>Rejection Reason</th>
+                                <th>Submited At</th>
                                 <th>Rejected At</th>
+                                <th>Rejection Reason</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -56,8 +57,9 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
-                { data: 'rejection_reason', name: 'rejection_reason' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_at', name: 'rejected_at' },
+                { data: 'rejection_reason', name: 'rejection_reason' },
                 { data: 'action', name: 'action' }
             ]
         });
@@ -108,6 +110,7 @@
                                             toastr.error(response.error);
                                         } else {
                                             $('#allDataTable').DataTable().ajax.reload();
+                                            $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                                             toastr.error('Job Canceled Successfully');
                                         }
                                     },

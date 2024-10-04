@@ -27,10 +27,18 @@
                         <!-- Notice Section -->
                         <h2>Notice</h2>
                         <section>
+                            @if ($jobPost->rejection_reason)
+                            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>Warning!</strong> This job post has been rejected. <br>
+                                <span>Rejected At: {{ date('d-m-Y h:i:s A', strtotime($jobPost->rejected_at)) }}</span> <br>
+                                <span>Rejection Reason: {{ $jobPost->rejection_reason }}</span> <br>
+                            </div>
+                            @endif
                             <h4 class="mb-3">
                                 <strong>Important Notice:</strong>
                             </h4>
-                            <p class="mb-3">
+                            <div class="mb-3">
                                 <strong>1. </strong> Please fill out the form carefully. Once you submit the form, you can't edit it. <br>
                                 <strong>2. </strong> You can't cancel the job once you submit it. <br>
                                 <strong>3. </strong> You can't get a refund once you submit the job. <br>
@@ -45,7 +53,7 @@
                                 <strong>12. </strong> You can't change the job need worker if you want to decrease it. <br>
                                 <strong>13. </strong> Youy job is not aproved if you provide wrong information. <br>
                                 <strong>14. </strong> You job is not submit if your total job Charge is not 100. <br>
-                            </p>
+                            </div>
                         </section>
 
                         <!-- Category Section -->
@@ -326,8 +334,8 @@
             }
         });
 
-         // thumbnail preview
-         $('#thumbnail').change(function() {
+        // thumbnail preview
+        $('#thumbnail').change(function() {
             var file = this.files[0];
             if (file) {
                 var reader = new FileReader();
@@ -375,16 +383,17 @@
                 type: 'GET',
                 data: { category_id: category_id, sub_category_id: sub_category_id },
                 success: function(response) {
-                    if (response.child_categories && response.child_categories.length > 0) {
-                        var options = '';
-                        $.each(response.child_categories, function(index, child_category) {
-                            // Check if child_category.id matches the current job's child_category_id
-                            var isChecked = ({{ $jobPost->child_category_id }} === child_category.id) ? 'checked' : '';
+                    if (response && response.child_categories && response.child_categories.length > 0) {
+                        let options = '';
+                        response.child_categories.forEach(child_category => {
+                            const isChecked = ({{ $jobPost->child_category_id ?? 'null' }} === child_category.id) ? 'checked' : '';
 
-                            options += '<div class="form-check form-check-inline">';
-                            options += '<input type="radio" class="form-check-input" name="child_category_id" id="child_category_' + child_category.id + '" value="' + child_category.id + '" ' + isChecked + '>';
-                            options += '<label class="form-check-label" for="child_category_' + child_category.id + '">' + '<span class="badge bg-primary">' + child_category.name + '</span>' + '</label>';
-                            options += '</div>';
+                            options += `<div class="form-check form-check-inline">
+                                            <input type="radio" class="form-check-input" name="child_category_id" id="child_category_${child_category.id}" value="${child_category.id}" ${isChecked}>
+                                            <label class="form-check-label" for="child_category_${child_category.id}">
+                                                <span class="badge bg-primary">${child_category.name}</span>
+                                            </label>
+                                        </div>`;
                         });
                         $('#child-category-options').html(options);
                         $('#child-category-section').show();
@@ -393,7 +402,7 @@
                         $('#child-category-options').html('');
                     }
 
-                    var child_category_id = $('input[name="child_category_id"]:checked').val();
+                    const child_category_id = $('input[name="child_category_id"]:checked').val();
                     loadJobPostCharge(category_id, sub_category_id, child_category_id);
                 }
             });

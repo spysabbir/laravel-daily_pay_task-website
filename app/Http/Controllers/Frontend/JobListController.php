@@ -78,20 +78,20 @@ class JobListController extends Controller
 
                 return DataTables::of($jobListRejected)
                     ->addIndexColumn()
-                    ->editColumn('worker_charge', function ($row) {
-                        $workerCharge = '
-                            <span class="badge bg-primary">' . $row->worker_charge .' '. get_site_settings('site_currency_symbol') . '</span>
-                        ';
-                        return $workerCharge;
+                    ->editColumn('created_at', function ($row) {
+                        return $row->created_at->format('d M Y h:i A');
+                    })
+                    ->editColumn('rejected_at', function ($row) {
+                        return date('d M Y h:i A', strtotime($row->rejected_at));
                     })
                     ->addColumn('action', function ($row) {
                         $actionBtn = '
-                            <a href="' . route('post_job.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="' . route('post_job.edit', encrypt($row->id)) . '" class="btn btn-primary btn-xs">Edit</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
                         return $actionBtn;
                     })
-                    ->rawColumns(['worker_charge', 'action'])
+                    ->rawColumns(['created_at', 'action'])
                     ->make(true);
             }
             return view('frontend.job_list.rejected');
@@ -232,16 +232,27 @@ class JobListController extends Controller
                 'error' => 'Please enter a valid reason.'
             ]);
         } else {
+            if ($jobPost->status != 'Rejected') {
+                $user = User::findOrFail($jobPost->user_id);
+
+                $jobProofs = JobProof::where('job_post_id', $jobPost->id)->count();
+
+                $refundAmount = ($jobPost->total_charge / $jobPost->need_worker) * ($jobPost->need_worker - $jobProofs);
+
+                $user->deposit_balance = $user->deposit_balance + $refundAmount;
+                $user->save();
+            }
+
             $jobPost->status = 'Canceled';
             $jobPost->cancellation_reason = $request->message;
             $jobPost->canceled_by = auth()->user()->id;
             $jobPost->canceled_at = now();
-
             $jobPost->save();
 
             return response()->json([
                 'status' => 200,
-                'success' => 'Status updated successfully.'
+                'deposit_balance' => number_format($user->deposit_balance, 2, '.', ''),
+                'success' => 'Job canceled successfully.'
             ]);
         }
     }
@@ -300,7 +311,7 @@ class JobListController extends Controller
                     })
                     ->editColumn('action', function ($row) {
                         $btn = '
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Update</button>
                             <a href="' . route('running_job.show', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
@@ -323,7 +334,7 @@ class JobListController extends Controller
     public function runningJobUpdate(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'need_worker' => 'required|numeric',
+            'need_worker' => 'required|numeric|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -343,10 +354,9 @@ class JobListController extends Controller
             if ($request->user()->deposit_balance < $total_charge) {
                 return response()->json([
                     'status' => 401,
-                    'error' => 'Insufficient balance.'
+                    'error' => 'Insufficient balance. Please deposit first. Your current balance is ' . $request->user()->deposit_balance . ' ' . get_site_settings('site_currency_symbol') . '.'
                 ]);
             } else {
-
 
                 $request->user()->update([
                     'deposit_balance' => $request->user()->deposit_balance - $total_charge,
@@ -361,6 +371,7 @@ class JobListController extends Controller
 
                 return response()->json([
                     'status' => 200,
+                    'deposit_balance' => number_format($request->user()->deposit_balance, 2, '.', ''),
                 ]);
             }
         }

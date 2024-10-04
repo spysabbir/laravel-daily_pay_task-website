@@ -2,9 +2,19 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Job Post Details</h4>
+                <h4 class="card-title">Job Post Details - Id: {{ $jobPost->id }}</h4>
             </div>
             <div class="card-body">
+                <div>
+                    @php
+                        $proofSubmitted = App\Models\JobProof::where('job_post_id', $jobPost->id)->count();
+                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $jobPost->need_worker) * 100, 2) : 100;
+                        $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    @endphp
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $progressBarClass }}" role="progressbar" style="width: {{ $proofStyleWidth }}%" aria-valuenow="{{ $proofSubmitted }}" aria-valuemin="0" aria-valuemax="{{ $row->need_worker }}">{{ $proofSubmitted / $row->need_worker }}</div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <tbody>
@@ -90,7 +100,7 @@
                             <tr>
                                 <td>Job Charge</td>
                                 <td>
-                                    <span class="text-primary">50 * {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->worker_charge }} + {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->extra_screenshots * get_default_settings('job_posting_additional_screenshot_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->boosted_time / 15 * get_default_settings('job_posting_boosted_time_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->charge }}</span>
+                                    <span class="text-primary">( 50 * {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->worker_charge }} ) + {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->extra_screenshots * get_default_settings('job_posting_additional_screenshot_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->boosted_time / 15 * get_default_settings('job_posting_boosted_time_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->charge }}</span>
                                 </td>
                             </tr>
                             <tr>
