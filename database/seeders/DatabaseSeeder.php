@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             SubCategorySeeder::class,
             ChildCategorySeeder::class,
-            JobPostChargeSeeder::class,
+            TaskPostChargeSeeder::class,
         ]);
     }
 }

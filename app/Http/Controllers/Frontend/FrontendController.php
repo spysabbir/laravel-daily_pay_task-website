@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
 use App\Models\Contact;
 use App\Models\Faq;
-use App\Models\JobPost;
+use App\Models\PostTask;
 use App\Models\User;
 use App\Models\Withdraw;
 
@@ -18,30 +18,30 @@ class FrontendController extends Controller
 {
     public function index()
     {
-        $popularJobPostCategories = Category::where('status', 'Active')->limit(8)->get();
+        $popularPostTaskCategories = Category::where('status', 'Active')->limit(8)->get();
 
-        $latestJobPosts = JobPost::where('status', 'Running')->orderBy('id', 'desc')->limit(6)->get();
+        $latestPostTasks = PostTask::where('status', 'Running')->orderBy('id', 'desc')->limit(6)->get();
 
         $testimonials = Testimonial::where('status', 'Active')->get();
 
-        $topBuyers = JobPost::where('status', 'Running')->orderBy('id', 'desc')->limit(4)->get();
+        $topBuyers = PostTask::where('status', 'Running')->orderBy('id', 'desc')->limit(4)->get();
 
-        $totalJobPosts = JobPost::count();
-        $runningJobPosts = JobPost::where('status', 'Running')->count();
+        $totalPostTask = PostTask::count();
+        $runningPostTasks = PostTask::where('status', 'Running')->count();
         $totalUser = User::count();
         $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
 
-        return view('frontend/index', compact('popularJobPostCategories', 'latestJobPosts', 'testimonials', 'topBuyers', 'totalJobPosts', 'runningJobPosts', 'totalUser', 'totalWithdrawal'));
+        return view('frontend/index', compact('popularPostTaskCategories', 'latestPostTasks', 'testimonials', 'topBuyers', 'totalPostTask', 'runningPostTasks', 'totalUser', 'totalWithdrawal'));
     }
 
     public function aboutUs()
     {
         $testimonials = Testimonial::where('status', 'Active')->get();
-        $totalJobPosts = JobPost::count();
-        $runningJobPosts = JobPost::where('status', 'Running')->count();
+        $totalPostTask = PostTask::count();
+        $runningPostTask = PostTask::where('status', 'Running')->count();
         $totalUser = User::count();
         $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
-        return view('frontend/about-us', compact('testimonials', 'totalJobPosts', 'runningJobPosts', 'totalUser', 'totalWithdrawal'));
+        return view('frontend/about-us', compact('testimonials', 'totalPostTask', 'runningPostTask', 'totalUser', 'totalWithdrawal'));
     }
 
     public function contactUs()

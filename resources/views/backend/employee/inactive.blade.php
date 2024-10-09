@@ -23,7 +23,7 @@
                                         <table id="trashDataTable" class="table w-100">
                                             <thead>
                                                 <tr>
-                                                    <td>Sl No</td>
+                                                    <th>Sl No</th>
                                                     <th>Name</th>
                                                     <th>Role</th>
                                                     <th>Action</th>
@@ -70,7 +70,7 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Roles</th>
-                                <td>Status</td>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

@@ -34,7 +34,7 @@
                                 <th>User</th>
                                 <th>Created At</th>
                                 <th>Status</th>
-                                <td>Action</td>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>

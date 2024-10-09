@@ -175,12 +175,12 @@
             @endcan
         @endcan
 
-        @can('JobPostChargeMenu')
-            @can('job_post_charge.index')
+        @can('TaskPostChargeMenu')
+            @can('task_post_charge.index')
             <li class="nav-item">
-                <a href="{{ route('backend.job_post_charge.index') }}" class="nav-link">
+                <a href="{{ route('backend.task_post_charge.index') }}" class="nav-link">
                     <i class="link-icon" data-feather="folder-plus"></i>
-                    <span class="link-title">Job Post Charge</span>
+                    <span class="link-title">Task Post Charge</span>
                 </a>
             </li>
             @endcan
@@ -352,38 +352,38 @@
             </li>
         @endcan
 
-        @can('JobPostMenu')
+        @can('PostTaskMenu')
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#JobPostMenu" role="button" aria-expanded="false" aria-controls="JobPostMenu">
+                <a class="nav-link" data-bs-toggle="collapse" href="#PostTaskMenu" role="button" aria-expanded="false" aria-controls="PostTaskMenu">
                     <i class="link-icon" data-feather="briefcase"></i>
-                    <span class="link-title">Job Post</span>
+                    <span class="link-title">Post Task</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse" id="JobPostMenu">
+                <div class="collapse" id="PostTaskMenu">
                     <ul class="nav sub-menu">
-                        @can('job_list.pending')
+                        @can('post_task_list.pending')
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_list.pending') }}" class="nav-link">Pending</a>
+                            <a href="{{ route('backend.post_task_list.pending') }}" class="nav-link">Pending</a>
                         </li>
                         @endcan
-                        @can('job_list.rejected')
+                        @can('post_task_list.rejected')
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_list.rejected') }}" class="nav-link">Rejected</a>
+                            <a href="{{ route('backend.post_task_list.rejected') }}" class="nav-link">Rejected</a>
                         </li>
                         @endcan
-                        @can('job_list.running')
+                        @can('post_task_list.running')
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_list.running') }}" class="nav-link">Running</a>
+                            <a href="{{ route('backend.post_task_list.running') }}" class="nav-link">Running</a>
                         </li>
                         @endcan
-                        @can('job_list.canceled')
+                        @can('post_task_list.canceled')
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_list.canceled') }}" class="nav-link">Canceled</a>
+                            <a href="{{ route('backend.post_task_list.canceled') }}" class="nav-link">Canceled</a>
                         </li>
                         @endcan
-                        @can('job_list.completed')
+                        @can('post_task_list.completed')
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_list.completed') }}" class="nav-link">Completed</a>
+                            <a href="{{ route('backend.post_task_list.completed') }}" class="nav-link">Completed</a>
                         </li>
                         @endcan
                     </ul>
@@ -391,33 +391,33 @@
             </li>
         @endcan
 
-        @can('JobProofMenu')
+        @can('ProofTaskMenu')
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#JobProofMenu" role="button" aria-expanded="false" aria-controls="JobProofMenu">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ProofTaskMenu" role="button" aria-expanded="false" aria-controls="ProofTaskMenu">
                     <i class="link-icon" data-feather="check-circle"></i>
-                    <span class="link-title">Job Proof</span>
+                    <span class="link-title">Proof Task</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse" id="JobProofMenu">
+                <div class="collapse" id="ProofTaskMenu">
                     <ul class="nav sub-menu">
-                        @can('job_proof.pending')
+                        @can('proof_task_list.pending')
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_proof.pending') }}" class="nav-link">Pending</a>
+                            <a href="{{ route('backend.proof_task_list.pending') }}" class="nav-link">Pending</a>
                         </li>
                         @endcan
-                        @can('job_proof.approved')
+                        @can('proof_task_list.approved')
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_proof.approved') }}" class="nav-link">Approved</a>
+                            <a href="{{ route('backend.proof_task_list.approved') }}" class="nav-link">Approved</a>
                         </li>
                         @endcan
-                        @can('job_proof.rejected')
+                        @can('proof_task_list.rejected')
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_proof.rejected') }}" class="nav-link">Rejected</a>
+                            <a href="{{ route('backend.proof_task_list.rejected') }}" class="nav-link">Rejected</a>
                         </li>
                         @endcan
-                        @can('job_proof.reviewed')
+                        @can('proof_task_list.reviewed')
                         <li class="nav-item">
-                            <a href="{{ route('backend.job_proof.reviewed') }}" class="nav-link">Reviewed</a>
+                            <a href="{{ route('backend.proof_task_list.reviewed') }}" class="nav-link">Reviewed</a>
                         </li>
                         @endcan
                     </ul>
@@ -435,66 +435,66 @@
         </li>
         @endif
         <li class="nav-item">
-            <a href="{{ route('find.works') }}" class="nav-link">
+            <a href="{{ route('find_tasks') }}" class="nav-link">
                 <i class="link-icon" data-feather="search"></i>
-                <span class="link-title">Find Works</span>
+                <span class="link-title">Find Tasks</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#workList" role="button" aria-expanded="false" aria-controls="workList">
+            <a class="nav-link" data-bs-toggle="collapse" href="#workingTaskList" role="button" aria-expanded="false" aria-controls="workingTaskList">
                 <i class="link-icon" data-feather="list"></i>
-                <span class="link-title">Work List</span>
+                <span class="link-title">Working Task List</span>
                 <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
-            <div class="collapse" id="workList">
+            <div class="collapse" id="workingTaskList">
                 <ul class="nav sub-menu">
                     <li class="nav-item">
-                        <a href="{{ route('work.list.pending') }}" class="nav-link">Pending</a>
+                        <a href="{{ route('working_task.list.pending') }}" class="nav-link">Pending</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('work.list.approved') }}" class="nav-link">Approved</a>
+                        <a href="{{ route('working_task.list.approved') }}" class="nav-link">Approved</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('work.list.rejected') }}" class="nav-link">Rejected</a>
+                        <a href="{{ route('working_task.list.rejected') }}" class="nav-link">Rejected</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('work.list.reviewed') }}" class="nav-link">Reviewed</a>
+                        <a href="{{ route('working_task.list.reviewed') }}" class="nav-link">Reviewed</a>
                     </li>
                 </ul>
             </div>
         </li>
 
         <li class="nav-item">
-            <a href="{{ route('post.job') }}" class="nav-link">
+            <a href="{{ route('post_task') }}" class="nav-link">
                 <i class="link-icon" data-feather="plus"></i>
-                <span class="link-title">Post Job</span>
+                <span class="link-title">Post Task</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#jobList" role="button" aria-expanded="false" aria-controls="jobList">
+            <a class="nav-link" data-bs-toggle="collapse" href="#postingTaskList" role="button" aria-expanded="false" aria-controls="postingTaskList">
                 <i class="link-icon" data-feather="list"></i>
-                <span class="link-title">Job List</span>
+                <span class="link-title">Posting Task List</span>
                 <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
-            <div class="collapse" id="jobList">
+            <div class="collapse" id="postingTaskList">
                 <ul class="nav sub-menu">
                     <li class="nav-item">
-                        <a href="{{ route('job.list.pending') }}" class="nav-link">Pending</a>
+                        <a href="{{ route('posting_task.list.pending') }}" class="nav-link">Pending</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('job.list.rejected') }}" class="nav-link">Rejected</a>
+                        <a href="{{ route('posting_task.list.rejected') }}" class="nav-link">Rejected</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('job.list.running') }}" class="nav-link">Running</a>
+                        <a href="{{ route('posting_task.list.running') }}" class="nav-link">Running</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('job.list.canceled') }}" class="nav-link">Canceled</a>
+                        <a href="{{ route('posting_task.list.canceled') }}" class="nav-link">Canceled</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('job.list.paused') }}" class="nav-link">Paused</a>
+                        <a href="{{ route('posting_task.list.paused') }}" class="nav-link">Paused</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('job.list.completed') }}" class="nav-link">Completed</a>
+                        <a href="{{ route('posting_task.list.completed') }}" class="nav-link">Completed</a>
                     </li>
                 </ul>
             </div>

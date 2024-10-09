@@ -54,8 +54,8 @@
                                         <table id="trashDataTable" class="table w-100">
                                             <thead>
                                                 <tr>
-                                                    <td>Sl No</td>
-                                                    <td>Faq Question</td>
+                                                    <th>Sl No</th>
+                                                    <th>Faq Question</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -94,7 +94,7 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>Faq Question</th>
-                                <td>Status</td>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

@@ -28,7 +28,7 @@ class RatingNotification extends Notification implements ShouldQueue
     {
         return [
             'title' => 'You have received a rating of ' . $this->rating['rating'],
-            'message' => 'The rating is job completion rating',
+            'message' => 'The rating is task completion rating',
         ];
     }
 
@@ -38,8 +38,8 @@ class RatingNotification extends Notification implements ShouldQueue
                     ->subject('Rating Received')
                     ->greeting('Hello ' . $notifiable->name . ',')
                     ->line('You have received a rating of ' . $this->rating['rating'] . ' stars')
-                    ->line('The rating is job completion rating')
-                    ->line('Updated on: ' . Carbon::parse($this->rating['created_at'])->format('d-F-Y H:i:s'))
+                    ->line('The rating is task completion rating')
+                    ->line('Updated on: ' . Carbon::parse($this->rating['created_at'])->format('d-F-Y h:i:s'))
                     ->line('Thank you for using our application!');
     }
 }

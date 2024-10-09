@@ -25,13 +25,14 @@
                                         <table id="rejectedDataTable" class="table w-100">
                                             <thead>
                                                 <tr>
-                                                    <td>Sl No</td>
+                                                    <th>Sl No</th>
                                                     <th>User Id</th>
                                                     <th>User Name</th>
                                                     <th>Method</th>
                                                     <th>Number</th>
                                                     <th>Transaction Id</th>
                                                     <th>Amount</th>
+                                                    <th>Payable Amount</th>
                                                     <th>Submitted Date</th>
                                                     <th>Rejected Reason</th>
                                                     <th>Rejected By</th>
@@ -78,6 +79,7 @@
                                 <th>Number</th>
                                 <th>Transaction Id</th>
                                 <th>Deposit Amount</th>
+                                <th>Payable Amount</th>
                                 <th>Submitted Date</th>
                                 <th>Action</th>
                             </tr>
@@ -138,6 +140,7 @@
                 { data: 'number', name: 'number' },
                 { data: 'transaction_id', name: 'transaction_id' },
                 { data: 'amount', name: 'amount' },
+                { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
@@ -181,15 +184,12 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        if (response.status == 401) {
-                            $('.update_rejected_reason_error').text(response.error);
-                        }else{
-                            $(".rejectedData").modal('hide');
-                            $('#pendingDataTable').DataTable().ajax.reload();
-                            $('#rejectedDataTable').DataTable().ajax.reload();
-                            $(".viewModal").modal('hide');
-                            toastr.success('Deposit status change successfully.');
-                        }
+                        $("#editForm")[0].reset();
+                        $(".rejectedData").modal('hide');
+                        $('#pendingDataTable').DataTable().ajax.reload();
+                        $('#rejectedDataTable').DataTable().ajax.reload();
+                        $(".viewModal").modal('hide');
+                        toastr.success('Deposit status change successfully.');
                     }
                 },
             });
@@ -211,6 +211,7 @@
                 { data: 'number', name: 'number' },
                 { data: 'transaction_id', name: 'transaction_id' },
                 { data: 'amount', name: 'amount' },
+                { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'rejected_by', name: 'rejected_by' },

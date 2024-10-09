@@ -19,7 +19,7 @@
                                 <th>Sl No</th>
                                 <th>User</th>
                                 <th>Blocked At</th>
-                                <td>Action</td>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -35,6 +35,12 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>Payable Amount</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ get_site_settings('site_currency_symbol') . ' ' .$deposit->payable_amount }}</span>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Submitted Date</td>
                                 <td>{{ $deposit->created_at->format('d M Y h:i A') }}</td>
                             </tr>

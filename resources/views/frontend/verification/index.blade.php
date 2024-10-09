@@ -17,7 +17,7 @@
                 </p>
                 <hr>
                 <div class="mb-0">
-                    <a href="javascript:;" class="btn btn-primary btn-sm">Contact Us</a>
+                    <a href="{{ route('support') }}" class="btn btn-primary btn-sm">Contact Us</a>
                 </div>
             </div>
             @elseif (Auth::user()->hasVerification('Rejected'))
@@ -31,7 +31,7 @@
                 </p>
                 <hr>
                 <div class="mb-0">
-                    <a href="javascript:;" class="btn btn-primary btn-sm">Contact Us</a>
+                    <a href="{{ route('support') }}" class="btn btn-primary btn-sm">Contact Us</a>
                 </div>
             </div>
             @elseif (Auth::user()->hasVerification('Approved'))
@@ -52,7 +52,7 @@
                 </p>
                 <hr>
                 <div class="mb-0">
-                    <a href="javascript:;" class="btn btn-primary btn-sm">Contact Us</a>
+                    <a href="{{ route('support') }}" class="btn btn-primary btn-sm">Contact Us</a>
                 </div>
             </div>
             @endif

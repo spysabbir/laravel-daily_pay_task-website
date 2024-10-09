@@ -6,20 +6,20 @@ use App\Http\Controllers\Backend\ChildCategoryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
 use App\Http\Controllers\Backend\FaqController;
-use App\Http\Controllers\Backend\JobPostChargeController;
-use App\Http\Controllers\Backend\JobController;
+use App\Http\Controllers\Backend\TaskController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\SubscriberController;
+use App\Http\Controllers\Backend\TaskPostChargeController;
 use App\Http\Controllers\Backend\TestimonialController;
 use App\Http\Controllers\Backend\VerificationController;
 use App\Http\Controllers\Backend\WithdrawController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type:Backend'])->group(function() {
+Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend'])->group(function() {
     Route::get('dashboard', [BackendController::class, 'dashboard'])->name('dashboard');
     Route::get('profile/edit', [BackendController::class, 'profileEdit'])->name('profile.edit');
     Route::get('profile/setting', [BackendController::class, 'profileSetting'])->name('profile.setting');
@@ -78,14 +78,14 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('child_category/restore/{id}', [ChildCategoryController::class, 'restore'])->name('child_category.restore');
     Route::get('child_category/delete/{id}', [ChildCategoryController::class, 'delete'])->name('child_category.delete');
     Route::get('child_category/status/{id}', [ChildCategoryController::class, 'status'])->name('child_category.status');
-    // Job Charge
-    Route::resource('job_post_charge', JobPostChargeController::class);
-    Route::get('job_post_charge-get_sub_category', [JobPostChargeController::class, 'getSubCategories'])->name('job_post_charge.get_sub_categories');
-    Route::get('job_post_charge-get_child_category', [JobPostChargeController::class, 'getChildCategories'])->name('job_post_charge.get_child_categories');
-    Route::get('job_post_charge-trash', [JobPostChargeController::class, 'trash'])->name('job_post_charge.trash');
-    Route::get('job_post_charge/restore/{id}', [JobPostChargeController::class, 'restore'])->name('job_post_charge.restore');
-    Route::get('job_post_charge/delete/{id}', [JobPostChargeController::class, 'delete'])->name('job_post_charge.delete');
-    Route::get('job_post_charge/status/{id}', [JobPostChargeController::class, 'status'])->name('job_post_charge.status');
+    // Task Post Charge
+    Route::resource('task_post_charge', TaskPostChargeController::class);
+    Route::get('task_post_charge-get_sub_category', [TaskPostChargeController::class, 'getSubCategories'])->name('task_post_charge.get_sub_categories');
+    Route::get('task_post_charge-get_child_category', [TaskPostChargeController::class, 'getChildCategories'])->name('task_post_charge.get_child_categories');
+    Route::get('task_post_charge-trash', [TaskPostChargeController::class, 'trash'])->name('task_post_charge.trash');
+    Route::get('task_post_charge/restore/{id}', [TaskPostChargeController::class, 'restore'])->name('task_post_charge.restore');
+    Route::get('task_post_charge/delete/{id}', [TaskPostChargeController::class, 'delete'])->name('task_post_charge.delete');
+    Route::get('task_post_charge/status/{id}', [TaskPostChargeController::class, 'status'])->name('task_post_charge.status');
     // Faq
     Route::resource('faq', FaqController::class);
     Route::get('faq-trash', [FaqController::class, 'trash'])->name('faq.trash');
@@ -119,29 +119,29 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::get('withdraw-request-rejected', [WithdrawController::class, 'withdrawRequestRejected'])->name('withdraw.request.rejected');
     Route::get('withdraw-request-approved', [WithdrawController::class, 'withdrawRequestApproved'])->name('withdraw.request.approved');
     Route::delete('withdraw-request-delete/{id}', [WithdrawController::class, 'withdrawRequestDelete'])->name('withdraw.request.delete');
-    // Job List
-    Route::get('job_list-pending', [JobController::class, 'jobListPending'])->name('job_list.pending');
-    Route::get('pending-job-view/{id}', [JobController::class, 'pendingJobView'])->name('pending.job_view');
-    Route::get('job_list-running', [JobController::class, 'jobListRunning'])->name('job_list.running');
-    Route::get('running-job-view/{id}', [JobController::class, 'runningJobView'])->name('running.job_view');
-    Route::get('job_list-rejected', [JobController::class, 'jobListRejected'])->name('job_list.rejected');
-    Route::get('rejected-job-view/{id}', [JobController::class, 'rejectedJobView'])->name('rejected.job_view');
-    Route::get('job_list-canceled', [JobController::class, 'jobListCanceled'])->name('job_list.canceled');
-    Route::get('canceled-job-view/{id}', [JobController::class, 'canceledJobView'])->name('canceled.job_view');
-    Route::get('job_list-completed', [JobController::class, 'jobListCompleted'])->name('job_list.completed');
-    Route::get('completed-job-view/{id}', [JobController::class, 'completedJobView'])->name('completed.job_view');
-    Route::put('job-status-update/{id}', [JobController::class, 'jobStatusUpdate'])->name('job_status_update');
-    // Job Proof
-    Route::get('job_proof-pending', [JobController::class, 'jobProofPending'])->name('job_proof.pending');
-    Route::get('job_proof-pending-list/{id}', [JobController::class, 'jobProofPendingList'])->name('job_proof.pending.list');
-    Route::get('job_proof-approved', [JobController::class, 'jobProofApproved'])->name('job_proof.approved');
-    Route::get('job_proof-approved-list/{id}', [JobController::class, 'jobProofApprovedList'])->name('job_proof.approved.list');
-    Route::get('job_proof-rejected', [JobController::class, 'jobProofRejected'])->name('job_proof.rejected');
-    Route::get('job_proof-rejected-list/{id}', [JobController::class, 'jobProofRejectedList'])->name('job_proof.rejected.list');
-    Route::get('job_proof-reviewed', [JobController::class, 'jobProofReviewed'])->name('job_proof.reviewed');
-    Route::get('job_proof-reviewed-list/{id}', [JobController::class, 'jobProofReviewedList'])->name('job_proof.reviewed.list');
-    Route::get('job_proof-check/{id}', [JobController::class, 'jobProofCheck'])->name('job_proof.check');
-    Route::put('job_proof-check-update/{id}', [JobController::class, 'jobProofCheckUpdate'])->name('job_proof.check.update');
+    // Post Task
+    Route::get('post_task_list-pending', [TaskController::class, 'postTaskListPending'])->name('post_task_list.pending');
+    Route::get('pending-post_task_view/{id}', [TaskController::class, 'pendingPostTaskView'])->name('pending.post_task_view');
+    Route::get('post_task_list-running', [TaskController::class, 'postTaskListRunning'])->name('post_task_list.running');
+    Route::get('running-post_task_view/{id}', [TaskController::class, 'runningPostTaskView'])->name('running.post_task_view');
+    Route::get('post_task_list-rejected', [TaskController::class, 'postTaskListRejected'])->name('post_task_list.rejected');
+    Route::get('rejected-post_task_view/{id}', [TaskController::class, 'rejectedPostTaskView'])->name('rejected.post_task_view');
+    Route::get('post_task_list-canceled', [TaskController::class, 'postTaskListCanceled'])->name('post_task_list.canceled');
+    Route::get('canceled-post_task_view/{id}', [TaskController::class, 'canceledPostTaskView'])->name('canceled.post_task_view');
+    Route::get('post_task_list-completed', [TaskController::class, 'postTaskListCompleted'])->name('post_task_list.completed');
+    Route::get('completed-post_task_view/{id}', [TaskController::class, 'completedPostTaskView'])->name('completed.post_task_view');
+    Route::put('post_task_status_update/{id}', [TaskController::class, 'postTaskStatusUpdate'])->name('post_task_status_update');
+    // Proof Task
+    Route::get('proof_task_list-pending', [TaskController::class, 'proofTaskListPending'])->name('proof_task_list.pending');
+    Route::get('pending-task_list_view/{id}', [TaskController::class, 'pendingTaskListView'])->name('pending.task_list_view');
+    Route::get('proof_task_list-approved', [TaskController::class, 'proofTaskListApproved'])->name('proof_task_list.approved');
+    Route::get('approved-task_list_view/{id}', [TaskController::class, 'approvedTaskListView'])->name('approved.task_list_view');
+    Route::get('proof_task_list-rejected', [TaskController::class, 'proofTaskListRejected'])->name('proof_task_list.rejected');
+    Route::get('rejected-task_list_view/{id}', [TaskController::class, 'rejectedTaskListView'])->name('rejected.task_list_view');
+    Route::get('proof_task_list-reviewed', [TaskController::class, 'proofTaskListReviewed'])->name('proof_task_list.reviewed');
+    Route::get('reviewed-task_list_view/{id}', [TaskController::class, 'reviewedTaskListView'])->name('reviewed.task_list_view');
+    Route::get('proof_task_check/{id}', [TaskController::class, 'proofTaskCheck'])->name('proof_task_check');
+    Route::put('proof_task_check_update/{id}', [TaskController::class, 'proofTaskCheckUpdate'])->name('proof_task_check_update');
     // Report User
     Route::get('report_user-pending', [BackendController::class, 'reportUserPending'])->name('report_user.pending');
     Route::get('report_user-resolved', [BackendController::class, 'reportUserResolved'])->name('report_user.resolved');
@@ -163,5 +163,4 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'check_user_type
     Route::post('subscriber-newsletter-send', [SubscriberController::class, 'subscriberNewsletterSend'])->name('subscriber.newsletter.send');
     Route::get('subscriber-newsletter-view/{id}', [SubscriberController::class, 'subscriberNewsletterView'])->name('subscriber.newsletter.view');
     Route::get('subscriber-newsletter-delete/{id}', [SubscriberController::class, 'subscriberNewsletterDelete'])->name('subscriber.newsletter.delete');
-
 });

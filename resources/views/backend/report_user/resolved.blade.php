@@ -20,7 +20,7 @@
                                 <th>Reported User</th>
                                 <th>Reported By</th>
                                 <th>Created At</th>
-                                <td>Action</td>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>

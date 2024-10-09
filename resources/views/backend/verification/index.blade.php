@@ -25,7 +25,7 @@
                                         <table id="rejectedDataTable" class="table w-100">
                                             <thead>
                                                 <tr>
-                                                    <td>Sl No</td>
+                                                    <th>Sl No</th>
                                                     <th>User Id</th>
                                                     <th>User Email</th>
                                                     <th>Submited At</th>

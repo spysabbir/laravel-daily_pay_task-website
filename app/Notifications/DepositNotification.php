@@ -39,7 +39,7 @@ class DepositNotification extends Notification implements ShouldQueue
                     ->greeting('Hello ' . $notifiable->name . ',')
                     ->line('Now your deposit status is ' . $this->deposit['status'] . ' and the amount is ' . get_site_settings('site_currency_symbol') . $this->deposit['amount'])
                     ->line($this->deposit['rejected_reason'] ?? 'Thank you for using our application!')
-                    ->line('Updated on: ' . Carbon::parse($this->deposit['created_at'])->format('d-F-Y H:i:s'))
+                    ->line('Updated on: ' . Carbon::parse($this->deposit['created_at'])->format('d-F-Y h:i:s'))
                     ->line('Thank you for using our application!');
     }
 }

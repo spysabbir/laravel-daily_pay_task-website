@@ -168,6 +168,7 @@
                                 <th>Deposit Number</th>
                                 <th>Transaction Id</th>
                                 <th>Amount</th>
+                                <th>Payable Amount</th>
                                 <th>Submitted Date</th>
                                 <th>Approved / Rejected Date</th>
                                 <th>Status</th>
@@ -211,6 +212,7 @@
                 { data: 'number', name: 'number'},
                 { data: 'transaction_id', name: 'transaction_id' },
                 { data: 'amount', name: 'amount' },
+                { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'approved_or_rejected_at', name: 'approved_or_rejected_at' },
                 { data: 'status', name: 'status' },

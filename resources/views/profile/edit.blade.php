@@ -90,13 +90,13 @@
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Last Login:</label>
                     <p class="text-muted">
-                        {{ date('j F, Y  H:i:s A', strtotime($user->last_login_at)) }}
+                        {{ date('j F, Y  h:i:s A', strtotime($user->last_login_at)) }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Joined:</label>
                     <p class="text-muted">
-                        {{ $user->created_at->format('j F, Y  H:i:s A') }}
+                        {{ $user->created_at->format('j F, Y  h:i:s A') }}
                     </p>
                 </div>
             </div>

@@ -34,7 +34,7 @@
                 <div class="why-choose-text pt-100 pb-70">
                     <div class="section-title">
                         <h2>Why You Choose {{ config('app.name') }}?</h2>
-                        <p>Micro Tasks Portal provides the flexibility to earn on your own schedule. Complete simple tasks for quick payouts, and enjoy a supportive community. Turn your spare time into cash and explore diverse opportunities to boost your income effortlessly!</p>
+                        <p>Daily Micro Tasks provides the flexibility to earn on your own schedule. Complete simple tasks for quick payouts, and enjoy a supportive community. Turn your spare time into cash and explore diverse opportunities to boost your income effortlessly!</p>
                     </div>
 
                     <div class="row">
@@ -89,53 +89,53 @@
 </section>
 <!-- Why Choose Section End -->
 
-<!-- Job Category Section Start -->
+<!-- Task Category Section Start -->
 <div class="category-style-two pt-100 pb-70">
     <div class="container">
         <div class="section-title text-center">
-            <h2>Popular Jobs Category</h2>
-            <p>Discover our Popular Jobs Category at Micro Tasks Portal, featuring in-demand tasks like online surveys, data entry, and content moderation. These easy, rewarding opportunities cater to various skills and interests, making it simple to earn extra cash on your schedule!</p>
+            <h2>Popular Tasks Category</h2>
+            <p>Discover our Popular Tasks Category at Daily Micro Tasks, featuring in-demand tasks like online surveys, data entry, and content moderation. These easy, rewarding opportunities cater to various skills and interests, making it simple to earn extra cash on your schedule!</p>
         </div>
 
         <div class="row">
-            @foreach ($popularJobPostCategories as $category)
+            @foreach ($popularPostTaskCategories as $category)
             @php
-                $job_count = \App\Models\JobPost::where('category_id', $category->id)->where('status', 'Running')->count();
+                $taskCount = \App\Models\PostTask::where('category_id', $category->id)->where('status', 'Running')->count();
             @endphp
             <div class="col-lg-3 col-sm-6">
                 <div class="category-item">
                     <i class="flaticon-wrench-and-screwdriver-in-cross"></i>
                     <h3>{{ $category->name }}</h3>
-                    <p>{{ $job_count }} new Job</p>
+                    <p>{{ $taskCount }} new Task</p>
                 </div>
             </div>
             @endforeach
         </div>
     </div>
 </div>
-<!-- Job Category Section End -->
+<!-- Task Category Section End -->
 
 <!-- Jobs Section Start -->
 <section class="job-section pb-70">
     <div class="container">
         <div class="section-title text-center">
-            <h2>Jobs You May Be Interested In</h2>
-            <p>Explore our curated list of tasks tailored to your skills and preferences. From online surveys to data entry, discover opportunities that match your interests. Find rewarding jobs that fit your schedule and start earning extra income today!</p>
+            <h2>Tasks You May Be Interested In</h2>
+            <p>Explore our curated list of tasks tailored to your skills and preferences. From online surveys to data entry, discover opportunities that match your interests. Find rewarding tasks that fit your schedule and start earning extra income today!</p>
         </div>
 
         <div class="row">
-            @foreach ($latestJobPosts as $jobPost)
+            @foreach ($latestPostTasks as $postTask)
             <div class="col-sm-6">
                 <div class="job-card">
                     <div class="row align-items-center">
                         <div class="col-lg-3">
-                            @if ($jobPost->thumbnail)
+                            @if ($postTask->thumbnail)
                             <div class="thumb-img">
-                                <img src="{{ asset('uploads/job_thumbnail_photo') }}/{{ $jobPost->thumbnail }}" alt="Thumbnail">
+                                <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $postTask->thumbnail }}" alt="Thumbnail">
                             </div>
                             @else
                             <div class="thumb-img">
-                                <img src="{{ asset('frontend/img/job_post_default.jpg') }}" alt="Thumbnail">
+                                <img src="{{ asset('frontend/img/task_post_default.jpg') }}" alt="Thumbnail">
                             </div>
                             @endif
                         </div>
@@ -143,20 +143,20 @@
                         <div class="col-lg-6">
                             <div class="job-info">
                                 <h3>
-                                    {{ $jobPost->title }}
+                                    {{ $postTask->title }}
                                 </h3>
                                 <ul>
                                     <li>
                                         <i class='bx bx-briefcase' ></i>
-                                        <strong>Category: {{ $jobPost->category->name }}</strong>
+                                        <strong>Category: {{ $postTask->category->name }}</strong>
                                     </li>
                                     <li>
                                         <i class='bx bx-male-female'></i>
-                                        <strong>Worker Needed: {{ $jobPost->need_worker }}</strong>
+                                        <strong>Work Needed: {{ $postTask->work_needed }}</strong>
                                     </li>
                                     <li>
                                         <i class='bx bx-calendar' ></i>
-                                        <strong>Approved At: {{ date('d M, Y', strtotime($jobPost->approved_at)) }}</strong>
+                                        <strong>Approved At: {{ date('d M, Y', strtotime($postTask->approved_at)) }}</strong>
                                     </li>
                                 </ul>
                             </div>
@@ -166,16 +166,16 @@
                             <div class="job-save">
                                 <span>
                                     <strong class="text-success">
-                                        Worker Eern:
+                                        Earnings From Work:
                                         <br>
-                                        {{ get_site_settings('site_currency_symbol') }} {{ $jobPost->worker_charge }}
+                                        {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }}
                                     </strong>
                                 </span>
                                 <span>
                                     <strong>
                                         Running:
                                         <br>
-                                        {{ $jobPost->running_day }} Days
+                                        {{ $postTask->running_day }} Days
                                     </strong>
                                 </span>
                             </div>
@@ -194,7 +194,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>Top Buyer</h2>
-            <p>Meet our Top Buyer section, showcasing the most sought-after tasks on Micro Tasks Portal. These high-demand jobs offer excellent rewards and quick payouts. Join today to capitalize on popular opportunities and maximize your earnings with the best tasks available!</p>
+            <p>Meet our Top Buyer section, showcasing the most sought-after tasks on Daily Micro Tasks. These high-demand tasks offer excellent rewards and quick payouts. Join today to capitalize on popular opportunities and maximize your earnings with the best tasks available!</p>
         </div>
 
         <div class="row">
@@ -211,7 +211,7 @@
                             Join: {{ date('d M, Y', strtotime($buyer->user->created_at)) }}
                         </p>
                         <span class="company-btn">
-                            0 Job Post
+                            0 Post Task
                         </span>
                     </div>
                 </div>
@@ -222,7 +222,7 @@
 </section>
 <!-- Companies Section End -->
 
-<!-- Job Info Section Start -->
+<!-- Task Info Section Start -->
 <div class="job-info-two pt-100 pb-70">
     <div class="container">
         <div class="row">
@@ -234,7 +234,7 @@
                             <h5 class="mt-0">Looking For a Task</h5>
                             <p>Browse our diverse selection of tasks tailored to your skills. Start earning extra income easily and conveniently today!</p>
 
-                            <a href="{{ route('find.works') }}">
+                            <a href="{{ route('find_tasks') }}">
                                 Apply Now
                                 <i class='bx bx-chevrons-right'></i>
                             </a>
@@ -249,9 +249,9 @@
                         <i class='flaticon-resume align-self-start mr-3'></i>
                         <div class="media-body">
                             <h5 class="mt-0">Posting a Task</h5>
-                            <p>Post your task and connect with skilled workers eager to complete your job. Get quality results and quick turnaround times!</p>
+                            <p>Post your task and connect with skilled workers eager to complete your task. Get quality results and quick turnaround times!</p>
 
-                            <a href="{{ route('post.job') }}">
+                            <a href="{{ route('post_task') }}">
                                 Apply Now
                                 <i class='bx bx-chevrons-right'></i>
                             </a>
@@ -262,7 +262,7 @@
         </div>
     </div>
 </div>
-<!-- Job Info Section End -->
+<!-- Task Info Section End -->
 
 <!-- Counter Section Start -->
 <div class="counter-section pt-100 pb-70">
@@ -271,15 +271,15 @@
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
                     <i class="flaticon-resume"></i>
-                    <h2><span>{{ $totalJobPosts }}</span></h2>
-                    <p>Total Job Post</p>
+                    <h2><span>{{ $totalPostTask }}</span></h2>
+                    <p>Total Post Task</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
                     <i class="flaticon-recruitment"></i>
-                    <h2><span>{{ $runningJobPosts }}</span></h2>
-                    <p>Running Job</p>
+                    <h2><span>{{ $runningPostTasks }}</span></h2>
+                    <p>Running Task</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
@@ -306,7 +306,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>What Client’s Say About Us</h2>
-            <p>Our clients love Micro Tasks Portal for its user-friendly interface and diverse task options. They appreciate the quick payouts and the flexibility to earn on their own schedules. Join our community and see why they keep coming back!</p>
+            <p>Our clients love Daily Micro Tasks for its user-friendly interface and diverse task options. They appreciate the quick payouts and the flexibility to earn on their own schedules. Join our community and see why they keep coming back!</p>
         </div>
 
         <div class="row">

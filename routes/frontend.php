@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Frontend\FrontendController;
-use App\Http\Controllers\Frontend\JobListController;
-use App\Http\Controllers\Frontend\PostJobController;
+use App\Http\Controllers\Frontend\PostingTaskController;
 use App\Http\Controllers\Frontend\UserController;
+use App\Http\Controllers\Frontend\WorkingTaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendController::class, 'index'])->name('index');
@@ -33,47 +33,47 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/verification', [UserController::class, 'verification'])->name('verification');
     Route::post('/verification', [UserController::class, 'verificationStore'])->name('verification.store');
     Route::put('/re-verification', [UserController::class, 'reVerificationStore'])->name('re-verification.store');
+    // Working Task
+    Route::get('/find_tasks', [WorkingTaskController::class, 'findTasks'])->name('find_tasks');
+    Route::get('/find_task-details/{id}', [WorkingTaskController::class, 'findTaskDetails'])->name('find_task.details');
+    Route::post('/find_task-proof-submit/{id}', [WorkingTaskController::class, 'findTaskProofSubmit'])->name('find_task.proof.submit');
 
-    Route::get('/find-works', [UserController::class, 'findWorks'])->name('find.works');
-    Route::get('/work-details/{id}', [UserController::class, 'workDetails'])->name('work.details');
-    Route::post('/work-proof-submit/{id}', [UserController::class, 'workProofSubmit'])->name('work.proof.submit');
+    Route::get('/working_task-list-pending', [WorkingTaskController::class, 'workingTaskListPending'])->name('working_task.list.pending');
+    Route::get('/working_task-list-approved', [WorkingTaskController::class, 'workingTaskListApproved'])->name('working_task.list.approved');
+    Route::get('/working_task-list-rejected', [WorkingTaskController::class, 'workingTaskListRejected'])->name('working_task.list.rejected');
+    Route::get('/working_task-list-reviewed', [WorkingTaskController::class, 'workingTaskListReviewed'])->name('working_task.list.reviewed');
 
-    Route::get('/work-list-pending', [UserController::class, 'workListPending'])->name('work.list.pending');
-    Route::get('/work-list-approved', [UserController::class, 'workListApproved'])->name('work.list.approved');
-    Route::get('/work-list-rejected', [UserController::class, 'workListRejected'])->name('work.list.rejected');
-    Route::get('/work-list-reviewed', [UserController::class, 'workListReviewed'])->name('work.list.reviewed');
-    Route::get('/approved-job-view/{id}', [UserController::class, 'approvedJobView'])->name('approved.job.view');
-    Route::get('/reviewed-job-view/{id}', [UserController::class, 'reviewedJobView'])->name('reviewed.job.view');
-    Route::get('/rejected.job.check/{id}', [UserController::class, 'rejectedJobCheck'])->name('rejected.job.check');
-    Route::put('/rejected.job.reviewed/{id}', [UserController::class, 'rejectedJobReviewed'])->name('rejected.job.reviewed');
+    Route::get('/approved-working_task-view/{id}', [WorkingTaskController::class, 'approvedWorkingTaskView'])->name('approved.working_task.view');
+    Route::get('/reviewed-working_task-view/{id}', [WorkingTaskController::class, 'reviewedWorkingTaskView'])->name('reviewed.working_task.view');
+    Route::get('/rejected-working_task-check/{id}', [WorkingTaskController::class, 'rejectedWorkingTaskCheck'])->name('rejected.working_task.check');
+    Route::put('/rejected-working_task-reviewed/{id}', [WorkingTaskController::class, 'rejectedWorkingTaskReviewed'])->name('rejected.working_task.reviewed');
+    // Posting Task
+    Route::get('/post_task', [PostingTaskController::class, 'postTask'])->name('post_task');
+    Route::get('/post_task-get-sub-category', [PostingTaskController::class, 'postTaskGetSubCategories'])->name('post_task.get.sub.category');
+    Route::get('/post_task-get-child-category', [PostingTaskController::class, 'postTaskGetChildCategories'])->name('post_task.get.child.category');
+    Route::get('/post_task-get-task-post-charge', [PostingTaskController::class, 'postTaskGetTaskPostCharge'])->name('post_task.get.task.post.charge');
+    Route::post('/post_task-store', [PostingTaskController::class, 'postTaskStore'])->name('post_task.store');
+    Route::get('/post_task-edit/{id}', [PostingTaskController::class, 'postTaskEdit'])->name('post_task.edit');
+    Route::put('/post_task-update/{id}', [PostingTaskController::class, 'postTaskUpdate'])->name('post_task.update');
 
-    Route::get('/post-job', [PostJobController::class, 'postJob'])->name('post.job');
-    Route::get('/post-job-get-sub-category', [PostJobController::class, 'getSubCategories'])->name('post_job.get_sub_category');
-    Route::get('/post-job-get-child-category', [PostJobController::class, 'getChildCategories'])->name('post_job.get_child_category');
-    Route::get('/post-job-get_job_post_charge', [PostJobController::class, 'getJobPostCharge'])->name('post_job.get_job_post_charge');
-    Route::post('/post-job', [PostJobController::class, 'postJobStore'])->name('post_job.submit');
-    Route::get('/post_job-edit/{id}', [PostJobController::class, 'postJobEdit'])->name('post_job.edit');
-    Route::put('/post_job-update/{id}', [PostJobController::class, 'postJobUpdate'])->name('post_job.update');
+    Route::get('/posting_task-list-pending', [PostingTaskController::class, 'postingTaskListPending'])->name('posting_task.list.pending');
+    Route::get('/posting_task-list-rejected', [PostingTaskController::class, 'postingTaskListRejected'])->name('posting_task.list.rejected');
+    Route::get('/posting_task-list-canceled', [PostingTaskController::class, 'postingTaskListCanceled'])->name('posting_task.list.canceled');
+    Route::get('/posting_task-list-paused', [PostingTaskController::class, 'postingTaskListPaused'])->name('posting_task.list.paused');
+    Route::get('/posting_task-list-running', [PostingTaskController::class, 'postingTaskListRunning'])->name('posting_task.list.running');
+    Route::get('/posting_task-list-completed', [PostingTaskController::class, 'postingTaskListCompleted'])->name('posting_task.list.completed');
+    Route::get('/posting_task-view/{id}', [PostingTaskController::class, 'postingTaskView'])->name('posting_task.view');
 
-    Route::get('/job-list-pending', [JobListController::class, 'jobListPending'])->name('job.list.pending');
-    Route::get('/job-list-rejected', [JobListController::class, 'jobListRejected'])->name('job.list.rejected');
-    Route::get('/job-list-canceled', [JobListController::class, 'jobListCanceled'])->name('job.list.canceled');
-    Route::get('/job-list-paused', [JobListController::class, 'jobListPaused'])->name('job.list.paused');
-    Route::get('/job-view/{id}', [JobListController::class, 'jobView'])->name('job.view');
-
-    Route::get('/job-list-running', [JobListController::class, 'jobListRunning'])->name('job.list.running');
-    Route::get('/running-job-paused_resume/{id}', [JobListController::class, 'runningJobPausedResume'])->name('running_job.paused_resume');
-    Route::post('/running-job-canceled/{id}', [JobListController::class, 'runningJobCanceled'])->name('running_job.canceled');
-    Route::get('/running-job-edit/{id}', [JobListController::class, 'runningJobEdit'])->name('running_job.edit');
-    Route::put('/running-job-update/{id}', [JobListController::class, 'runningJobUpdate'])->name('running_job.update');
-    Route::get('/running-job-show/{id}', [JobListController::class, 'runningJobShow'])->name('running_job.show');
-    Route::get('/running-job-proof-check/{id}', [JobListController::class, 'runningJobProofCheck'])->name('running_job.proof.check');
-    Route::put('/running-job-proof-check-update/{id}', [JobListController::class, 'runningJobProofCheckUpdate'])->name('running_job.proof.check.update');
-    Route::get('/running-job-approved_all/{id}', [JobListController::class, 'runningJobApprovedAll'])->name('running_job.approved_all');
-    Route::post('/running-job-selected_item_approved', [JobListController::class, 'runningJobSelectedItemApproved'])->name('running_job.selected_item_approved');
-    Route::post('/running-job-selected_item_rejected', [JobListController::class, 'runningJobSelectedItemRejected'])->name('running_job.selected_item_rejected');
-
-    Route::get('/job-list-completed', [JobListController::class, 'jobListCompleted'])->name('job.list.completed');
+    Route::get('/running-posting_task-paused-resume/{id}', [PostingTaskController::class, 'postingRunningTaskPausedResume'])->name('running.posting_task.paused.resume');
+    Route::post('/running-posting_task-canceled/{id}', [PostingTaskController::class, 'postingRunningTaskCanceled'])->name('running.posting_task.canceled');
+    Route::get('/running-posting_task-edit/{id}', [PostingTaskController::class, 'postingRunningTaskEdit'])->name('running.posting_task.edit');
+    Route::put('/running-posting_task-update/{id}', [PostingTaskController::class, 'postingRunningTaskUpdate'])->name('running.posting_task.update');
+    Route::get('/running-posting_task-show/{id}', [PostingTaskController::class, 'postingRunningTaskShow'])->name('running.posting_task.show');
+    Route::get('/running-posting_task-proof-check/{id}', [PostingTaskController::class, 'postingRunningTaskProofCheck'])->name('running.posting_task.proof.check');
+    Route::put('/running-posting_task-proof-check-update/{id}', [PostingTaskController::class, 'postingRunningTaskProofCheckUpdate'])->name('running.posting_task.proof.check.update');
+    Route::get('/running-posting_task-approved-all/{id}', [PostingTaskController::class, 'postingRunningTaskApprovedAll'])->name('running.posting_task.approved.all');
+    Route::post('/running-posting_task-selected-item-approved', [PostingTaskController::class, 'postingRunningTaskSelectedItemApproved'])->name('running.posting_task.selected.item.approved');
+    Route::post('/running-posting_task-selected-item-rejected', [PostingTaskController::class, 'postingRunningTaskSelectedItemRejected'])->name('running.posting_task.selected.item.rejected');
 
     Route::get('/deposit', [UserController::class, 'deposit'])->name('deposit');
     Route::post('/deposit', [UserController::class, 'depositStore'])->name('deposit.store');

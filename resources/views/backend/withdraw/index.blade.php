@@ -25,7 +25,7 @@
                                         <table id="rejectedDataTable" class="table w-100">
                                             <thead>
                                                 <tr>
-                                                    <td>Sl No</td>
+                                                    <th>Sl No</th>
                                                     <th>User Id</th>
                                                     <th>User Name</th>
                                                     <th>Type</th>
@@ -186,7 +186,6 @@
             var id = $('#withdraw_id').val();
             var url = "{{ route('backend.withdraw.request.status.change', ":id") }}";
             url = url.replace(':id', id)
-            console.log(id);
             $.ajax({
                 url: url,
                 type: "PUT",

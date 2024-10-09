@@ -37,6 +37,7 @@
                                 <th>Number</th>
                                 <th>Transaction Id</th>
                                 <th>Amount</th>
+                                <th>Payable Amount</th>
                                 <th>Submitted Date</th>
                                 <th>Approved By</th>
                                 <th>Approved At</th>
@@ -81,6 +82,7 @@
                 { data: 'number', name: 'number' },
                 { data: 'transaction_id', name: 'transaction_id' },
                 { data: 'amount', name: 'amount' },
+                { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'approved_by', name: 'approved_by' },
                 { data: 'approved_at', name: 'approved_at' },

@@ -125,82 +125,82 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="job_posting_charge_percentage" class="form-label">Job Posting Charge Percentage</label>
+                            <label for="task_posting_charge_percentage" class="form-label">Task Posting Charge Percentage</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="job_posting_charge_percentage" name="job_posting_charge_percentage" value="{{ old('job_posting_charge_percentage', $defaultSetting->job_posting_charge_percentage) }}" placeholder="Job Posting Charge Percentage">
+                                <input type="number" class="form-control" id="task_posting_charge_percentage" name="task_posting_charge_percentage" value="{{ old('task_posting_charge_percentage', $defaultSetting->task_posting_charge_percentage) }}" placeholder="Task Posting Charge Percentage">
                                 <span class="input-group-text input-group-addon">%</span>
                             </div>
-                            @error('job_posting_charge_percentage')
+                            @error('task_posting_charge_percentage')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="job_posting_additional_screenshot_charge" class="form-label">Job Posting Additional Screenshot Charge</label>
+                            <label for="task_posting_additional_screenshot_charge" class="form-label">Task Posting Additional Screenshot Charge</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="job_posting_additional_screenshot_charge" name="job_posting_additional_screenshot_charge" value="{{ old('job_posting_additional_screenshot_charge', $defaultSetting->job_posting_additional_screenshot_charge) }}" placeholder="Job Posting Additional Screenshot Charge">
+                                <input type="number" class="form-control" id="task_posting_additional_screenshot_charge" name="task_posting_additional_screenshot_charge" value="{{ old('task_posting_additional_screenshot_charge', $defaultSetting->task_posting_additional_screenshot_charge) }}" placeholder="Task Posting Additional Screenshot Charge">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
                             <small class="text-info">* Every additional screenshot charge</small>
-                            @error('job_posting_additional_screenshot_charge')
+                            @error('task_posting_additional_screenshot_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="job_posting_boosted_time_charge" class="form-label">Job Posting Boosted Time Charge</label>
+                            <label for="task_posting_boosted_time_charge" class="form-label">Task Posting Boosted Time Charge</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="job_posting_boosted_time_charge" name="job_posting_boosted_time_charge" value="{{ old('job_posting_boosted_time_charge', $defaultSetting->job_posting_boosted_time_charge) }}" placeholder="Job Posting Boosted Time Charge">
+                                <input type="number" class="form-control" id="task_posting_boosted_time_charge" name="task_posting_boosted_time_charge" value="{{ old('task_posting_boosted_time_charge', $defaultSetting->task_posting_boosted_time_charge) }}" placeholder="Task Posting Boosted Time Charge">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
                             <small class="text-info">* Every 15 minutes charge</small>
-                            @error('job_posting_boosted_time_charge')
+                            @error('task_posting_boosted_time_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="job_posting_additional_running_day_charge" class="form-label">Job Posting Additional Running Day Charge</label>
+                            <label for="task_posting_additional_running_day_charge" class="form-label">Task Posting Additional Running Day Charge</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="job_posting_additional_running_day_charge" name="job_posting_additional_running_day_charge" value="{{ old('job_posting_additional_running_day_charge', $defaultSetting->job_posting_additional_running_day_charge) }}" placeholder="Job Posting Additional Running Day Charge">
+                                <input type="number" class="form-control" id="task_posting_additional_running_day_charge" name="task_posting_additional_running_day_charge" value="{{ old('task_posting_additional_running_day_charge', $defaultSetting->task_posting_additional_running_day_charge) }}" placeholder="Task Posting Additional Running Day Charge">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
                             <small class="text-info">* Every additional day charge</small>
-                            @error('job_posting_additional_running_day_charge')
+                            @error('task_posting_additional_running_day_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="job_posting_min_budget" class="form-label">Job Posting Min Budget</label>
+                            <label for="task_posting_min_budget" class="form-label">Task Posting Min Budget</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="job_posting_min_budget" name="job_posting_min_budget" value="{{ old('job_posting_min_budget', $defaultSetting->job_posting_min_budget) }}" placeholder="Job Posting Min Budget">
+                                <input type="number" class="form-control" id="task_posting_min_budget" name="task_posting_min_budget" value="{{ old('task_posting_min_budget', $defaultSetting->task_posting_min_budget) }}" placeholder="Task Posting Min Budget">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
-                            @error('job_posting_min_budget')
+                            @error('task_posting_min_budget')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="max_job_proof_bonus_amount" class="form-label">Max Job Proof Bonus Amount</label>
+                            <label for="task_proof_max_bonus_amount" class="form-label">Task Proof Max Bonus Amount</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="max_job_proof_bonus_amount" name="max_job_proof_bonus_amount" value="{{ old('max_job_proof_bonus_amount', $defaultSetting->max_job_proof_bonus_amount) }}" placeholder="Max Job Proof Bonus Amount">
+                                <input type="number" class="form-control" id="task_proof_max_bonus_amount" name="task_proof_max_bonus_amount" value="{{ old('task_proof_max_bonus_amount', $defaultSetting->task_proof_max_bonus_amount) }}" placeholder="Task Proof Max Bonus Amount">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
-                            @error('max_job_proof_bonus_amount')
+                            @error('task_proof_max_bonus_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="job_proof_monthly_free_review_time" class="form-label">Job Proof Monthly Free Review Time</label>
-                            <input type="number" class="form-control" id="job_proof_monthly_free_review_time" name="job_proof_monthly_free_review_time" value="{{ old('job_proof_monthly_free_review_time', $defaultSetting->job_proof_monthly_free_review_time) }}" placeholder="Job Proof Monthly Free Review Time">
-                            @error('job_proof_monthly_free_review_time')
+                            <label for="task_proof_monthly_free_review_time" class="form-label">Proof Task Monthly Free Review Time</label>
+                            <input type="number" class="form-control" id="task_proof_monthly_free_review_time" name="task_proof_monthly_free_review_time" value="{{ old('task_proof_monthly_free_review_time', $defaultSetting->task_proof_monthly_free_review_time) }}" placeholder="Proof Task Monthly Free Review Time">
+                            @error('task_proof_monthly_free_review_time')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="job_proof_additional_review_charge" class="form-label">Job Proof Additional Review Charge</label>
+                            <label for="task_proof_additional_review_charge" class="form-label">Proof Task Additional Review Charge</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="job_proof_additional_review_charge" name="job_proof_additional_review_charge" value="{{ old('job_proof_additional_review_charge', $defaultSetting->job_proof_additional_review_charge) }}" placeholder="Job Proof Additional Review Charge">
+                                <input type="number" class="form-control" id="task_proof_additional_review_charge" name="task_proof_additional_review_charge" value="{{ old('task_proof_additional_review_charge', $defaultSetting->task_proof_additional_review_charge) }}" placeholder="Proof Task Additional Review Charge">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
-                            @error('job_proof_additional_review_charge')
+                            @error('task_proof_additional_review_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

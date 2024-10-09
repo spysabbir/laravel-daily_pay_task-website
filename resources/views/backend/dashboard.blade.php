@@ -33,14 +33,14 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-baseline">
-                        <h6 class="card-title mb-0">Totat Job Post</h6>
+                        <h6 class="card-title mb-0">Totat Post Task</h6>
                     </div>
                     <div class="row">
                         <div class="col-6 col-md-12 col-xl-5">
-                            <h3 class="mb-2">{{ $totalData['totalJobPost'] }}</h3>
+                            <h3 class="mb-2">{{ $totalData['totalPostTask'] }}</h3>
                             <div class="d-flex align-items-baseline">
                                 <p class="text-danger">
-                                    <span>{{ $totalData['runningJobPost'] }}</span>
+                                    <span>{{ $totalData['runningPostTasks'] }}</span>
                                     <i data-feather="arrow-down" class="icon-sm mb-1"></i>Running
                                 </p>
                             </div>
@@ -185,7 +185,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
-                    <h6 class="card-title mb-0">Recent Job Post</h6>
+                    <h6 class="card-title mb-0">Recent Post Task</h6>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">

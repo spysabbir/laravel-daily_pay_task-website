@@ -96,13 +96,13 @@
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Last Login:</label>
                     <p class="text-muted">
-                        {{ date('F j, Y  H:i:s A', strtotime($user->last_login_at)) ?? 'Not provided' }}
+                        {{ date('F j, Y  h:i:s A', strtotime($user->last_login_at)) ?? 'Not provided' }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Joined:</label>
                     <p class="text-muted">
-                        {{ $user->created_at->format('F j, Y  H:i:s A') }}
+                        {{ $user->created_at->format('F j, Y  h:i:s A') }}
                     </p>
                 </div>
             </div>
@@ -113,23 +113,23 @@
             <div class="col-md-12 grid-margin">
                 <div class="card rounded">
                     <div class="card-header">
-                        <h4 class="card-title">Job Statistics</h4>
+                        <h4 class="card-title">Task Statistics</h4>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Total Jobs</h6>
+                            <h6 class="card-title">Total Tasks</h6>
                             <p class="text-muted">0</p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Pending Jobs</h6>
+                            <h6 class="card-title">Pending Tasks</h6>
                             <p class="text-muted">0</p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Approved Jobs</h6>
+                            <h6 class="card-title">Approved Tasks</h6>
                             <p class="text-muted">0</p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Rejected Jobs</h6>
+                            <h6 class="card-title">Rejected Tasks</h6>
                             <p class="text-muted">0</p>
                         </div>
                     </div>
@@ -142,27 +142,27 @@
             <div class="col-md-12 grid-margin">
                 <div class="card rounded">
                     <div class="card-header">
-                        <h4 class="card-title">Work Statistics</h4>
+                        <h4 class="card-title">Task Statistics</h4>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Total Works</h6>
+                            <h6 class="card-title">Total Tasks</h6>
                             <p class="text-muted">0</p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Pending Works</h6>
+                            <h6 class="card-title">Pending Tasks</h6>
                             <p class="text-muted">0</p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Approved Works</h6>
+                            <h6 class="card-title">Approved Tasks</h6>
                             <p class="text-muted">0</p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Rejected Works</h6>
+                            <h6 class="card-title">Rejected Tasks</h6>
                             <p class="text-muted">0</p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Reviewed Works</h6>
+                            <h6 class="card-title">Reviewed Tasks</h6>
                             <p class="text-muted">0</p>
                         </div>
                     </div>

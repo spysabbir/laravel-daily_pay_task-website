@@ -302,7 +302,7 @@ class WithdrawController extends Controller
                 })
                 ->editColumn('approved_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  H:i:s A', strtotime($row->approved_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
                 ->rawColumns(['user_name', 'type', 'method', 'amount', 'payable_amount', 'created_at', 'approved_by', 'approved_at'])

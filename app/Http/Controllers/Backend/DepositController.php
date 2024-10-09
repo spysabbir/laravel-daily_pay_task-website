@@ -51,6 +51,9 @@ class DepositController extends Controller
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
                 })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
                 ->editColumn('created_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
@@ -62,7 +65,7 @@ class DepositController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user_name', 'method', 'amount', 'created_at', 'action'])
+                ->rawColumns(['user_name', 'method', 'amount', 'payable_amount', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -79,6 +82,7 @@ class DepositController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'status' => 'required',
+            'rejected_reason' => 'required_if:status,Rejected',
         ]);
 
         if ($validator->fails()) {
@@ -86,36 +90,31 @@ class DepositController extends Controller
                 'status' => 400,
                 'error' => $validator->errors()->toArray()
             ]);
-        } else {
-            $deposit = Deposit::findOrFail($id);
-            if($request->status == 'Rejected' && empty($request->rejected_reason)) {
-                return response()->json([
-                    'status' => 401,
-                    'error' => 'The rejected reason field is required.'
-                ]);
-            }
-            $deposit->update([
-                'status' => $request->status,
-                'rejected_reason' => $request->rejected_reason,
-                'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
-                'rejected_at' => $request->status == 'Rejected' ? now() : NULL,
-                'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,
-                'approved_at' => $request->status == 'Approved' ? now() : NULL,
-            ]);
+        }
 
-            $user = User::where('id', $deposit->user_id)->first();
-            if ($request->status == 'Approved') {
-                $user->update([
-                    'deposit_balance' => $user->deposit_balance + $deposit->amount
-                ]);
-            }
+        $deposit = Deposit::findOrFail($id);
+        $user = User::where('id', $deposit->user_id)->first();
 
-            $user->notify(new DepositNotification($deposit));
+        $deposit->update([
+            'status' => $request->status,
+            'rejected_reason' => $request->status === 'Rejected' ? $request->rejected_reason : null,
+            'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
+            'rejected_at' => $request->status == 'Rejected' ? now() : NULL,
+            'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,
+            'approved_at' => $request->status == 'Approved' ? now() : NULL,
+        ]);
 
-            return response()->json([
-                'status' => 200,
+        if ($request->status == 'Approved') {
+            $user->update([
+                'deposit_balance' => $user->deposit_balance + $deposit->amount
             ]);
         }
+
+        $user->notify(new DepositNotification($deposit));
+
+        return response()->json([
+            'status' => 200,
+        ]);
     }
 
     public function depositRequestRejected(Request $request)
@@ -153,6 +152,9 @@ class DepositController extends Controller
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
                 })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
                 ->editColumn('created_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
@@ -174,7 +176,7 @@ class DepositController extends Controller
                     ';
                     return $btn;
                 })
-                ->rawColumns(['user_name', 'method', 'amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_name', 'method', 'amount', 'payable_amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
@@ -240,6 +242,9 @@ class DepositController extends Controller
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
                 })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->format('d M Y h:i A');
                 })
@@ -259,7 +264,7 @@ class DepositController extends Controller
                         <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
-                ->rawColumns(['user_name', 'method', 'number', 'transaction_id', 'amount', 'approved_by', 'approved_at'])
+                ->rawColumns(['user_name', 'method', 'number', 'transaction_id', 'amount','payable_amount', 'approved_by', 'approved_at'])
                 ->make(true);
         }
 

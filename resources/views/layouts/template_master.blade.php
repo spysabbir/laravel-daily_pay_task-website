@@ -151,10 +151,10 @@
                                 $verification = App\Models\Verification::where('status', 'Pending')->count();
                                 $deposit = App\Models\Deposit::where('status', 'Pending')->count();
                                 $withdraw = App\Models\Withdraw::where('status', 'Pending')->count();
-                                $jobPost = App\Models\JobPost::where('status', 'Pending')->count();
-                                $jobProof = App\Models\JobProof::where('status', 'Review')->count();
+                                $postTask = App\Models\PostTask::where('status', 'Pending')->count();
+                                $proofTask = App\Models\ProofTask::where('status', 'Review')->count();
                                 $report = App\Models\Report::where('status', 'Pending')->count();
-                                $backend_notification = $verification + $deposit + $withdraw + $jobPost + $jobProof + $report;
+                                $backend_notification = $verification + $deposit + $withdraw + $postTask + $proofTask + $report;
                             @endphp
                             <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i data-feather="bell"></i>
@@ -246,29 +246,29 @@
                                         </div>
                                     </a>
                                     @endif
-                                    @if ($jobPost > 0)
-                                    <a href="{{ route('backend.job_list.pending') }}" class="dropdown-item d-flex align-items-center py-2">
+                                    @if ($postTask > 0)
+                                    <a href="{{ route('backend.post_task_list.pending') }}" class="dropdown-item d-flex align-items-center py-2">
                                         <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
                                             <i class="icon-sm text-white" data-feather="alert-circle"></i>
                                         </div>
                                         <div class="flex-grow-1 me-2">
                                             <p>
-                                                <strong>Job Post Request</strong>
+                                                <strong>Post Task Request</strong>
                                             </p>
-                                            <p class="tx-12 text-muted">{{ $jobPost }} Pending</p>
+                                            <p class="tx-12 text-muted">{{ $postTask }} Pending</p>
                                         </div>
                                     </a>
                                     @endif
-                                    @if ($jobProof > 0)
-                                    <a href="{{ route('backend.job_proof.reviewed') }}" class="dropdown-item d-flex align-items-center py-2">
+                                    @if ($proofTask > 0)
+                                    <a href="{{ route('backend.proof_task_list.reviewed') }}" class="dropdown-item d-flex align-items-center py-2">
                                         <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
                                             <i class="icon-sm text-white" data-feather="alert-circle"></i>
                                         </div>
                                         <div class="flex-grow-1 me-2">
                                             <p>
-                                                <strong>Job Proof Request</strong>
+                                                <strong>Proof Task Request</strong>
                                             </p>
-                                            <p class="tx-12 text-muted">{{ $jobProof }} Reviewed</p>
+                                            <p class="tx-12 text-muted">{{ $proofTask }} Reviewed</p>
                                         </div>
                                     </a>
                                     @endif

@@ -29,7 +29,7 @@
                                     <option value="">-- Select Type --</option>
                                     <option value="Referral Registration Bonus">Referral Registration Bonus</option>
                                     <option value="Referral Withdrawal Bonus">Referral Withdrawal Bonus</option>
-                                    <option value="Job Proof Approved Bonus">Job Proof Approved Bonus</option>
+                                    <option value="Proof Task Approved Bonus">Proof Task Approved Bonus</option>
                                 </select>
                             </div>
                         </div>
