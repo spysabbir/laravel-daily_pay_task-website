@@ -3,13 +3,15 @@
 use App\Models\Newsletter;
 use Illuminate\Support\Facades\Schedule;
 use App\Mail\NewsletterMail;
+use App\Models\ProofTask;
+use App\Models\PostTask;
 use App\Models\Subscriber;
 use App\Models\User;
 use App\Models\UserStatus;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\UserStatusNotification;
 
-
+// Send newsletters
 Schedule::call(function () {
     $newsletters = Newsletter::where('status', 'Draft')
         ->where('sent_at', '<=', now())
@@ -30,6 +32,7 @@ Schedule::call(function () {
     }
 })->everyMinute();
 
+// Unblock users
 Schedule::call(function () {
     $user_statuses = UserStatus::where('status', 'Blocked')
         ->where('blocked_resolved', null)
@@ -50,5 +53,30 @@ Schedule::call(function () {
         ];
 
         $user->notify(new UserStatusNotification($userStatus));
+    }
+})->everyMinute();
+
+// Task proof status update to Approved
+Schedule::call(function () {
+    $autoApproveTimeInHours = get_default_settings('task_proof_status_auto_approved_time');
+    $proofTasks = ProofTask::where('status', 'Pending')->get();
+
+    $now = now();
+
+    foreach ($proofTasks as $proofTask) {
+        $approvalTime = $proofTask->created_at->copy()->addHours($autoApproveTimeInHours);
+
+        if ($approvalTime->isPast()) {
+            $proofTask->update([
+                'status' => 'Approved',
+                'approved_at' => $now,
+                'approved_by' => 1,
+            ]);
+
+            $postTask = PostTask::find($proofTask->post_task_id);
+            if ($postTask) {
+                User::where('id', $proofTask->user_id)->increment('withdraw_balance', $postTask->earnings_from_work);
+            }
+        }
     }
 })->everyMinute();

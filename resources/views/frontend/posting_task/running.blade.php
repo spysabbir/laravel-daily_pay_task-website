@@ -253,14 +253,14 @@
 
         // Earnings From Work Calculation keyup and change event
         $(document).on('change keyup', '#work_needed', function(){
-            var work_needed = $(this).val();
-            var earnings_from_work = $('#earnings_from_work').val();
+            var work_needed = parseInt($(this).val()) || 0;
+            var earnings_from_work = parseFloat($('#earnings_from_work').val()) || 0;
             var task_charge = work_needed * earnings_from_work;
             var site_charge = (task_charge * {{ get_default_settings('task_posting_charge_percentage') }}) / 100;
             var total_task_charge = task_charge + site_charge;
-            $('#update_task_charge').val(task_charge);
-            $('#update_site_charge').val(site_charge);
-            $('#update_total_task_charge').val(total_task_charge);
+            $('#update_task_charge').val(task_charge.toFixed(2));
+            $('#update_site_charge').val(site_charge.toFixed(2));
+            $('#update_total_task_charge').val(total_task_charge.toFixed(2));
         });
     });
 </script>

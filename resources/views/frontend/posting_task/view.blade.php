@@ -5,6 +5,21 @@
                 <h4 class="card-title">Post Task Details - Id: {{ $postTask->id }}</h4>
             </div>
             <div class="card-body">
+                @if ($postTask->status == 'Pending')
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <strong>Warning!</strong> Your task is pending. Please wait for approval.
+                    </div>
+                @elseif ($postTask->status == 'Canceled')
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <strong>Warning!</strong> Your task is canceled. Please check the reason.
+                        <p class="mt-3">
+                            <strong>Canceled At:</strong> {{ date('d-m-Y h:i:s A', strtotime($postTask->canceled_at)) }} <br>
+                            <strong>Canceled Reason:</strong> {{ $postTask->cancellation_reason }}
+                        </p>
+                    </div>
+                @endif
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <tbody>

@@ -18,7 +18,6 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Rating;
 use App\Models\Bonus;
-use App\Models\UserDetail;
 use App\Notifications\RatingNotification;
 use App\Notifications\BonusNotification;
 
@@ -399,17 +398,25 @@ class PostingTaskController extends Controller
                         </div>
                         ';
                     })
-                    ->editColumn('proof_check', function ($row) {
-                        $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                        $proofCheck = ProofTask::where('post_task_id', $row->id)->where('status', '!=', 'Pending')->count();
-
-                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofCheck / $proofSubmitted) * 100, 2) : 100;
-                        $progressBarClass = $proofCheck == 0 ? 'warning' : 'success';
-                        return '
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofCheck . '" aria-valuemin="0" aria-valuemax="' . $proofSubmitted . '">' . $proofCheck . '/' . $proofSubmitted . '</div>
-                        </div>
-                        ';
+                    ->editColumn('proof_status', function ($row) {
+                        $statuses = [
+                            'Pending' => 'bg-warning',
+                            'Approved' => 'bg-success',
+                            'Rejected' => 'bg-danger',
+                            'Reviewed' => 'bg-info'
+                        ];
+                        $proofStatus = '';
+                        $proofCount = ProofTask::where('post_task_id', $row->id)->count();
+                        if ($proofCount === 0) {
+                            return '<span class="badge bg-secondary">Proof not submitted yet.</span>';
+                        }
+                        foreach ($statuses as $status => $class) {
+                            $count = ProofTask::where('post_task_id', $row->id)->where('status', $status)->count();
+                            if ($count > 0) {
+                                $proofStatus .= "<span class=\"badge $class\"> $status: $count</span> ";
+                            }
+                        }
+                        return $proofStatus;
                     })
                     ->editColumn('paused_at', function ($row) {
                         return $row->paused_by == auth()->user()->id ? date('d M Y h:i A', strtotime($row->paused_at)) : 'Paused by ' . $row->pausedBy->name . ' at ' . date('d M Y h:i A', strtotime($row->paused_at));
@@ -422,7 +429,7 @@ class PostingTaskController extends Controller
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['proof_submitted', 'proof_check', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_status', 'action'])
                     ->make(true);
             }
             return view('frontend.posting_task.paused');
@@ -728,8 +735,10 @@ class PostingTaskController extends Controller
     public function postingRunningTaskProofCheckUpdate(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required',
-            'bonus' => 'required|numeric|min:0|max:20',
+            'status' => 'required|in:Approved,Rejected',
+            'bonus' => 'nullable|numeric|min:0|max:' . get_default_settings('task_proof_max_bonus_amount'),
+            'rating' => 'nullable|numeric|min:0|max:5',
+            'rejected_reason' => 'required_if:status,Rejected',
         ]);
 
         if ($validator->fails()) {
@@ -738,19 +747,6 @@ class PostingTaskController extends Controller
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
-            if ($request->status == 'Rejected') {
-                $validator = Validator::make($request->all(), [
-                    'rejected_reason' => 'required',
-                ]);
-
-                if ($validator->fails()) {
-                    return response()->json([
-                        'status' => 400,
-                        'error' => $validator->errors()->toArray()
-                    ]);
-                }
-            }
-
             $proofTask = ProofTask::findOrFail($id);
             $postTask = PostTask::findOrFail($proofTask->post_task_id);
             $user = User::findOrFail($proofTask->user_id);
@@ -758,33 +754,48 @@ class PostingTaskController extends Controller
             if ($request->status == 'Approved') {
                 $user->withdraw_balance = $user->withdraw_balance + $postTask->earnings_from_work + $request->bonus;
                 $user->save();
-            }
 
-            if ($request->rating) {
-                Rating::create([
-                    'user_id' => $proofTask->user_id,
-                    'rated_by' => auth()->user()->id,
-                    'post_task_id' => $postTask->id,
-                    'rating' => $request->rating,
-                ]);
-                $rating = Rating::where('user_id', $proofTask->user_id)->where('post_task_id', $postTask->id)->first();
-                $user->notify(new RatingNotification($rating));
-            }
+                if ($request->rating) {
+                    Rating::create([
+                        'user_id' => $proofTask->user_id,
+                        'rated_by' => auth()->user()->id,
+                        'post_task_id' => $postTask->id,
+                        'rating' => $request->rating,
+                    ]);
+                    $rating = Rating::where('user_id', $proofTask->user_id)->where('post_task_id', $postTask->id)->first();
+                    $user->notify(new RatingNotification($rating));
+                }
 
-            if ($request->bonus) {
-                Bonus::create([
-                    'user_id' => $proofTask->user_id,
-                    'bonus_by' => auth()->user()->id,
-                    'type' => 'Proof Task Approved Bonus',
-                    'post_task_id' => $postTask->id,
-                    'amount' => $request->bonus,
-                ]);
-                $bonus = Bonus::where('user_id', $proofTask->user_id)->where('post_task_id', $postTask->id)->first();
-                $user->notify(new BonusNotification($bonus));
+                if ($request->bonus) {
+                    if ($request->bonus <= auth()->user()->deposit_balance) {
+                        auth()->user()->update([
+                            'deposit_balance' => auth()->user()->deposit_balance - $request->bonus
+                        ]);
+                    }else if ($request->bonus <= auth()->user()->withdraw_balance) {
+                        auth()->user()->update([
+                            'withdraw_balance' => auth()->user()->withdraw_balance - $request->bonus
+                        ]);
+                    }else{
+                        return response()->json([
+                            'status' => 401,
+                            'error' => 'Insufficient balance. Please deposit first. Your current deposit balance is ' . get_site_settings('site_currency_symbol') . ' ' . auth()->user()->deposit_balance . ' and withdraw balance is ' . get_site_settings('site_currency_symbol') . ' ' . auth()->user()->withdraw_balance . '.'
+                        ]);
+                    }
+
+                    Bonus::create([
+                        'user_id' => $proofTask->user_id,
+                        'bonus_by' => auth()->user()->id,
+                        'type' => 'Proof Task Approved Bonus',
+                        'post_task_id' => $postTask->id,
+                        'amount' => $request->bonus,
+                    ]);
+                    $bonus = Bonus::where('user_id', $proofTask->user_id)->where('post_task_id', $postTask->id)->first();
+                    $user->notify(new BonusNotification($bonus));
+                }
             }
 
             $proofTask->status = $request->status;
-            $proofTask->rejected_reason = $request->rejected_reason;
+            $proofTask->rejected_reason = $request->rejected_reason ?? NULL;
             $proofTask->rejected_at = $request->status == 'Rejected' ? now() : NULL;
             $proofTask->rejected_by = $request->status == 'Rejected' ? auth()->user()->id : NULL;
             $proofTask->approved_at = $request->status == 'Approved' ? now() : NULL;
@@ -793,6 +804,8 @@ class PostingTaskController extends Controller
 
             return response()->json([
                 'status' => 200,
+                'deposit_balance' => number_format(auth()->user()->deposit_balance, 2, '.', ''),
+                'withdraw_balance' => number_format(auth()->user()->withdraw_balance, 2, '.', ''),
             ]);
         }
     }

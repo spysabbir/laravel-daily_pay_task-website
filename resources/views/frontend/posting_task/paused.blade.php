@@ -20,7 +20,7 @@
                                 <th>Task ID</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
-                                <th>Proof Check</th>
+                                <th>Proof Status</th>
                                 <th>Paused At</th>
                                 <th>Action</th>
                             </tr>
@@ -58,7 +58,7 @@
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'proof_check', name: 'proof_check' },
+                { data: 'proof_status', name: 'proof_status' },
                 { data: 'paused_at', name: 'paused_at' },
                 { data: 'action', name: 'action' },
             ]

@@ -53,8 +53,8 @@
                 <h4 class="alert-heading">Approved!</h4>
                 <p>Proof Task has been approved.</p>
                 <hr>
-                <h5><strong>Rating:</strong> {{ $proofTask->rating->rating }} <i class="fa-solid fa-star text-warning"></i></h5>
-                <h5><strong>Bonus:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $proofTask->bonus->amount }}</h5>
+                <h5><strong>Rating:</strong> {{ $proofTask->rating->rating ?? 'N/A' }} <i class="fa-solid fa-star text-warning"></i></h5>
+                <h5><strong>Bonus:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $proofTask->bonus->amount ?? 'N/A' }}</h5>
                 <hr>
                 <p>Approved At: {{ date('d M, Y h:i A', strtotime($proofTask->approved_at)) }}</p>
                 <p>Approved By: {{ $proofTask->approvedBy->name }}</p>
@@ -124,15 +124,16 @@
                                     <i class="fa-solid fa-star"></i>
                                 </div>
                             </div>
-                            <input type="hidden" name="rating" id="rating" value="0">
+                            <input type="hidden" name="rating" id="rating" min="0" max="5">
+                            <span class="text-danger error-text update_rating_error"></span>
                         </div>
                         <div class="mb-3">
                             <label for="bonus" class="form-label">Bonus <span class="text-info">* Optonal</span></label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="bonus" name="bonus" min="0" max="{{ get_default_settings('task_proof_max_bonus_amount') }}" value="0" placeholder="Bonus">
+                                <input type="number" class="form-control" id="bonus" name="bonus" min="0" max="{{ get_default_settings('task_proof_max_bonus_amount') }}" placeholder="Bonus">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
-                            <small class="text-info">Bonus should be between 0 to {{ get_default_settings('task_proof_max_bonus_amount') }} {{ get_site_settings('site_currency_symbol') }}.</small>
+                            <small class="text-info">The bonus field must not be greater than {{ get_default_settings('task_proof_max_bonus_amount') }} {{ get_site_settings('site_currency_symbol') }}.</small>
                             <span class="text-danger error-text update_bonus_error"></span>
                         </div>
                     </div>
@@ -192,36 +193,46 @@
         });
 
         // Update Data
-        $("body").on("submit", "#editForm", function(e){
+        $("body").on("submit", "#editForm", function(e) {
             e.preventDefault();
+
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             var id = $('#proof_task_id').val();
-            var url = "{{ route('running.posting_task.proof.check.update', ":id") }}";
-            url = url.replace(':id', id)
+            var url = "{{ route('running.posting_task.proof.check.update', ':id') }}".replace(':id', id);
+
             $.ajax({
                 url: url,
                 type: "PUT",
                 data: $(this).serialize(),
-                beforeSend:function(){
+                beforeSend: function() {
                     $(document).find('span.error-text').text('');
                 },
-                success: function (response) {
-                    if (response.status == 400) {
-                        $.each(response.error, function(prefix, val){
-                            $('span.update_'+prefix+'_error').text(val[0]);
-                        })
-                    }else{
-                        if (response.status == 401) {
-                            $.each(response.error, function(prefix, val){
-                                $('span.update_'+prefix+'_error').text(val[0]);
-                            })
+                success: function(response) {
+                    if (response.status === 400) {
+                        $.each(response.error, function(prefix, val) {
+                            $('span.update_' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        if (response.status === 401) {
+                            toastr.error(response.error);
                         } else {
+                            // Update balance displays
+                            $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
+                            $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
                             toastr.success('Proof Task has been updated successfully.');
                             $('#allDataTable').DataTable().ajax.reload();
                             $(".viewModal").modal('hide');
                         }
                     }
                 },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
-        })
+        });
     });
 </script>

@@ -16,11 +16,6 @@
             </div>
             <div class="card-body">
                 <p class="border p-1 m-1">
-                    <strong class="text-info">User Id:</strong> {{ $postTask->user->id }},
-                    <strong class="text-info">User Name:</strong> {{ $postTask->user->name }},
-                    <strong class="text-info">User Email:</strong> {{ $postTask->user->email }}
-                </p>
-                <p class="border p-1 m-1">
                     <strong class="text-info">Category:</strong> {{ $postTask->category->name }},
                     <strong class="text-info">Sub Category:</strong> {{ $postTask->subCategory->name }},
                     <strong class="text-info">Child Category:</strong> {{ $postTask->childCategory->name ?? 'N/A' }}
