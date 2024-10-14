@@ -119,29 +119,31 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('withdraw-request-rejected', [WithdrawController::class, 'withdrawRequestRejected'])->name('withdraw.request.rejected');
     Route::get('withdraw-request-approved', [WithdrawController::class, 'withdrawRequestApproved'])->name('withdraw.request.approved');
     Route::delete('withdraw-request-delete/{id}', [WithdrawController::class, 'withdrawRequestDelete'])->name('withdraw.request.delete');
-    // Post Task
-    Route::get('post_task_list-pending', [TaskController::class, 'postTaskListPending'])->name('post_task_list.pending');
-    Route::get('pending-post_task_view/{id}', [TaskController::class, 'pendingPostTaskView'])->name('pending.post_task_view');
-    Route::get('post_task_list-running', [TaskController::class, 'postTaskListRunning'])->name('post_task_list.running');
-    Route::get('running-post_task_view/{id}', [TaskController::class, 'runningPostTaskView'])->name('running.post_task_view');
-    Route::get('post_task_list-rejected', [TaskController::class, 'postTaskListRejected'])->name('post_task_list.rejected');
-    Route::get('rejected-post_task_view/{id}', [TaskController::class, 'rejectedPostTaskView'])->name('rejected.post_task_view');
-    Route::get('post_task_list-canceled', [TaskController::class, 'postTaskListCanceled'])->name('post_task_list.canceled');
-    Route::get('canceled-post_task_view/{id}', [TaskController::class, 'canceledPostTaskView'])->name('canceled.post_task_view');
-    Route::get('post_task_list-completed', [TaskController::class, 'postTaskListCompleted'])->name('post_task_list.completed');
-    Route::get('completed-post_task_view/{id}', [TaskController::class, 'completedPostTaskView'])->name('completed.post_task_view');
-    Route::put('post_task_status_update/{id}', [TaskController::class, 'postTaskStatusUpdate'])->name('post_task_status_update');
-    // Proof Task
-    Route::get('proof_task_list-pending', [TaskController::class, 'proofTaskListPending'])->name('proof_task_list.pending');
-    Route::get('pending-task_list_view/{id}', [TaskController::class, 'pendingTaskListView'])->name('pending.task_list_view');
-    Route::get('proof_task_list-approved', [TaskController::class, 'proofTaskListApproved'])->name('proof_task_list.approved');
-    Route::get('approved-task_list_view/{id}', [TaskController::class, 'approvedTaskListView'])->name('approved.task_list_view');
-    Route::get('proof_task_list-rejected', [TaskController::class, 'proofTaskListRejected'])->name('proof_task_list.rejected');
-    Route::get('rejected-task_list_view/{id}', [TaskController::class, 'rejectedTaskListView'])->name('rejected.task_list_view');
-    Route::get('proof_task_list-reviewed', [TaskController::class, 'proofTaskListReviewed'])->name('proof_task_list.reviewed');
-    Route::get('reviewed-task_list_view/{id}', [TaskController::class, 'reviewedTaskListView'])->name('reviewed.task_list_view');
-    Route::get('proof_task_check/{id}', [TaskController::class, 'proofTaskCheck'])->name('proof_task_check');
-    Route::put('proof_task_check_update/{id}', [TaskController::class, 'proofTaskCheckUpdate'])->name('proof_task_check_update');
+    // Posted Task
+    Route::get('posted_task_list-pending', [TaskController::class, 'postedTaskListPending'])->name('posted_task_list.pending');
+    Route::get('pending-posted_task_view/{id}', [TaskController::class, 'pendingPostedTaskView'])->name('pending.posted_task_view');
+    Route::get('posted_task_list-running', [TaskController::class, 'postedTaskListRunning'])->name('posted_task_list.running');
+    Route::get('running-posted_task_view/{id}', [TaskController::class, 'runningPostedTaskView'])->name('running.posted_task_view');
+    Route::get('posted_task_list-rejected', [TaskController::class, 'postedTaskListRejected'])->name('posted_task_list.rejected');
+    Route::get('rejected-posted_task_view/{id}', [TaskController::class, 'rejectedPostedTaskView'])->name('rejected.posted_task_view');
+    Route::get('posted_task_list-canceled', [TaskController::class, 'postedTaskListCanceled'])->name('posted_task_list.canceled');
+    Route::get('canceled-posted_task_view/{id}', [TaskController::class, 'canceledPostedTaskView'])->name('canceled.posted_task_view');
+    Route::get('posted_task_list-completed', [TaskController::class, 'postedTaskListCompleted'])->name('posted_task_list.completed');
+    Route::get('completed-posted_task_view/{id}', [TaskController::class, 'completedPostedTaskView'])->name('completed.posted_task_view');
+
+    Route::put('posted_task_status_update/{id}', [TaskController::class, 'postedTaskStatusUpdate'])->name('posted_task_status_update');
+    // Worked  Task
+    Route::get('worked_task_list-pending', [TaskController::class, 'workedTaskListPending'])->name('worked_task_list.pending');
+    Route::get('pending-worked_task_view/{id}', [TaskController::class, 'pendingWorkedTaskView'])->name('pending.worked_task_view');
+    Route::get('worked_task_list-approved', [TaskController::class, 'workedTaskListApproved'])->name('worked_task_list.approved');
+    Route::get('approved-worked_task_view/{id}', [TaskController::class, 'approvedWorkedTaskView'])->name('approved.worked_task_view');
+    Route::get('worked_task_list-rejected', [TaskController::class, 'workedTaskListRejected'])->name('worked_task_list.rejected');
+    Route::get('rejected-worked_task_view/{id}', [TaskController::class, 'rejectedWorkedTaskView'])->name('rejected.worked_task_view');
+    Route::get('worked_task_list-reviewed', [TaskController::class, 'workedTaskListReviewed'])->name('worked_task_list.reviewed');
+    Route::get('reviewed-worked_task_view/{id}', [TaskController::class, 'reviewedWorkedTaskView'])->name('reviewed.worked_task_view');
+
+    Route::get('worked_task_check/{id}', [TaskController::class, 'workedTaskCheck'])->name('worked_task_check');
+    Route::put('worked_task_check_update/{id}', [TaskController::class, 'workedTaskCheckUpdate'])->name('worked_task_check_update');
     // Report User
     Route::get('report_user-pending', [BackendController::class, 'reportUserPending'])->name('report_user.pending');
     Route::get('report_user-resolved', [BackendController::class, 'reportUserResolved'])->name('report_user.resolved');

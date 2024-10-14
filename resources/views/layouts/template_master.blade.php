@@ -247,7 +247,7 @@
                                     </a>
                                     @endif
                                     @if ($postTask > 0)
-                                    <a href="{{ route('backend.post_task_list.pending') }}" class="dropdown-item d-flex align-items-center py-2">
+                                    <a href="{{ route('backend.posted_task_list.pending') }}" class="dropdown-item d-flex align-items-center py-2">
                                         <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
                                             <i class="icon-sm text-white" data-feather="alert-circle"></i>
                                         </div>
@@ -260,7 +260,7 @@
                                     </a>
                                     @endif
                                     @if ($proofTask > 0)
-                                    <a href="{{ route('backend.proof_task_list.reviewed') }}" class="dropdown-item d-flex align-items-center py-2">
+                                    <a href="{{ route('backend.worked_task_list.reviewed') }}" class="dropdown-item d-flex align-items-center py-2">
                                         <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
                                             <i class="icon-sm text-white" data-feather="alert-circle"></i>
                                         </div>

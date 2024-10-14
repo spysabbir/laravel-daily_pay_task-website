@@ -14,7 +14,7 @@ use App\Models\UserDetail;
 
 class TaskController extends Controller
 {
-    public function postTaskListPending(Request $request)
+    public function postedTaskListPending(Request $request)
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Pending');
@@ -42,16 +42,16 @@ class TaskController extends Controller
                 ->rawColumns(['user', 'created_at', 'action'])
                 ->make(true);
         }
-        return view('backend.post_task.pending');
+        return view('backend.posted_task.pending');
     }
 
-    public function pendingPostTaskView(string $id)
+    public function pendingPostedTaskView(string $id)
     {
         $postTask = PostTask::where('id', $id)->first();
-        return view('backend.post_task.pending_show', compact('postTask'));
+        return view('backend.posted_task.pending_show', compact('postTask'));
     }
 
-    public function postTaskListRejected(Request $request)
+    public function postedTaskListRejected(Request $request)
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Rejected');
@@ -89,16 +89,16 @@ class TaskController extends Controller
                 ->rawColumns(['user', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
-        return view('backend.post_task.rejected');
+        return view('backend.posted_task.rejected');
     }
 
-    public function rejectedPostTaskView(string $id)
+    public function rejectedPostedTaskView(string $id)
     {
         $postTask = PostTask::where('id', $id)->first();
-        return view('backend.post_task.rejected_show', compact('postTask'));
+        return view('backend.posted_task.rejected_show', compact('postTask'));
     }
 
-    public function postTaskListRunning(Request $request)
+    public function postedTaskListRunning(Request $request)
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Running');
@@ -161,16 +161,16 @@ class TaskController extends Controller
                 ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'approved_at', 'action'])
                 ->make(true);
         }
-        return view('backend.post_task.running');
+        return view('backend.posted_task.running');
     }
 
-    public function runningPostTaskView(string $id)
+    public function runningPostedTaskView(string $id)
     {
         $postTask = PostTask::where('id', $id)->first();
-        return view('backend.post_task.running_show', compact('postTask'));
+        return view('backend.posted_task.running_show', compact('postTask'));
     }
 
-    public function postTaskListCanceled(Request $request)
+    public function postedTaskListCanceled(Request $request)
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Canceled');
@@ -233,16 +233,16 @@ class TaskController extends Controller
                 ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'canceled_at', 'action'])
                 ->make(true);
         }
-        return view('backend.post_task.canceled');
+        return view('backend.posted_task.canceled');
     }
 
-    public function canceledPostTaskView(string $id)
+    public function canceledPostedTaskView(string $id)
     {
         $postTask = PostTask::where('id', $id)->first();
-        return view('backend.post_task.canceled_show', compact('postTask'));
+        return view('backend.posted_task.canceled_show', compact('postTask'));
     }
 
-    public function postTaskListCompleted(Request $request)
+    public function postedTaskListCompleted(Request $request)
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Completed');
@@ -274,16 +274,16 @@ class TaskController extends Controller
                 ->rawColumns(['user', 'work_needed', 'created_at', 'action'])
                 ->make(true);
         }
-        return view('backend.post_task.completed');
+        return view('backend.posted_task.completed');
     }
 
-    public function completedPostTaskView(string $id)
+    public function completedPostedTaskView(string $id)
     {
         $postTask = PostTask::where('id', $id)->first();
-        return view('backend.post_task.completed_show', compact('postTask'));
+        return view('backend.posted_task.completed_show', compact('postTask'));
     }
 
-    public function postTaskStatusUpdate(Request $request, string $id)
+    public function postedTaskStatusUpdate(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
@@ -341,7 +341,9 @@ class TaskController extends Controller
         ]);
     }
 
-    public function proofTaskListPending(Request $request){
+    // Worked Task
+
+    public function workedTaskListPending(Request $request){
         if ($request->ajax()) {
             $taskIds = ProofTask::where('status', 'Pending')->pluck('post_task_id')->toArray();
             $query = PostTask::whereIn('id', $taskIds);
@@ -353,17 +355,17 @@ class TaskController extends Controller
                 ->addIndexColumn()
                 ->editColumn('action', function ($row) {
                     $btn = '
-                        <a href="' . route('backend.pending.task_list_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
+                        <a href="' . route('backend.pending.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('backend.proof_task.pending');
+        return view('backend.worked_task.pending');
     }
 
-    public function pendingTaskListView(Request $request, string $id){
+    public function pendingWorkedTaskView(Request $request, string $id){
 
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->where('status', 'Pending');
@@ -395,10 +397,10 @@ class TaskController extends Controller
 
         $postTask = PostTask::findOrFail(decrypt($id));
 
-        return view('backend.proof_task.pending_list', compact('postTask'));
+        return view('backend.worked_task.pending_list', compact('postTask'));
     }
 
-    public function proofTaskListApproved(Request $request){
+    public function workedTaskListApproved(Request $request){
         if ($request->ajax()) {
             $taskIds = ProofTask::where('status', 'Approved')->pluck('post_task_id')->toArray();
             $query = PostTask::whereIn('id', $taskIds);
@@ -410,17 +412,17 @@ class TaskController extends Controller
                 ->addIndexColumn()
                 ->editColumn('action', function ($row) {
                     $btn = '
-                        <a href="' . route('backend.approved.task_list_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
+                        <a href="' . route('backend.approved.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('backend.proof_task.approved');
+        return view('backend.worked_task.approved');
     }
 
-    public function approvedTaskListView(Request $request, string $id){
+    public function approvedWorkedTaskView(Request $request, string $id){
 
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->where('status', 'Approved');
@@ -452,10 +454,10 @@ class TaskController extends Controller
 
         $postTask = PostTask::findOrFail(decrypt($id));
 
-        return view('backend.proof_task.approved_list', compact('postTask'));
+        return view('backend.worked_task.approved_list', compact('postTask'));
     }
 
-    public function proofTaskListRejected(Request $request){
+    public function workedTaskListRejected(Request $request){
         if ($request->ajax()) {
             $taskIds = ProofTask::where('status', 'Rejected')->pluck('post_task_id')->toArray();
             $query = PostTask::whereIn('id', $taskIds);
@@ -467,17 +469,17 @@ class TaskController extends Controller
                 ->addIndexColumn()
                 ->editColumn('action', function ($row) {
                     $btn = '
-                        <a href="' . route('backend.rejected.task_list_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
+                        <a href="' . route('backend.rejected.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('backend.proof_task.rejected');
+        return view('backend.worked_task.rejected');
     }
 
-    public function rejectedTaskListView(Request $request, string $id){
+    public function rejectedWorkedTaskView(Request $request, string $id){
 
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->where('status', 'Rejected');
@@ -509,10 +511,10 @@ class TaskController extends Controller
 
         $postTask = PostTask::findOrFail(decrypt($id));
 
-        return view('backend.proof_task.rejected_list', compact('postTask'));
+        return view('backend.worked_task.rejected_list', compact('postTask'));
     }
 
-    public function proofTaskListReviewed(Request $request){
+    public function workedTaskListReviewed(Request $request){
         if ($request->ajax()) {
             $taskIds = ProofTask::where('status', 'Reviewed')->pluck('post_task_id')->toArray();
             $query = PostTask::whereIn('id', $taskIds);
@@ -524,17 +526,17 @@ class TaskController extends Controller
                 ->addIndexColumn()
                 ->editColumn('action', function ($row) {
                     $btn = '
-                        <a href="' . route('backend.reviewed.task_list_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
+                        <a href="' . route('backend.reviewed.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('backend.proof_task.reviewed');
+        return view('backend.worked_task.reviewed');
     }
 
-    public function reviewedTaskListView(Request $request, string $id){
+    public function reviewedWorkedTaskView(Request $request, string $id){
 
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->where('status', 'Reviewed');
@@ -566,16 +568,16 @@ class TaskController extends Controller
 
         $postTask = PostTask::findOrFail(decrypt($id));
 
-        return view('backend.proof_task.reviewed_list', compact('postTask'));
+        return view('backend.worked_task.reviewed_list', compact('postTask'));
     }
 
-    public function proofTaskCheck($id)
+    public function workedTaskCheck($id)
     {
         $proofTask = ProofTask::findOrFail($id);
-        return view('backend.proof_task.check', compact('proofTask'));
+        return view('backend.worked_task.check', compact('proofTask'));
     }
 
-    public function proofTaskCheckUpdate(Request $request, $id)
+    public function workedTaskCheckUpdate(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'status' => 'required',

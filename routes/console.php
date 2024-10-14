@@ -80,3 +80,28 @@ Schedule::call(function () {
         }
     }
 })->everyMinute();
+
+// Task proof status Rejected refund to task owner
+Schedule::call(function () {
+    $autoRefundTimeInHours = get_default_settings('task_proof_status_rejected_charge_auto_refund_time');
+    $proofTasks = ProofTask::where('status', 'Rejected')->get();
+
+    $now = now();
+
+    foreach ($proofTasks as $proofTask) {
+        $rejectionTime = $proofTask->created_at->copy()->addHours($autoRefundTimeInHours);
+
+        if ($rejectionTime->isPast()) {
+            $proofTask->update([
+                'status' => 'Rejected',
+                'approved_at' => $now,
+                'approved_by' => 1,
+            ]);
+
+            $postTask = PostTask::find($proofTask->post_task_id);
+            if ($postTask) {
+                User::where('id', $postTask->user_id)->increment('withdraw_balance', $postTask->earnings_from_work);
+            }
+        }
+    }
+})->everyMinute();
