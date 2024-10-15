@@ -19,7 +19,7 @@
                                 <th>Sl No</th>
                                 <th>Reported User</th>
                                 <th>Reported By</th>
-                                <th>Created At</th>
+                                <th>Submit Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

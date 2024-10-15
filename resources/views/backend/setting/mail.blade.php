@@ -71,7 +71,7 @@
                         </div>
                     </div><!-- Row -->
                     <div class="row mt-3">
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </div>
                 </form>
             </div>

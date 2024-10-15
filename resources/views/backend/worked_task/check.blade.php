@@ -20,8 +20,8 @@
                             <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
                                 <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" class="d-block w-100" alt="Proof Task Photo">
                                 <div class="carousel-caption d-none d-md-block">
-                                    <h5>Proof Task Photo {{ $loop->iteration }}</h5>
-                                    <p>Proof Task Photo {{ $loop->iteration }}</p>
+                                    <h5 class="mb-2"><strong class="badge bg-dark">Proof Task Photo {{ $loop->iteration }}</strong></h5>
+                                    <strong><a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" target="_blank">View Full Image</a></strong>
                                 </div>
                             </div>
                         @endforeach
@@ -39,6 +39,14 @@
         </div>
     </div>
     <div class="col-lg-4">
+        <div class="mb-3">
+            <h4>User Information:</h4>
+            <div class="mt-2 border p-2">
+                <p><strong>User Id:</strong> {{ $proofTask->user->id }}</p>
+                <p><strong>User Name:</strong> {{ $proofTask->user->name }}</p>
+                <p><strong>User Ip:</strong> {{ $proofTask->user->userDetail->ip }}</p>
+            </div>
+        </div>
         @if ($proofTask->status == 'Pending')
             <div class="alert alert-warning" role="alert">
                 <h4 class="alert-heading">Pending</h4>
@@ -146,16 +154,10 @@
                         $.each(response.error, function(prefix, val){
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
-                    }else{
-                        if (response.status == 401) {
-                            $.each(response.error, function(prefix, val){
-                                $('span.update_'+prefix+'_error').text(val[0]);
-                            })
-                        } else {
-                            toastr.success('Proof Task has been updated successfully.');
-                            $('#allDataTable').DataTable().ajax.reload();
-                            $(".viewModal").modal('hide');
-                        }
+                    } else {
+                        toastr.success('Proof Task has been updated successfully.');
+                        $('#allDataTable').DataTable().ajax.reload();
+                        $(".viewModal").modal('hide');
                     }
                 },
             });

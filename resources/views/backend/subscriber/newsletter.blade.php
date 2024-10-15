@@ -100,7 +100,7 @@
                                 <th>Mail Type</th>
                                 <th>Subject</th>
                                 <th>Status</th>
-                                <th>Created At</th>
+                                <th>Submit Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

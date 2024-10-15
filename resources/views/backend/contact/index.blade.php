@@ -32,7 +32,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Status</th>
-                                <th>Created At</th>
+                                <th>Submit Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

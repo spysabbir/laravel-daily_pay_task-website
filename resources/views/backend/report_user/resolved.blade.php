@@ -19,7 +19,7 @@
                                 <th>Sl No</th>
                                 <th>Reported User</th>
                                 <th>Reported By</th>
-                                <th>Created At</th>
+                                <th>Submit Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -93,31 +93,6 @@
                 },
             });
         });
-
-        // Reply Form
-        $("body").on("submit", "#replyForm", function(e){
-            e.preventDefault();
-            var url = "{{ route('backend.report_user.reply') }}";
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: $(this).serialize(),
-                beforeSend:function(){
-                    $(document).find('span.error-text').text('');
-                },
-                success: function (response) {
-                    if (response.status == 400) {
-                        $.each(response.error, function(prefix, val){
-                            $('span.'+prefix+'_error').text(val[0]);
-                        })
-                    }else{
-                        $('#allDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
-                        toastr.success('Reply Submitted Successfully');
-                    }
-                },
-            });
-        })
     });
 </script>
 @endsection

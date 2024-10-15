@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Proof Task Reviewed')
+@section('title', 'Worked Task - Reviewed')
 
 @section('content')
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Proof Task Reviewed</h3>
+                    <h3 class="card-title">Worked Task - Reviewed</h3>
                 </div>
             </div>
             <div class="card-body">
@@ -19,6 +19,8 @@
                                 <th>Sl No</th>
                                 <th>Task ID</th>
                                 <th>Title</th>
+                                <th>Proof Submitted</th>
+                                <th>Reviewed Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -54,6 +56,8 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
+                { data: 'proof_submitted', name: 'proof_submitted' },
+                { data: 'reviewed_status', name: 'reviewed_status' },
                 { data: 'action', name: 'action' }
             ]
         });

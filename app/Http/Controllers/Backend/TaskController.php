@@ -341,7 +341,7 @@ class TaskController extends Controller
         ]);
     }
 
-    // Worked Task
+    // Worked Task .............................................................................................
 
     public function workedTaskListPending(Request $request){
         if ($request->ajax()) {
@@ -353,13 +353,27 @@ class TaskController extends Controller
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
+                ->editColumn('proof_submitted', function ($row) {
+                    $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    return '
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
+                    </div>
+                    ';
+                })
+                ->editColumn('pending_status', function ($row) {
+                    $proofCount = ProofTask::where('post_task_id', $row->id)->where('status', 'Pending')->count();
+                    return '<span class="badge bg-primary">Pending: '.$proofCount.'</span>';
+                })
                 ->editColumn('action', function ($row) {
                     $btn = '
                         <a href="' . route('backend.pending.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['proof_submitted', 'pending_status', 'action'])
                 ->make(true);
         }
         return view('backend.worked_task.pending');
@@ -375,6 +389,7 @@ class TaskController extends Controller
             $proofTasks = $query->get();
 
             return DataTables::of($proofTasks)
+                ->addIndexColumn()
                 ->editColumn('user', function ($row) {
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
@@ -396,8 +411,8 @@ class TaskController extends Controller
         }
 
         $postTask = PostTask::findOrFail(decrypt($id));
-
-        return view('backend.worked_task.pending_list', compact('postTask'));
+        $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
+        return view('backend.worked_task.pending_list', compact('postTask', 'proofSubmitted'));
     }
 
     public function workedTaskListApproved(Request $request){
@@ -410,13 +425,27 @@ class TaskController extends Controller
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
+                ->editColumn('proof_submitted', function ($row) {
+                    $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    return '
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
+                    </div>
+                    ';
+                })
+                ->editColumn('approved_status', function ($row) {
+                    $proofCount = ProofTask::where('post_task_id', $row->id)->where('status', 'Approved')->count();
+                    return '<span class="badge bg-primary">Approved: '.$proofCount.'</span>';
+                })
                 ->editColumn('action', function ($row) {
                     $btn = '
                         <a href="' . route('backend.approved.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['proof_submitted', 'approved_status', 'action'])
                 ->make(true);
         }
         return view('backend.worked_task.approved');
@@ -432,6 +461,7 @@ class TaskController extends Controller
             $proofTasks = $query->get();
 
             return DataTables::of($proofTasks)
+                ->addIndexColumn()
                 ->editColumn('user', function ($row) {
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
@@ -453,8 +483,8 @@ class TaskController extends Controller
         }
 
         $postTask = PostTask::findOrFail(decrypt($id));
-
-        return view('backend.worked_task.approved_list', compact('postTask'));
+        $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
+        return view('backend.worked_task.approved_list', compact('postTask', 'proofSubmitted'));
     }
 
     public function workedTaskListRejected(Request $request){
@@ -467,13 +497,27 @@ class TaskController extends Controller
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
+                ->editColumn('proof_submitted', function ($row) {
+                    $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    return '
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
+                    </div>
+                    ';
+                })
+                ->editColumn('rejected_status', function ($row) {
+                    $proofCount = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')->count();
+                    return '<span class="badge bg-primary">Rejected: '.$proofCount.'</span>';
+                })
                 ->editColumn('action', function ($row) {
                     $btn = '
                         <a href="' . route('backend.rejected.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['proof_submitted', 'rejected_status', 'action'])
                 ->make(true);
         }
         return view('backend.worked_task.rejected');
@@ -489,6 +533,7 @@ class TaskController extends Controller
             $proofTasks = $query->get();
 
             return DataTables::of($proofTasks)
+                ->addIndexColumn()
                 ->editColumn('user', function ($row) {
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
@@ -510,8 +555,8 @@ class TaskController extends Controller
         }
 
         $postTask = PostTask::findOrFail(decrypt($id));
-
-        return view('backend.worked_task.rejected_list', compact('postTask'));
+        $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
+        return view('backend.worked_task.rejected_list', compact('postTask', 'proofSubmitted'));
     }
 
     public function workedTaskListReviewed(Request $request){
@@ -524,13 +569,27 @@ class TaskController extends Controller
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
+                ->editColumn('proof_submitted', function ($row) {
+                    $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    return '
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
+                    </div>
+                    ';
+                })
+                ->editColumn('reviewed_status', function ($row) {
+                    $proofCount = ProofTask::where('post_task_id', $row->id)->where('status', 'Reviewed')->count();
+                    return '<span class="badge bg-primary">Reviewed: '.$proofCount.'</span>';
+                })
                 ->editColumn('action', function ($row) {
                     $btn = '
                         <a href="' . route('backend.reviewed.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['proof_submitted', 'reviewed_status', 'action'])
                 ->make(true);
         }
         return view('backend.worked_task.reviewed');
@@ -546,6 +605,7 @@ class TaskController extends Controller
             $proofTasks = $query->get();
 
             return DataTables::of($proofTasks)
+                ->addIndexColumn()
                 ->editColumn('user', function ($row) {
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
@@ -567,8 +627,8 @@ class TaskController extends Controller
         }
 
         $postTask = PostTask::findOrFail(decrypt($id));
-
-        return view('backend.worked_task.reviewed_list', compact('postTask'));
+        $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
+        return view('backend.worked_task.reviewed_list', compact('postTask', 'proofSubmitted'));
     }
 
     public function workedTaskCheck($id)
@@ -581,6 +641,7 @@ class TaskController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'status' => 'required',
+            'rejected_reason' => 'required_if:status,Rejected',
         ]);
 
         if ($validator->fails()) {
@@ -589,19 +650,6 @@ class TaskController extends Controller
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
-            if ($request->status == 'Rejected') {
-                $validator = Validator::make($request->all(), [
-                    'rejected_reason' => 'required',
-                ]);
-
-                if ($validator->fails()) {
-                    return response()->json([
-                        'status' => 400,
-                        'error' => $validator->errors()->toArray()
-                    ]);
-                }
-            }
-
             $proofTask = ProofTask::findOrFail($id);
 
             $postTask = PostTask::findOrFail($proofTask->post_task_id);
@@ -611,19 +659,21 @@ class TaskController extends Controller
                 $user->update([
                     'deposit_balance' => $user->deposit_balance + $postTask->earnings_from_work,
                 ]);
+
+                $proofTask->rejected_reason = $request->rejected_reason;
+                $proofTask->rejected_at = now();
+                $proofTask->rejected_by = auth()->user()->id;
             }else{
                 $user = User::findOrFail($proofTask->user_id);
                 $user->update([
                     'withdraw_balance' => $user->withdraw_balance + $postTask->earnings_from_work,
                 ]);
+
+                $proofTask->approved_at = now();
+                $proofTask->approved_by = auth()->user()->id;
             }
 
             $proofTask->status = $request->status;
-            $proofTask->rejected_reason = $request->rejected_reason ?? NULL;
-            $proofTask->rejected_at = $request->status == 'Rejected' ? now() : NULL;
-            $proofTask->rejected_by = $request->status == 'Rejected' ? auth()->user()->id : NULL;
-            $proofTask->approved_at = $request->status == 'Approved' ? now() : NULL;
-            $proofTask->approved_by = $request->status == 'Approved' ? auth()->user()->id : NULL;
             $proofTask->save();
 
             return response()->json([
