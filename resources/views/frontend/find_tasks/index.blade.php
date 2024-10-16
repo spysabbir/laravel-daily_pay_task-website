@@ -12,9 +12,9 @@
             <div class="card-body">
                 <div class="filter mb-3">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-xl-3 col-lg-5 mb-3">
                             <div class="form-group">
-                                <label>Category</label>
+                                <label for="filter_category_id" class="form-label">Category</label>
                                 <select class="form-select filter_data" id="filter_category_id">
                                     <option value="">-- Select Category --</option>
                                     @foreach ($categories as $category)
@@ -23,9 +23,9 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xl-3 col-lg-5 mb-3">
                             <div class="form-group">
-                                <label>Sort By</label>
+                                <label for="filter_sort_by" class="form-label">Sort By</label>
                                 <select class="form-select filter_data" id="filter_sort_by">
                                     <option value="">-- Select Sort By --</option>
                                     <option value="latest">Latest</option>

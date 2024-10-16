@@ -134,9 +134,9 @@
                 </div>
                 <div class="filter mb-3">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="form-group">
-                                <label for="method" class="form-label">Deposit Method</label>
+                                <label for="filter_method" class="form-label">Deposit Method</label>
                                 <select class="form-select filter_data" id="filter_method">
                                     <option value="">-- Select Deposit Method --</option>
                                     <option value="Bkash">Bkash</option>
@@ -146,9 +146,9 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="form-group">
-                                <label for="status" class="form-label">Status</label>
+                                <label for="filter_status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Pending">Pending</option>

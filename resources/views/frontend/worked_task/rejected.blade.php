@@ -14,16 +14,16 @@
                     </p>
                 </div>
                 <div>
-                    <a href="{{ route('worked_task.list.pending') }}" class="btn btn-primary">Pending</a>
-                    <a href="{{ route('worked_task.list.reviewed') }}" class="btn btn-warning">Reviewed</a>
+                    <a href="{{ route('worked_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending</a>
+                    <a href="{{ route('worked_task.list.reviewed') }}" class="btn btn-warning btn-xs m-1">Reviewed</a>
                 </div>
             </div>
             <div class="card-body">
                 <div class="filter mb-3 border p-2">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-xl-3 col-lg-5 mb-3">
                             <div class="form-group">
-                                <label class="form-label">Rejected Date</label>
+                                <label class="form-label" for="filter_date">Filter By Date</label>
                                 <input type="date" class="form-control filter_data" id="filter_date">
                             </div>
                         </div>

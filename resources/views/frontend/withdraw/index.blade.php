@@ -97,7 +97,7 @@
                 </div>
                 <div class="filter mb-3">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="form-group">
                                 <label for="filter_type" class="form-label">Withdraw Type</label>
                                 <select class="form-select filter_data" id="filter_type">
@@ -107,7 +107,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="form-group">
                                 <label for="filter_method" class="form-label">Deposit Method</label>
                                 <select class="form-select filter_data" id="filter_method">

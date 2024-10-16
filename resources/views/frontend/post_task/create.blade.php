@@ -122,7 +122,7 @@
                                     Additional Note <small class="text-danger">* Required </small>
                                 </label>
                                 <textarea class="form-control" name="additional_note" id="additional_note" rows="4" placeholder="Please enter additional notes." required></textarea>
-                                <small class="text-info">* If you need answers to any questions, write them here for review after the task is complete. Only self and admin can see it.</small>
+                                <small class="text-info">* Please provide your task related information here for verification purposes. This is only admin and you can see it.</small>
                                 <div class="invalid-feedback">Please enter additional notes.</div>
                             </div>
                             <div class="mb-2">
@@ -140,90 +140,86 @@
                         <h2>Charge & Setting</h2>
                         <section>
                             <div class="row">
-                                <div class="col-6">
-                                    <div class="mb-3">
-                                        <label for="work_needed" class="form-label">
-                                            Workers are needed <small class="text-danger">* Required </small>
-                                        </label>
-                                        <input type="number" class="form-control" name="work_needed" min="1" id="work_needed" value="1" required>
-                                        <div class="invalid-feedback">Please enter how many workers are required.</div>
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <label for="work_needed" class="form-label">
+                                        Work needed <small class="text-danger">* Required </small>
+                                    </label>
+                                    <input type="number" class="form-control" name="work_needed" min="1" id="work_needed" value="1" required>
+                                    <div class="invalid-feedback">Please enter how many workers are required.</div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <label for="earnings_from_work" class="form-label">
+                                        Earnings from work <small class="text-danger">* Required </small>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="earnings_from_work" id="earnings_from_work" required>
+                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="earnings_from_work" class="form-label">
-                                            Each earnings from work <small class="text-danger">* Required </small>
-                                        </label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" name="earnings_from_work" id="earnings_from_work" required>
-                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                        </div>
-                                        <small class="text-info">* Each earnings from work should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
-                                        <div class="invalid-feedback">Please enter the charges for each worker within the allowed range.</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="extra_screenshots" class="form-label">
-                                            Additional screenshots are required <small class="text-danger">* Required </small>
-                                        </label>
-                                        <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="0" required>
-                                        <small class="text-info">* Additional screenshot charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_screenshot_charge') }}. Note: You get 1 screenshot for free.</small>
-                                        <div class="invalid-feedback">Please enter how many additional screenshots are required</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="boosted_time" class="form-label">
-                                            Boosted time <small class="text-danger">* Required </small>
-                                        </label>
-                                        <select class="form-select" name="boosted_time" id="boosted_time" required>
-                                            <option value="0" selected>No Boost</option>
-                                            <option value="15">15 Minutes</option>
-                                            <option value="30">30 Minutes</option>
-                                            <option value="45">45 Minutes</option>
-                                            <option value="60">1 Hour</option>
-                                            <option value="120">2 Hours</option>
-                                            <option value="180">3 Hours</option>
-                                            <option value="240">4 Hours</option>
-                                            <option value="300">5 Hours</option>
-                                            <option value="360">6 Hours</option>
-                                        </select>
-                                        <small class="text-info">* Every 15 minutes boost Charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }}. When the task is boosted, it will be shown at the top of the task list.</small>
-                                        <div class="invalid-feedback">Please enter the boosted time.</div>
+                                    <small class="text-info">* Each earnings from work should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
+                                    <div class="invalid-feedback">Please enter the charges for each worker within the allowed range.</div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <label for="extra_screenshots" class="form-label">
+                                        Extra screenshots <small class="text-danger">* Required </small>
+                                    </label>
+                                    <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="0" required>
+                                    <small class="text-info">* Additional screenshot charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_screenshot_charge') }}. Note: You get 1 screenshot for free.</small>
+                                    <div class="invalid-feedback">Please enter how many additional screenshots are required</div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <label for="boosted_time" class="form-label">
+                                        Boosted time <small class="text-danger">* Required </small>
+                                    </label>
+                                    <select class="form-select" name="boosted_time" id="boosted_time" required>
+                                        <option value="0" selected>No Boost</option>
+                                        <option value="15">15 Minutes</option>
+                                        <option value="30">30 Minutes</option>
+                                        <option value="45">45 Minutes</option>
+                                        <option value="60">1 Hour</option>
+                                        <option value="120">2 Hours</option>
+                                        <option value="180">3 Hours</option>
+                                        <option value="240">4 Hours</option>
+                                        <option value="300">5 Hours</option>
+                                        <option value="360">6 Hours</option>
+                                    </select>
+                                    <small class="text-info">* Every 15 minutes boost Charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }}. When the task is boosted, it will be shown at the top of the task list.</small>
+                                    <div class="invalid-feedback">Please enter the boosted time.</div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <label for="running_day" class="form-label">
+                                        Running day <small class="text-danger">* Required </small>
+                                    </label>
+                                    <select class="form-select" name="running_day" id="running_day" required>
+                                        <option value="3" selected>3 Days</option>
+                                        <option value="4">4 Days</option>
+                                        <option value="5">5 Days</option>
+                                        <option value="6">6 Days</option>
+                                        <option value="7">1 Week</option>
+                                    </select>
+                                    <small class="text-info">* When running day is over the task will be closed automatically.</small>
+                                    <div class="invalid-feedback">Please enter the running day.</div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <label for="task_charge" class="form-label">Task Charge</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="task_charge" readonly>
+                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                     </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="mb-3">
-                                        <label for="running_day" class="form-label">
-                                            Running Day <small class="text-danger">* Required </small>
-                                        </label>
-                                        <select class="form-select" name="running_day" id="running_day" required>
-                                            <option value="3" selected>3 Days</option>
-                                            <option value="4">4 Days</option>
-                                            <option value="5">5 Days</option>
-                                            <option value="6">6 Days</option>
-                                            <option value="7">1 Week</option>
-                                        </select>
-                                        <small class="text-info">* When running day is over the task will be closed automatically.</small>
-                                        <div class="invalid-feedback">Please enter the running day.</div>
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <label for="site_charge" class="form-label">Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="site_charge" readonly>
+                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="task_charge" class="form-label">Task Charge</label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" id="task_charge" readonly>
-                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                        </div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <label for="total_task_charge" class="form-label">Total Task Charge</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="total_task_charge" readonly>
+                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="site_charge" class="form-label">Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" id="site_charge" readonly>
-                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="total_task_charge" class="form-label">Total Task Charge</label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" id="total_task_charge" readonly>
-                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                        </div>
-                                        <small class="text-info">* Total task Charge must be {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }}.</small>
-                                    </div>
+                                    <small class="text-info">* Total task Charge must be {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }}.</small>
                                 </div>
                             </div>
                             @if (Auth::user()->deposit_balance < get_default_settings('task_posting_min_budget'))

@@ -50,7 +50,18 @@
     display: none !important;
   }
   .navbar-area .other-option {
-    display: none;
+    position: absolute;
+    top: 0;
+    right: 30%;
+    z-index: 999;
+    margin-top: 15px;
+  }
+  .navbar-area .other-option .signup-btn, .navbar-area .other-option .signin-btn {
+    font-size: 14px;
+    background-color: #fd1616;
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 5px;
   }
   /* Banner CSS */
   .banner-section {
@@ -800,7 +811,18 @@
     display: none !important;
   }
   .navbar-area .other-option {
-    display: none;
+    position: absolute;
+    top: 0;
+    right: 40%;
+    z-index: 999;
+    margin-top: 15px;
+  }
+  .navbar-area .other-option .signup-btn, .navbar-area .other-option .signin-btn {
+    font-size: 15px;
+    background-color: #fd1616;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
   }
   /* Banner CSS */
   .banner-section {
