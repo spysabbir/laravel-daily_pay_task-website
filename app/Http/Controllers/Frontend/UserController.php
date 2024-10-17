@@ -281,7 +281,7 @@ class UserController extends Controller
             Deposit::create([
                 'user_id' => $request->user()->id,
                 'amount' => $request->amount,
-                'payable_amount' => $request->payable_amount,
+                'payable_amount' => $request->amount,
                 'method' => $request->method,
                 'number' => $request->number,
                 'transaction_id' => $request->transaction_id,

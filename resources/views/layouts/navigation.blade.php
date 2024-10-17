@@ -77,6 +77,50 @@
             </li>
         @endcan
 
+        @can('ReportMenu')
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#report" role="button" aria-expanded="false" aria-controls="report">
+                    <i class="link-icon" data-feather="file-text"></i>
+                    <span class="link-title">Report</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="report">
+                    <ul class="nav sub-menu">
+                        @can('deposit.report')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.deposit.report') }}" class="nav-link">Deposit
+                        </li>
+                        @endcan
+                        @can('withdraw.report')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.withdraw.report') }}" class="nav-link">Withdraw
+                        </li>
+                        @endcan
+                        @can('bonus.report')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.bonus.report') }}" class="nav-link">Bonus
+                        </li>
+                        @endcan
+                        @can('expense.report')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.expense.report') }}" class="nav-link">Expense
+                        </li>
+                        @endcan
+                        @can('posted_task.report')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.posted_task.report') }}" class="nav-link">Posted Task
+                        </li>
+                        @endcan
+                        @can('worked_task.report')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.worked_task.report') }}" class="nav-link">Worked Task
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
+
         <li class="nav-item nav-category">Admin</li>
         @can('RolePermissionMenu')
             <li class="nav-item">

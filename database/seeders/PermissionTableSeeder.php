@@ -40,7 +40,7 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'expense_category.trash', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
             ['name' => 'expense_category.restore', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
             ['name' => 'expense_category.delete', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
-            
+
             ['name' => 'expense.index', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
             ['name' => 'expense.create', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
             ['name' => 'expense.edit', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
@@ -56,6 +56,14 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'mail.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'sms.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'captcha.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
+
+            ['name' => 'ReportMenu', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
+            ['name' => 'deposit.report', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
+            ['name' => 'withdraw.report', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
+            ['name' => 'bonus.report', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
+            ['name' => 'expense.report', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
+            ['name' => 'posted_task.report', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
+            ['name' => 'worked_task.report', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
 
             ['name' => 'EmployeeMenu', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
             ['name' => 'employee.index', 'group_name' => 'EmployeeManagement', 'guard_name' => 'web'],
