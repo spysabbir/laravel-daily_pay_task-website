@@ -53,6 +53,30 @@
             </li>
         @endcan
 
+        @can('ExpenseMenu')
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#expense" role="button" aria-expanded="false" aria-controls="expense">
+                    <i class="link-icon" data-feather="dollar-sign"></i>
+                    <span class="link-title">Expense</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="expense">
+                    <ul class="nav sub-menu">
+                        @can('expense_category.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.expense_category.index') }}" class="nav-link">Expense Category</a>
+                        </li>
+                        @endcan
+                        @can('expense.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.expense.index') }}" class="nav-link">Expense</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
+
         <li class="nav-item nav-category">Admin</li>
         @can('RolePermissionMenu')
             <li class="nav-item">

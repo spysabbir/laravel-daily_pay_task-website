@@ -5,6 +5,8 @@ use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ChildCategoryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
+use App\Http\Controllers\Backend\ExpenseCategoryController;
+use App\Http\Controllers\Backend\ExpenseController;
 use App\Http\Controllers\Backend\FaqController;
 use App\Http\Controllers\Backend\TaskController;
 use App\Http\Controllers\Backend\PermissionController;
@@ -40,6 +42,18 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::post('sms/setting/update', [SettingController::class, 'smsSettingUpdate'])->name('sms.setting.update');
     Route::get('captcha/setting', [SettingController::class, 'captchaSetting'])->name('captcha.setting');
     Route::post('captcha/setting/update', [SettingController::class, 'captchaSettingUpdate'])->name('captcha.setting.update');
+    // Expense Category
+    Route::resource('expense_category', ExpenseCategoryController::class);
+    Route::get('expense_category-trash', [ExpenseCategoryController::class, 'trash'])->name('expense_category.trash');
+    Route::get('expense_category/restore/{id}', [ExpenseCategoryController::class, 'restore'])->name('expense_category.restore');
+    Route::get('expense_category/delete/{id}', [ExpenseCategoryController::class, 'delete'])->name('expense_category.delete');
+    Route::get('expense_category/status/{id}', [ExpenseCategoryController::class, 'status'])->name('expense_category.status');
+    // Expense
+    Route::resource('expense', ExpenseController::class);
+    Route::get('expense-trash', [ExpenseController::class, 'trash'])->name('expense.trash');
+    Route::get('expense/restore/{id}', [ExpenseController::class, 'restore'])->name('expense.restore');
+    Route::get('expense/delete/{id}', [ExpenseController::class, 'delete'])->name('expense.delete');
+    Route::get('expense/status/{id}', [ExpenseController::class, 'status'])->name('expense.status');
     // Employee
     Route::resource('employee', EmployeeController::class);
     Route::get('employee-inactive', [EmployeeController::class, 'inactive'])->name('employee.inactive');

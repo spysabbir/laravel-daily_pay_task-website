@@ -31,6 +31,24 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'role-permission.edit', 'group_name' => 'RolePermissionManagement', 'guard_name' => 'web'],
             ['name' => 'role-permission.destroy', 'group_name' => 'RolePermissionManagement', 'guard_name' => 'web'],
 
+            ['name' => 'ExpenseMenu', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+
+            ['name' => 'expense_category.index', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense_category.create', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense_category.edit', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense_category.destroy', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense_category.trash', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense_category.restore', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense_category.delete', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            
+            ['name' => 'expense.index', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense.create', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense.edit', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense.destroy', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense.trash', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense.restore', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+            ['name' => 'expense.delete', 'group_name' => 'ExpenseManagement', 'guard_name' => 'web'],
+
             ['name' => 'SettingMenu', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'site.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'default.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
