@@ -48,8 +48,8 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table id="reportDataTable" class="table">
-                        <thead>
+                    <table id="reportDataTable" class="table table-bordered">
+                        <thead class="table-dark">
                             <tr>
                                 <th>Sl No</th>
                                 <th>Deposit Date</th>
@@ -60,17 +60,18 @@
                                 <th>Pending Amount</th>
                                 <th>Approved Amount</th>
                                 <th>Rejected Amount</th>
-                                <th>Total Amount</th>
-                                <th>Deposit Charge</th>
                                 <th>Total Payable Amount</th>
+                                <th>Deposit Charge</th>
+                                <th>Total Amount</th>
                             </tr>
                         </thead>
                         <tbody>
 
                         </tbody>
-                        <tfoot>
+                        <tfoot class="table-dark">
                             <tr>
-                                <th colspan="2" class="text-center">Total</th>
+                                <th>#</th>
+                                <th class="text-center">Total</th>
                                 <th id="bkash_total"></th>
                                 <th id="nagad_total"></th>
                                 <th id="rocket_total"></th>
@@ -78,9 +79,9 @@
                                 <th id="pending_total"></th>
                                 <th id="approved_total"></th>
                                 <th id="rejected_total"></th>
-                                <th id="total_amount_sum"></th>
-                                <th id="deposit_charge_sum"></th>
                                 <th id="total_payable_amount_sum"></th>
+                                <th id="deposit_charge_sum"></th>
+                                <th id="total_amount_sum"></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -94,14 +95,21 @@
 @section('script')
 <script>
     $(document).ready(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        // Function to update dynamic message for messageTop
+        function updateDynamicMessageTop() {
+            var method = $('#filter_method').val() || 'All Methods';
+            var status = $('#filter_status').val() || 'All Statuses';
+            var startDate = $('#filter_start_date').val() || 'No Start Date';
+            var endDate = $('#filter_end_date').val() || 'No End Date';
 
-        // Pending Data
-        $('#reportDataTable').DataTable({
+            window.dynamicMessageTop = 'Filters Applied - Method: ' + method + '; Status: ' + status + '; Start Date: ' + startDate + '; End Date: ' + endDate + ';';
+        }
+
+        // Set the initial dynamic message
+        updateDynamicMessageTop();
+
+        // Report DataTable initialization
+        var table = $('#reportDataTable').DataTable({
             processing: true,
             serverSide: true,
             searching: true,
@@ -124,9 +132,9 @@
                 { data: 'pending_amount', name: 'pending_amount' },
                 { data: 'approved_amount', name: 'approved_amount' },
                 { data: 'rejected_amount', name: 'rejected_amount' },
-                { data: 'total_amount', name: 'total_amount' },
-                { data: 'deposit_charge', name: 'deposit_charge' },
                 { data: 'total_payable_amount', name: 'total_payable_amount' },
+                { data: 'deposit_charge', name: 'deposit_charge' },
+                { data: 'total_amount', name: 'total_amount' },
             ],
             drawCallback: function(settings) {
                 var response = settings.json;
@@ -134,21 +142,29 @@
                 $('#bkash_total').html(response.total_bkash_amount_sum);
                 $('#nagad_total').html(response.total_nagad_amount_sum);
                 $('#rocket_total').html(response.total_rocket_amount_sum);
-                $('#withdrawal_balance_total').html('Total: ' + response.total_withdrawal_balance_amount_sum + ', Payable: ' + response.total_withdrawal_balance_payable_amount_sum);
+                $('#withdrawal_balance_total').html(response.total_withdrawal_balance_amount_sum);
                 $('#pending_total').html(response.total_pending_amount_sum);
-                $('#approved_total').html('Total: ' + response.total_approved_amount_sum + ', Payable: ' + response.approved_payable_amount_sum);
+                $('#approved_total').html(response.total_approved_amount_sum);
                 $('#rejected_total').html(response.total_rejected_amount_sum);
-                $('#total_amount_sum').html(response.total_amount_sum);
                 $('#total_payable_amount_sum').html(response.total_payable_amount_sum);
                 $('#deposit_charge_sum').html(response.deposit_charge_sum);
+                $('#total_amount_sum').html(response.total_amount_sum);
+            },
+            initComplete: function() {
+                // Update messageTop every time filters change
+                $('.filter_data').change(function() {
+                    updateDynamicMessageTop();
+                    table.ajax.reload();
+                });
             }
         });
 
-        // Filter Data
-        $('.filter_data').change(function(){
-            $('#reportDataTable').DataTable().ajax.reload();
+        // Ajax setup for CSRF token
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
     });
 </script>
 @endsection
-
