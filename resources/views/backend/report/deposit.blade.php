@@ -53,16 +53,16 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>Deposit Date</th>
-                                <th>Bkash Amount</th>
-                                <th>Nagad Amount</th>
-                                <th>Rocket Amount</th>
-                                <th>Withdrawal Balance Amount</th>
-                                <th>Pending Amount</th>
-                                <th>Approved Amount</th>
-                                <th>Rejected Amount</th>
-                                <th>Total Payable Amount</th>
-                                <th>Deposit Charge</th>
-                                <th>Total Amount</th>
+                                <th>Bkash Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Nagad Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Rocket Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Withdrawal Balance Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Pending Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Approved Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Rejected Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Total Payable Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Deposit Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Total Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                             </tr>
                         </thead>
                         <tbody>
