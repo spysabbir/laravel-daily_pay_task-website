@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Deposit;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
+use App\Models\PostTask;
+use App\Models\ProofTask;
 use App\Models\Withdraw;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
@@ -508,5 +510,223 @@ class ReportController extends Controller
 
         $expenseCategories = ExpenseCategory::where('status', 'Active')->get();
         return view('backend.report.expense', compact('expenseCategories'));
+    }
+
+    public function postedTaskReport(Request $request)
+    {
+        if ($request->ajax()) {
+            // Query to get individual row data
+            $query = PostTask::select(
+                DB::raw('DATE(post_tasks.created_at) as posted_date'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Pending" THEN 1 ELSE 0 END) as pending_count'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Rejected" THEN 1 ELSE 0 END) as rejected_count'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Running" THEN 1 ELSE 0 END) as running_count'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Canceled" THEN 1 ELSE 0 END) as canceled_count'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Paused" THEN 1 ELSE 0 END) as paused_count'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Completed" THEN 1 ELSE 0 END) as completed_count'),
+                DB::raw('COUNT(post_tasks.id) as total_task_count'),
+                DB::raw('SUM(post_tasks.charge) as posted_charge'),
+                DB::raw('SUM(post_tasks.site_charge) as site_charge'),
+                DB::raw('SUM(post_tasks.total_charge) as total_charge')
+            );
+
+            // Apply filters based on the request input
+            if ($request->status) {
+                $query->where('post_tasks.status', $request->status);
+            }
+
+            // Date filter: handle cases where either start_date or end_date is provided
+            if ($request->start_date && !$request->end_date) {
+                $query->whereDate('post_tasks.created_at', '>=', $request->start_date);
+            } elseif (!$request->start_date && $request->end_date) {
+                $query->whereDate('post_tasks.created_at', '<=', $request->end_date);
+            } elseif ($request->start_date && $request->end_date) {
+                $query->whereBetween(DB::raw('DATE(post_tasks.created_at)'), [$request->start_date, $request->end_date]);
+            }
+
+            $query->groupBy(DB::raw('DATE(post_tasks.created_at)'));
+            $query->orderBy('posted_date', 'desc');
+
+            // Retrieve the row-level data
+            $pendingRequest = $query->get();
+
+            // Query to calculate the totals across all rows
+            $totalsQuery = PostTask::select(
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Pending" THEN 1 ELSE 0 END) as total_pending_count_sum'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Rejected" THEN 1 ELSE 0 END) as total_rejected_count_sum'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Running" THEN 1 ELSE 0 END) as total_running_count_sum'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Canceled" THEN 1 ELSE 0 END) as total_canceled_count_sum'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Paused" THEN 1 ELSE 0 END) as total_paused_count_sum'),
+                DB::raw('SUM(CASE WHEN post_tasks.status = "Completed" THEN 1 ELSE 0 END) as total_completed_count_sum'),
+                DB::raw('COUNT(post_tasks.id) as total_task_count_sum'),
+                DB::raw('SUM(post_tasks.charge) as total_posted_charge_sum'),
+                DB::raw('SUM(post_tasks.site_charge) as total_site_charge_sum'),
+                DB::raw('SUM(post_tasks.total_charge) as total_charge_sum')
+            );
+
+            // Apply the same filters to the totals query
+            if ($request->status) {
+                $totalsQuery->where('post_tasks.status', $request->status);
+            }
+
+            // Date filter for totals query
+            if ($request->start_date && !$request->end_date) {
+                $totalsQuery->whereDate('post_tasks.created_at', '>=', $request->start_date);
+            } elseif (!$request->start_date && $request->end_date) {
+                $totalsQuery->whereDate('post_tasks.created_at', '<=', $request->end_date);
+            } elseif ($request->start_date && $request->end_date) {
+                $totalsQuery->whereBetween(DB::raw('DATE(post_tasks.created_at)'), [$request->start_date, $request->end_date]);
+            }
+
+            // Get the total values
+            $totals = $totalsQuery->first();
+
+            // Return the DataTables response with totals
+            return DataTables::of($pendingRequest)
+                ->addIndexColumn()
+                ->editColumn('posted_date', function ($row) {
+                    return '<span class="badge bg-primary">' . date('l j-F, Y', strtotime($row->posted_date)) . '</span>';
+                })
+                ->editColumn('pending_count', function ($row) {
+                    return '<span class="badge bg-info">' . $row->pending_count . '</span>';
+                })
+                ->editColumn('rejected_count', function ($row) {
+                    return '<span class="badge bg-warning">' . $row->rejected_count . '</span>';
+                })
+                ->editColumn('running_count', function ($row) {
+                    return '<span class="badge bg-dark">' . $row->running_count . '</span>';
+                })
+                ->editColumn('canceled_count', function ($row) {
+                    return '<span class="badge bg-danger">' . $row->canceled_count . '</span>';
+                })
+                ->editColumn('paused_count', function ($row) {
+                    return '<span class="badge bg-secondary">' . $row->paused_count . '</span>';
+                })
+                ->editColumn('completed_count', function ($row) {
+                    return '<span class="badge bg-success">' . $row->completed_count . '</span>';
+                })
+                ->editColumn('total_task_count', function ($row) {
+                    return '<span class="badge bg-success">' . $row->total_task_count . '</span>';
+                })
+                ->editColumn('posted_charge', function ($row) {
+                    return '<span class="badge bg-primary">' . $row->posted_charge . '</span>';
+                })
+                ->editColumn('site_charge', function ($row) {
+                    return '<span class="badge bg-primary">' . $row->site_charge . '</span>';
+                })
+                ->editColumn('total_charge', function ($row) {
+                    return '<span class="badge bg-primary">' . $row->total_charge . '</span>';
+                })
+                ->with([
+                    'total_pending_count_sum' => $totals->total_pending_count_sum,
+                    'total_rejected_count_sum' => $totals->total_rejected_count_sum,
+                    'total_running_count_sum' => $totals->total_running_count_sum,
+                    'total_canceled_count_sum' => $totals->total_canceled_count_sum,
+                    'total_paused_count_sum' => $totals->total_paused_count_sum,
+                    'total_completed_count_sum' => $totals->total_completed_count_sum,
+                    'total_task_count_sum' => $totals->total_task_count_sum,
+                    'total_posted_charge_sum' => get_site_settings('site_currency_symbol') . ' ' . number_format($totals->total_posted_charge_sum, 2),
+                    'total_site_charge_sum' => get_site_settings('site_currency_symbol') . ' ' . number_format($totals->total_site_charge_sum, 2),
+                    'total_charge_sum' => get_site_settings('site_currency_symbol') . ' ' . number_format($totals->total_charge_sum, 2),
+                ])
+                ->rawColumns(['posted_date', 'pending_count', 'rejected_count', 'running_count', 'canceled_count', 'paused_count', 'completed_count', 'total_task_count', 'posted_charge', 'site_charge', 'total_charge'])
+                ->make(true);
+        }
+
+        return view('backend.report.posted_task');
+    }
+
+    public function workedTaskReport(Request $request)
+    {
+        if ($request->ajax()) {
+            // Query to get individual row data
+            $query = ProofTask::select(
+                DB::raw('DATE(proof_tasks.created_at) as worked_date'),
+                DB::raw('SUM(CASE WHEN proof_tasks.status = "Pending" THEN 1 ELSE 0 END) as pending_count'),
+                DB::raw('SUM(CASE WHEN proof_tasks.status = "Approved" THEN 1 ELSE 0 END) as approved_count'),
+                DB::raw('SUM(CASE WHEN proof_tasks.status = "Rejected" THEN 1 ELSE 0 END) as rejected_count'),
+                DB::raw('SUM(CASE WHEN proof_tasks.status = "Reviewed" THEN 1 ELSE 0 END) as reviewed_count'),
+                DB::raw('COUNT(proof_tasks.id) as total_task_count'),
+            );
+
+            // Apply filters based on the request input
+            if ($request->status) {
+                $query->where('proof_tasks.status', $request->status);
+            }
+
+            // Date filter: handle cases where either start_date or end_date is provided
+            if ($request->start_date && !$request->end_date) {
+                $query->whereDate('proof_tasks.created_at', '>=', $request->start_date);
+            } elseif (!$request->start_date && $request->end_date) {
+                $query->whereDate('proof_tasks.created_at', '<=', $request->end_date);
+            } elseif ($request->start_date && $request->end_date) {
+                $query->whereBetween(DB::raw('DATE(proof_tasks.created_at)'), [$request->start_date, $request->end_date]);
+            }
+
+            $query->groupBy(DB::raw('DATE(proof_tasks.created_at)'));
+            $query->orderBy('worked_date', 'desc');
+
+            // Retrieve the row-level data
+            $pendingRequest = $query->get();
+
+            // Query to calculate the totals across all rows
+            $totalsQuery = ProofTask::select(
+                DB::raw('SUM(CASE WHEN proof_tasks.status = "Pending" THEN 1 ELSE 0 END) as total_pending_count_sum'),
+                DB::raw('SUM(CASE WHEN proof_tasks.status = "Approved" THEN 1 ELSE 0 END) as total_approved_count_sum'),
+                DB::raw('SUM(CASE WHEN proof_tasks.status = "Rejected" THEN 1 ELSE 0 END) as total_rejected_count_sum'),
+                DB::raw('SUM(CASE WHEN proof_tasks.status = "Reviewed" THEN 1 ELSE 0 END) as total_reviewed_count_sum'),
+                DB::raw('COUNT(proof_tasks.id) as total_task_count_sum'),
+            );
+
+            // Apply the same filters to the totals query
+            if ($request->status) {
+                $totalsQuery->where('proof_tasks.status', $request->status);
+            }
+
+            // Date filter for totals query
+            if ($request->start_date && !$request->end_date) {
+                $totalsQuery->whereDate('proof_tasks.created_at', '>=', $request->start_date);
+            } elseif (!$request->start_date && $request->end_date) {
+                $totalsQuery->whereDate('proof_tasks.created_at', '<=', $request->end_date);
+            } elseif ($request->start_date && $request->end_date) {
+                $totalsQuery->whereBetween(DB::raw('DATE(proof_tasks.created_at)'), [$request->start_date, $request->end_date]);
+            }
+
+            // Get the total values
+            $totals = $totalsQuery->first();
+
+            // Return the DataTables response with totals
+            return DataTables::of($pendingRequest)
+                ->addIndexColumn()
+                ->editColumn('worked_date', function ($row) {
+                    return '<span class="badge bg-primary">' . date('l j-F, Y', strtotime($row->worked_date)) . '</span>';
+                })
+                ->editColumn('pending_count', function ($row) {
+                    return '<span class="badge bg-info">' . $row->pending_count . '</span>';
+                })
+                ->editColumn('approved_count', function ($row) {
+                    return '<span class="badge bg-dark">' . $row->approved_count . '</span>';
+                })
+                ->editColumn('rejected_count', function ($row) {
+                    return '<span class="badge bg-warning">' . $row->rejected_count . '</span>';
+                })
+                ->editColumn('reviewed_count', function ($row) {
+                    return '<span class="badge bg-danger">' . $row->reviewed_count . '</span>';
+                })
+                ->editColumn('total_task_count', function ($row) {
+                    return '<span class="badge bg-success">' . $row->total_task_count . '</span>';
+                })
+                ->with([
+                    'total_pending_count_sum' => $totals->total_pending_count_sum,
+                    'total_approved_count_sum' => $totals->total_approved_count_sum,
+                    'total_rejected_count_sum' => $totals->total_rejected_count_sum,
+                    'total_reviewed_count_sum' => $totals->total_reviewed_count_sum,
+                    'total_task_count_sum' => $totals->total_task_count_sum,
+                ])
+                ->rawColumns(['posted_date', 'pending_count', 'approved_count', 'rejected_count', 'reviewed_count', 'total_task_count'])
+                ->make(true);
+        }
+
+        return view('backend.report.worked_task');
     }
 }
