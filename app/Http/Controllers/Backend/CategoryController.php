@@ -7,7 +7,6 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -57,7 +56,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:categories',
+            'name' => 'required|string|max:255|unique:categories,name',
         ]);
 
         if($validator->fails()){
@@ -68,7 +67,6 @@ class CategoryController extends Controller
         }else{
             Category::create([
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'created_by' => auth()->user()->id,
             ]);
 
@@ -98,7 +96,6 @@ class CategoryController extends Controller
         } else {
             Category::where('id', $id)->update([
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'updated_by' => auth()->user()->id,
             ]);
 

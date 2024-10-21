@@ -56,7 +56,7 @@ class ExpenseCategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:expense_categories',
+            'name' => 'required|string|max:255|unique:expense_categories,name',
         ]);
 
         if($validator->fails()){

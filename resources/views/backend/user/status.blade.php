@@ -30,7 +30,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $status->reason }}</td>
-                                    <td>{{ $status->blocked_duration ? date('d-M-Y h:i A', strtotime($status->blocked_duration)) : 'N/A' }}</td>
+                                    <td>{{ $status->blocked_duration ? $status->blocked_duration . ' hours' : 'N/A' }}</td>
                                     <td>{{ $status->createdBy->name }}</td>
                                     <td>{{ date('d-M-Y h:i A', strtotime($status->created_at)) }}</td>
                                 </tr>
@@ -62,8 +62,8 @@
                         <span class="text-danger error-text update_status_error"></span>
                     </div>
                     <div class="col-lg-6" id="blocked_duration_div" style="display: none;">
-                        <label for="blocked_duration" class="form-label">Blocked Duration</label>
-                        <input type="datetime-local" class="form-control" id="blocked_duration" name="blocked_duration">
+                        <label for="blocked_duration" class="form-label">Blocked Duration (in hours)</label>
+                        <input type="number" class="form-control" id="blocked_duration" name="blocked_duration" placeholder="Enter blocked duration">
                         <span class="text-danger error-text update_blocked_duration_error"></span>
                     </div>
                 </div>

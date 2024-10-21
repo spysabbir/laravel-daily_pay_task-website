@@ -16,13 +16,14 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->foreignId('sub_category_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('slug')->unique();
             $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['category_id', 'sub_category_id', 'name']);
         });
     }
 

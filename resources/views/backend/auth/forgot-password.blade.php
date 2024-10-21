@@ -30,7 +30,7 @@
                 <div>
                     <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white">Email Password Reset Link</button>
                 </div>
-                <a href="{{ route('login') }}" class="d-block mt-3 text-muted">Back to login</a>
+                <a href="{{ route('backend.login') }}" class="d-block mt-3 text-muted">Back to login</a>
             </form>
         </div>
     </div>

@@ -234,7 +234,7 @@ class BackendController extends Controller
         ];
 
         if ($request->status == 'Blocked') {
-            $rules['blocked_duration'] = 'required|date';
+            $rules['blocked_duration'] = 'required|integer';
         }
 
         $validator = Validator::make($request->all(), $rules);

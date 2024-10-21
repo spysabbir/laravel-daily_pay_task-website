@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('content');
             $table->enum('status', ['Draft', 'Sent'])->default('Draft');
             $table->timestamp('sent_at')->nullable();
-            $table->integer('created_by')->nullable();
+            $table->integer('created_by');
             $table->timestamps();
         });
     }

@@ -8,8 +8,8 @@ use App\Models\ChildCategory;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Validation\Rule;
 
 class ChildCategoryController extends Controller
 {
@@ -70,20 +70,23 @@ class ChildCategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:categories,id',
             'sub_category_id' => 'required|exists:sub_categories,id',
-            'name' => 'required|string|max:255|unique:child_categories,name',
+            'name' => ['required', 'string', 'max:255',
+                Rule::unique('child_categories')->where(function ($query) use ($request) {
+                    return $query->where('category_id', $request->category_id)->where('sub_category_id', $request->sub_category_id);
+                }),
+            ],
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'error'=> $validator->errors()->toArray()
+                'error' => $validator->errors()->toArray(),
             ]);
-        }else{
+        } else {
             ChildCategory::create([
                 'category_id' => $request->category_id,
                 'sub_category_id' => $request->sub_category_id,
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'created_by' => auth()->user()->id,
             ]);
 
@@ -104,23 +107,29 @@ class ChildCategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:categories,id',
             'sub_category_id' => 'required|exists:sub_categories,id',
-            'name' => 'required|string|max:255|unique:child_categories,name,' . $id,
+            'name' => ['required', 'string', 'max:255',
+                Rule::unique('child_categories')->where(function ($query) use ($request, $id) {
+                    return $query->where('category_id', $request->category_id)->where('sub_category_id', $request->sub_category_id)->where('id', '!=', $id);
+                }),
+            ],
         ]);
 
+        // If validation fails, return a JSON response with errors
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'error' => $validator->errors()->toArray()
+                'error' => $validator->errors()->toArray(),
             ]);
         } else {
+            // Update the existing child category
             ChildCategory::where('id', $id)->update([
                 'category_id' => $request->category_id,
                 'sub_category_id' => $request->sub_category_id,
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'updated_by' => auth()->user()->id,
             ]);
 
+            // Return a success response
             return response()->json([
                 'status' => 200,
             ]);

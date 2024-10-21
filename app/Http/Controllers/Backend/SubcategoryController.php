@@ -7,8 +7,8 @@ use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Str;
 use App\Models\Category;
+use Illuminate\Validation\Rule;
 
 class SubCategoryController extends Controller
 {
@@ -64,19 +64,22 @@ class SubCategoryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255|unique:sub_categories',
+            'name' => ['required', 'string', 'max:255',
+                Rule::unique('sub_categories')->where(function ($query) use ($request) {
+                    return $query->where('category_id', $request->category_id);
+                }),
+            ],
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'error'=> $validator->errors()->toArray()
+                'error' => $validator->errors()->toArray(),
             ]);
-        }else{
+        } else {
             SubCategory::create([
                 'category_id' => $request->category_id,
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'created_by' => auth()->user()->id,
             ]);
 
@@ -96,19 +99,22 @@ class SubCategoryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255|unique:sub_categories,name,' . $id,
+            'name' => ['required', 'string', 'max:255',
+                Rule::unique('sub_categories')->where(function ($query) use ($request, $id) {
+                    return $query->where('category_id', $request->category_id)->where('id', '!=', $id);
+                }),
+            ],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'error' => $validator->errors()->toArray()
+                'error' => $validator->errors()->toArray(),
             ]);
         } else {
             SubCategory::where('id', $id)->update([
                 'category_id' => $request->category_id,
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'updated_by' => auth()->user()->id,
             ]);
 

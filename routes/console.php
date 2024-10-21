@@ -37,21 +37,25 @@ Schedule::call(function () {
     $now = now();
     $userStatuses = UserStatus::where('status', 'Blocked')
         ->where('blocked_resolved', null)
-        ->where('blocked_duration', '<=', $now)
         ->get();
 
     foreach ($userStatuses as $userStatus) {
-        $userStatus->update(['blocked_resolved' => $now]);
 
-        $user = User::find($userStatus->user_id);
-        if ($user) {
-            $user->update(['status' => 'Active']);
-            $user->notify(new UserStatusNotification([
-                'status' => 'Active',
-                'reason' => 'Your account has been unblocked successfully!',
-                'blocked_duration' => null,
-                'created_at' => $now,
-            ]));
+        $activeTime = Carbon::parse($userStatus->created_at)->addHours($userStatus->blocked_duration);
+
+        if ($now->isSameMinute($activeTime)) {
+            $userStatus->update(['blocked_resolved' => $now]);
+            
+            $user = User::find($userStatus->user_id);
+            if ($user) {
+                $user->update(['status' => 'Active']);
+                $user->notify(new UserStatusNotification([
+                    'status' => 'Active',
+                    'reason' => 'Your account has been unblocked successfully!',
+                    'blocked_duration' => null,
+                    'created_at' => $now,
+                ]));
+            }
         }
     }
 })->everyMinute();
@@ -63,7 +67,7 @@ Schedule::call(function () {
     $proofTasks = ProofTask::where('status', 'Pending')->get();
 
     foreach ($proofTasks as $proofTask) {
-        $approvalTime = Carbon::parse($proofTask->created_at)->addHours(1);
+        $approvalTime = Carbon::parse($proofTask->created_at)->addHours($autoApproveTimeInHours);
 
         if ($now->isSameMinute($approvalTime)) {
             $proofTask->update([
@@ -87,7 +91,7 @@ Schedule::call(function () {
     $proofTasks = ProofTask::where('status', 'Rejected')->where('reviewed_at', null)->get();
 
     foreach ($proofTasks as $proofTask) {
-        $refundTime = Carbon::parse($proofTask->rejected_at)->addHours(1);
+        $refundTime = Carbon::parse($proofTask->rejected_at)->addHours($autoRefundTimeInHours);
 
         if ($now->isSameMinute($refundTime)) {
             $postTask = PostTask::find($proofTask->post_task_id);

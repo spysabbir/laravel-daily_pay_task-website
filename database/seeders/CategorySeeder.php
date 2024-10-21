@@ -15,27 +15,15 @@ class CategorySeeder extends Seeder
         $categories = [
             [
                 'name' => 'Youtube',
-                'slug' => 'youtube',
             ],
-            // [
-            //     'name' => 'Facebook',
-            //     'slug' => 'facebook',
-            // ],
-            // [
-            //     'name' => 'Instagram',
-            //     'slug' => 'instagram',
-            // ],
-            // [
-            //     'name' => 'Twitter',
-            //     'slug' => 'twitter',
-            // ],
-            // [
-            //     'name' => 'LinkedIn',
-            //     'slug' => 'linkedin',
-            // ],
+            [
+                'name' => 'Facebook',
+            ],
+            [
+                'name' => 'Talegram',
+            ],
             [
                 'name' => 'N/A',
-                'slug' => 'na',
             ]
         ];
 
