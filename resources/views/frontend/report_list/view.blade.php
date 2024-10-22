@@ -1,15 +1,23 @@
 <div class="card">
     <div class="card-header">
-        <h5>Status - {{ $report->status }}</h5>
+        <strong>Type - {{ $report->type }}</strong>
+        <br>
+        <strong>Status: {{ $report->status }}</strong>
     </div>
     <div class="card-body">
         <h4 class="card-title">Reported User: {{ $report->reported->name }}</h4>
-        @if ($report->photo)
-        <img src="{{ asset('uploads/report_photo') }}/{{ $report->photo }}" alt="{{ $report->reason }}" class="img-fluid">
-        @endif
         <p class="card-text">
             <strong>Reason:</strong> {{ $report->reason }}<br>
-            <strong>Reported At:</strong> {{ $report->created_at }}<br>
+            @if ($report->post_task_id)
+            <strong>Post Task:</strong> {{ $report->post_task_id }}<br>
+            @endif
+            @if ($report->proof_task_id)
+            <strong>Proof Task:</strong> {{ $report->proof_task_id }}<br>
+            @endif
+            @if ($report->photo)
+            <img src="{{ asset('uploads/report_photo') }}/{{ $report->photo }}" alt="Report" class="img-fluid">
+            @endif
+            <strong>Reported At:</strong> {{ $report->created_at->format('d-F-Y h:i A') }}<br>
         </p>
         @if ($report->status == 'Resolved')
         <div class="card mt-3">
@@ -19,7 +27,10 @@
             <div class="card-body">
                 <p class="card-text">
                     <strong>Reply:</strong> {{ $report_reply->reply }}<br>
-                    <strong>Resolved_at:</strong> {{ date('d-m-Y', strtotime($report_reply->resolved_at)) }}<br>
+                    @if ($report->reply_photo)
+                    <img src="{{ asset('uploads/report_photo') }}/{{ $report_reply->reply_photo }}" alt="Reply Photo" class="img-fluid">
+                    @endif
+                    <strong>Resolved_at:</strong> {{ date('d-F-Y h:i A', strtotime($report_reply->resolved_at)) }}<br>
                 </p>
             </div>
         </div>

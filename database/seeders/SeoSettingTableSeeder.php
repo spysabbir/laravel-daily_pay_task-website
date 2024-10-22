@@ -14,24 +14,19 @@ class SeoSettingTableSeeder extends Seeder
     public function run(): void
     {
         $setting = [
-            'meta_title' => 'Daily Micro Tasks',
-            'meta_author' => 'Laravel',
-            'meta_keywords' => 'Daily Micro Tasks',
-            'meta_description' => 'Daily Micro Tasks',
+            'author' => 'Spy Sabbir',
+            'keywords' => 'Daily Micro Tasks',
+            'title' => 'Turn Your Spare Time into Profit',
+            'description' => 'Daily Micro Tasks - Turn Your Spare Time into Profit',
 
-            'og_title' => 'Daily Micro Tasks',
-            'og_type' => 'Laravel',
-            'og_url' => 'Laravel',
-            'og_image' => 'default_og_image.png',
-            'og_description' => 'Daily Micro Tasks',
-            'og_site_name' => 'Laravel',
+            'og_site_name' => 'Daily Micro Tasks',
+            'og_url' => 'https://dailymicrotasks.com',
 
-            'twitter_card' => 'Laravel',
-            'twitter_site' => 'Laravel',
-            'twitter_title' => 'Daily Micro Tasks',
-            'twitter_description' => 'Daily Micro Tasks',
-            'twitter_image' => 'default_twitter_image.png',
-            'twitter_image_alt' => 'Daily Micro Tasks',
+            'twitter_card' => 'Daily Micro Tasks',
+            'twitter_site' => 'Daily Micro Tasks',
+
+            'image' => 'default_seo_image.jpg',
+            'image_alt' => 'seo_iamge',
         ];
 
         SeoSetting::create($setting);

@@ -218,68 +218,43 @@ class SettingController extends Controller
 
     public function seoSettingUpdate(Request $request){
         $request->validate([
-            'meta_title' => 'required',
-            'meta_author' => 'required',
-            'meta_keywords' => 'required',
-            'meta_description' => 'required',
-            'og_title' => 'required',
-            'og_type' => 'required',
+            'title' => 'required',
+            'author' => 'required',
+            'keywords' => 'required',
+            'description' => 'required',
             'og_url' => 'required',
-            'og_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'og_description' => 'required',
             'og_site_name' => 'required',
             'twitter_card' => 'required',
             'twitter_site' => 'required',
-            'twitter_title' => 'required',
-            'twitter_description' => 'required',
-            'twitter_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'twitter_image_alt' => 'required',
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'image_alt' => 'required',
         ]);
 
         $seoSetting = SeoSetting::first();
         $seoSetting->update([
-            'meta_title' => $request->meta_title,
-            'meta_author' => $request->meta_author,
-            'meta_keywords' => $request->meta_keywords,
-            'meta_description' => $request->meta_description,
-            'og_title' => $request->og_title,
-            'og_type' => $request->og_type,
+            'title' => $request->title,
+            'author' => $request->author,
+            'keywords' => $request->keywords,
+            'description' => $request->description,
             'og_url' => $request->og_url,
-            'og_description' => $request->og_description,
             'og_site_name' => $request->og_site_name,
             'twitter_card' => $request->twitter_card,
             'twitter_site' => $request->twitter_site,
-            'twitter_title' => $request->twitter_title,
-            'twitter_description' => $request->twitter_description,
-            'twitter_image_alt' => $request->twitter_image_alt,
+            'image_alt' => $request->image_alt,
         ]);
 
-        // Og Image Upload
-        if($request->hasFile('og_image')){
-            if($seoSetting->og_image != 'default_og_image.png'){
-                unlink(base_path("public/uploads/setting_photo/").$seoSetting->og_image);
+        // Seo Image Upload
+        if($request->hasFile('image')){
+            if($seoSetting->image != 'default_seo_image.jpg'){
+                unlink(base_path("public/uploads/setting_photo/").$seoSetting->image);
             }
 
             $manager = new ImageManager(new Driver());
-            $og_image_name = "Og-Image".".". $request->file('og_image')->getClientOriginalExtension();
-            $image = $manager->read($request->file('og_image'));
-            $image->toJpeg(80)->save(base_path("public/uploads/setting_photo/").$og_image_name);
+            $seo_image_name = "Seo-Image".".". $request->file('image')->getClientOriginalExtension();
+            $image = $manager->read($request->file('image'));
+            $image->toJpeg(80)->save(base_path("public/uploads/setting_photo/").$seo_image_name);
             $seoSetting->update([
-                'og_image' => $og_image_name
-            ]);
-        }
-
-        // Twitter Image Upload
-        if($request->hasFile('twitter_image')){
-            if($seoSetting->twitter_image != 'default_twitter_image.png'){
-                unlink(base_path("public/uploads/setting_photo/").$seoSetting->twitter_image);
-            }
-            $manager = new ImageManager(new Driver());
-            $twitter_image_name = "Twitter-Image".".". $request->file('twitter_image')->getClientOriginalExtension();
-            $image = $manager->read($request->file('twitter_image'));
-            $image->toJpeg(80)->save(base_path("public/uploads/setting_photo/").$twitter_image_name);
-            $seoSetting->update([
-                'twitter_image' => $twitter_image_name
+                'image' => $seo_image_name
             ]);
         }
 

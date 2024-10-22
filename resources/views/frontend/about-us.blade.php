@@ -181,7 +181,7 @@
 
         <div class="row">
             <div class="testimonial-slider-two owl-carousel owl-theme">
-                @foreach ($testimonials as $testimonial)
+                @forelse ($testimonials as $testimonial)
                 <div class="testimonial-items">
                     <div class="testimonial-text">
                         <i class='flaticon-left-quotes-sign'></i>
@@ -192,7 +192,11 @@
                         <p>{{ $testimonial->designation }}</p>
                     </div>
                 </div>
-                @endforeach
+                @empty
+                <div class="testimonial-items">
+                    <h3 class="text-center">No Testimonial Found</h3>
+                </div>
+                @endforelse
             </div>
         </div>
     </div>

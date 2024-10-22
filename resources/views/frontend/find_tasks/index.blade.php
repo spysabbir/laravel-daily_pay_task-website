@@ -35,6 +35,11 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-xl-3 col-lg-2 mb-3">
+                            <div class="form-group mt-1">
+                                <button class="btn btn-danger btn-block mt-4" id="clear_filters">Clear Filters</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -50,7 +55,6 @@
                             </tr>
                         </thead>
                         <tbody>
-
                         </tbody>
                     </table>
                 </div>
@@ -69,16 +73,35 @@
             }
         });
 
-        // Read Data
-        $('#allDataTable').DataTable({
+        // Store filters in localStorage
+        function storeFilters() {
+            localStorage.setItem('filter_category_id', $('#filter_category_id').val());
+            localStorage.setItem('filter_sort_by', $('#filter_sort_by').val());
+        }
+
+        // Restore filters from localStorage
+        function restoreFilters() {
+            if (localStorage.getItem('filter_category_id')) {
+                $('#filter_category_id').val(localStorage.getItem('filter_category_id'));
+            }
+            if (localStorage.getItem('filter_sort_by')) {
+                $('#filter_sort_by').val(localStorage.getItem('filter_sort_by'));
+            }
+        }
+
+        // Restore filter values before initializing DataTable
+        restoreFilters();
+
+        // Initialize DataTable
+        var table = $('#allDataTable').DataTable({
             processing: true,
             serverSide: true,
             searching: true,
             ajax: {
                 url: "{{ route('find_tasks') }}",
-                data: function (e) {
-                    e.category_id = $('#filter_category_id').val();
-                    e.sort_by = $('#filter_sort_by').val();
+                data: function (d) {
+                    d.category_id = $('#filter_category_id').val();
+                    d.sort_by = $('#filter_sort_by').val();
                 }
             },
             columns: [
@@ -91,9 +114,19 @@
             ]
         });
 
-        // Filter Data
-        $('.filter_data').change(function(){
-            $('#allDataTable').DataTable().ajax.reload();
+        // Filter data when filter fields change
+        $('.filter_data').change(function() {
+            storeFilters();
+            table.ajax.reload();
+        });
+
+        // Optionally, clear filters when needed
+        $('#clear_filters').on('click', function() {
+            localStorage.removeItem('filter_category_id');
+            localStorage.removeItem('filter_sort_by');
+            $('#filter_category_id').val('');
+            $('#filter_sort_by').val('');
+            table.ajax.reload();
         });
     });
 </script>

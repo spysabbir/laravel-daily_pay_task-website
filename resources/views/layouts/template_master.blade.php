@@ -1,27 +1,49 @@
 @php
-    auth()->user()->update(['last_login_at' => now()]);
-
-    if (Auth::user()->isFrontendUser()) {
-        App\Models\UserDetail::updateOrCreate([
-            'user_id' => Auth::user()->id,
-            'ip' => request()->ip(),
-        ]);
-    }
+    $seoSetting = App\Models\SeoSetting::first();
 @endphp
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="description" content="{{ config('app.name') }} - Dashboard">
-	<meta name="author" content="{{ config('app.name') }}">
-	<meta name="keywords" content="{{ config('app.name') }}">
+
+    <!-- SEO -->
+    <meta name="title" content="{{ $seoSetting->title }}">
+    <meta name="description" content="{{ $seoSetting->description }}">
+	<meta name="author" content="{{ $seoSetting->author }}">
+	<meta name="keywords" content="{{ $seoSetting->keywords }}">
+    <meta name='robots' content='index,follow'>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="Website">
+    <meta property="og:site_name" content="{{ $seoSetting->og_site_name }}">
+    <meta property="og:url" content="{{ $seoSetting->og_url }}">
+    <meta property="og:title" content="{{ $seoSetting->title }}">
+    <meta property="og:description" content="{{ $seoSetting->description }}">
+    <meta property="og:image" content="{{ asset('uploads/setting_photo') }}/{{ $seoSetting->image }}">
+    <meta property="og:image:alt" content="{{ $seoSetting->image_alt }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="{{ $seoSetting->twitter_card }}">
+    <meta property="twitter:site" content="{{ $seoSetting->twitter_site }}">
+    <meta property="twitter:title" content="{{ $seoSetting->title }}">
+    <meta property="twitter:description" content="{{ $seoSetting->description }}">
+    <meta property="twitter:image" content="{{ asset('uploads/setting_photo') }}/{{ $seoSetting->image }}">
+    <meta property="twitter:image:alt" content="{{ $seoSetting->image_alt }}">
+    <meta property="twitter:image:width" content="1200">
+    <meta property="twitter:image:height" content="630">
+    <!-- End SEO -->
+
+    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-	<title>{{ config('app.name') }} - @yield('title')</title>
+    <!-- Title -->
+	<title>{{ get_site_settings('site_name') }}- @yield('title')</title>
 
+    <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_favicon') }}" />
 
     <!-- Fonts -->
@@ -62,7 +84,7 @@
         <nav class="sidebar">
             <div class="sidebar-header">
                 <a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}" class="sidebar-brand">
-                    <img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="{{ config('app.name') }} logo">
+                    <img src="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_logo') }}" alt="{{ get_site_settings('site_name') }} logo">
                 </a>
                 <div class="sidebar-toggler not-active">
                     <span></span>
@@ -372,7 +394,7 @@
 
             <!-- footer -->
             <footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
-                <p class="text-muted mb-1 mb-md-0">Copyright © {{ date('Y') }} <a href="{{ config('app.url') }}" target="_blank">{{ config('app.name') }}</a>.</p>
+                <p class="text-muted mb-1 mb-md-0">Copyright © {{ date('Y') }} <a href="{{ config('app.url') }}" target="_blank">{{ get_site_settings('site_name') }}</a>.</p>
                 <p class="text-muted">Handcrafted With <i class="mb-1 text-primary ms-1 icon-sm" data-feather="heart"></i></p>
             </footer>
             <!-- end footer -->

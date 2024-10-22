@@ -25,7 +25,7 @@ class UserController extends Controller
 {
     public function dashboard(Request $request)
     {
-        // $user = $request->user();
+        $user = $request->user();
         // return $myIp = $request->ip();
         // return $position = Location::get('103.4.119.20');
         return view('frontend/dashboard');
@@ -710,6 +710,22 @@ class UserController extends Controller
 
             return DataTables::of($reportedList)
                 ->addIndexColumn()
+                ->editColumn('type', function ($row) {
+                    if ($row->type == 'User') {
+                        $type = '
+                        <span class="badge bg-primary">' . $row->type . '</span>
+                        ';
+                    } else if ($row->type == 'Post Task') {
+                        $type = '
+                        <span class="badge bg-secondary">' . $row->type . '</span>
+                        ';
+                    } else {
+                        $type = '
+                        <span class="badge bg-info">' . $row->type . '</span>
+                        ';
+                    }
+                    return $type;
+                })
                 ->editColumn('user', function ($row) {
                     return '
                         <a href="'.route('user.profile', encrypt($row->reported->id)).'" title="'.$row->reported->name.'" class="text-info">
@@ -737,7 +753,7 @@ class UserController extends Controller
                     ';
                     return $action;
                 })
-                ->rawColumns(['user', 'status', 'action'])
+                ->rawColumns(['type', 'user', 'status', 'action'])
                 ->make(true);
         }
         return view('frontend.report_list.index');
@@ -772,11 +788,14 @@ class UserController extends Controller
             }
 
             Report::create([
+                'type' => 'User',
                 'user_id' => $id,
-                'reported_by' => Auth::id(),
+                'post_task_id' => $request->post_task_id ?? null,
+                'proof_task_id' => $request->proof_task_id ?? null,
                 'reason' => $request->reason,
                 'photo' => $photo_name,
                 'status' => 'Pending',
+                'reported_by' => Auth::id(),
             ]);
 
             return response()->json([

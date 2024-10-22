@@ -28,7 +28,7 @@ class FrontendController extends Controller
 
         $totalPostTask = PostTask::count();
         $runningPostTasks = PostTask::where('status', 'Running')->count();
-        $totalUser = User::count();
+        $totalUser = User::where('user_type', 'Frontend')->count();
         $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
 
         return view('frontend/index', compact('popularPostTaskCategories', 'latestPostTasks', 'testimonials', 'topBuyers', 'totalPostTask', 'runningPostTasks', 'totalUser', 'totalWithdrawal'));
@@ -39,7 +39,7 @@ class FrontendController extends Controller
         $testimonials = Testimonial::where('status', 'Active')->get();
         $totalPostTask = PostTask::count();
         $runningPostTask = PostTask::where('status', 'Running')->count();
-        $totalUser = User::count();
+        $totalUser = User::where('user_type', 'Frontend')->count();
         $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
         return view('frontend/about-us', compact('testimonials', 'totalPostTask', 'runningPostTask', 'totalUser', 'totalWithdrawal'));
     }

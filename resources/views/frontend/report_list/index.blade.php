@@ -31,6 +31,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>Type</th>
                                 <th>User</th>
                                 <th>Created At</th>
                                 <th>Status</th>
@@ -87,6 +88,7 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'type', name: 'type' },
                 { data: 'user', name: 'user' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'status', name: 'status' },

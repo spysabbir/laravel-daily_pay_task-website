@@ -9,7 +9,7 @@
         <div class="d-table-cell">
             <div class="container">
                 <div class="banner-text">
-                    <span>Wellcome to {{ config('app.name') }}</span>
+                    <span>Wellcome to {{ get_site_settings('site_name') }}</span>
                     <h1>{{ get_site_settings('site_tagline') }}</h1>
                     <p>{{ get_site_settings('site_description') }}</p>
                     <div class="theme-btn">
@@ -33,7 +33,7 @@
             <div class="col-lg-8">
                 <div class="why-choose-text pt-100 pb-70">
                     <div class="section-title">
-                        <h2>Why You Choose {{ config('app.name') }}?</h2>
+                        <h2>Why You Choose {{ get_site_settings('site_name') }}?</h2>
                         <p>Daily Micro Tasks provides the flexibility to earn on your own schedule. Complete simple tasks for quick payouts, and enjoy a supportive community. Turn your spare time into cash and explore diverse opportunities to boost your income effortlessly!</p>
                     </div>
 
@@ -98,9 +98,9 @@
         </div>
 
         <div class="row">
-            @foreach ($popularPostTaskCategories as $category)
+            @forelse ($popularPostTaskCategories as $category)
             @php
-                $taskCount = \App\Models\PostTask::where('category_id', $category->id)->where('status', 'Running')->count();
+                $taskCount = \App\Models\PostTask::where('category_id', $category->id)->count();
             @endphp
             <div class="col-lg-3 col-sm-6">
                 <div class="category-item">
@@ -109,7 +109,12 @@
                     <p>{{ $taskCount }} new Task</p>
                 </div>
             </div>
-            @endforeach
+            @empty
+            <div class="col-lg-12">
+                <div class="category-item">
+                    <h3 class="text-center">No Category Found</h3>
+                </div>
+            @endforelse
         </div>
     </div>
 </div>
@@ -124,7 +129,7 @@
         </div>
 
         <div class="row">
-            @foreach ($latestPostTasks as $postTask)
+            @forelse ($latestPostTasks as $postTask)
             <div class="col-sm-6">
                 <div class="job-card">
                     <div class="row align-items-center">
@@ -183,7 +188,13 @@
                     </div>
                 </div>
             </div>
-            @endforeach
+            @empty
+            <div class="col-lg-12">
+                <div class="job-card">
+                    <h3 class="text-center">No Task Found</h3>
+                </div>
+            </div>
+            @endforelse
         </div>
     </div>
 </section>
@@ -198,7 +209,10 @@
         </div>
 
         <div class="row">
-            @foreach ($topBuyers as $buyer)
+            @forelse ($topBuyers as $buyer)
+            @php
+                $task_count = App\Models\PostTask::where('user_id', $buyer->user->id)->count();
+            @endphp
             <div class="col-lg-3 col-sm-6">
                 <div class="company-card">
                     <div class="company-logo">
@@ -211,12 +225,18 @@
                             Join: {{ date('d M, Y', strtotime($buyer->user->created_at)) }}
                         </p>
                         <span class="company-btn">
-                            0 Post Task
+                            {{ $task_count }} Post Task
                         </span>
                     </div>
                 </div>
             </div>
-            @endforeach
+            @empty
+            <div class="col-lg-12">
+                <div class="company-card">
+                    <h3 class="text-center">No Buyer Found</h3>
+                </div>
+            </div>
+            @endforelse
         </div>
     </div>
 </section>
@@ -272,7 +292,7 @@
                 <div class="counter-text">
                     <i class="flaticon-resume"></i>
                     <h2><span>{{ $totalPostTask }}</span></h2>
-                    <p>Total Post Task</p>
+                    <p>Total Posted Task</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
@@ -311,7 +331,7 @@
 
         <div class="row">
             <div class="testimonial-slider owl-carousel owl-theme">
-                @foreach ($testimonials as $testimonial)
+                @forelse ($testimonials as $testimonial)
                 <div class="testimonial-items">
                     <div class="row align-items-center">
                         <div class="col-lg-5 col-md-6 offset-md-3 offset-lg-0 p-0">
@@ -331,7 +351,11 @@
                         </div>
                     </div>
                 </div>
-                @endforeach
+                @empty
+                <div class="testimonial-items">
+                    <h3 class="text-center">No Testimonial Found</h3>
+                </div>
+                @endforelse
             </div>
         </div>
     </div>
