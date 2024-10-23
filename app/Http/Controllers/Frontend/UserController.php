@@ -652,7 +652,7 @@ class UserController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $action = '
-                    <a href="'.route('block_user', $row->blocked->id).'" title="Unblock" class="btn btn-danger btn-sm">
+                    <a href="'.route('block.unblock.user', $row->blocked->id).'" title="Unblock" class="btn btn-danger btn-sm">
                         Unblock
                     </a>
                     ';
@@ -664,7 +664,7 @@ class UserController extends Controller
         return view('frontend.block_list.index');
     }
 
-    public function blockUser($id)
+    public function blockUnblockUser($id)
     {
         $blocked = Block::where('user_id', $id)->where('blocked_by', Auth::id())->exists();
 
@@ -766,7 +766,7 @@ class UserController extends Controller
         return view('frontend.report_list.view', compact('report', 'report_reply'));
     }
 
-    public function reportUser(Request $request, $id)
+    public function reportSend(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'reason' => 'required|string|max:5000',
@@ -782,13 +782,13 @@ class UserController extends Controller
             $photo_name = null;
             if ($request->file('photo')) {
                 $manager = new ImageManager(new Driver());
-                $photo_name = $id."-report_photo".date('YmdHis').".".$request->file('photo')->getClientOriginalExtension();
+                $photo_name = $id."-report_photo-".date('YmdHis').".".$request->file('photo')->getClientOriginalExtension();
                 $image = $manager->read($request->file('photo'));
                 $image->toJpeg(80)->save(base_path("public/uploads/report_photo/").$photo_name);
             }
 
             Report::create([
-                'type' => 'User',
+                'type' => $request->type,
                 'user_id' => $id,
                 'post_task_id' => $request->post_task_id ?? null,
                 'proof_task_id' => $request->proof_task_id ?? null,

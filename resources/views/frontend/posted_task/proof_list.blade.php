@@ -139,6 +139,59 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Report Proof Task Modal -->
+                            <div class="modal fade reportProofTaskModal" tabindex="-1" aria-labelledby="reportProofTaskModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="reportProofTaskModalLabel">Report Proof Task</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                        </div>
+                                        <div id="reportSendProofTaskForm" style="display: none;">
+                                            <form class="forms-sample" id="reportProofTaskForm" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" id="user_id">
+                                                <input type="hidden" name="proof_task_id" id="proof_task_id">
+                                                <input type="hidden" name="type" value="Proof Task">
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
+                                                        <textarea class="form-control" id="reason" name="reason" placeholder="Reason"></textarea>
+                                                        <span class="text-danger error-text reason_error"></span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="photo" class="form-label">Photo</label>
+                                                        <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .jpeg, .png">
+                                                        <span class="text-danger error-text photo_error"></span>
+                                                        <img src="" alt="Photo" id="photoPreview" class="mt-2" style="display: none; width: 100px; height: 100px;">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Report</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div id="reportSendProofTaskExitsDiv" style="display: none;">
+                                            <div class="modal-body ">
+                                                <div class="alert alert-info" role="alert" >
+                                                    <strong>Warning!</strong> You have already reported this proof task.
+                                                    <p id="pendingMessage" class="mt-2 text-warning"></p>
+                                                    <p id='resolvedMessage' class="mt-2 text-success"></p>
+                                                    <hr>
+                                                    <strong>Reason:</strong> <span id="reportReason"></span>
+                                                    <br>
+                                                    <img src="" id="reportPhoto" class="img-fluid mt-2" alt="Report Photo">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </tbody>
                     </table>
                 </div>
@@ -335,6 +388,85 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+                },
+            });
+        });
+
+        // Report Proof Task
+        $(document).on('click', '.reportProofTaskBtn', function () {
+            var id = $(this).data('id');
+            var url = "{{ route('proof_task.report', ":id") }}";
+            url = url.replace(':id', id)
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    $('#proof_task_id').val(response.proofTask.id);
+                    $('#user_id').val(response.proofTask.user_id);
+
+                    if (response.reportStatus) {
+                        $('#reportSendProofTaskForm').hide();
+                        $('#reportSendProofTaskExitsDiv').show();
+                        $('#reportReason').text(response.reportStatus.reason);
+                        if (response.reportStatus.photo) {
+                            $('#reportPhoto').show();
+                            $('#reportPhoto').attr('src', '{{ asset('uploads/report_photo') }}/' + response.reportStatus.photo);
+                        } else {
+                            $('#reportPhoto').hide();
+                        }
+                        if (response.reportStatus.status == 'Resolved') {
+                            $('#resolvedMessage').text('Your report has been resolved. Please check your report panel. Thank you.');
+                        } else {
+                            $('#pendingMessage').text('Please wait for the admin to review your report. Your report will be reviewed within 24 hours. If you have any questions, please contact the admin. Thank you.');
+                        }
+                    } else {
+                        $('#reportSendProofTaskExitsDiv').hide();
+                        $('#reportSendProofTaskForm').show();
+                    }
+                },
+            });
+        });
+
+        // Photo Preview
+        $(document).on('change', '#photo', function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#photoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
+        // Report Proof Task Form
+        $('#reportProofTaskForm').submit(function(event) {
+            event.preventDefault();
+
+            var formData = new FormData(this);
+
+            var user_id = $('#user_id').val();
+            var url = "{{ route('report.send', ':id') }}";
+            url = url.replace(':id', user_id);
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                beforeSend: function() {
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+                    if (response.status === 400) {
+                        $.each(response.error, function(prefix, val) {
+                            $('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $('.reportProofTaskModal').modal('hide'); // Hide Report Proof Task modal
+                        toastr.success('Proof Task reported successfully.');
+                        $('#allDataTable').DataTable().ajax.reload();
+                        $('#reportProofTaskForm')[0].reset();
+                    }
                 },
             });
         });

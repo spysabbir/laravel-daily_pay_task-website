@@ -13,7 +13,7 @@
                     <input type="hidden" name="referral_code" value="{{ $referral_code }}">
                     <div class="form-group">
                         <label>Enter Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" placeholder="Enter Your Name" name="name" value="{{ old('name') }}">
+                        <input type="text" class="form-control" placeholder="Enter Your Name" name="name" value="{{ old('name') }}" required>
                         <small class="text-info d-block">The name must be as per your verification document (e.g. NID, Passport, Driving License).</small>
                         @error('name')
                             <span class="text-danger">{{ $message }}</span>
@@ -21,7 +21,7 @@
                     </div>
                     <div class="form-group">
                         <label>Enter Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" placeholder="Enter Your Email" name="email" value="{{ old('email') }}">
+                        <input type="email" class="form-control" placeholder="Enter Your Email" name="email" value="{{ old('email') }}" required>
                         <small class="text-info d-block">The email must follow the format " ****@****.*** ".</small>
                         @error('email')
                             <span class="text-danger">{{ $message }}</span>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-group">
                         <label>Enter Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" placeholder="Enter Your Password" name="password">
+                        <input type="password" class="form-control" placeholder="Enter Your Password" name="password" required>
                         <small class="text-info d-block">The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.</small>
                         @error('password')
                             <span class="text-danger">{{ $message }}</span>
@@ -37,7 +37,7 @@
                     </div>
                     <div class="form-group">
                         <label>Enter Confirm Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" placeholder="Enter Your Confirm Password" name="password_confirmation">
+                        <input type="password" class="form-control" placeholder="Enter Your Confirm Password" name="password_confirmation" required>
                         @error('password_confirmation')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -51,7 +51,7 @@
                         @enderror
                     </div>
                     <div class="form-group text-center">
-                        <input type="checkbox" class="form-check-input" id="termsConditions" name="terms_conditions">
+                        <input type="checkbox" class="form-check-input" id="termsConditions" name="terms_conditions" required>
                         <label class="form-check-label" for="termsConditions">
                             I agree to the <a href="{{ route('terms.and.conditions') }}" class="text-primary">terms and conditions.</a>
                         </label>

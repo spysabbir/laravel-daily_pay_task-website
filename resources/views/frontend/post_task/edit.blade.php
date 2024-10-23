@@ -146,14 +146,14 @@
                             <div class="row">
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="work_needed" class="form-label">
-                                        Work needed <small class="text-danger">* Required </small>
+                                        Work Needed <small class="text-danger">* Required </small>
                                     </label>
                                     <input type="number" class="form-control" name="work_needed" min="1" id="work_needed" value="{{ old('work_needed', $postTask->work_needed) }}" required>
                                     <div class="invalid-feedback">Please enter how many workers are required.</div>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="earnings_from_work" class="form-label">
-                                        Earnings from work <small class="text-danger">* Required </small>
+                                        Earnings From Work <small class="text-danger">* Required </small>
                                     </label>
                                     <input type="number" class="form-control" name="earnings_from_work" id="earnings_from_work" value="{{ old('earnings_from_work', $postTask->earnings_from_work) }}" required>
                                     <small class="text-info">* Each earnings from work should be within the min charge <strong id="min_task_charge">0</strong> and max charge <strong id="max_task_charge">0</strong>.</small>
@@ -162,7 +162,7 @@
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="extra_screenshots" class="form-label">
-                                        Extra screenshots <small class="text-danger">* Required </small>
+                                        Extra Screenshots <small class="text-danger">* Required </small>
                                     </label>
                                     <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="{{ old('extra_screenshots', $postTask->extra_screenshots) }}" required>
                                     <small class="text-info">* Additional screenshot charge is {{ get_default_settings('task_posting_additional_screenshot_charge') }} {{ get_site_settings('site_currency_symbol') }}. Note: You get 1 screenshot for free.</small>
@@ -170,7 +170,7 @@
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="boosted_time" class="form-label">
-                                        Boosted time <small class="text-danger">* Required </small>
+                                        Boosted Time <small class="text-danger">* Required </small>
                                     </label>
                                     <select class="form-select" name="boosted_time" id="boosted_time" required>
                                         <option value="0" {{ old('boosted_time', $postTask->boosted_time) == 0 ? 'selected' : '' }}>No Boost</option>
@@ -189,7 +189,7 @@
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="running_day" class="form-label">
-                                        Running day <small class="text-danger">* Required </small>
+                                        Running Day <small class="text-danger">* Required </small>
                                     </label>
                                     <select class="form-select" name="running_day" id="running_day" required>
                                         <option value="3" {{ old('running_day', $postTask->running_day) == 3 ? 'selected' : '' }}>3 Days</option>
@@ -202,15 +202,15 @@
                                     <div class="invalid-feedback">Please enter the running day.</div>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
-                                    <label for="task_charge" class="form-label">Task charge</label>
+                                    <label for="task_charge" class="form-label">Task Charge</label>
                                     <input type="number" class="form-control" id="task_charge" readonly>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
-                                    <label for="site_charge" class="form-label">Site charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
+                                    <label for="site_charge" class="form-label">Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
                                     <input type="number" class="form-control" id="site_charge" readonly>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
-                                    <label for="total_task_charge" class="form-label">Total task charge</label>
+                                    <label for="total_task_charge" class="form-label">Total Task Charge</label>
                                     <input type="number" class="form-control" id="total_task_charge" readonly>
                                     <small class="text-info">* Total task charge must be {{ get_default_settings('task_posting_min_budget') }} {{ get_site_settings('site_currency_symbol') }}.</small>
                                 </div>

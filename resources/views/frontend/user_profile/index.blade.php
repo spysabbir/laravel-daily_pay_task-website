@@ -61,7 +61,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="{{ route('block_user', $user->id) }}" class="btn btn-{{ $blocked ? 'danger' : 'warning' }} btn-sm d-flex align-items-center">
+                    <a href="{{ route('block.unblock.user', $user->id) }}" class="btn btn-{{ $blocked ? 'danger' : 'warning' }} btn-sm d-flex align-items-center">
                         <i class="icon-md" data-feather="shield"></i>
                         <span class="d-none d-md-block ms-1">
                             {{ $blocked ? 'Unblock User' : 'Block User' }}

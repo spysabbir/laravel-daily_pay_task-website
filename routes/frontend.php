@@ -24,11 +24,13 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/profile/setting', [UserController::class, 'profileSetting'])->name('profile.setting');
 
     Route::get('/user-profile/{id}', [UserController::class, 'userProfile'])->name('user.profile');
+
+    Route::get('/block-unblock-user/{id}', [UserController::class, 'blockUnblockUser'])->name('block.unblock.user');
     Route::get('/block-list', [UserController::class, 'blockList'])->name('block_list');
-    Route::get('/block-user/{id}', [UserController::class, 'blockUser'])->name('block_user');
+
+    Route::post('/report-send/{id}', [UserController::class, 'reportSend'])->name('report.send');
     Route::get('/report-list', [UserController::class, 'reportList'])->name('report_list');
     Route::get('/report-view/{id}', [UserController::class, 'reportView'])->name('report_view');
-    Route::post('/report-user/{id}', [UserController::class, 'reportUser'])->name('report_user');
 
     Route::get('/verification', [UserController::class, 'verification'])->name('verification');
     Route::post('/verification', [UserController::class, 'verificationStore'])->name('verification.store');
@@ -36,6 +38,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     // Worked Task
     Route::get('/find_tasks', [WorkedTaskController::class, 'findTasks'])->name('find_tasks');
     Route::get('/find_task-details/{id}', [WorkedTaskController::class, 'findTaskDetails'])->name('find_task.details');
+    Route::get('/find_task-proof-submit-limit-check/{id}', [WorkedTaskController::class, 'findTaskProofSubmitLimitCheck'])->name('find_task.proof.submit.limit.check');
     Route::post('/find_task-proof-submit/{id}', [WorkedTaskController::class, 'findTaskProofSubmit'])->name('find_task.proof.submit');
 
     Route::get('/worked_task-list-pending', [WorkedTaskController::class, 'workedTaskListPending'])->name('worked_task.list.pending');
@@ -75,6 +78,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/proof_task-approved-all/{id}', [PostedTaskController::class, 'proofTaskApprovedAll'])->name('proof_task.approved.all');
     Route::post('/proof_task-selected-item-approved', [PostedTaskController::class, 'proofTaskSelectedItemApproved'])->name('proof_task.selected.item.approved');
     Route::post('/proof_task-selected-item-rejected', [PostedTaskController::class, 'proofTaskSelectedItemRejected'])->name('proof_task.selected.item.rejected');
+    Route::get('/proof_task-report/{id}', [PostedTaskController::class, 'proofTaskReport'])->name('proof_task.report');
 
     Route::get('/deposit', [UserController::class, 'deposit'])->name('deposit');
     Route::post('/deposit', [UserController::class, 'depositStore'])->name('deposit.store');

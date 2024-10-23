@@ -18,7 +18,7 @@
                                 <select class="form-select filter_data" id="filter_category_id">
                                     <option value="">-- Select Category --</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option value="{{ $category->category->id }}">{{ $category->category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -51,6 +51,7 @@
                                 <th>Task Title</th>
                                 <th>Proof Submitted</th>
                                 <th>Earnings From Work</th>
+                                <th>Approved At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -89,14 +90,13 @@
             }
         }
 
-        // Restore filter values before initializing DataTable
+        // Restore filters before initializing DataTable
         restoreFilters();
 
         // Initialize DataTable
         var table = $('#allDataTable').DataTable({
             processing: true,
             serverSide: true,
-            searching: true,
             ajax: {
                 url: "{{ route('find_tasks') }}",
                 data: function (d) {
@@ -110,11 +110,12 @@
                 { data: 'title', name: 'title' },
                 { data: 'work_needed', name: 'work_needed' },
                 { data: 'earnings_from_work', name: 'earnings_from_work' },
+                { data: 'approved_at', name: 'approved_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
-        // Filter data when filter fields change
+        // Reload table when filter values change
         $('.filter_data').change(function() {
             storeFilters();
             table.ajax.reload();

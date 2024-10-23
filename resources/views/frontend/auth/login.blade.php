@@ -17,14 +17,14 @@
                     @csrf
                     <div class="form-group">
                         <label>Enter Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" placeholder="Enter Your Email" name="email" value="user@gmail.com">
+                        <input type="email" class="form-control" placeholder="Enter Your Email" name="email" value="user@gmail.com" required>
                         @error('email')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group">
                         <label>Enter Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" placeholder="Enter Your Password" value="Ss@12345678" name="password">
+                        <input type="password" class="form-control" placeholder="Enter Your Password" value="Ss@12345678" name="password" required>
                         @error('password')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -80,7 +80,7 @@
                         </p>
                     </div>
                 </form>
-            </div>  
+            </div>
         </div>
     </div>
 </div>

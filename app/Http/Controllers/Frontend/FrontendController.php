@@ -18,29 +18,28 @@ class FrontendController extends Controller
 {
     public function index()
     {
-        $popularPostTaskCategories = Category::where('status', 'Active')->limit(8)->get();
 
-        $latestPostTasks = PostTask::where('status', 'Running')->orderBy('id', 'desc')->limit(6)->get();
-
-        $testimonials = Testimonial::where('status', 'Active')->get();
-
-        $topBuyers = PostTask::where('status', 'Running')->orderBy('id', 'desc')->limit(4)->get();
+        $latestPostTasks = PostTask::where('status', 'Running')->orderBy('approved_at', 'desc')->limit(6)->get();
+        $testimonials = Testimonial::where('status', 'Active')->latest()->limit(6)->get();
+        $topCategories = PostTask::groupBy('category_id')->selectRaw('count(*) as count, category_id')->orderBy('count', 'desc')->limit(6)->with('category')->get();
+        $topBuyers = PostTask::groupBy('user_id')->selectRaw('count(*) as count, user_id')->orderBy('count', 'desc')->limit(6)->with('user')->get();
 
         $totalPostTask = PostTask::count();
         $runningPostTasks = PostTask::where('status', 'Running')->count();
         $totalUser = User::where('user_type', 'Frontend')->count();
         $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
 
-        return view('frontend/index', compact('popularPostTaskCategories', 'latestPostTasks', 'testimonials', 'topBuyers', 'totalPostTask', 'runningPostTasks', 'totalUser', 'totalWithdrawal'));
+        return view('frontend/index', compact('latestPostTasks', 'testimonials', 'topCategories', 'topBuyers', 'totalPostTask', 'runningPostTasks', 'totalUser', 'totalWithdrawal'));
     }
 
     public function aboutUs()
     {
-        $testimonials = Testimonial::where('status', 'Active')->get();
+        $testimonials = Testimonial::where('status', 'Active')->latest()->limit(6)->get();
         $totalPostTask = PostTask::count();
         $runningPostTask = PostTask::where('status', 'Running')->count();
         $totalUser = User::where('user_type', 'Frontend')->count();
         $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
+
         return view('frontend/about-us', compact('testimonials', 'totalPostTask', 'runningPostTask', 'totalUser', 'totalWithdrawal'));
     }
 
@@ -52,6 +51,7 @@ class FrontendController extends Controller
     public function faq()
     {
         $faqs = Faq::where('status', 'Active')->get();
+        
         return view('frontend/faq', compact('faqs'));
     }
 

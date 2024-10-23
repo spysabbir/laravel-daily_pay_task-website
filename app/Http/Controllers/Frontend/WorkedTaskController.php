@@ -18,7 +18,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 class WorkedTaskController extends Controller
 {
-
     public function findTasks(Request $request)
     {
         $user = User::findOrFail(Auth::id());
@@ -27,9 +26,10 @@ class WorkedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
+                // Handle DataTable logic here
                 $proofTasks = ProofTask::where('user_id', Auth::id())->pluck('post_task_id')->toArray();
                 $blockedUsers = Block::where('blocked_by', Auth::id())->pluck('user_id')->toArray();
                 $query = PostTask::where('status', 'Running')
@@ -46,29 +46,30 @@ class WorkedTaskController extends Controller
                     } else if ($request->sort_by == 'high_to_low') {
                         $query->orderBy('earnings_from_work', 'desc');
                     } else if ($request->sort_by == 'latest') {
-                        $query->orderBy('created_at', 'desc');
+                        $query->orderBy('approved_at', 'desc');
                     } else if ($request->sort_by == 'oldest') {
-                        $query->orderBy('created_at', 'asc');
+                        $query->orderBy('approved_at', 'asc');
                     }
                 }
 
-                // $currentDateTime = now();
-                // $query->orderByRaw("CASE
-                //     WHEN approved_at <= '$currentDateTime' AND TIMESTAMPDIFF(MINUTE, approved_at, '$currentDateTime') <= boosted_time
-                //     THEN 0
-                //     ELSE 1
-                // END, boosted_time DESC");
+                $findTasks = $query->orderByRaw("
+                    CASE
+                        WHEN NOW() <= DATE_ADD(post_tasks.approved_at, INTERVAL post_tasks.boosted_time MINUTE)
+                        THEN 0
+                        ELSE 1
+                    END
+                ");
 
                 $findTasks = $query->orderBy('approved_at', 'desc')->get();
 
                 return DataTables::of($findTasks)
                     ->addIndexColumn()
                     ->editColumn('category_name', function ($row) {
-                        return $row->category->name;
+                        return '<span class="badge bg-primary">'.$row->category->name.'</span>';
                     })
                     ->editColumn('title', function ($row) {
                         return '
-                            <a href="'.route('find_task.details', encrypt($row->id)).'" title="'.$row->title.'" class="text-info">
+                            <a href="'.route('find_task.details', encrypt($row->id)).'" title="'.$row->title.'" class="text-success">
                                 '.$row->title.'
                             </a>
                         ';
@@ -84,7 +85,10 @@ class WorkedTaskController extends Controller
                         ';
                     })
                     ->editColumn('earnings_from_work', function ($row) {
-                        return get_site_settings('site_currency_symbol') .' '. $row->earnings_from_work;
+                        return '<span class="badge bg-success">'.get_site_settings('site_currency_symbol') . ' ' . $row->earnings_from_work.'</span>';
+                    })
+                    ->editColumn('approved_at', function ($row) {
+                        return '<span class="badge bg-dark">'.date('d M Y h:i A', strtotime($row->approved_at)).'</span>';
                     })
                     ->editColumn('action', function ($row) {
                         $action = '
@@ -94,10 +98,12 @@ class WorkedTaskController extends Controller
                         ';
                         return $action;
                     })
-                    ->rawColumns(['title', 'work_needed', 'action'])
+                    ->rawColumns(['category_name', 'title', 'work_needed', 'earnings_from_work', 'approved_at', 'action'])
                     ->make(true);
             }
-            $categories = Category::where('status', 'Active')->get();
+
+            // Return categories for filter
+            $categories = PostTask::where('status', 'Running')->groupBy('category_id')->select('category_id')->with('category')->get();
             return view('frontend.find_tasks.index', compact('categories'));
         }
     }
@@ -110,6 +116,19 @@ class WorkedTaskController extends Controller
         $proofCount = ProofTask::where('post_task_id', $id)->count();
         $blocked = Block::where('user_id', $taskDetails->user_id)->where('blocked_by', Auth::id())->exists();
         return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'proofCount', 'blocked'));
+    }
+
+    public function findTaskProofSubmitLimitCheck($id)
+    {
+        $id = decrypt($id);
+        $proofCount = ProofTask::where('post_task_id', $id)->count();
+        $workNeeded =  PostTask::findOrFail($id)->work_needed;
+
+        if ($proofCount >= $workNeeded) {
+            return response()->json(['canSubmit' => false]);
+        }
+
+        return response()->json(['canSubmit' => true]);
     }
 
     public function findTaskProofSubmit(Request $request, $id)

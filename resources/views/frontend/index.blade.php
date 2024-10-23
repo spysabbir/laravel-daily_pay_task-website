@@ -98,15 +98,12 @@
         </div>
 
         <div class="row">
-            @forelse ($popularPostTaskCategories as $category)
-            @php
-                $taskCount = \App\Models\PostTask::where('category_id', $category->id)->count();
-            @endphp
+            @forelse ($topCategories as $category)
             <div class="col-lg-3 col-sm-6">
                 <div class="category-item">
                     <i class="flaticon-wrench-and-screwdriver-in-cross"></i>
-                    <h3>{{ $category->name }}</h3>
-                    <p>{{ $taskCount }} new Task</p>
+                    <h3>{{ $category->category->name }}</h3>
+                    <p>{{ $category->count }} new Task</p>
                 </div>
             </div>
             @empty
@@ -161,7 +158,7 @@
                                     </li>
                                     <li>
                                         <i class='bx bx-calendar' ></i>
-                                        <strong>Approved At: {{ date('d M, Y', strtotime($postTask->approved_at)) }}</strong>
+                                        <strong>Approved At: {{ date('d M, y h:i A', strtotime($postTask->created_at)) }}</strong>
                                     </li>
                                 </ul>
                             </div>
@@ -210,9 +207,6 @@
 
         <div class="row">
             @forelse ($topBuyers as $buyer)
-            @php
-                $task_count = App\Models\PostTask::where('user_id', $buyer->user->id)->count();
-            @endphp
             <div class="col-lg-3 col-sm-6">
                 <div class="company-card">
                     <div class="company-logo">
@@ -225,7 +219,7 @@
                             Join: {{ date('d M, Y', strtotime($buyer->user->created_at)) }}
                         </p>
                         <span class="company-btn">
-                            {{ $task_count }} Post Task
+                            {{ $buyer->count }} Post Task
                         </span>
                     </div>
                 </div>

@@ -48,18 +48,19 @@
                                             <h5 class="modal-title" id="reportPostTaskModalLabel">Report Post Task</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                         </div>
-                                        <form class="forms-sample" id="reportPostTaskForm" action="{{ route('report_user', $taskDetails->id) }}" enctype="multipart/form-data">
+                                        <form class="forms-sample" id="reportPostTaskForm" action="{{ route('report.send', $taskDetails->id) }}" enctype="multipart/form-data">
                                             @csrf
                                             <input type="hidden" name="post_task_id" value="{{ $taskDetails->id }}">
+                                            <input type="hidden" name="type" value="Post Task">
                                             <div class="modal-body">
                                                 <div class="mb-3">
-                                                    <label for="reason" class="form-label">Reason</label>
+                                                    <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
                                                     <textarea class="form-control" id="reason" name="reason" placeholder="Reason"></textarea>
                                                     <span class="text-danger error-text reason_error"></span>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="photo" class="form-label">Photo</label>
-                                                    <input type="file" class="form-control" id="photo" name="photo">
+                                                    <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .jpeg, .png">
                                                     <span class="text-danger error-text photo_error"></span>
                                                 </div>
                                             </div>
@@ -86,6 +87,11 @@
                 <h3 class="mb-3">Submit Proof</h3>
                 @if ($proofCount < $taskDetails->work_needed)
                 <div class="my-2 border p-3 rounded bg-dark">
+                    @if ($taskProofExists)
+                    <div class="alert alert-warning">
+                        <strong>Proof already submitted!</strong>
+                    </div>
+                    @else
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul>
@@ -95,12 +101,6 @@
                             </ul>
                         </div>
                     @endif
-
-                    @if ($taskProofExists)
-                    <div class="alert alert-warning">
-                        <strong>Proof already submitted!</strong>
-                    </div>
-                    @else
                     <form id="proofTaskForm" action="{{ route('find_task.proof.submit', encrypt($taskDetails->id)) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
@@ -172,17 +172,18 @@
                                     <h5 class="modal-title" id="reportModalLabel">Report</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                 </div>
-                                <form class="forms-sample" id="reportForm" action="{{ route('report_user', $taskDetails->user->id) }}" enctype="multipart/form-data">
+                                <form class="forms-sample" id="reportForm" action="{{ route('report.send', $taskDetails->user->id) }}" enctype="multipart/form-data">
                                     @csrf
+                                    <input type="hidden" name="type" value="User">
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="reason" class="form-label">Reason</label>
+                                            <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
                                             <textarea class="form-control" id="reason" name="reason" placeholder="Reason"></textarea>
                                             <span class="text-danger error-text reason_error"></span>
                                         </div>
                                         <div class="mb-3">
                                             <label for="photo" class="form-label">Photo</label>
-                                            <input type="file" class="form-control" id="photo" name="photo">
+                                            <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .jpeg, .png">
                                             <span class="text-danger error-text photo_error"></span>
                                         </div>
                                     </div>
@@ -195,7 +196,7 @@
                         </div>
                     </div>
                     <!-- Block User -->
-                    <a href="{{ route('block_user', $taskDetails->user->id) }}" class="btn btn-{{ $blocked ? 'danger' : 'warning' }} btn-sm d-flex align-items-center">
+                    <a href="{{ route('block.unblock.user', $taskDetails->user->id) }}" class="btn btn-{{ $blocked ? 'danger' : 'warning' }} btn-sm d-flex align-items-center">
                         <i class="icon-md" data-feather="shield"></i>
                         <span class="d-none d-md-block ms-1">
                             {{ $blocked ? 'Unblock User' : 'Block User' }}
@@ -211,21 +212,68 @@
 @section('script')
 <script>
     $(document).ready(function() {
-        // Client-side validation
-        $('#proofTaskForm').submit(function(event) {
-            let isValid = true;
-            $('.error-message').text('');
+        // AJAX Setup
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
+        // Client-side validation
+        // $('#proofTaskForm').submit(function(event) {
+        //     let isValid = true;
+        //     $('.error-message').text(''); // Reset errors
+
+        //     // Validate proof answer
+        //     if ($('#proof_answer').val().trim() === '') {
+        //         $('#proof_answer_error').text('Proof answer is required.');
+        //         isValid = false;
+        //     }
+
+        //     // Validate proof photos dynamically
+        //     @for ($i = 0; $i < $taskDetails->extra_screenshots + 1; $i++)
+        //         if ($('#proof_photo_{{ $i }}').val() === '') {
+        //             $('#proof_photo_{{ $i }}_error').text('Proof photo {{ $i + 1 }} is required.');
+        //             isValid = false;
+        //         } else {
+        //             let file = $('#proof_photo_{{ $i }}')[0].files[0];
+        //             let fileExtension = ['jpeg', 'jpg', 'png'];
+        //             let fileName = $('#proof_photo_{{ $i }}').val().split('.').pop().toLowerCase();
+
+        //             if ($.inArray(fileName, fileExtension) === -1) {
+        //                 $('#proof_photo_{{ $i }}_error').text('Only jpeg, jpg, png files are allowed.');
+        //                 isValid = false;
+        //             } else if (file.size > 2097152) {
+        //                 $('#proof_photo_{{ $i }}_error').text('File size must be less than 2 MB.');
+        //                 isValid = false;
+        //             }
+        //         }
+        //     @endfor
+
+        //     // Prevent submission if validation fails
+        //     if (!isValid) {
+        //         event.preventDefault();
+        //     }
+        // });
+
+        $('#proofTaskForm').submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let isValid = true;
+            $('.error-message').text(''); // Clear previous error messages
+
+            // Check Proof Answer
             if ($('#proof_answer').val().trim() === '') {
                 $('#proof_answer_error').text('Proof answer is required.');
                 isValid = false;
             }
 
+            // Check Proof Photos
             @for ($i = 0; $i < $taskDetails->extra_screenshots + 1; $i++)
                 if ($('#proof_photo_{{ $i }}').val() === '') {
                     $('#proof_photo_{{ $i }}_error').text('Proof photo {{ $i + 1 }} is required.');
                     isValid = false;
-                }else{
+                } else {
                     let fileExtension = ['jpeg', 'jpg', 'png'];
                     if ($.inArray($('#proof_photo_{{ $i }}').val().split('.').pop().toLowerCase(), fileExtension) == -1) {
                         $('#proof_photo_{{ $i }}_error').text('Only jpeg, jpg, png files are allowed.');
@@ -238,16 +286,24 @@
                 }
             @endfor
 
-            if(isValid){
-                if ({{ $proofCount }} >= {{ $taskDetails->work_needed }}) {
-                    toastr.error('Sorry! This task has been completed.');
-                    isValid = false;
-                }
+            if (!isValid) {
+                return; // Stop form submission if validation fails
             }
 
-            if (!isValid) {
-                event.preventDefault();
-            }
+            // Perform AJAX check for proofCount vs work_needed before submitting the form
+            $.ajax({
+                url: '{{ route("find_task.proof.submit.limit.check", encrypt($taskDetails->id)) }}', // Adjust with your actual route
+                type: 'GET',
+                success: function(response) {
+                    if (response.canSubmit) {
+                        // If the proof count is below the work_needed, submit the form
+                        $('#proofTaskForm')[0].submit();
+                    } else {
+                        // Prevent form submission and show an error if limit is reached
+                        toastr.error('Sorry! This task has been completed.');
+                    }
+                },
+            });
         });
 
         // Preview proof photos
@@ -279,13 +335,13 @@
                     form.find('span.error-text').text(''); // Clear previous error messages inside this form
                 },
                 success: function(response) {
-                    if (response.status == 400) {
+                    if (response.status === 400) {
                         // Loop through the errors and display them
                         $.each(response.error, function(prefix, val) {
                             form.find('span.' + prefix + '_error').text(val[0]);
                         });
                     } else {
-                        // Hide the modal based on which form was submitted
+                        // Hide the appropriate modal
                         if (form.is('#reportForm')) {
                             $('.reportModal').modal('hide'); // Hide Report User modal
                             toastr.success('User reported successfully.');
@@ -299,7 +355,6 @@
                 },
             });
         });
-
     });
 </script>
 @endsection

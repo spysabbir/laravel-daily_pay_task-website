@@ -14,7 +14,7 @@
                     <input type="hidden" name="email" value="{{ $request->email }}">
                     <div class="form-group">
                         <label>Enter Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" placeholder="Enter Your Password" name="password">
+                        <input type="password" class="form-control" placeholder="Enter Your Password" name="password" required>
                         <small class="text-info d-block">The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.</small>
                         @error('password')
                             <span class="text-danger">{{ $message }}</span>
@@ -22,7 +22,7 @@
                     </div>
                     <div class="form-group">
                         <label>Enter Confirm Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" placeholder="Enter Your Confirm Password" name="password_confirmation">
+                        <input type="password" class="form-control" placeholder="Enter Your Confirm Password" name="password_confirmation" required>
                         @error('password_confirmation')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

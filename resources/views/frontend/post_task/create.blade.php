@@ -142,14 +142,14 @@
                             <div class="row">
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="work_needed" class="form-label">
-                                        Work needed <small class="text-danger">* Required </small>
+                                        Work Needed <small class="text-danger">* Required </small>
                                     </label>
                                     <input type="number" class="form-control" name="work_needed" min="1" id="work_needed" value="1" required>
                                     <div class="invalid-feedback">Please enter how many workers are required.</div>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="earnings_from_work" class="form-label">
-                                        Earnings from work <small class="text-danger">* Required </small>
+                                        Earnings From Work <small class="text-danger">* Required </small>
                                     </label>
                                     <div class="input-group">
                                         <input type="number" class="form-control" name="earnings_from_work" id="earnings_from_work" required>
@@ -160,7 +160,7 @@
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="extra_screenshots" class="form-label">
-                                        Extra screenshots <small class="text-danger">* Required </small>
+                                        Extra Screenshots <small class="text-danger">* Required </small>
                                     </label>
                                     <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="0" required>
                                     <small class="text-info">* Additional screenshot charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_screenshot_charge') }}. Note: You get 1 screenshot for free.</small>
@@ -168,7 +168,7 @@
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="boosted_time" class="form-label">
-                                        Boosted time <small class="text-danger">* Required </small>
+                                        Boosted Time <small class="text-danger">* Required </small>
                                     </label>
                                     <select class="form-select" name="boosted_time" id="boosted_time" required>
                                         <option value="0" selected>No Boost</option>
@@ -187,7 +187,7 @@
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="running_day" class="form-label">
-                                        Running day <small class="text-danger">* Required </small>
+                                        Running Day <small class="text-danger">* Required </small>
                                     </label>
                                     <select class="form-select" name="running_day" id="running_day" required>
                                         <option value="3" selected>3 Days</option>

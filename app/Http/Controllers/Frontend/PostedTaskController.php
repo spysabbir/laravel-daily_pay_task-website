@@ -18,6 +18,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Rating;
 use App\Models\Bonus;
+use App\Models\Report;
 use App\Notifications\RatingNotification;
 use App\Notifications\BonusNotification;
 
@@ -666,8 +667,14 @@ class PostedTaskController extends Controller
                     return $checked_at;
                 })
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>';
+                    if ($row->status == 'Rejected') {
+                        $actionBtn = '
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs reportProofTaskBtn" data-bs-toggle="modal" data-bs-target=".reportProofTaskModal">Report</button>';
+                    } else {
+                        $actionBtn = '
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>';
+                    }
                     return $actionBtn;
                 })
                 ->rawColumns(['checkbox', 'user', 'status', 'created_at', 'checked_at', 'action'])
@@ -677,6 +684,19 @@ class PostedTaskController extends Controller
         $postTask = PostTask::findOrFail(decrypt($id));
         $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
         return view('frontend.posted_task.proof_list', compact('postTask', 'proofSubmitted'));
+    }
+
+    public function proofTaskReport($id)
+    {
+        $proofTask = ProofTask::findOrFail($id);
+
+        $reportStatus = Report::where('proof_task_id', $proofTask->id)->where('user_id', $id)->first();
+
+        return response()->json([
+            'status' => 200,
+            'reportStatus' => $reportStatus,
+            'proofTask' => $proofTask
+        ]);
     }
 
     public function proofTaskApprovedAll($id)
