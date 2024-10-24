@@ -20,6 +20,7 @@ use App\Models\PostTask;
 use App\Models\UserStatus;
 use App\Models\Withdraw;
 use App\Notifications\UserStatusNotification;
+use Carbon\Carbon;
 
 class BackendController extends Controller
 {
@@ -422,6 +423,7 @@ class BackendController extends Controller
         }
     }
 
+    // Support
     public function support()
     {
         $users = User::where('user_type', 'Frontend')->where('status', 'Active')->get();
@@ -444,8 +446,8 @@ class BackendController extends Controller
         // Format the response for the front-end
         $formattedMessages = $messages->map(function ($message) use ($user) {
             return [
-                'text' => $message->message,
-                'time' => $message->created_at->format('g:i A'),
+                'message' => $message->message,
+                'created_at' => $message->created_at->diffForHumans(),
                 'profile_photo' => asset('uploads/profile_photo/' . $user->profile_photo),
                 'sender_type' => $message->sender_id == auth()->id() ? 'me' : 'friend',
             ];
@@ -454,7 +456,8 @@ class BackendController extends Controller
         return response()->json([
             'name' => $user->name,
             'profile_photo' => asset('uploads/profile_photo/' . $user->profile_photo),
-            'role' => 'User', // If the role is available
+            'last_active' => Carbon::parse($user->last_login_at)->diffForHumans(),
+            'active_status' => Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline',
             'messages' => $formattedMessages
         ]);
     }
@@ -495,7 +498,12 @@ class BackendController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'support' => $support,
+                'support' => [
+                    'message' => $support->message,
+                    'photo' => $support->photo,
+                    'sender_id' => $support->sender_id,
+                    'created_at' => Carbon::parse($support->created_at)->diffForHumans(),
+                ],
             ]);
         }
     }
@@ -506,12 +514,14 @@ class BackendController extends Controller
         $supportUsers = User::whereIn('id', $supportUserIds)->where('user_type', 'Frontend')->where('status', 'Active')->get();// Get users who have support messages
         foreach ($supportUsers as $user) {
             $user->message = Support::where('sender_id', $user->id)->latest()->first()->message;
-            $user->send_at = Support::where('sender_id', $user->id)->latest()->first()->created_at->format('g:i A');
+            $user->send_at = Support::where('sender_id', $user->id)->latest()->first()->created_at->diffForHumans();
+            $user->active_status = Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline';
             $user->support_count = Support::where('sender_id', $user->id)->where('status', 'Unread')->count();
         }
         return response()->json(['supportUsers' => $supportUsers]);
     }
 
+    // Contact
     public function contact(Request $request)
     {
         if ($request->ajax()) {

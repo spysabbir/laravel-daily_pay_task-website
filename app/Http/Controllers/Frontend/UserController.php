@@ -20,14 +20,12 @@ use App\Models\Report;
 use App\Models\ReportReply;
 use App\Models\Support;
 use App\Events\SupportEvent;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    public function dashboard(Request $request)
+    public function dashboard()
     {
-        $user = $request->user();
-        // return $myIp = $request->ip();
-        // return $position = Location::get('103.4.119.20');
         return view('frontend/dashboard');
     }
 
@@ -153,7 +151,7 @@ class UserController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $query = Deposit::where('user_id', Auth::id());
@@ -351,7 +349,7 @@ class UserController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $query = Withdraw::where('user_id', Auth::id());
@@ -513,7 +511,7 @@ class UserController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $query = Bonus::where('user_id', Auth::id());
@@ -631,37 +629,46 @@ class UserController extends Controller
 
     public function blockList(Request $request)
     {
-        if ($request->ajax()) {
-            $blockedUsers = Block::where('blocked_by', Auth::id());
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
 
-            $query = $blockedUsers->select('blocks.*');
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard');
+        } else {
+            if ($request->ajax()) {
+                $blockedUsers = Block::where('blocked_by', Auth::id());
 
-            $blockedList = $query->get();
+                $query = $blockedUsers->select('blocks.*');
 
-            return DataTables::of($blockedList)
-                ->addIndexColumn()
-                ->editColumn('user', function ($row) {
-                    return '
-                        <a href="'.route('user.profile', encrypt($row->blocked->id)).'" title="'.$row->blocked->name.'" class="text-info">
-                            '.$row->blocked->name.'
+                $blockedList = $query->get();
+
+                return DataTables::of($blockedList)
+                    ->addIndexColumn()
+                    ->editColumn('user', function ($row) {
+                        return '
+                            <a href="'.route('user.profile', encrypt($row->blocked->id)).'" title="'.$row->blocked->name.'" class="text-info">
+                                '.$row->blocked->name.'
+                            </a>
+                        ';
+                    })
+                    ->editColumn('blocked_at', function ($row) {
+                        return date('d M Y h:i A', strtotime($row->blocked_at));
+                    })
+                    ->addColumn('action', function ($row) {
+                        $action = '
+                        <a href="'.route('block.unblock.user', $row->blocked->id).'" title="Unblock" class="btn btn-danger btn-sm">
+                            Unblock
                         </a>
-                    ';
-                })
-                ->editColumn('blocked_at', function ($row) {
-                    return date('d M Y h:i A', strtotime($row->blocked_at));
-                })
-                ->addColumn('action', function ($row) {
-                    $action = '
-                    <a href="'.route('block.unblock.user', $row->blocked->id).'" title="Unblock" class="btn btn-danger btn-sm">
-                        Unblock
-                    </a>
-                    ';
-                    return $action;
-                })
-                ->rawColumns(['user', 'action'])
-                ->make(true);
+                        ';
+                        return $action;
+                    })
+                    ->rawColumns(['user', 'action'])
+                    ->make(true);
+            }
+            return view('frontend.block_list.index');
         }
-        return view('frontend.block_list.index');
     }
 
     public function blockUnblockUser($id)
@@ -697,66 +704,75 @@ class UserController extends Controller
 
     public function reportList(Request $request)
     {
-        if ($request->ajax()) {
-            $reportedUsers = Report::where('reported_by', Auth::id());
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
 
-            $query = $reportedUsers->select('reports.*');
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard');
+        } else {
+            if ($request->ajax()) {
+                $reportedUsers = Report::where('reported_by', Auth::id());
 
-            if ($request->status) {
-                $query->where('reports.status', $request->status);
+                $query = $reportedUsers->select('reports.*');
+
+                if ($request->status) {
+                    $query->where('reports.status', $request->status);
+                }
+
+                $reportedList = $query->get();
+
+                return DataTables::of($reportedList)
+                    ->addIndexColumn()
+                    ->editColumn('type', function ($row) {
+                        if ($row->type == 'User') {
+                            $type = '
+                            <span class="badge bg-primary">' . $row->type . '</span>
+                            ';
+                        } else if ($row->type == 'Post Task') {
+                            $type = '
+                            <span class="badge bg-secondary">' . $row->type . '</span>
+                            ';
+                        } else {
+                            $type = '
+                            <span class="badge bg-info">' . $row->type . '</span>
+                            ';
+                        }
+                        return $type;
+                    })
+                    ->editColumn('user', function ($row) {
+                        return '
+                            <a href="'.route('user.profile', encrypt($row->reported->id)).'" title="'.$row->reported->name.'" class="text-info">
+                                '.$row->reported->name.'
+                        ';
+                    })
+                    ->editColumn('created_at', function ($row) {
+                        return date('d M Y h:i A', strtotime($row->created_at));
+                    })
+                    ->editColumn('status', function ($row) {
+                        if ($row->status == 'Pending') {
+                            $status = '
+                            <span class="badge bg-warning">' . $row->status . '</span>
+                            ';
+                        } else {
+                            $status = '
+                            <span class="badge bg-success">' . $row->status . '</span>
+                            ';
+                        }
+                        return $status;
+                    })
+                    ->addColumn('action', function ($row) {
+                        $action = '
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                        ';
+                        return $action;
+                    })
+                    ->rawColumns(['type', 'user', 'status', 'action'])
+                    ->make(true);
             }
-
-            $reportedList = $query->get();
-
-            return DataTables::of($reportedList)
-                ->addIndexColumn()
-                ->editColumn('type', function ($row) {
-                    if ($row->type == 'User') {
-                        $type = '
-                        <span class="badge bg-primary">' . $row->type . '</span>
-                        ';
-                    } else if ($row->type == 'Post Task') {
-                        $type = '
-                        <span class="badge bg-secondary">' . $row->type . '</span>
-                        ';
-                    } else {
-                        $type = '
-                        <span class="badge bg-info">' . $row->type . '</span>
-                        ';
-                    }
-                    return $type;
-                })
-                ->editColumn('user', function ($row) {
-                    return '
-                        <a href="'.route('user.profile', encrypt($row->reported->id)).'" title="'.$row->reported->name.'" class="text-info">
-                            '.$row->reported->name.'
-                    ';
-                })
-                ->editColumn('created_at', function ($row) {
-                    return date('d M Y h:i A', strtotime($row->created_at));
-                })
-                ->editColumn('status', function ($row) {
-                    if ($row->status == 'Pending') {
-                        $status = '
-                        <span class="badge bg-warning">' . $row->status . '</span>
-                        ';
-                    } else {
-                        $status = '
-                        <span class="badge bg-success">' . $row->status . '</span>
-                        ';
-                    }
-                    return $status;
-                })
-                ->addColumn('action', function ($row) {
-                    $action = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    ';
-                    return $action;
-                })
-                ->rawColumns(['type', 'user', 'status', 'action'])
-                ->make(true);
+            return view('frontend.report_list.index');
         }
-        return view('frontend.report_list.index');
     }
 
     public function reportView($id)
@@ -817,6 +833,28 @@ class UserController extends Controller
         return view('frontend.support.index' , compact('supports'));
     }
 
+    public function supportGetMessage(){
+        $supports = Support::where('sender_id', Auth::id())->orWhere('receiver_id', Auth::id())->get();
+
+        $customSupports = $supports->map(function ($support) {
+            return [
+                'id' => $support->id,
+                'message' => $support->message,
+                'created_at' => $support->created_at->diffForHumans(), // Relative time like "2 minutes ago"
+                'sender_id' => $support->sender_id,
+                'receiver_id' => $support->receiver_id,
+                'sender_photo' => $support->sender->profile_photo, // Assuming 'profile_photo' exists for sender
+                'receiver_photo' => $support->receiver->profile_photo, // Assuming 'profile_photo' exists for receiver
+                'photo' => $support->photo,
+            ];
+        });
+
+        return response()->json([
+            'status' => 200,
+            'supports' => $customSupports,
+        ]);
+    }
+
     public function supportSendMessage(Request $request){
         $validator = Validator::make($request->all(), [
             'message' => 'required|string|max:5000',
@@ -853,7 +891,12 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'support' => $support,
+                'support' => [
+                    'message' => $support->message,
+                    'photo' => $support->photo,
+                    'sender_id' => $support->sender_id,
+                    'created_at' => Carbon::parse($support->created_at)->diffForHumans(),
+                ]
             ]);
         }
     }

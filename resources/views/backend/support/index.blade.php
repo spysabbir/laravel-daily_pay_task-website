@@ -28,14 +28,14 @@
                                     </div>
                                 </div>
                                 <!-- Search Form -->
-                                <form class="search-form">
+                                {{-- <form class="search-form">
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i data-feather="search" class="cursor-pointer"></i>
                                         </span>
                                         <input type="text" class="form-control" id="searchForm" placeholder="Search here...">
                                     </div>
-                                </form>
+                                </form> --}}
                             </div>
 
                             <!-- Support Users Tab -->
@@ -72,11 +72,11 @@
                                                     <a href="javascript:;" class="d-flex align-items-center select-user" data-id="{{ $user->id }}">
                                                         <figure class="mb-0 me-2">
                                                             <img src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" class="img-xs rounded-circle" alt="user">
-                                                            <div class="status online"></div>
+                                                            <div class="status {{ \Carbon\Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline' }}"></div>
                                                         </figure>
                                                         <div class="d-flex justify-content-between flex-grow-1 border-bottom">
                                                             <div>
-                                                                <p class="text-body fw-bolder">{{ $user->name }}</p>
+                                                                <p class="text-body fw-bolder">Id: {{ $user->id }}, Name: {{ $user->name }}</p>
                                                                 <p class="text-muted">{{ $support->message ?? 'No messages yet' }}</p>
                                                             </div>
                                                             <div class="d-flex flex-column align-items-end">
@@ -97,13 +97,13 @@
                                                 <a href="javascript:;" class="d-flex align-items-center select-user" data-id="{{ $user->id }}">
                                                     <figure class="mb-0 me-2">
                                                         <img src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" class="img-xs rounded-circle" alt="user">
-                                                        <div class="status offline"></div>
+                                                        <div class="status {{ \Carbon\Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline' }}"></div>
                                                     </figure>
                                                     <div class="d-flex align-items-center justify-content-between flex-grow-1 border-bottom">
                                                         <div>
-                                                            <p class="text-body">{{ $user->name }}</p>
+                                                            <p class="text-body">Id: {{ $user->id }}, Name: {{ $user->name }}</p>
                                                             <div class="d-flex align-items-center">
-                                                                <p class="text-muted tx-13">Front-end Developer</p>
+                                                                <p class="text-muted tx-13">{{  Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}</p>
                                                             </div>
                                                         </div>
                                                         <div class="d-flex align-items-end text-body">
@@ -131,12 +131,11 @@
                                     <i data-feather="corner-up-left" id="backToChatList" class="icon-lg me-2 ms-n2 text-muted d-lg-none"></i>
                                     <figure class="mb-0 me-2">
                                         <img src="{{ asset('uploads/profile_photo/default_profile_photo.png') }}" class="img-sm rounded-circle" alt="User Image">
-                                        <div class="status online"></div>
-                                        <div class="status online"></div>
+                                        <div class="status active_status"></div>
                                     </figure>
                                     <div>
                                         <p class="user-name">User</p>
-                                        <p class="text-muted tx-13">User</p>
+                                        <p class="text-muted tx-13"></p>
                                     </div>
                                 </div>
                             </div>
@@ -171,6 +170,7 @@
                                     </div>
                                 </div>
                                 <span class="text-danger error-text message_error"></span>
+                                <br>
                                 <span class="text-danger error-text photo_error"></span>
                             </form>
                         </div>
@@ -189,21 +189,43 @@
 
 @section('script')
 <script>
-    // Trigger file input
-    $('#fileBtn').click(function() {
-        $('#fileInput').click();
+    // Trigger the file input when the button is clicked
+    document.getElementById('fileBtn').addEventListener('click', function() {
+        document.getElementById('fileInput').click();
     });
 
-    // Image Preview
-    $('#fileInput').change(function() {
+    // Display the selected image in the preview area
+    document.getElementById('fileInput').addEventListener('change', function() {
         const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                $('#imagePreview').attr('src', e.target.result);
-                $('#imagePreviewContainer').show();
-            };
-            reader.readAsDataURL(file);
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        const maxSize = 2 * 1024 * 1024; // 2MB
+
+        if (file && allowedTypes.includes(file.type)) {
+            if (file.size > maxSize) {
+                $('span.photo_error').text('File size is too large. Max size is 2MB.');
+                this.value = ''; // Clear file input
+            } else {
+                $('span.photo_error').text('');
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('imagePreviewContainer').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        } else {
+            $('span.photo_error').text('Please select a valid image file (jpeg, jpg, png).');
+            this.value = ''; // Clear file input
+        }
+    });
+
+    // Real-time validation for message input
+    $('textarea[name="message"]').on('input', function() {
+        var message = $(this).val().trim();
+        if (message.length > 0) {
+            $('span.message_error').text(''); // Remove error message when input is valid
+        }else{
+            $('span.message_error').text('Message is required!');
         }
     });
 
@@ -229,7 +251,8 @@
                 // Update chat header
                 $('.chat-header img').attr('src', response.profile_photo);
                 $('.chat-header .user-name').text(response.name);
-                $('.chat-header .text-muted').text(response.role);
+                $('.chat-header .text-muted').text(response.last_active);
+                $('.chat-header .active_status').removeClass('offline').addClass(response.active_status);
 
                 // Load messages
                 const messageList = $('.messages');
@@ -241,14 +264,30 @@
                             <div class="content">
                                 <div class="message">
                                     <div class="bubble">
-                                        <p>${message.text}</p>
+                                        <p>${message.message}</p>
                                     </div>
-                                    <span>${message.time}</span>
+                                    <span>${message.created_at}</span>
                                 </div>
                             </div>
                         </li>`;
                     messageList.append(messageItem);
+
                 });
+
+                // Scroll to bottom
+                // $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 1000);
+
+                // Show last message
+                $('.chat-body').scrollTop($('.chat-body')[0].scrollHeight);
+
+
+                // Refresh recent support list
+                loadRecentSupports();
+
+                // Clear form
+                $('textarea[name="message"]').val('');
+                $('#fileInput').val('');
+                $('#imagePreviewContainer').hide();
             }
         });
     });
@@ -276,6 +315,7 @@
                     });
                 } else {
                     var profile_photo = "{{ Auth::user()->profile_photo }}";
+                    var created_at = response.support.created_at;
                     const messageHtml = `
                         <li class="message-item me">
                             <img src="{{ asset('uploads/profile_photo') }}/${profile_photo}" class="img-xs rounded-circle" alt="avatar">
@@ -285,7 +325,7 @@
                                         <p>${response.support.message}</p>
                                         ${response.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${response.support.photo}" style="max-width: 100px;">` : ''}
                                     </div>
-                                    <span>${new Date(response.support.created_at).toLocaleString()}</span>
+                                    <span>${created_at}</span>
                                 </div>
                             </div>
                         </li>`;
@@ -353,11 +393,11 @@
                             <a href="javascript:;" class="d-flex align-items-center select-user" data-id="${user.id}">
                                 <figure class="mb-0 me-2">
                                     <img src="{{ asset('uploads/profile_photo') }}/${user.profile_photo}" class="img-xs rounded-circle" alt="user">
-                                    <div class="status online"></div>
+                                    <div class="status ${user.active_status}"></div>
                                 </figure>
                                 <div class="d-flex justify-content-between flex-grow-1 border-bottom">
                                     <div>
-                                        <p class="text-body fw-bolder">${user.name}</p>
+                                        <p class="text-body fw-bolder">Id: ${user.id}, Name: ${user.name}</p>
                                         <p class="text-muted">${user.message}</p>
                                     </div>
                                     <div class="d-flex flex-column align-items-end">

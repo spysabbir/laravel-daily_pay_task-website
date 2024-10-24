@@ -205,7 +205,7 @@ class WorkedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $proofTasks = ProofTask::where('user_id', Auth::id())->where('status', 'Pending');
@@ -248,7 +248,7 @@ class WorkedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $proofTasks = ProofTask::where('user_id', Auth::id())->where('status', 'Approved');
@@ -314,7 +314,7 @@ class WorkedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $proofTasks = ProofTask::where('user_id', Auth::id())->where('status', 'Rejected');
@@ -414,7 +414,7 @@ class WorkedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $proofTasks = ProofTask::where('user_id', Auth::id())->where('status', 'Reviewed');

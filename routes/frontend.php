@@ -96,6 +96,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/refferal', [UserController::class, 'refferal'])->name('refferal');
 
     Route::get('/support', [UserController::class, 'support'])->name('support');
+    Route::get('/support-get-message', [UserController::class, 'supportGetMessage'])->name('support.get-message');
     Route::post('/support-send-message', [UserController::class, 'supportSendMessage'])->name('support.send-message');
 });
 

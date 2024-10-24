@@ -27,7 +27,7 @@
                     </div>
                     <div class="chat-body">
                         <ul class="messages" id="chatBox">
-                            @forelse ($supports as $support)
+                            {{-- @forelse ($supports as $support)
                             @if ($support->sender_id  === Auth::user()->id)
                             <li class="message-item friend">
                                 <img src="{{ asset('uploads/profile_photo') }}/{{ $support->sender->profile_photo }}" class="img-xs rounded-circle" alt="avatar">
@@ -58,7 +58,7 @@
                                 <div class="alert alert-primary text-center" id="noMessage">
                                     <strong>No message found!</strong>
                                 </div>
-                            @endforelse
+                            @endforelse --}}
                         </ul>
                     </div>
                     <div class="chat-footer border-top pt-2">
@@ -85,6 +85,7 @@
                             </div>
                             <div class="mt-2 text-center">
                                 <span class="text-danger error-text message_error"></span>
+                                <br>
                                 <span class="text-danger error-text photo_error"></span>
                             </div>
                         </form>
@@ -106,15 +107,38 @@
     // Display the selected image in the preview area
     document.getElementById('fileInput').addEventListener('change', function() {
         const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Set the image source to the file's data URL
-                document.getElementById('imagePreview').src = e.target.result;
-                // Show the preview container
-                document.getElementById('imagePreviewContainer').style.display = 'block';
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        const maxSize = 2 * 1024 * 1024; // 2MB
+
+        if (file && allowedTypes.includes(file.type)) {
+            if (file.size > maxSize) {
+                $('span.photo_error').text('File size is too large. Max size is 2MB.');
+                this.value = ''; // Clear file input
+            } else {
+                $('span.photo_error').text('');
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('imagePreviewContainer').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(file); // Read the file as a Data URL
+        } else {
+            $('span.photo_error').text('Please select a valid image file (jpeg, jpg, png).');
+            this.value = ''; // Clear file input
+        }
+    });
+
+    // Scroll to the bottom of the chatBox
+    $('.chat-body').scrollTop($('.chat-body')[0].scrollHeight);
+
+    // Real-time validation for message input
+    $('textarea[name="message"]').on('input', function() {
+        var message = $(this).val().trim();
+        if (message.length > 0) {
+            $('span.message_error').text(''); // Remove error message when input is valid
+        }else{
+            $('span.message_error').text('Message is required!');
         }
     });
 
@@ -140,7 +164,7 @@
                 } else {
                     $('#noMessage').addClass('d-none');
                     var profile_photo = '{{ Auth::user()->profile_photo }}';
-                    var created_at = new Date(response.support.created_at).toLocaleString();
+                    var created_at = response.support.created_at;
                     var support_photo = response.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${response.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : '';
 
                     if (response.support.sender_id === {{ Auth::user()->id }}) {
@@ -151,7 +175,7 @@
                                     <div class="message">
                                         <div class="bubble">
                                             <p class='mb-2'>${response.support.message}</p>
-                                            ${support_photo}
+                                            <a href="{{ asset('uploads/support_photo') }}/${response.support.photo}" target="_blank">${support_photo}</a>
                                         </div>
                                         <span>${created_at}</span>
                                     </div>
@@ -184,7 +208,7 @@
                             <div class="message">
                                 <div class="bubble">
                                     <p class='mb-2'>${data.support.message}</p>
-                                    ${data.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : ''}
+                                    ${data.support.photo ? `<a href="{{ asset('uploads/support_photo') }}/${data.support.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
                                 </div>
                                 <span>${data.support.created_at}</span>
                             </div>
@@ -197,5 +221,44 @@
             $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 1000);
         });
     }
+
+    $.ajax({
+            url: '{{ route("support.get-message") }}',
+            method: 'GET',
+            success: function(data) {
+                if (data.supports.length > 0) {
+                    data.supports.forEach(function(support) {
+                        var profile_photo = support.sender_id === {{ Auth::user()->id }} ? support.sender_photo : support.receiver_photo;
+                        var support_photo = support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : '';
+                        var timeDisplay = support.created_at;
+
+                        $('#chatBox').append(`
+                            <li class="message-item ${support.sender_id === {{ Auth::user()->id }} ? 'friend' : 'me'}">
+                                <img src="{{ asset('uploads/profile_photo') }}/${profile_photo}" class="img-xs rounded-circle" alt="avatar">
+                                <div class="content">
+                                    <div class="message">
+                                        <div class="bubble">
+                                            <p class='mb-2'>${support.message}</p>
+                                            ${support_photo ? `<a href="{{ asset('uploads/support_photo') }}/${support.photo}" target="_blank">${support_photo}</a>` : ''}
+                                        </div>
+                                        <span>${timeDisplay}</span>
+                                    </div>
+                                </div>
+                            </li>
+                        `);
+                    });
+
+                    // Scroll to the bottom of the chatBox
+                    $('.chat-body').scrollTop($('.chat-body')[0].scrollHeight);
+                }
+                else {
+                    $('#chatBox').append(`
+                        <div class="alert alert-primary text-center" id="noMessage">
+                            <strong>No message found!</strong>
+                        </div>
+                    `);
+                }
+            }
+        });
 </script>
 @endsection

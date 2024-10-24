@@ -33,7 +33,7 @@ class PostedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             $categories = Category::where('status', 'Active')->get();
             return view('frontend.post_task.create', compact('categories'));
@@ -230,7 +230,7 @@ class PostedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Pending');
@@ -271,7 +271,7 @@ class PostedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Rejected');
@@ -310,7 +310,7 @@ class PostedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Canceled');
@@ -378,7 +378,7 @@ class PostedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Paused');
@@ -499,7 +499,7 @@ class PostedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Running');
@@ -867,7 +867,7 @@ class PostedTaskController extends Controller
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
-            return redirect()->route('dashboard')->with('error', 'Your account is blocked or banned.');
+            return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Completed');

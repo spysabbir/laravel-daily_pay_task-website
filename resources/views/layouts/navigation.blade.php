@@ -590,20 +590,6 @@
         </li>
 
         <li class="nav-item">
-            <a href="{{ route('notification') }}" class="nav-link">
-                <i class="link-icon" data-feather="bell"></i>
-                <span class="link-title">Notification</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{{ route('refferal') }}" class="nav-link">
-                <i class="link-icon" data-feather="share"></i>
-                <span class="link-title">Refferal</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
             <a href="{{ route('block_list') }}" class="nav-link">
                 <i class="link-icon" data-feather="shield"></i>
                 <span class="link-title">Block List</span>
@@ -614,6 +600,20 @@
             <a href="{{ route('report_list') }}" class="nav-link">
                 <i class="link-icon" data-feather="file-text"></i>
                 <span class="link-title">Report List</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('notification') }}" class="nav-link">
+                <i class="link-icon" data-feather="bell"></i>
+                <span class="link-title">Notification</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('refferal') }}" class="nav-link">
+                <i class="link-icon" data-feather="share"></i>
+                <span class="link-title">Refferal</span>
             </a>
         </li>
 

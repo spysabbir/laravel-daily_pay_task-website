@@ -7,7 +7,6 @@ use App\Models\Subscriber;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Category;
 use App\Models\Contact;
 use App\Models\Faq;
 use App\Models\PostTask;
@@ -51,7 +50,7 @@ class FrontendController extends Controller
     public function faq()
     {
         $faqs = Faq::where('status', 'Active')->get();
-        
+
         return view('frontend/faq', compact('faqs'));
     }
 
