@@ -17,6 +17,10 @@
                                 <td>{{ $verification->user->name }}</td>
                             </tr>
                             <tr>
+                                <td>Email</td>
+                                <td>{{ $verification->user->email }}</td>
+                            </tr>
+                            <tr>
                                 <td>Date of Birth</td>
                                 <td>{{ $verification->user->date_of_birth ? date('F j, Y', strtotime($verification->user->date_of_birth)) : 'Not Found' }}</td>
                             </tr>
@@ -31,6 +35,10 @@
                             <tr>
                                 <td>ID Number</td>
                                 <td>{{ $verification->id_number }}</td>
+                            </tr>
+                            <tr>
+                                <td>Submitted Date</td>
+                                <td>{{ $verification->created_at->format('d M Y h:i A') }}</td>
                             </tr>
                         </tbody>
                     </table>

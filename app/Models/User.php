@@ -9,7 +9,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -67,11 +66,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function generateReferralLink()
     {
-        if (is_null($this->referral_code)) {
-            $this->referral_code = Str::random(10);
-            $this->save();
-        }
-
         return route('register') . '?ref=' . $this->referral_code;
     }
 

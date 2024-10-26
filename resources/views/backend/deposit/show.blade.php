@@ -17,6 +17,10 @@
                                 <td>{{ $deposit->user->name }}</td>
                             </tr>
                             <tr>
+                                <td>Email</td>
+                                <td>{{ $deposit->user->email }}</td>
+                            </tr>
+                            <tr>
                                 <td>Deposit Method</td>
                                 <td>{{ $deposit->method }}</td>
                             </tr>

@@ -622,7 +622,14 @@ class UserController extends Controller
 
     public function refferal()
     {
-        return view('frontend.refferal.index');
+        $referralCount = User::where('referred_by', Auth::user()->id)->count();
+
+        $referralEarned = Bonus::where('user_id', Auth::user()->id)
+                        ->whereIn('type', ['Referral Registration Bonus', 'Referral Withdrawal Bonus'])
+                        ->whereNot('bonus_by', Auth::user()->referred_by)
+                        ->sum('amount');
+
+        return view('frontend.refferal.index', compact('referralCount', 'referralEarned'));
     }
 
     // Block.............................................................................................................

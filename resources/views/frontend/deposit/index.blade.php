@@ -32,9 +32,9 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="amount" class="form-label">Deposit Amount</label>
+                                            <label for="amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" min="{{ get_default_settings('min_deposit_amount') }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount">
+                                                <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" min="{{ get_default_settings('min_deposit_amount') }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount" required>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                             <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
@@ -76,8 +76,8 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="method" class="form-label">Deposit Method</label>
-                                            <select class="form-select" id="method" name="method">
+                                            <label for="method" class="form-label">Deposit Method <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="method" name="method" required>
                                                 <option value="">-- Select Deposit Method --</option>
                                                 <option value="Bkash">Bkash</option>
                                                 <option value="Nagad">Nagad</option>
@@ -94,22 +94,23 @@
                                             <small class="text-warning">Note: Please cash out money to this account number. Please do not send money to this account number.</small>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="amount" class="form-label">Deposit Amount</label>
+                                            <label for="amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_deposit_amount') }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount">
+                                                <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_deposit_amount') }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount" required>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                             <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="number" class="form-label">Deposit Number</label>
-                                            <input type="number" class="form-control" id="number" name="number" placeholder="Deposit Number">
+                                            <label for="number" class="form-label">Deposit Number <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" id="number" name="number" placeholder="Deposit Number" required>
+                                            <small class="text-info d-block">Note: The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small>
                                             <span class="text-danger error-text number_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="transaction_id" class="form-label">Transaction Id</label>
-                                            <input type="text" class="form-control" id="transaction_id" name="transaction_id" placeholder="Transaction Id">
+                                            <label for="transaction_id" class="form-label">Transaction Id <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="transaction_id" name="transaction_id" placeholder="Transaction Id" required>
                                             <span class="text-danger error-text transaction_id_error"></span>
                                         </div>
                                     </div>

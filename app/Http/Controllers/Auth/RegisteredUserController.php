@@ -37,7 +37,6 @@ class RegisteredUserController extends Controller
                 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'
             ],
             'terms_conditions' => 'required',
-            'referral_code' => ['nullable', 'string', 'exists:users,referral_code'],
             'g-recaptcha-response' => 'required|captcha',
         ],
         [
@@ -56,7 +55,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'referral_code' => Str::random(10),
+            'referral_code' => Str::random(12),
             'referred_by' => $referrer ? $referrer->id : null,
         ]);
 

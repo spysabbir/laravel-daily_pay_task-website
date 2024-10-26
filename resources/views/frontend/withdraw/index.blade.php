@@ -25,8 +25,8 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="type" class="form-label">Withdraw Type</label>
-                                            <select class="form-select" id="type" name="type">
+                                            <label for="type" class="form-label">Withdraw Type <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="type" name="type" required>
                                                 <option value="">-- Select Withdraw Type --</option>
                                                 <option value="Ragular">Ragular</option>
                                                 <option value="Instant">Instant</option>
@@ -38,8 +38,8 @@
                                             <span class="text-danger error-text type_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="method" class="form-label">Withdraw Method</label>
-                                            <select class="form-select" id="method" name="method">
+                                            <label for="method" class="form-label">Withdraw Method <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="method" name="method" required>
                                                 <option value="">-- Select Withdraw Method --</option>
                                                 <option value="Bkash">Bkash</option>
                                                 <option value="Nagad">Nagad</option>
@@ -48,14 +48,15 @@
                                             <span class="text-danger error-text method_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="number" class="form-label">Withdraw Number</label>
-                                            <input type="number" class="form-control" id="number" name="number" placeholder="Withdraw Number">
+                                            <label for="number" class="form-label">Withdraw Number <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" id="number" name="number" placeholder="Withdraw Number" required>
+                                            <small class="text-info d-block">Note: The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small>
                                             <span class="text-danger error-text number_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="amount" class="form-label">Withdraw Amount</label>
+                                            <label for="amount" class="form-label">Withdraw Amount <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_withdraw_amount') }}" max="{{ get_default_settings('max_withdraw_amount') }}" placeholder="Withdraw Amount">
+                                                <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_withdraw_amount') }}" max="{{ get_default_settings('max_withdraw_amount') }}" placeholder="Withdraw Amount" required>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                             <small class="text-info d-block">Note: Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>

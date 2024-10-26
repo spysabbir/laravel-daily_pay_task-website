@@ -61,22 +61,22 @@
                     @csrf
                     @method('put')
                     <div class="mb-3">
-                        <label for="update_current_password" class="form-label">Current Password</label>
-                        <input type="password" class="form-control" id="update_current_password" name="current_password" placeholder="Current Password">
+                        <label for="update_current_password" class="form-label">Current Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="update_current_password" name="current_password" placeholder="Current Password" required>
                         @error('current_password')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="update_new_password" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="update_new_password" name="password" placeholder="New Password">
+                        <label for="update_new_password" class="form-label">New Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="update_new_password" name="password" placeholder="New Password" required>
                         @error('password')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="update_password_confirmation" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="update_password_confirmation" name="password_confirmation" placeholder="Confirm Password">
+                        <label for="update_password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="update_password_confirmation" name="password_confirmation" placeholder="Confirm Password" required>
                         @error('password_confirmation')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -107,8 +107,8 @@
                     </p>
 
                     <div class="mb-3">
-                        <label for="userPassword" class="form-label">Account Password</label>
-                        <input type="password" class="form-control" id="userPassword" name="account_password" placeholder="Account Password">
+                        <label for="userPassword" class="form-label">Account Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="userPassword" name="account_password" placeholder="Account Password" required>
                         @error('account_password')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

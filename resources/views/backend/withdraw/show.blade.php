@@ -17,6 +17,10 @@
                                 <td>{{ $withdraw->user->name }}</td>
                             </tr>
                             <tr>
+                                <td>Email</td>
+                                <td>{{ $withdraw->user->email }}</td>
+                            </tr>
+                            <tr>
                                 <td>Type</td>
                                 <td>{{ $withdraw->type }}</td>
                             </tr>
