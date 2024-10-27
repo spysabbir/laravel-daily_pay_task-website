@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Category;
 use App\Models\User;
 use App\Models\PostTask;
 use App\Models\ProofTask;
 use App\Models\Block;
+use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManager;
@@ -115,7 +115,8 @@ class WorkedTaskController extends Controller
         $taskProofExists = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->exists();
         $proofCount = ProofTask::where('post_task_id', $id)->count();
         $blocked = Block::where('user_id', $taskDetails->user_id)->where('blocked_by', Auth::id())->exists();
-        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'proofCount', 'blocked'));
+        $reportPostTask = Report::where('post_task_id', $id)->where('reported_by', Auth::id())->first();
+        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'proofCount', 'blocked', 'reportPostTask'));
     }
 
     public function findTaskProofSubmitLimitCheck($id)

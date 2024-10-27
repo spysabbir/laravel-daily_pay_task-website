@@ -23,6 +23,8 @@
                                 <th>Proof Status</th>
                                 <th>Total Charge</th>
                                 <th>Charge Status</th>
+                                <th>Approved At</th>
+                                <th>Completed At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -79,6 +81,8 @@
                 { data: 'proof_status', name: 'proof_status' },
                 { data: 'total_charge', name: 'total_charge' },
                 { data: 'charge_status', name: 'charge_status' },
+                { data: 'approved_at', name: 'approved_at' },
+                { data: 'completed_at', name: 'completed_at' },
                 { data: 'action', name: 'action' },
             ]
         });

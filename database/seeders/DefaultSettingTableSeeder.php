@@ -16,7 +16,7 @@ class DefaultSettingTableSeeder extends Seeder
         $setting = [
             'referral_registration_bonus_amount' => 10.00, // every referral
             'referral_withdrawal_bonus_percentage' => 2.00, // every withdrawal
-            'deposit_bkash_account' => '01700000000', 
+            'deposit_bkash_account' => '01700000000',
             'deposit_rocket_account' => '01800000000',
             'deposit_nagad_account' => '01900000000',
             'min_deposit_amount' => 100.00, // every deposit
@@ -29,7 +29,7 @@ class DefaultSettingTableSeeder extends Seeder
             'task_posting_charge_percentage' => 5.00, // every task
             'task_posting_additional_screenshot_charge' => 2.50, // every screenshot
             'task_posting_boosted_time_charge' => 5.00, // every 15 minutes
-            'task_posting_additional_running_day_charge' => 2.50, // every day
+            'task_posting_additional_work_duration_charge' => 2.50, // every day
             'task_posting_min_budget' => 100.00, // every task
             'task_proof_max_bonus_amount' => 20.00, // every proof
             'task_proof_monthly_free_review_time' => 30, // times

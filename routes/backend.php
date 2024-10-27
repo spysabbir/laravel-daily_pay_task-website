@@ -31,17 +31,17 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::resource('permission', PermissionController::class);
     Route::resource('role-permission', RolePermissionController::class);
     // Setting
-    Route::get('site/setting', [SettingController::class, 'siteSetting'])->name('site.setting');
+    Route::get('setting/site', [SettingController::class, 'siteSetting'])->name('site.setting');
     Route::post('site/setting/update', [SettingController::class, 'siteSettingUpdate'])->name('site.setting.update');
-    Route::get('default/setting', [SettingController::class, 'defaultSetting'])->name('default.setting');
+    Route::get('setting/default', [SettingController::class, 'defaultSetting'])->name('default.setting');
     Route::post('default/setting/update', [SettingController::class, 'defaultSettingUpdate'])->name('default.setting.update');
-    Route::get('seo/setting', [SettingController::class, 'seoSetting'])->name('seo.setting');
+    Route::get('setting/seo', [SettingController::class, 'seoSetting'])->name('seo.setting');
     Route::post('seo/setting/update', [SettingController::class, 'seoSettingUpdate'])->name('seo.setting.update');
-    Route::get('mail/setting', [SettingController::class, 'mailSetting'])->name('mail.setting');
+    Route::get('setting/mail', [SettingController::class, 'mailSetting'])->name('mail.setting');
     Route::post('mail/setting/update', [SettingController::class, 'mailSettingUpdate'])->name('mail.setting.update');
-    Route::get('sms/setting', [SettingController::class, 'smsSetting'])->name('sms.setting');
+    Route::get('setting/sms', [SettingController::class, 'smsSetting'])->name('sms.setting');
     Route::post('sms/setting/update', [SettingController::class, 'smsSettingUpdate'])->name('sms.setting.update');
-    Route::get('captcha/setting', [SettingController::class, 'captchaSetting'])->name('captcha.setting');
+    Route::get('setting/captcha', [SettingController::class, 'captchaSetting'])->name('captcha.setting');
     Route::post('captcha/setting/update', [SettingController::class, 'captchaSettingUpdate'])->name('captcha.setting.update');
     // Expense Category
     Route::resource('expense_category', ExpenseCategoryController::class);

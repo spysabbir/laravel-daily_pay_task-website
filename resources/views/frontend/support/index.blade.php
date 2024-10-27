@@ -114,6 +114,8 @@
             if (file.size > maxSize) {
                 $('span.photo_error').text('File size is too large. Max size is 2MB.');
                 this.value = ''; // Clear file input
+                // Hide preview image
+                document.getElementById('imagePreviewContainer').style.display = 'none';
             } else {
                 $('span.photo_error').text('');
                 const reader = new FileReader();
@@ -126,6 +128,8 @@
         } else {
             $('span.photo_error').text('Please select a valid image file (jpeg, jpg, png).');
             this.value = ''; // Clear file input
+            // Hide preview image
+            document.getElementById('imagePreviewContainer').style.display = 'none';
         }
     });
 

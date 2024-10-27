@@ -26,7 +26,7 @@ return new class extends Migration
             $table->decimal('earnings_from_work', 8, 2)->default(0);
             $table->integer('extra_screenshots');
             $table->integer('boosted_time');
-            $table->integer('running_day');
+            $table->integer('work_duration');
             $table->decimal('charge', 8, 2)->default(0);
             $table->decimal('site_charge', 8, 2)->default(0);
             $table->decimal('total_charge', 8, 2)->default(0);

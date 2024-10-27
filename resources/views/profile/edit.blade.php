@@ -117,8 +117,9 @@
                             @csrf
                             @method('patch')
                             <div class="mb-3">
-                                <label for="userProfilePhoto" class="form-label">Profile Photo</label>
+                                <label for="userProfilePhoto" class="form-label">Profile Photo <small class="text-info">* Profile photo must be a valid image file (jpeg, jpg, png) and the file size must be less than 2MB.</small></label>
                                 <input type="file" class="form-control" id="userProfilePhoto" name="profile_photo" accept=".jpg, .jpeg, .png">
+                                <span class="text-danger" id="userProfilePhotoError"></span>
                                 @error('profile_photo')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -198,12 +199,31 @@
 <script>
     $(document).ready(function(){
         // Profile Image Preview
-        $('#userProfilePhoto').change(function(){
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#userProfilePhotoPreview').attr('src', e.target.result).show();
+        document.getElementById('userProfilePhoto').addEventListener('change', function() {
+            const file = this.files[0];
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            const maxSize = 2 * 1024 * 1024; // 2MB
+
+            if (file && allowedTypes.includes(file.type)) {
+                if (file.size > maxSize) {
+                    $('#userProfilePhotoError').text('File size is too large. Max size is 2MB.');
+                    this.value = ''; // Clear file input
+                    // Hide preview image
+                    $('#userProfilePhotoPreview').hide();
+                } else {
+                    $('#userProfilePhotoError').text('');
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#userProfilePhotoPreview').attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            } else {
+                $('#userProfilePhotoError').text('Please select a valid image file (jpeg, jpg, png).');
+                this.value = ''; // Clear file input
+                // Hide preview image
+                $('#userProfilePhotoPreview').hide();
             }
-            reader.readAsDataURL(this.files[0]);
         });
     })
 </script>

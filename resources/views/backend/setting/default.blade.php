@@ -157,13 +157,13 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="task_posting_additional_running_day_charge" class="form-label">Task Posting Additional Running Day Charge</label>
+                            <label for="task_posting_additional_work_duration_charge" class="form-label">Task Posting Additional Work Duration Charge</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="task_posting_additional_running_day_charge" name="task_posting_additional_running_day_charge" value="{{ old('task_posting_additional_running_day_charge', $defaultSetting->task_posting_additional_running_day_charge) }}" placeholder="Task Posting Additional Running Day Charge">
+                                <input type="number" class="form-control" id="task_posting_additional_work_duration_charge" name="task_posting_additional_work_duration_charge" value="{{ old('task_posting_additional_work_duration_charge', $defaultSetting->task_posting_additional_work_duration_charge) }}" placeholder="Task Posting Additional Work Duration Charge">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
-                            <small class="text-info">* Every additional day charge</small>
-                            @error('task_posting_additional_running_day_charge')
+                            <small class="text-info">* Every additional Work Duration charge</small>
+                            @error('task_posting_additional_work_duration_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

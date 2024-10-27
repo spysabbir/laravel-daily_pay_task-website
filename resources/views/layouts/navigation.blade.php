@@ -88,32 +88,32 @@
                     <ul class="nav sub-menu">
                         @can('deposit.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.deposit.report') }}" class="nav-link">Deposit
+                            <a href="{{ route('backend.deposit.report') }}" class="nav-link">Deposit</a>
                         </li>
                         @endcan
                         @can('withdraw.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.withdraw.report') }}" class="nav-link">Withdraw
+                            <a href="{{ route('backend.withdraw.report') }}" class="nav-link">Withdraw</a>
                         </li>
                         @endcan
                         @can('bonus.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.bonus.report') }}" class="nav-link">Bonus
+                            <a href="{{ route('backend.bonus.report') }}" class="nav-link">Bonus</a>
                         </li>
                         @endcan
                         @can('expense.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.expense.report') }}" class="nav-link">Expense
+                            <a href="{{ route('backend.expense.report') }}" class="nav-link">Expense</a>
                         </li>
                         @endcan
                         @can('posted_task.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.posted_task.report') }}" class="nav-link">Posted Task
+                            <a href="{{ route('backend.posted_task.report') }}" class="nav-link">Posted Task</a>
                         </li>
                         @endcan
                         @can('worked_task.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.worked_task.report') }}" class="nav-link">Worked Task
+                            <a href="{{ route('backend.worked_task.report') }}" class="nav-link">Worked Task</a>
                         </li>
                         @endcan
                     </ul>

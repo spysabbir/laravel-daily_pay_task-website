@@ -33,7 +33,7 @@
                     <strong class="text-info">Warnings From Work:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }},
                     <strong class="text-info">Screenshots:</strong> Free: 1 & Extra: {{ $postTask->extra_screenshots }} = Total: {{ $postTask->extra_screenshots + 1 }},
                     <strong class="text-info">Boosted Time:</strong> {{ $postTask->boosted_time ? $postTask->boosted_time . ' Minutes' : 0 }} ,
-                    <strong class="text-info">Running Day:</strong> {{ $postTask->running_day }} Days
+                    <strong class="text-info">Work Duration:</strong> {{ $postTask->work_duration }} Days
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Charge:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }},

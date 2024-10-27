@@ -28,7 +28,7 @@
                     <strong class="text-info">Warnings From Work:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }},
                     <strong class="text-info">Screenshots:</strong> Free: 1 & Extra: {{ $postTask->extra_screenshots }} = Total: {{ $postTask->extra_screenshots + 1 }},
                     <strong class="text-info">Boosted Time:</strong> {{ $postTask->boosted_time ? $postTask->boosted_time . ' Minutes' : 0 }} ,
-                    <strong class="text-info">Running Day:</strong> {{ $postTask->running_day }} Days
+                    <strong class="text-info">Work Duration:</strong> {{ $postTask->work_duration }} Days
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Charge:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }},
@@ -87,12 +87,12 @@
             <div class="card-body">
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                             <button type="button" class="btn btn-sm btn-success" id="approvedAll">All Pending Item Approved</button>
                             <button type="button" class="btn btn-sm btn-info" id="selectedItemApproved">Selected Item Approved</button>
                             <button type="button" class="btn btn-sm btn-warning" id="selectedItemRejected">Selected Item Rejected</button>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
@@ -101,6 +101,11 @@
                                     <option value="Rejected">Rejected</option>
                                     <option value="Reviewed">Reviewed</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <button class="btn btn-danger btn-block" id="clear_filters">Clear Filters</button>
                             </div>
                         </div>
                     </div>
@@ -210,6 +215,21 @@
             }
         });
 
+        // Store filters in localStorage
+        function storeFilters() {
+            localStorage.setItem('filter_status', $('#filter_status').val());
+        }
+
+        // Restore filters from localStorage
+        function restoreFilters() {
+            if (localStorage.getItem('filter_status')) {
+                $('#filter_status').val(localStorage.getItem('filter_status'));
+            }
+        }
+
+        // Restore filters before initializing DataTable
+        restoreFilters();
+
         // Read Data
         $('#allDataTable').DataTable({
             processing: true,
@@ -235,6 +255,7 @@
 
         // Filter Data
         $('.filter_data').change(function(){
+            storeFilters();
             $('#allDataTable').DataTable().ajax.reload();
         });
 
@@ -469,6 +490,13 @@
                     }
                 },
             });
+        });
+
+        // Optionally, clear filters when needed
+        $('#clear_filters').on('click', function() {
+            localStorage.removeItem('filter_status');
+            $('#filter_status').val('');
+            $('#allDataTable').DataTable().ajax.reload();
         });
     });
 </script>

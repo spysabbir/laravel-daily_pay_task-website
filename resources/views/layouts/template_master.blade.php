@@ -369,7 +369,6 @@
                     <div>
                         <h4 class="mb-3 mb-md-0">Welcome to @yield('title')</h4>
                     </div>
-                    @if (request()->routeIs('dashboard') || request()->routeIs('backend.dashboard'))
                     <div class="d-flex align-items-center flex-wrap text-nowrap">
                         <div class="input-group date datepicker wd-200 me-2 mb-2 mb-md-0" id="dashboardDate">
                             <span class="input-group-text input-group-addon bg-transparent border-primary">
@@ -377,14 +376,6 @@
                             <input type="text" class="form-control border-primary bg-transparent" disabled>
                         </div>
                     </div>
-                    @else
-                    <nav class="page-breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ Auth::user()->user_type === 'Backend' ? route('backend.dashboard') : route('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">@yield('title')</li>
-                        </ol>
-                    </nav>
-                    @endif
                 </div>
 
                 @yield('content')

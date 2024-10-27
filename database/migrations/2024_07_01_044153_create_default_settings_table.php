@@ -28,7 +28,7 @@ return new class extends Migration
             $table->decimal('task_posting_charge_percentage', 10, 2)->nullable();
             $table->decimal('task_posting_additional_screenshot_charge', 10, 2)->nullable();
             $table->decimal('task_posting_boosted_time_charge', 10, 2)->nullable();
-            $table->decimal('task_posting_additional_running_day_charge', 10, 2)->nullable();
+            $table->decimal('task_posting_additional_work_duration_charge', 10, 2)->nullable();
             $table->decimal('task_posting_min_budget', 10, 2)->nullable();
             $table->decimal('task_proof_max_bonus_amount', 10, 2)->nullable();
             $table->integer('task_proof_monthly_free_review_time')->nullable();

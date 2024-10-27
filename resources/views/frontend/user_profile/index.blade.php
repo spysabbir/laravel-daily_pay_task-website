@@ -14,7 +14,8 @@
                     <div class="d-flex">
                         <img class="wd-70 rounded-circle" id="userProfilePhotoPreview" src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="profile">
                         <div>
-                            <h4 class="ms-3 text-dark">{{ $user->name }}</h4>
+                            <h4 class="ms-3 text-dark">Name: {{ $user->name }}</h4>
+                            <p class="ms-3 text-info">Last Active: {{ Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}</p>
                         </div>
                     </div>
                 </div>
@@ -36,7 +37,7 @@
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="reportModalLabel">Report</h5>
+                                    <h5 class="modal-title" id="reportModalLabel">Report User</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                 </div>
                                 <form class="forms-sample" id="reportForm" enctype="multipart/form-data">
@@ -187,7 +188,7 @@
             event.preventDefault();
             var formData = new FormData(this);
             $.ajax({
-                url: "{{ route('report_user', $user->id) }}",
+                url: "{{ route('report.send', $user->id) }}",
                 type: 'POST',
                 data: formData,
                 processData: false,

@@ -186,18 +186,18 @@
                                     <div class="invalid-feedback">Please enter the boosted time.</div>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
-                                    <label for="running_day" class="form-label">
-                                        Running Day <small class="text-danger">* Required </small>
+                                    <label for="work_duration" class="form-label">
+                                        Work Duration <small class="text-danger">* Required </small>
                                     </label>
-                                    <select class="form-select" name="running_day" id="running_day" required>
+                                    <select class="form-select" name="work_duration" id="work_duration" required>
                                         <option value="3" selected>3 Days</option>
                                         <option value="4">4 Days</option>
                                         <option value="5">5 Days</option>
                                         <option value="6">6 Days</option>
                                         <option value="7">1 Week</option>
                                     </select>
-                                    <small class="text-info">* When running day is over the task will be closed automatically.</small>
-                                    <div class="invalid-feedback">Please enter the running day.</div>
+                                    <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
+                                    <div class="invalid-feedback">Please enter the work duration.</div>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="task_charge" class="form-label">Task Charge</label>
@@ -343,15 +343,31 @@
             }
         });
 
-        // thumbnail preview
-        $('#thumbnail').change(function() {
-            var file = this.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#thumbnailPreview').attr('src', e.target.result).show();
-                };
-                reader.readAsDataURL(file);
+        // thumbnail preview and validation
+        document.getElementById('thumbnail').addEventListener('change', function() {
+            const file = this.files[0];
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            const maxSize = 2 * 1024 * 1024; // 2MB
+
+            if (file && allowedTypes.includes(file.type)) {
+                if (file.size > maxSize) {
+                    $('#thumbnailError').text('File size is too large. Max size is 2MB.');
+                    this.value = ''; // Clear file input
+                    // Hide preview image
+                    $('#thumbnailPreview').hide();
+                } else {
+                    $('#thumbnailError').text('');
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#thumbnailPreview').attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            } else {
+                $('#thumbnailError').text('Please select a valid image file (jpeg, jpg, png).');
+                this.value = ''; // Clear file input
+                // Hide preview image
+                $('#thumbnailPreview').hide();
             }
         });
 

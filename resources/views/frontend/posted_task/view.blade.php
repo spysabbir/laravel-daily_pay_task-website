@@ -97,10 +97,10 @@
                             </tr>
                             <tr>
                                 <td>
-                                    Running Day <br>
-                                    <span class="text-info">When running day is over the task will be closed automatically.</span>
+                                    Work Duration <br>
+                                    <span class="text-info">When work duration is over the task will be canceled automatically.</span>
                                 </td>
-                                <td>{{ $postTask->running_day }} Days</td>
+                                <td>{{ $postTask->work_duration }} Days</td>
                             </tr>
                             <tr>
                                 <td>Task Charge</td>

@@ -24,7 +24,7 @@
                                 <th>Type</th>
                                 <th>Title</th>
                                 <th>Message</th>
-                                <th>Date & Time</th>
+                                <th>Time</th>
                                 <th>Status</th>
                             </tr>
                         </thead>

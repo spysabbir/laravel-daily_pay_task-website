@@ -32,7 +32,7 @@
                         </div>
                         <div>
                             <p>Approved Date: {{ date('d F, Y  H:i A', strtotime($taskDetails->approved_at)) }}</p>
-                            <p>Running Day: {{ $taskDetails->running_day }} Days</p>
+                            <p>Work Duration: {{ $taskDetails->work_duration }} Days</p>
                         </div>
                         <div>
                             <!-- Report Post Task Button -->
@@ -48,6 +48,32 @@
                                             <h5 class="modal-title" id="reportPostTaskModalLabel">Report Post Task</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                         </div>
+                                        @if ($reportPostTask)
+                                        <div class="modal-body">
+                                            @if ($reportPostTask->status == 'Pending')
+                                            <div class="alert alert-warning">
+                                                <strong>Post Task already reported! Please wait for the admin's response.</strong>
+                                            </div>
+                                            @else
+                                            <div class="alert alert-success">
+                                                <strong>Post Task report has been resolved! Please check the report panel for more details.</strong>
+                                            </div>
+                                            @endif
+                                            <div>
+                                                <p>Report Reason: {{ $reportPostTask->reason }}</p>
+                                                <p>Report Date: {{ date('d F, Y  H:i A', strtotime($reportPostTask->created_at)) }}</p>
+                                                @if ($reportPostTask->photo)
+                                                <p>Report Photo:</p>
+                                                <a href="{{ asset('uploads/report_photo') }}/{{ $reportPostTask->photo }}" target="_blank">
+                                                    <img src="{{ asset('uploads/report_photo') }}/{{ $reportPostTask->photo }}" alt="Report photo" class="img-fluid my-2" style="width: 180px; height: 180px">
+                                                </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                        @else
                                         <form class="forms-sample" id="reportPostTaskForm" action="{{ route('report.send', $taskDetails->id) }}" enctype="multipart/form-data">
                                             @csrf
                                             <input type="hidden" name="post_task_id" value="{{ $taskDetails->id }}">
@@ -69,6 +95,7 @@
                                                 <button type="submit" class="btn btn-primary">Report</button>
                                             </div>
                                         </form>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +196,7 @@
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="reportModalLabel">Report</h5>
+                                    <h5 class="modal-title" id="reportModalLabel">Report User</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                 </div>
                                 <form class="forms-sample" id="reportForm" action="{{ route('report.send', $taskDetails->user->id) }}" enctype="multipart/form-data">

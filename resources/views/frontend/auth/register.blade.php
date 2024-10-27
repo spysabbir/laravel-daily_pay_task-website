@@ -22,7 +22,6 @@
                     <div class="form-group">
                         <label>Enter Email <span class="text-danger">*</span></label>
                         <input type="email" class="form-control" placeholder="Enter Your Email" name="email" value="{{ old('email') }}" required>
-                        <small class="text-info d-block">The email must follow the format " ****@****.*** ".</small>
                         @error('email')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

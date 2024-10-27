@@ -100,7 +100,7 @@ class PostedTaskController extends Controller
             'earnings_from_work' => 'required|numeric|min:1',
             'extra_screenshots' => 'required|numeric|min:0',
             'boosted_time' => 'required|numeric|min:0',
-            'running_day' => 'required|numeric|min:1',
+            'work_duration' => 'required|numeric|min:1',
         ]);
 
         if($request->hasFile('thumbnail')){
@@ -134,7 +134,7 @@ class PostedTaskController extends Controller
             'earnings_from_work' => $request->earnings_from_work,
             'extra_screenshots' => $request->extra_screenshots,
             'boosted_time' => $request->boosted_time,
-            'running_day' => $request->running_day,
+            'work_duration' => $request->work_duration,
             'charge' => $task_post_charge,
             'site_charge' => $site_charge,
             'total_charge' => $task_post_charge + $site_charge,
@@ -172,7 +172,7 @@ class PostedTaskController extends Controller
             'earnings_from_work' => 'required|numeric|min:1',
             'extra_screenshots' => 'required|numeric|min:0',
             'boosted_time' => 'required|numeric|min:0',
-            'running_day' => 'required|numeric|min:1',
+            'work_duration' => 'required|numeric|min:1',
         ]);
 
         $postTask = PostTask::findOrFail($id);
@@ -207,7 +207,7 @@ class PostedTaskController extends Controller
             'earnings_from_work' => $request->earnings_from_work,
             'extra_screenshots' => $request->extra_screenshots,
             'boosted_time' => $request->boosted_time,
-            'running_day' => $request->running_day,
+            'work_duration' => $request->work_duration,
             'charge' => $task_post_charge,
             'site_charge' => $site_charge,
             'total_charge' => $task_post_charge + $site_charge,
@@ -276,7 +276,7 @@ class PostedTaskController extends Controller
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Rejected');
 
-                $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+                $query->select('post_tasks.*')->orderBy('rejected_at', 'desc');
 
                 $taskListRejected = $query->get();
 
@@ -315,7 +315,7 @@ class PostedTaskController extends Controller
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Canceled');
 
-                $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+                $query->select('post_tasks.*')->orderBy('canceled_at', 'desc');
 
                 $taskListCanceled = $query->get();
 
@@ -351,19 +351,27 @@ class PostedTaskController extends Controller
                         }
                         return $proofStatus;
                     })
+                    ->editColumn('cancellation_reason', function ($row) {
+                        if ($row->cancellation_reason == 'Work duration exceeded') {
+                            return '<span class="badge bg-danger">' . $row->cancellation_reason . '</span>';
+                        } else {
+                            return '<span class="badge bg-warning">' . $row->cancellation_reason . '</span>';
+                        }
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
                     ->editColumn('canceled_at', function ($row) {
-                        return $row->canceled_by == auth()->user()->id ? date('d M Y h:i A', strtotime($row->canceled_at)) : 'Canceled by ' . $row->canceledBy->name . ' at ' . date('d M Y h:i A', strtotime($row->canceled_at));
+                        return date('d M Y h:i A', strtotime($row->canceled_at));
                     })
                     ->editColumn('action', function ($row) {
                         $btn = '
+                            <a href="' . route('proof_task.list', encrypt($row->id)) . '" class="btn btn-success btn-xs">Check</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['proof_submitted', 'proof_status', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_status', 'cancellation_reason', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.canceled');
@@ -383,7 +391,7 @@ class PostedTaskController extends Controller
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Paused');
 
-                $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+                $query->select('post_tasks.*')->orderBy('paused_at', 'desc');
 
                 $taskListPaused = $query->get();
 
@@ -420,7 +428,7 @@ class PostedTaskController extends Controller
                         return $proofStatus;
                     })
                     ->editColumn('paused_at', function ($row) {
-                        return $row->paused_by == auth()->user()->id ? date('d M Y h:i A', strtotime($row->paused_at)) : 'Paused by ' . $row->pausedBy->name . ' at ' . date('d M Y h:i A', strtotime($row->paused_at));
+                        return date('d M Y h:i A', strtotime($row->paused_at));
                     })
                     ->editColumn('action', function ($row) {
                         $btn = '
@@ -504,7 +512,7 @@ class PostedTaskController extends Controller
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Running');
 
-                $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+                $query->select('post_tasks.*')->orderBy('approved_at', 'desc');
 
                 $taskListRunning = $query->get();
 
@@ -872,7 +880,7 @@ class PostedTaskController extends Controller
             if ($request->ajax()) {
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Completed');
 
-                $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+                $query->select('post_tasks.*')->orderBy('completed_at', 'desc');
 
                 $taskListCompleted = $query->get();
 
@@ -910,25 +918,32 @@ class PostedTaskController extends Controller
                     })
                     ->editColumn('total_charge', function ($row) {
                         $total_charge = '
-                            <span class="badge bg-primary">' . $row->total_charge .' '. get_site_settings('site_currency_symbol') . '</span>
+                            <span class="badge bg-primary">' . get_site_settings('site_currency_symbol'). ' ' . $row->total_charge . '</span>
                         ';
                         return $total_charge;
                     })
                     ->editColumn('charge_status', function ($row) {
                         $rejectedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')->count();
                         $proofStatus = '
-                            <span class="badge bg-success"> Expencese: ' . $row->total_charge - ($row->earnings_from_work * $rejectedProof) .' '. get_site_settings('site_currency_symbol') . '</span>
-                            <span class="badge bg-danger"> Return: ' . $row->earnings_from_work * $rejectedProof .' '. get_site_settings('site_currency_symbol') . '</span>
+                            <span class="badge bg-success"> Expencese: ' . get_site_settings('site_currency_symbol') . ' ' . $row->total_charge - ($row->earnings_from_work * $rejectedProof) . '</span>
+                            <span class="badge bg-danger"> Refund: ' . get_site_settings('site_currency_symbol') . ' ' . $row->earnings_from_work * $rejectedProof . '</span>
                         ';
                         return $proofStatus;
                     })
+                    ->editColumn('approved_at', function ($row) {
+                        return '<span class="badge bg-dark">' . date('d M Y h:i A', strtotime($row->approved_at)) . '</span>';
+                    })
+                    ->editColumn('completed_at', function ($row) {
+                        return '<span class="badge bg-dark">' . date('d M Y h:i A', strtotime($row->completed_at)) . '</span>';
+                    })
                     ->addColumn('action', function ($row) {
                         $status = '
+                            <a href="' . route('proof_task.list', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                         ';
                         return $status;
                     })
-                    ->rawColumns(['proof_submitted', 'proof_status', 'total_charge', 'charge_status', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_status', 'total_charge', 'charge_status', 'approved_at', 'completed_at', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.completed');

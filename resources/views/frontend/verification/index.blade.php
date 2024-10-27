@@ -108,8 +108,8 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label for="id_type" class="form-label">Id Type</label>
-                                    <select class="form-select" id="id_type" name="id_type">
+                                    <label for="id_type" class="form-label">Id Type <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="id_type" name="id_type" required>
                                         <option value="">Select Id Type</option>
                                         <option value="NID" {{ old('id_type', $verification->id_type ?? '') === 'NID' ? 'selected' : '' }}>NID</option>
                                         <option value="Passport" {{ old('id_type', $verification->id_type ?? '') === 'Passport' ? 'selected' : '' }}>Passport</option>
@@ -122,8 +122,8 @@
                             </div><!-- Col -->
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label for="id_number" class="form-label">Id Number</label>
-                                    <input type="text" class="form-control" id="id_number" name="id_number" value="{{ old('id_number', $verification->id_number ?? '') }}" placeholder="Enter Id Number">
+                                    <label for="id_number" class="form-label">Id Number <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="id_number" name="id_number" value="{{ old('id_number', $verification->id_number ?? '') }}" placeholder="Enter Id Number" required>
                                 </div>
                                 @error('id_number')
                                     <span class="text-danger">{{ $message }}</span>
@@ -131,8 +131,10 @@
                             </div><!-- Col -->
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label for="id_front_image" class="form-label">Id Front Image</label>
+                                    <label for="id_front_image" class="form-label">Id Front Image <span class="text-danger">*</span></label>
                                     <input type="file" class="form-control" id="id_front_image" name="id_front_image" accept=".jpg, .jpeg, .png">
+                                    <small class="text-info">Id Front Image must be a valid image file (jpeg, jpg, png) and the file size must be less than 2MB.</small>
+                                    <span id="id_front_imageError" class="text-danger d-block"></span>
                                     <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image ?? '' }}" id="id_front_image_preview" class="img-fluid mt-3" style="height: 280px; display: {{ $verification && $verification->id_front_image ? 'block' : 'none' }};">
                                 </div>
                                 @error('id_front_image')
@@ -141,8 +143,10 @@
                             </div><!-- Col -->
                             <div class="col-lg-6">
                                 <div class="mb-3">
-                                    <label for="id_with_face_image" class="form-label">Id With Face Image</label>
+                                    <label for="id_with_face_image" class="form-label">Id With Face Image <span class="text-danger">*</span></label>
                                     <input type="file" class="form-control" id="id_with_face_image" name="id_with_face_image" accept=".jpg, .jpeg, .png">
+                                    <small class="text-info">Id With Face Image must be a valid image file (jpeg, jpg, png) and the file size must be less than 2MB.</small>
+                                    <span id="id_with_face_imageError" class="text-danger d-block"></span>
                                     <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image ?? '' }}" id="id_with_face_image_preview" class="img-fluid mt-3" style="height: 280px; display: {{ $verification && $verification->id_with_face_image ? 'block' : 'none' }};">
                                 </div>
                                 @error('id_with_face_image')
@@ -164,21 +168,61 @@
 @section('script')
 <script>
     $(document).ready(function() {
-        // Image Preview
-        $('#id_front_image').change(function() {
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                $('#id_front_image_preview').attr('src', e.target.result).css('display', 'block');
+
+        // Id Front Image Preview
+        document.getElementById('id_front_image').addEventListener('change', function() {
+            const file = this.files[0];
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            const maxSize = 2 * 1024 * 1024; // 2MB
+
+            if (file && allowedTypes.includes(file.type)) {
+                if (file.size > maxSize) {
+                    $('#id_front_imageError').text('File size is too large. Max size is 2MB.');
+                    this.value = ''; // Clear file input
+                    // Hide preview image
+                    $('#id_front_image_preview').hide();
+                } else {
+                    $('#id_front_imageError').text('');
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#id_front_image_preview').attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            } else {
+                $('#id_front_imageError').text('Please select a valid image file (jpeg, jpg, png).');
+                this.value = ''; // Clear file input
+                // Hide preview image
+                $('#id_front_image_preview').hide();
             }
-            reader.readAsDataURL(this.files[0]);
         });
 
-        $('#id_with_face_image').change(function() {
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                $('#id_with_face_image_preview').attr('src', e.target.result).css('display', 'block');
+        // Id With Face Image Preview
+        document.getElementById('id_with_face_image').addEventListener('change', function() {
+            const file = this.files[0];
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            const maxSize = 2 * 1024 * 1024; // 2MB
+
+            if (file && allowedTypes.includes(file.type)) {
+                if (file.size > maxSize) {
+                    $('#id_with_face_imageError').text('File size is too large. Max size is 2MB.');
+                    this.value = ''; // Clear file input
+                    // Hide preview image
+                    $('#id_with_face_image_preview').hide();
+                } else {
+                    $('#id_with_face_imageError').text('');
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#id_with_face_image_preview').attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            } else {
+                $('#id_with_face_imageError').text('Please select a valid image file (jpeg, jpg, png).');
+                this.value = ''; // Clear file input
+                // Hide preview image
+                $('#id_with_face_image_preview').hide();
             }
-            reader.readAsDataURL(this.files[0]);
         });
     });
 </script>

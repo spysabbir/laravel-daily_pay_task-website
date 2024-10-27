@@ -93,8 +93,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>Running Day</th>
-                    <td>{{ $postTask->running_day }} Days</td>
+                    <th>Work Duration</th>
+                    <td>{{ $postTask->work_duration }} Days</td>
                 </tr>
                 <tr>
                     <th>Task Charge</th>

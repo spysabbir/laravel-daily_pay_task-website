@@ -45,7 +45,7 @@ Schedule::call(function () {
 
         if ($now->isSameMinute($activeTime)) {
             $userStatus->update(['blocked_resolved' => $now]);
-            
+
             $user = User::find($userStatus->user_id);
             if ($user) {
                 $user->update(['status' => 'Active']);
@@ -80,6 +80,45 @@ Schedule::call(function () {
             if ($postTask) {
                 User::where('id', $proofTask->user_id)->increment('withdraw_balance', $postTask->earnings_from_work);
             }
+        }
+    }
+})->everyMinute();
+
+// Task proof status update to Completed
+Schedule::call(function () {
+    $postTasks = PostTask::where('status', 'Running')->get();
+
+    foreach ($postTasks as $postTask) {
+        $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
+
+        if ($postTask->work_needed == $proofTasks) {
+            $postTask->update([
+                'status' => 'Completed',
+                'completed_at' => now(),
+            ]);
+        }
+    }
+})->everyMinute();
+
+// Task proof status update to Canceled
+Schedule::call(function () {
+    $postTasks = PostTask::where('status', 'Running')->get();
+
+    foreach ($postTasks as $postTask) {
+        $completedTime = Carbon::parse($postTask->approved_at)->addDays($postTask->work_duration);
+
+        if (now()->isSameMinute($completedTime)) {
+            $postTask->update([
+                'status' => 'Canceled',
+                'cancellation_reason' => 'Work duration exceeded',
+                'canceled_by' => 1,
+                'canceled_at' => now(),
+            ]);
+
+            $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
+
+            $refundAmount = $postTask->total_charge - (($postTask->total_charge / $postTask->work_needed) * $proofTasks);
+            User::where('id', $postTask->user_id)->increment('deposit_balance', $refundAmount);
         }
     }
 })->everyMinute();

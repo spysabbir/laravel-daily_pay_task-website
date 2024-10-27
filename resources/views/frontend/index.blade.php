@@ -111,6 +111,7 @@
                 <div class="category-item">
                     <h3 class="text-center">No Category Found</h3>
                 </div>
+            </div>
             @endforelse
         </div>
     </div>
@@ -175,9 +176,9 @@
                                 </span>
                                 <span>
                                     <strong>
-                                        Running:
+                                        Work Duration:
                                         <br>
-                                        {{ $postTask->running_day }} Days
+                                        {{ $postTask->work_duration }} Days
                                     </strong>
                                 </span>
                             </div>
