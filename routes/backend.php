@@ -56,12 +56,12 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('expense/delete/{id}', [ExpenseController::class, 'delete'])->name('expense.delete');
     Route::get('expense/status/{id}', [ExpenseController::class, 'status'])->name('expense.status');
     // Report
-    Route::get('report/deposit', [ReportController::class, 'depositReport'])->name('deposit.report');
-    Route::get('report/withdraw', [ReportController::class, 'withdrawReport'])->name('withdraw.report');
-    Route::get('report/bonus', [ReportController::class, 'bonusReport'])->name('bonus.report');
-    Route::get('report/expense', [ReportController::class, 'expenseReport'])->name('expense.report');
-    Route::get('report/posted/task', [ReportController::class, 'postedTaskReport'])->name('posted_task.report');
-    Route::get('report/worked/task', [ReportController::class, 'workedTaskReport'])->name('worked_task.report');
+    Route::get('report-deposit', [ReportController::class, 'depositReport'])->name('deposit.report');
+    Route::get('report-withdraw', [ReportController::class, 'withdrawReport'])->name('withdraw.report');
+    Route::get('report-bonus', [ReportController::class, 'bonusReport'])->name('bonus.report');
+    Route::get('report-expense', [ReportController::class, 'expenseReport'])->name('expense.report');
+    Route::get('report-posted-task', [ReportController::class, 'postedTaskReport'])->name('posted_task.report');
+    Route::get('report-worked-task', [ReportController::class, 'workedTaskReport'])->name('worked_task.report');
     // Employee
     Route::resource('employee', EmployeeController::class);
     Route::get('employee-inactive', [EmployeeController::class, 'inactive'])->name('employee.inactive');
@@ -167,10 +167,10 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('worked_task_check/{id}', [TaskController::class, 'workedTaskCheck'])->name('worked_task_check');
     Route::put('worked_task_check_update/{id}', [TaskController::class, 'workedTaskCheckUpdate'])->name('worked_task_check_update');
     // Report User
-    Route::get('report_user-pending', [BackendController::class, 'reportUserPending'])->name('report_user.pending');
-    Route::get('report_user-resolved', [BackendController::class, 'reportUserResolved'])->name('report_user.resolved');
-    Route::get('report_user-view/{id}', [BackendController::class, 'reportUserView'])->name('report_user.view');
-    Route::post('report_user-reply', [BackendController::class, 'reportUserReply'])->name('report_user.reply');
+    Route::get('report_list-pending', [BackendController::class, 'reportListPending'])->name('report_list.pending');
+    Route::get('report_list-resolved', [BackendController::class, 'reportListResolved'])->name('report_list.resolved');
+    Route::get('report-view/{id}', [BackendController::class, 'reportView'])->name('report.view');
+    Route::post('report-reply', [BackendController::class, 'reportReply'])->name('report.reply');
     // Support
     Route::get('support', [BackendController::class, 'support'])->name('support');
     Route::get('/get/support/users/{userId}', [BackendController::class, 'getSupportUsers'])->name('get.support.users');

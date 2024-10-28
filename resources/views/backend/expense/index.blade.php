@@ -102,7 +102,7 @@
             <div class="card-body">
                 <div class="filter mb-3">
                     <div class="row">
-                        <div class="col-md-3 mb-3">
+                        <div class="col-lg-3 mb-3">
                             <div class="form-group">
                                 <label for="filter_status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
@@ -112,7 +112,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-lg-3 mb-3">
                             <div class="form-group">
                                 <label for="filter_expense_category_id" class="form-label">Category</label>
                                 <select class="form-select filter_data" id="filter_expense_category_id">
@@ -123,7 +123,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-lg-3 mb-3">
                             <div class="form-group">
                                 <label for="filter_expense_date" class="form-label">Expense Date</label>
                                 <input type="date" class="form-control filter_data" id="filter_expense_date">

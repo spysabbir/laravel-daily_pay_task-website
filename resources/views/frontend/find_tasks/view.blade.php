@@ -74,7 +74,7 @@
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         </div>
                                         @else
-                                        <form class="forms-sample" id="reportPostTaskForm" action="{{ route('report.send', $taskDetails->id) }}" enctype="multipart/form-data">
+                                        <form class="forms-sample" id="reportPostTaskForm" action="{{ route('report.send', $taskDetails->user_id) }}" enctype="multipart/form-data">
                                             @csrf
                                             <input type="hidden" name="post_task_id" value="{{ $taskDetails->id }}">
                                             <input type="hidden" name="type" value="Post Task">
@@ -85,9 +85,10 @@
                                                     <span class="text-danger error-text reason_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="photo" class="form-label">Photo</label>
-                                                    <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .jpeg, .png">
-                                                    <span class="text-danger error-text photo_error"></span>
+                                                    <label for="reportPostTaskPhoto" class="form-label">Photo</label>
+                                                    <input type="file" class="form-control" id="reportPostTaskPhoto" name="photo" accept=".jpg, .jpeg, .png">
+                                                    <span class="text-danger error-text photo_error d-block"></span>
+                                                    <img src="" alt="Photo" id="reportPostTaskPhotoPreview" class="mt-2" style="display: none; width: 100px; height: 100px;">
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -211,7 +212,8 @@
                                         <div class="mb-3">
                                             <label for="photo" class="form-label">Photo</label>
                                             <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .jpeg, .png">
-                                            <span class="text-danger error-text photo_error"></span>
+                                            <span class="text-danger error-text photo_error d-block"></span>
+                                            <img src="" alt="Photo" id="photoPreview" class="mt-2" style="display: none; width: 100px; height: 100px;">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -247,42 +249,6 @@
         });
 
         // Client-side validation
-        // $('#proofTaskForm').submit(function(event) {
-        //     let isValid = true;
-        //     $('.error-message').text(''); // Reset errors
-
-        //     // Validate proof answer
-        //     if ($('#proof_answer').val().trim() === '') {
-        //         $('#proof_answer_error').text('Proof answer is required.');
-        //         isValid = false;
-        //     }
-
-        //     // Validate proof photos dynamically
-        //     @for ($i = 0; $i < $taskDetails->extra_screenshots + 1; $i++)
-        //         if ($('#proof_photo_{{ $i }}').val() === '') {
-        //             $('#proof_photo_{{ $i }}_error').text('Proof photo {{ $i + 1 }} is required.');
-        //             isValid = false;
-        //         } else {
-        //             let file = $('#proof_photo_{{ $i }}')[0].files[0];
-        //             let fileExtension = ['jpeg', 'jpg', 'png'];
-        //             let fileName = $('#proof_photo_{{ $i }}').val().split('.').pop().toLowerCase();
-
-        //             if ($.inArray(fileName, fileExtension) === -1) {
-        //                 $('#proof_photo_{{ $i }}_error').text('Only jpeg, jpg, png files are allowed.');
-        //                 isValid = false;
-        //             } else if (file.size > 2097152) {
-        //                 $('#proof_photo_{{ $i }}_error').text('File size must be less than 2 MB.');
-        //                 isValid = false;
-        //             }
-        //         }
-        //     @endfor
-
-        //     // Prevent submission if validation fails
-        //     if (!isValid) {
-        //         event.preventDefault();
-        //     }
-        // });
-
         $('#proofTaskForm').submit(function(event) {
             event.preventDefault(); // Prevent default form submission
 
@@ -333,16 +299,61 @@
             });
         });
 
+        $('textarea[name="proof_answer"]').on('input', function() {
+            var proof_answer = $(this).val().trim();
+            if (proof_answer.length > 0) {
+                $('#proof_answer_error').text(''); // Remove error proof answer when input is valid
+            }else{
+                $('#proof_answer_error').text('Proof answer is required.');
+            }
+        });
+
         // Preview proof photos
         @for ($i = 0; $i < $taskDetails->extra_screenshots + 1; $i++)
-            $('#proof_photo_{{ $i }}').change(function() {
-                let reader = new FileReader();
-                reader.onload = (e) => {
-                    $('#proof_photo_preview_{{ $i }}').attr('src', e.target.result).css('display', 'block');
+            document.getElementById('proof_photo_{{ $i }}').addEventListener('change', function() {
+                const file = this.files[0];
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                const maxSize = 2 * 1024 * 1024; // 2MB
+
+                if (file && allowedTypes.includes(file.type)) {
+                    if (file.size > maxSize) {
+                        $('#proof_photo_{{ $i }}_error').text('File size is too large. Max size is 2MB.');
+                        this.value = ''; // Clear file input
+                        // Hide preview image
+                        $('#proof_photo_preview_{{ $i }}').hide();
+                    } else {
+                        $('#proof_photo_{{ $i }}_error').text('');
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#proof_photo_preview_{{ $i }}').attr('src', e.target.result).show();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                } else {
+                    $('#proof_photo_{{ $i }}_error').text('Please select a valid image file (jpeg, jpg, png).');
+                    this.value = ''; // Clear file input
+                    // Hide preview image
+                    $('#proof_photo_preview_{{ $i }}').hide();
                 }
-                reader.readAsDataURL(this.files[0]);
             });
         @endfor
+
+        // Report User Photo Preview
+        $(document).on('change', '#photo', function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#photoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+        // Report Post Task Photo Preview
+        $(document).on('change', '#reportPostTaskPhoto', function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#reportPostTaskPhotoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
 
         // Unified form submission handler
         $('#reportForm, #reportPostTaskForm').submit(function(event) {

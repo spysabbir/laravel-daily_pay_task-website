@@ -27,38 +27,7 @@
                     </div>
                     <div class="chat-body">
                         <ul class="messages" id="chatBox">
-                            {{-- @forelse ($supports as $support)
-                            @if ($support->sender_id  === Auth::user()->id)
-                            <li class="message-item friend">
-                                <img src="{{ asset('uploads/profile_photo') }}/{{ $support->sender->profile_photo }}" class="img-xs rounded-circle" alt="avatar">
-                                <div class="content">
-                                    <div class="message">
-                                        <div class="bubble">
-                                            <p>{{ $support->message }}</p>
-                                        </div>
-                                        <span>{{ $support->created_at->diffForHumans() }}</span>
-                                    </div>
-                                </div>
-                            </li>
-                            @endif
-                            @if ($support->receiver_id  === Auth::user()->id)
-                            <li class="message-item me">
-                                <img src="{{ asset('uploads/profile_photo') }}/{{ $support->receiver->profile_photo }}" class="img-xs rounded-circle" alt="avatar">
-                                <div class="content">
-                                    <div class="message">
-                                        <div class="bubble">
-                                            <p>{{ $support->message }}</p>
-                                        </div>
-                                        <span>{{ $support->created_at->diffForHumans() }}</span>
-                                    </div>
-                                </div>
-                            </li>
-                            @endif
-                            @empty
-                                <div class="alert alert-primary text-center" id="noMessage">
-                                    <strong>No message found!</strong>
-                                </div>
-                            @endforelse --}}
+                            <!-- Messages will be appended here -->
                         </ul>
                     </div>
                     <div class="chat-footer border-top pt-2">

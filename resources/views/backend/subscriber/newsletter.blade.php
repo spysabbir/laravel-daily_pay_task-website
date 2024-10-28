@@ -22,7 +22,7 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-lg-4 mb-3">
+                                            <div class="col-xl-4 col-lg-6 mb-3">
                                                 <label for="mail_type" class="form-label">Mail Type</label>
                                                 <select class="form-select" name="mail_type" id="mail_type">
                                                     <option value="">-- Select Mail Type --</option>
@@ -31,7 +31,7 @@
                                                 </select>
                                                 <span class="text-danger error-text mail_type_error"></span>
                                             </div>
-                                            <div class="col-lg-4 mb-3">
+                                            <div class="col-xl-4 col-lg-6 mb-3">
                                                 <label for="status" class="form-label">Status</label>
                                                 <select class="form-select" name="status" id="status">
                                                     <option value="">-- Select Status --</option>
@@ -40,7 +40,7 @@
                                                 </select>
                                                 <span class="text-danger error-text status_error"></span>
                                             </div>
-                                            <div class="col-lg-4 mb-3" id="sent_at_div">
+                                            <div class="col-xl-4 col-lg-6 mb-3" id="sent_at_div">
                                                 <label for="sent_at" class="form-label">Send At</label>
                                                 <input type="datetime-local" class="form-control" name="sent_at" id="sent_at">
                                                 <span class="text-danger error-text sent_at_error"></span>

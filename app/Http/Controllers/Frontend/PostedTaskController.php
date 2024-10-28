@@ -698,14 +698,29 @@ class PostedTaskController extends Controller
     {
         $proofTask = ProofTask::findOrFail($id);
 
-        $reportStatus = Report::where('proof_task_id', $proofTask->id)->where('user_id', $id)->first();
+        $reportStatus = Report::where('user_id', $proofTask->user_id)
+                        ->where('post_task_id', $proofTask->post_task_id)
+                        ->where('proof_task_id', $proofTask->id)
+                        ->first();
+
+        if ($reportStatus) {
+            $formattedReportStatus = [
+                'status' => $reportStatus->status,
+                'reason' => $reportStatus->reason,
+                'created_at' => $reportStatus->created_at->format('d M Y h:i A'),
+                'photo' => $reportStatus->photo,
+            ];
+        } else {
+            $formattedReportStatus = null; // Handle case when no report is found
+        }
 
         return response()->json([
             'status' => 200,
-            'reportStatus' => $reportStatus,
-            'proofTask' => $proofTask
+            'reportStatus' => $formattedReportStatus,
+            'proofTask' => $proofTask,
         ]);
     }
+
 
     public function proofTaskApprovedAll($id)
     {

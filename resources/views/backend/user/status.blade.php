@@ -7,7 +7,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-info table-striped table-hover">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>Status</th>
@@ -50,23 +50,19 @@
             @csrf
             <input type="hidden" id="user_id" value="{{ $user->id }}">
             <div class="mb-3">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <label for="user_status" class="form-label">User Status</label>
-                        <select class="form-select" id="user_status" name="status">
-                            <option value="">-- Select Status --</option>
-                            <option value="Active">Active</option>
-                            <option value="Blocked">Blocked</option>
-                            <option value="Banned">Banned</option>
-                        </select>
-                        <span class="text-danger error-text update_status_error"></span>
-                    </div>
-                    <div class="col-lg-6" id="blocked_duration_div" style="display: none;">
-                        <label for="blocked_duration" class="form-label">Blocked Duration (in hours)</label>
-                        <input type="number" class="form-control" id="blocked_duration" name="blocked_duration" placeholder="Enter blocked duration">
-                        <span class="text-danger error-text update_blocked_duration_error"></span>
-                    </div>
-                </div>
+                <label for="user_status" class="form-label">User Status</label>
+                <select class="form-select" id="user_status" name="status">
+                    <option value="">-- Select Status --</option>
+                    <option value="Active">Active</option>
+                    <option value="Blocked">Blocked</option>
+                    <option value="Banned">Banned</option>
+                </select>
+                <span class="text-danger error-text update_status_error"></span>
+            </div>
+            <div class="mb-3" id="blocked_duration_div" style="display: none;">
+                <label for="blocked_duration" class="form-label">Blocked Duration (in hours)</label>
+                <input type="number" class="form-control" id="blocked_duration" name="blocked_duration" placeholder="Enter blocked duration">
+                <span class="text-danger error-text update_blocked_duration_error"></span>
             </div>
             <div class="mb-3">
                 <label for="reason" class="form-label">Reason</label>
@@ -77,7 +73,6 @@
         </form>
     </div>
 </div>
-
 
 <script>
     $(document).ready(function() {

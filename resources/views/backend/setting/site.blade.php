@@ -29,14 +29,14 @@
                             @enderror
                             <img width="80" height="80" class="mt-2 rounded" src="{{asset('uploads/setting_photo')}}/{{$siteSetting->site_favicon}}" id="site_faviconPreview"  alt="Site Favicon">
                         </div>
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-6 mb-3">
                             <label for="site_name" class="form-label">Site Name</label>
                             <input type="text" class="form-control" id="site_name" name="site_name" value="{{ old('site_name', $siteSetting->site_name) }}" placeholder="Site Name">
                             @error('site_name')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-6 mb-3">
                             <label for="site_url" class="form-label">Site Url</label>
                             <input type="text" class="form-control" id="site_url" name="site_url" value="{{ old('site_url', $siteSetting->site_url) }}" placeholder="Site Url">
                             @error('site_url')
@@ -90,28 +90,28 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-6 col-sm-6 mb-3">
                             <label for="site_main_email" class="form-label">Site Main Email</label>
                             <input type="text" class="form-control" id="site_main_email" name="site_main_email" value="{{ old('site_main_email', $siteSetting->site_main_email) }}" placeholder="Site Main Email">
                             @error('site_main_email')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-6 col-sm-6 mb-3">
                             <label for="site_support_email" class="form-label">Site Support Email</label>
                             <input type="text" class="form-control" id="site_support_email" name="site_support_email" value="{{ old('site_support_email', $siteSetting->site_support_email) }}" placeholder="Site Support Email">
                             @error('site_support_email')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-6 col-sm-6 mb-3">
                             <label for="site_main_phone" class="form-label">Site Main Phone</label>
                             <input type="text" class="form-control" id="site_main_phone" name="site_main_phone" value="{{ old('site_main_phone', $siteSetting->site_main_phone) }}" placeholder="Site Main Phone">
                             @error('site_main_phone')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-6 col-sm-6 mb-3">
                             <label for="site_support_phone" class="form-label">Site Support Phone</label>
                             <input type="text" class="form-control" id="site_support_phone" name="site_support_phone" value="{{ old('site_support_phone', $siteSetting->site_support_phone) }}" placeholder="Site Support Phone">
                             @error('site_support_phone')
@@ -126,39 +126,39 @@
                             <label for="site_notice" class="form-label">Site Notice</label>
                             <textarea class="form-control" id="site_notice" name="site_notice" rows="4" placeholder="Site Notice">{{ old('site_notice', $siteSetting->site_notice) }}</textarea>
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_facebook_url" class="form-label">Site Facebook Url</label>
                             <input type="text" class="form-control" id="site_facebook_url" name="site_facebook_url" value="{{ old('site_facebook_url', $siteSetting->site_facebook_url) }}" placeholder="Site Facebook Url">
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_twitter_url" class="form-label">Site Twitter Url</label>
                             <input type="text" class="form-control" id="site_twitter_url" name="site_twitter_url" value="{{ old('site_twitter_url', $siteSetting->site_twitter_url) }}" placeholder="Site Twitter Url">
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_instagram_url" class="form-label">Site Instagram Url</label>
                             <input type="text" class="form-control" id="site_instagram_url" name="site_instagram_url" value="{{ old('site_instagram_url', $siteSetting->site_instagram_url) }}" placeholder="Site Instagram Url">
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_linkedin_url" class="form-label">Site Linkedin Url</label>
                             <input type="text" class="form-control" id="site_linkedin_url" name="site_linkedin_url" value="{{ old('site_linkedin_url', $siteSetting->site_linkedin_url) }}" placeholder="Site Linkedin Url">
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_pinterest_url" class="form-label">Site Pinterest Url</label>
                             <input type="text" class="form-control" id="site_pinterest_url" name="site_pinterest_url" value="{{ old('site_pinterest_url', $siteSetting->site_pinterest_url) }}" placeholder="Site Pinterest Url">
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_youtube_url" class="form-label">Site Youtube Url</label>
                             <input type="text" class="form-control" id="site_youtube_url" name="site_youtube_url" value="{{ old('site_youtube_url', $siteSetting->site_youtube_url) }}" placeholder="Site Youtube Url">
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_whatsapp_url" class="form-label">Site Whatsapp Url</label>
                             <input type="text" class="form-control" id="site_whatsapp_url" name="site_whatsapp_url" value="{{ old('site_whatsapp_url', $siteSetting->site_whatsapp_url) }}" placeholder="Site Whatsapp Url">
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_telegram_url" class="form-label">Site Telegram Url</label>
                             <input type="text" class="form-control" id="site_telegram_url" name="site_telegram_url" value="{{ old('site_telegram_url', $siteSetting->site_telegram_url) }}" placeholder="Site Telegram Url">
                         </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
+                        <div class="col-lg-4 col-sm-6 mb-3">
                             <label for="site_tiktok_url" class="form-label">Site Tiktok Url</label>
                             <input type="text" class="form-control" id="site_tiktok_url" name="site_tiktok_url" value="{{ old('site_tiktok_url', $siteSetting->site_tiktok_url) }}" placeholder="Site Tiktok Url">
                         </div><!-- Col -->

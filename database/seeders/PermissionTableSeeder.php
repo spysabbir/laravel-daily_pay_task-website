@@ -178,9 +178,9 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'worked_task_list.rejected', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'worked_task_list.reviewed', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
 
-            ['name' => 'ReportUserMenu', 'group_name' => 'ReportUserManagement', 'guard_name' => 'web'],
-            ['name' => 'report_user.pending', 'group_name' => 'ReportUserManagement', 'guard_name' => 'web'],
-            ['name' => 'report_user.resolved', 'group_name' => 'ReportUserManagement', 'guard_name' => 'web'],
+            ['name' => 'ReportListMenu', 'group_name' => 'ReportListManagement', 'guard_name' => 'web'],
+            ['name' => 'report_list.pending', 'group_name' => 'ReportListManagement', 'guard_name' => 'web'],
+            ['name' => 'report_list.resolved', 'group_name' => 'ReportListManagement', 'guard_name' => 'web'],
 
             ['name' => 'SupportMenu', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
             ['name' => 'support', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],

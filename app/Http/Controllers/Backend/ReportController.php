@@ -723,7 +723,7 @@ class ReportController extends Controller
                     'total_reviewed_count_sum' => $totals->total_reviewed_count_sum,
                     'total_task_count_sum' => $totals->total_task_count_sum,
                 ])
-                ->rawColumns(['posted_date', 'pending_count', 'approved_count', 'rejected_count', 'reviewed_count', 'total_task_count'])
+                ->rawColumns(['worked_date', 'pending_count', 'approved_count', 'rejected_count', 'reviewed_count', 'total_task_count'])
                 ->make(true);
         }
 

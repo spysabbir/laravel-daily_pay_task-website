@@ -17,7 +17,7 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>Role Name</th>
-                                <th>Permissions</th>
+                                {{-- <th>Permissions</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -52,37 +52,37 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'name', name: 'name' },
-                { data: 'permissions', name: 'permissions' },
+                // { data: 'permissions', name: 'permissions' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
         // Delete Data
-        // $(document).on('click', '.deleteBtn', function(){
-        //     var id = $(this).data('id');
-        //     var url = "{{ route('backend.role-permission.destroy', ":id") }}";
-        //     url = url.replace(':id', id)
-        //     Swal.fire({
-        //         title: 'Are you sure?',
-        //         text: "You can bring it back though!",
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Yes, delete it!'
-        //         }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             $.ajax({
-        //                 url: url,
-        //                 method: 'DELETE',
-        //                 success: function(response) {
-        //                     $('#allDataTable').DataTable().ajax.reload();
-        //                     toastr.warning('Role in permission delete successfully.');
-        //                 }
-        //             });
-        //         }
-        //     })
-        // })
+        $(document).on('click', '.deleteBtn', function(){
+            var id = $(this).data('id');
+            var url = "{{ route('backend.role-permission.destroy', ":id") }}";
+            url = url.replace(':id', id)
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You can bring it back though!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        method: 'DELETE',
+                        success: function(response) {
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.warning('Role in permission delete successfully.');
+                        }
+                    });
+                }
+            })
+        })
     });
 </script>
 @endsection

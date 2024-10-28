@@ -25,7 +25,7 @@
                                             <label for="photo" class="form-label">Photo</label>
                                             <input type="file" class="form-control" id="photo" name="photo">
                                             <span class="text-danger error-text photo_error"></span>
-                                            <img src="" alt="" id="testimonial_photo" style="width: 100px; height: 100px;" class="mt-2">
+                                            <img src="" alt="Photo" id="testimonial_photo" style="max-width: 100px; max-height: 100px;" class="mt-2 d-block">
                                         </div>
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Name</label>
@@ -131,7 +131,7 @@
                                                     <label for="photo" class="form-label">Photo</label>
                                                     <input type="file" class="form-control" id="update_photo" name="photo">
                                                     <span class="text-danger error-text update_photo_error"></span>
-                                                    <img src="" alt="" id="update_testimonial_photo" style="width: 100px; height: 100px;" class="mt-2">
+                                                    <img src="" alt="Photo" id="update_testimonial_photo" style="max-width: 100px; max-height: 100px;" class="mt-2">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="testimonial_name" class="form-label">Name</label>

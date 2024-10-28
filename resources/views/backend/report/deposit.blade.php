@@ -11,7 +11,7 @@
             </div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-md-3 mb-3">
+                    <div class="col-xl-3 col-lg-6 mb-3">
                         <div class="form-group">
                             <label for="filter_method" class="form-label">Method</label>
                             <select class="form-select filter_data" id="filter_method">
@@ -23,7 +23,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-xl-3 col-lg-6 mb-3">
                         <div class="form-group">
                             <label for="filter_status" class="form-label">Status</label>
                             <select class="form-select filter_data" id="filter_status">
@@ -34,13 +34,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-xl-3 col-lg-6 mb-3">
                         <div class="form-group">
                             <label for="filter_start_date" class="form-label">Start Date</label>
                             <input type="date" class="form-control filter_data" id="filter_start_date">
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-xl-3 col-lg-6 mb-3">
                         <div class="form-group">
                             <label for="filter_end_date" class="form-label">End Date</label>
                             <input type="date" class="form-control filter_data" id="filter_end_date">

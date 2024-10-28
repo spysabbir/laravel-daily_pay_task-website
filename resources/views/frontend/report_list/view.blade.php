@@ -31,7 +31,7 @@
                 <p class="card-text">
                     <strong class="mb-2">Reply:</strong> {{ $report_reply->reply }}<br>
                     <strong class="mb-2">Resolved At:</strong> {{ date('d-F-Y h:i A', strtotime($report_reply->resolved_at)) }}<br>
-                    @if ($report->reply_photo)
+                    @if ($report_reply->reply_photo)
                     <img src="{{ asset('uploads/report_photo') }}/{{ $report_reply->reply_photo }}" alt="Reply Photo" class="img-fluid mt-3">
                     @endif
                 </p>

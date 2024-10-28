@@ -138,7 +138,14 @@ class RolePermissionController extends Controller
 
     public function destroy(string $id)
     {
-        $role = Role::findOrFail($id);
-        $role->delete();
+        // delete role_has_permissions
+        DB::table('role_has_permissions')->where('role_id', $id)->delete();
+
+        // delete role
+        Role::findOrFail($id)->delete();
+
+        return response()->json([
+            'status' => 200,
+        ]);
     }
 }

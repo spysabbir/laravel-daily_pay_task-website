@@ -310,7 +310,8 @@ class BackendController extends Controller
         $user->forceDelete();
     }
 
-    public function reportUserPending(Request $request)
+    // Report List
+    public function reportListPending(Request $request)
     {
         if ($request->ajax()) {
             $reportedUsers = Report::where('status', 'Pending');
@@ -321,6 +322,15 @@ class BackendController extends Controller
 
             return DataTables::of($reportedList)
                 ->addIndexColumn()
+                ->editColumn('type', function ($row) {
+                    if ($row->type == 'User') {
+                        return '<span class="badge bg-success text-white">'.$row->type.'</span>';
+                    } else if ($row->type == 'Post Task') {
+                        return '<span class="badge bg-info text-white">'.$row->type.'</span>';
+                    } else if ($row->type == 'Proof Task') {
+                        return '<span class="badge bg-primary text-white">'.$row->type.'</span>';
+                    }
+                })
                 ->editColumn('reported_user', function ($row) {
                     return '
                         <span class="badge bg-dark text-white">'.$row->reported->name.'</span>
@@ -340,13 +350,13 @@ class BackendController extends Controller
                     ';
                     return $action;
                 })
-                ->rawColumns(['reported_user', 'reported_by', 'status', 'action'])
+                ->rawColumns(['type', 'reported_user', 'reported_by', 'status', 'action'])
                 ->make(true);
         }
-        return view('backend.report_user.pending');
+        return view('backend.report_list.pending');
     }
 
-    public function reportUserResolved(Request $request)
+    public function reportListResolved(Request $request)
     {
         if ($request->ajax()) {
             $reportedUsers = Report::where('status', 'Resolved');
@@ -357,6 +367,15 @@ class BackendController extends Controller
 
             return DataTables::of($reportedList)
                 ->addIndexColumn()
+                ->editColumn('type', function ($row) {
+                    if ($row->type == 'User') {
+                        return '<span class="badge bg-success text-white">'.$row->type.'</span>';
+                    } else if ($row->type == 'Post Task') {
+                        return '<span class="badge bg-info text-white">'.$row->type.'</span>';
+                    } else if ($row->type == 'Proof Task') {
+                        return '<span class="badge bg-primary text-white">'.$row->type.'</span>';
+                    }
+                })
                 ->editColumn('reported_user', function ($row) {
                     return '
                         <span class="text-info">'.$row->reported->name.'</span> <br>
@@ -376,23 +395,24 @@ class BackendController extends Controller
                     ';
                     return $action;
                 })
-                ->rawColumns(['reported_user', 'reported_by', 'status', 'action'])
+                ->rawColumns(['type', 'reported_user', 'reported_by', 'status', 'action'])
                 ->make(true);
         }
-        return view('backend.report_user.resolved');
+        return view('backend.report_list.resolved');
     }
 
-    public function reportUserView(string $id)
+    public function reportView(string $id)
     {
         $report = Report::where('id', $id)->first();
         $report_reply = ReportReply::where('report_id', $id)->first();
-        return view('backend.report_user.view', compact('report', 'report_reply'));
+        return view('backend.report_list.view', compact('report', 'report_reply'));
     }
 
-    public function reportUserReply(Request $request)
+    public function reportReply(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'reply' => 'required',
+            'reply_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -406,9 +426,18 @@ class BackendController extends Controller
                 'status' => 'Resolved',
             ]);
 
+            $photo_name = null;
+            if ($request->file('reply_photo')) {
+                $manager = new ImageManager(new Driver());
+                $photo_name = $report->user_id."-report_reply_photo_".date('YmdHis').".".$request->file('reply_photo')->getClientOriginalExtension();
+                $image = $manager->read($request->file('reply_photo'));
+                $image->toJpeg(80)->save(base_path("public/uploads/report_photo/").$photo_name);
+            }
+
             $report_reply = new ReportReply();
             $report_reply->report_id = $request->report_id;
             $report_reply->reply = $request->reply;
+            $report_reply->reply_photo = $photo_name;
             $report_reply->resolved_by = auth()->user()->id;
             $report_reply->resolved_at = now();
             $report_reply->save();

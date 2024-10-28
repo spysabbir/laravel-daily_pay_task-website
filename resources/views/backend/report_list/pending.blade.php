@@ -17,6 +17,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>Type</th>
                                 <th>Reported User</th>
                                 <th>Reported By</th>
                                 <th>Submit Date</th>
@@ -66,13 +67,14 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.report_user.pending') }}",
+                url: "{{ route('backend.report_list.pending') }}",
                 data: function (e) {
                     e.status = $('#filter_status').val();
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'type', name: 'type' },
                 { data: 'reported_user', name: 'reported_user' },
                 { data: 'reported_by', name: 'reported_by' },
                 { data: 'created_at', name: 'created_at' },
@@ -83,7 +85,7 @@
         // View Data
         $(document).on('click', '.viewBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.report_user.view', ":id") }}";
+            var url = "{{ route('backend.report.view', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -94,14 +96,28 @@
             });
         });
 
+        // Report Reply Photo Preview
+        $(document).on('change', '#photo', function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#photoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
         // Reply Form
         $("body").on("submit", "#replyForm", function(e){
             e.preventDefault();
-            var url = "{{ route('backend.report_user.reply') }}";
+            var url = "{{ route('backend.report.reply') }}";
+            var form = $(this); // Get the current form being submitted
+            var formData = new FormData(form[0]);
             $.ajax({
                 url: url,
                 type: "POST",
-                data: $(this).serialize(),
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
                 beforeSend:function(){
                     $(document).find('span.error-text').text('');
                 },

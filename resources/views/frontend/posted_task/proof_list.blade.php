@@ -157,6 +157,7 @@
                                             <form class="forms-sample" id="reportProofTaskForm" enctype="multipart/form-data">
                                                 @csrf
                                                 <input type="hidden" id="user_id">
+                                                <input type="hidden" name="post_task_id" id="post_task_id">
                                                 <input type="hidden" name="proof_task_id" id="proof_task_id">
                                                 <input type="hidden" name="type" value="Proof Task">
                                                 <div class="modal-body">
@@ -168,7 +169,7 @@
                                                     <div class="mb-3">
                                                         <label for="photo" class="form-label">Photo</label>
                                                         <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .jpeg, .png">
-                                                        <span class="text-danger error-text photo_error"></span>
+                                                        <span class="text-danger error-text photo_error d-block"></span>
                                                         <img src="" alt="Photo" id="photoPreview" class="mt-2" style="display: none; width: 100px; height: 100px;">
                                                     </div>
                                                 </div>
@@ -186,6 +187,8 @@
                                                     <p id='resolvedMessage' class="mt-2 text-success"></p>
                                                     <hr>
                                                     <strong>Reason:</strong> <span id="reportReason"></span>
+                                                    <br>
+                                                    <strong>Date:</strong> <span id="reportDate"></span>
                                                     <br>
                                                     <img src="" id="reportPhoto" class="img-fluid mt-2" alt="Report Photo">
                                                 </div>
@@ -423,12 +426,14 @@
                 type: "GET",
                 success: function (response) {
                     $('#proof_task_id').val(response.proofTask.id);
+                    $('#post_task_id').val(response.proofTask.post_task_id);
                     $('#user_id').val(response.proofTask.user_id);
 
                     if (response.reportStatus) {
                         $('#reportSendProofTaskForm').hide();
                         $('#reportSendProofTaskExitsDiv').show();
                         $('#reportReason').text(response.reportStatus.reason);
+                        $('#reportDate').text(response.reportStatus.created_at);
                         if (response.reportStatus.photo) {
                             $('#reportPhoto').show();
                             $('#reportPhoto').attr('src', '{{ asset('uploads/report_photo') }}/' + response.reportStatus.photo);
@@ -448,7 +453,7 @@
             });
         });
 
-        // Photo Preview
+        // Report Proof Task Photo Preview
         $(document).on('change', '#photo', function() {
             let reader = new FileReader();
             reader.onload = (e) => {

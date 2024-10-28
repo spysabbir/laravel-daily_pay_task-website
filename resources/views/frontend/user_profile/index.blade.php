@@ -42,6 +42,7 @@
                                 </div>
                                 <form class="forms-sample" id="reportForm" enctype="multipart/form-data">
                                     @csrf
+                                    <input type="hidden" name="type" value="User">
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="reason" class="form-label">Reason</label>
@@ -51,7 +52,8 @@
                                         <div class="mb-3">
                                             <label for="photo" class="form-label">Photo</label>
                                             <input type="file" class="form-control" id="photo" name="photo">
-                                            <span class="text-danger error-text photo_error"></span>
+                                            <span class="text-danger error-text photo_error d-none"></span>
+                                            <img src="" alt="Photo" id="photoPreview" class="mt-2" style="display: none; width: 100px; height: 100px;">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -181,6 +183,15 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
+
+        // Photo Preview
+        $(document).on('change', '#photo', function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#photoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
         });
 
         // Report User

@@ -323,29 +323,29 @@
             @endcan
         @endcan
 
-        @can('ReportUserMenu')
+        {{-- @can('ReportListMenu') --}}
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#ReportUserMenu" role="button" aria-expanded="false" aria-controls="ReportUserMenu">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ReportListMenu" role="button" aria-expanded="false" aria-controls="ReportListMenu">
                     <i class="link-icon" data-feather="alert-triangle"></i>
                     <span class="link-title">Report User</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse" id="ReportUserMenu">
+                <div class="collapse" id="ReportListMenu">
                     <ul class="nav sub-menu">
-                        @can('report_user.pending')
+                        {{-- @can('report_list.pending') --}}
                         <li class="nav-item">
-                            <a href="{{ route('backend.report_user.pending') }}" class="nav-link">Pending</a>
+                            <a href="{{ route('backend.report_list.pending') }}" class="nav-link">Pending</a>
                         </li>
-                        @endcan
-                        @can('report_user.resolved')
+                        {{-- @endcan --}}
+                        {{-- @can('report_list.resolved') --}}
                         <li class="nav-item">
-                            <a href="{{ route('backend.report_user.resolved') }}" class="nav-link">Resolved</a>
+                            <a href="{{ route('backend.report_list.resolved') }}" class="nav-link">Resolved</a>
                         </li>
-                        @endcan
+                        {{-- @endcan --}}
                     </ul>
                 </div>
             </li>
-        @endcan
+        {{-- @endcan --}}
 
         <li class="nav-item nav-category">Moderator</li>
         @can('VerificationMenu')
@@ -420,7 +420,7 @@
             </li>
         @endcan
 
-        {{-- @can('PostedTaskMenu') --}}
+        @can('PostedTaskMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#PostedTaskMenu" role="button" aria-expanded="false" aria-controls="PostedTaskMenu">
                     <i class="link-icon" data-feather="briefcase"></i>
@@ -429,37 +429,37 @@
                 </a>
                 <div class="collapse" id="PostedTaskMenu">
                     <ul class="nav sub-menu">
-                        {{-- @can('posted_task_list.pending') --}}
+                        @can('posted_task_list.pending')
                         <li class="nav-item">
                             <a href="{{ route('backend.posted_task_list.pending') }}" class="nav-link">Pending</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('posted_task_list.rejected') --}}
+                        @endcan
+                        @can('posted_task_list.rejected')
                         <li class="nav-item">
                             <a href="{{ route('backend.posted_task_list.rejected') }}" class="nav-link">Rejected</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('posted_task_list.running') --}}
+                        @endcan
+                        @can('posted_task_list.running')
                         <li class="nav-item">
                             <a href="{{ route('backend.posted_task_list.running') }}" class="nav-link">Running</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('posted_task_list.canceled') --}}
+                        @endcan
+                        @can('posted_task_list.canceled')
                         <li class="nav-item">
                             <a href="{{ route('backend.posted_task_list.canceled') }}" class="nav-link">Canceled</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('posted_task_list.completed') --}}
+                        @endcan
+                        @can('posted_task_list.completed')
                         <li class="nav-item">
                             <a href="{{ route('backend.posted_task_list.completed') }}" class="nav-link">Completed</a>
                         </li>
-                        {{-- @endcan --}}
+                        @endcan
                     </ul>
                 </div>
             </li>
-        {{-- @endcan --}}
+        @endcan
 
-        {{-- @can('WorkedTaskMenu') --}}
+        @can('WorkedTaskMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#WorkedTaskMenu" role="button" aria-expanded="false" aria-controls="WorkedTaskMenu">
                     <i class="link-icon" data-feather="check-circle"></i>
@@ -468,30 +468,30 @@
                 </a>
                 <div class="collapse" id="WorkedTaskMenu">
                     <ul class="nav sub-menu">
-                        {{-- @can('worked_task_list.pending') --}}
+                        @can('worked_task_list.pending')
                         <li class="nav-item">
                             <a href="{{ route('backend.worked_task_list.pending') }}" class="nav-link">Pending</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('worked_task_list.approved') --}}
+                        @endcan
+                        @can('worked_task_list.approved')
                         <li class="nav-item">
                             <a href="{{ route('backend.worked_task_list.approved') }}" class="nav-link">Approved</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('worked_task_list.rejected') --}}
+                        @endcan
+                        @can('worked_task_list.rejected')
                         <li class="nav-item">
                             <a href="{{ route('backend.worked_task_list.rejected') }}" class="nav-link">Rejected</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('worked_task_list.reviewed') --}}
+                        @endcan
+                        @can('worked_task_list.reviewed')
                         <li class="nav-item">
                             <a href="{{ route('backend.worked_task_list.reviewed') }}" class="nav-link">Reviewed</a>
                         </li>
-                        {{-- @endcan --}}
+                        @endcan
                     </ul>
                 </div>
             </li>
-        {{-- @endcan --}}
+        @endcan
     @else
         <li class="nav-item nav-category">User</li>
         @if (!Auth::user()->hasVerification('Approved'))
