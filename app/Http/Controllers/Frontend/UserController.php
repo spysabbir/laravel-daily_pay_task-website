@@ -19,14 +19,89 @@ use Stevebauman\Location\Facades\Location;
 use App\Models\Report;
 use App\Models\ReportReply;
 use App\Models\Support;
+use App\Models\PostTask;
+use App\Models\ProofTask;
 use App\Events\SupportEvent;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
     public function dashboard()
     {
-        return view('frontend/dashboard');
+        $monthlyWithdraw = [];
+        for ($i = 0; $i < 12; $i++) {
+            $month = Carbon::now()->subMonths($i);
+            $formattedMonth = $month->format('m/d/Y'); // Format as "01/01/2024"
+            $monthlyWithdraw[$formattedMonth] = Withdraw::where('user_id', Auth::id())
+                ->whereMonth('created_at', $month->format('m'))
+                ->whereYear('created_at', $month->format('Y'))
+                ->sum('amount');
+        }
+        $monthlyWithdraw = array_reverse($monthlyWithdraw, true);
+
+        $monthlyDeposite = [];
+        for ($i = 0; $i < 12; $i++) {
+            $month = Carbon::now()->subMonths($i);
+            $formattedMonth = $month->format('m/d/Y'); // Format as "01/01/2024"
+            $monthlyDeposite[$formattedMonth] = Deposit::where('user_id', Auth::id())
+                ->whereMonth('created_at', $month->format('m'))
+                ->whereYear('created_at', $month->format('Y'))
+                ->sum('amount');
+        }
+        $monthlyDeposite = array_reverse($monthlyDeposite, true);
+
+        return view('frontend/dashboard', [
+            // Posted Task
+            'today_pending_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
+            'today_running_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Running')->count(),
+            'today_rejected_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Rejected')->count(),
+            'today_canceled_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Canceled')->count(),
+            'today_paused_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Paused')->count(),
+            'today_completed_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Completed')->count(),
+            'today_pending_task_proof_submit' => ProofTask::where('status', 'Pending')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            'today_approved_task_proof_submit' => ProofTask::where('status', 'Approved')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            'today_rejected_task_proof_submit' => ProofTask::where('status', 'Rejected')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            'today_reviewed_task_proof_submit' => ProofTask::where('status', 'Reviewed')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            'monthly_posted_task' => PostTask::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
+            'yearly_posted_task' => PostTask::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->count(),
+            'total_posted_task' => PostTask::where('user_id', Auth::id())->count(),
+            'total_pending_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Pending')->count(),
+            'total_running_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Running')->count(),
+            'total_rejected_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Rejected')->count(),
+            'total_canceled_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Canceled')->count(),
+            'total_paused_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Paused')->count(),
+            'total_completed_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Completed')->count(),
+            // Worked Task
+            'today_pending_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
+            'today_approved_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Approved')->count(),
+            'today_rejected_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Rejected')->count(),
+            'today_reviewed_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Reviewed')->count(),
+            'monthly_worked_task' => ProofTask::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
+            'yearly_worked_task' => ProofTask::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->count(),
+            'total_worked_task' => ProofTask::where('user_id', Auth::id())->count(),
+            'total_pending_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Pending')->count(),
+            'total_approved_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Approved')->count(),
+            'total_rejected_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Rejected')->count(),
+            'total_reviewed_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Reviewed')->count(),
+            // Deposit
+            'total_pending_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Pending')->sum('amount'),
+            'total_rejected_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Rejected')->sum('amount'),
+            'total_approved_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
+            'monthly_deposit' => Deposit::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->sum('amount'),
+            'yearly_deposit' => Deposit::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->sum('amount'),
+            'total_deposit' => Deposit::where('user_id', Auth::id())->sum('amount'),
+            // Withdraw
+            'total_pending_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Pending')->sum('amount'),
+            'total_rejected_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Rejected')->sum('amount'),
+            'total_approved_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
+            'monthly_withdraw' => Withdraw::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->sum('amount'),
+            'yearly_withdraw' => Withdraw::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->sum('amount'),
+            'total_withdraw' => Withdraw::where('user_id', Auth::id())->sum('amount'),
+            // Report
+            'today_pending_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
+            'today_resolved_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Resolved')->count(),
+        ], compact('monthlyWithdraw', 'monthlyDeposite'));
     }
 
     // Profile.............................................................................................................

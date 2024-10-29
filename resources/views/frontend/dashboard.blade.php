@@ -94,16 +94,32 @@
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title">Today Posted Task</h6>
-                <canvas id="chartjsPie"></canvas>
+                <h6 class="card-title">Today Posted Task Status</h6>
+                <canvas id="todayPostedTaskChartjsPie"></canvas>
             </div>
         </div>
     </div>
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title">Today Worked Task</h6>
-                <div id="apexPie"></div>
+                <h6 class="card-title">Today Task Proof Submit Status</h6>
+                <canvas id="todayTaskProofSubmitChartjsDoughnut"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Today Worked Task Status</h6>
+                <div id="todayWorkedTaskApexPie"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Today Report Status</h6>
+                <div id="todayReportApexDonut"></div>
             </div>
         </div>
     </div>
@@ -113,8 +129,8 @@
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title">Total Posted Task</h6>
-                <canvas id="chartjsLine">
+                <h6 class="card-title">Total Task Proof Submit Status</h6>
+                <canvas id="totalTaskProofSubmitChartjsLine">
             </div>
         </div>
     </div>
@@ -122,7 +138,7 @@
         <div class="card">
             <div class="card-body">
                 <h6 class="card-title">Total Worked Task</h6>
-                <div id="apexLine"></div>
+                <div id="totalWorkedTaskApexLine"></div>
             </div>
         </div>
     </div>
@@ -135,20 +151,11 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Posted Task</h6>
+                            <h6 class="card-title mb-2">Posted Task Status</h6>
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Today - {{ date('l') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $monthly_posted_task }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Monthly - {{ date('F') }}</span>
@@ -157,10 +164,19 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $yearly_posted_task }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Yearly - {{ date('Y') }}</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-4">
+                                <h3 class="mb-2">{{ $total_posted_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -173,20 +189,11 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Worked Task</h6>
+                            <h6 class="card-title mb-2">Worked Task Status</h6>
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Today - {{ date('l') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $monthly_worked_task }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Monthly - {{ date('F') }}</span>
@@ -195,10 +202,19 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $yearly_worked_task }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Yearly - {{ date('Y') }}</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-4">
+                                <h3 class="mb-2">{{ $total_worked_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -211,32 +227,59 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Deposit Amount</h6>
+                            <h6 class="card-title mb-2">Total Posted Task Status</h6>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ $total_pending_posted_task }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Today - {{ date('l') }}</span>
+                                    <p class="text-info">
+                                        <span>Pending</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ $total_running_posted_task }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Monthly - {{ date('F') }}</span>
+                                    <p class="text-success">
+                                        <span>Running</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ $total_rejected_posted_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-warning">
+                                        <span>Rejected</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ $total_canceled_posted_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-danger">
+                                        <span>Canceled</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ $total_paused_posted_task }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Yearly - {{ date('Y') }}</span>
+                                        <span>Paused</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ $total_completed_posted_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-secondary">
+                                        <span>Completed</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -249,32 +292,41 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Withdraw Amount</h6>
+                            <h6 class="card-title mb-2">Total Worked Task Status</h6>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_pending_worked_task }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Today - {{ date('l') }}</span>
+                                    <p class="text-info">
+                                        <span>Pending</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_approved_worked_task }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Monthly - {{ date('F') }}</span>
+                                    <p class="text-success">
+                                        <span>Approved</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_rejected_worked_task }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Yearly - {{ date('Y') }}</span>
+                                    <p class="text-danger">
+                                        <span>Rejected</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_reviewed_worked_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-warning">
+                                        <span>Reviewed</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -295,7 +347,7 @@
                     <h6 class="card-title mb-0">Monthly Deposit & Withdraw Amount</h6>
                 </div>
                 <p class="text-muted">This chart shows the monthly deposit and withdraw amount.</p>
-                <div id="monthlySalesChart"></div>
+                <div id="monthlyDepositAndWithdrawChart"></div>
             </div>
         </div>
     </div>
@@ -308,32 +360,32 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Total Posted Task</h6>
+                            <h6 class="card-title mb-2">Deposit Amount</h6>
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $monthly_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-info">
-                                        <span>Pending</span>
+                                    <p class="text-primary">
+                                        <span>Monthly - {{ date('F') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $yearly_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <span>Approved</span>
+                                    <p class="text-primary">
+                                        <span>Yearly - {{ date('Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $total_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-danger">
-                                        <span>Rejected</span>
+                                    <p class="text-primary">
+                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -346,32 +398,32 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Total Worked Task</h6>
+                            <h6 class="card-title mb-2">Withdraw Amount</h6>
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $monthly_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-info">
-                                        <span>Pending</span>
+                                    <p class="text-primary">
+                                        <span>Monthly - {{ date('F') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $yearly_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <span>Approved</span>
+                                    <p class="text-primary">
+                                        <span>Yearly - {{ date('Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $total_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
-                                    <p class="text-danger">
-                                        <span>Rejected</span>
+                                    <p class="text-primary">
+                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -388,7 +440,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $total_pending_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-info">
                                         <span>Pending</span>
@@ -397,7 +449,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $total_approved_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-success">
                                         <span>Approved</span>
@@ -406,7 +458,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $total_rejected_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-danger">
                                         <span>Rejected</span>
@@ -426,7 +478,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $total_pending_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-info">
                                         <span>Pending</span>
@@ -435,7 +487,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $total_approved_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-success">
                                         <span>Approved</span>
@@ -444,7 +496,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">00</h3>
+                                <h3 class="mb-2">{{ $total_rejected_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-danger">
                                         <span>Rejected</span>
@@ -460,3 +512,22 @@
     </div>
 </div> <!-- row -->
 @endsection
+
+
+<script>
+    var today_posted_task_labels = ['Pending', 'Running', 'Rejected', 'Canceled', 'Paused', 'Completed'];
+    var today_posted_task_series = [{{ $today_pending_posted_task }}, {{ $today_running_posted_task }}, {{ $today_rejected_posted_task }}, {{ $today_canceled_posted_task }}, {{ $today_paused_posted_task }}, {{ $today_completed_posted_task }}];
+
+    var today_task_proof_submit_labels = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
+    var today_task_proof_submit_series = [{{ $today_pending_task_proof_submit }}, {{ $today_approved_task_proof_submit }}, {{ $today_rejected_task_proof_submit }}, {{ $today_reviewed_task_proof_submit }}];
+
+    var today_worked_task_labels = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
+    var today_worked_task_series = [{{ $today_pending_worked_task }}, {{ $today_approved_worked_task }}, {{ $today_rejected_worked_task }}, {{ $today_reviewed_worked_task }}];
+
+    var monthlyDepositAndWithdrawCategories = {!! json_encode(array_keys($monthlyWithdraw)) !!};
+    var monthlyWithdrawSeries = {!! json_encode(array_values($monthlyWithdraw)) !!};
+    var monthlyDepositeSeries = {!! json_encode(array_values($monthlyDeposite)) !!};
+
+    var todayReportLabels = ['Pending', 'Resolved'];
+    var todayReportSeries = [{{ $today_pending_report }}, {{ $today_resolved_report }}];
+</script>
