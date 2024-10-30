@@ -51,25 +51,24 @@ $(function() {
             },
             series: [
                 {
-                    name: "Pending",
-                    data: [45, 48, 38, 45]
+                    name: totalWorkedTaskApexLineData.series[0].name,
+                    data: totalWorkedTaskApexLineData.series[0].data
                 },
                 {
-                    name: "Approved",
-                    data: [12, 42, 68, 33]
+                    name: totalWorkedTaskApexLineData.series[1].name,
+                    data: totalWorkedTaskApexLineData.series[1].data
                 },
                 {
-                    name: "Rejected",
-                    data: [8, 45, 48, 53]
+                    name: totalWorkedTaskApexLineData.series[2].name,
+                    data: totalWorkedTaskApexLineData.series[2].data
                 },
                 {
-                    name: "Reviewed",
-                    data: [42, 32, 48, 45]
+                    name: totalWorkedTaskApexLineData.series[3].name,
+                    data: totalWorkedTaskApexLineData.series[3].data
                 }
             ],
             xaxis: {
-                type: "datetime",
-                categories: ["2015", "2016", "2017", "2018"],
+                categories: totalWorkedTaskApexLineData.categories,
                 lines: {
                     show: true
                 },

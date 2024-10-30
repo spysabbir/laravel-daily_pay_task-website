@@ -23,10 +23,10 @@ $(function() {
         new Chart($('#totalTaskProofSubmitChartjsLine'), {
             type: 'line',
             data: {
-                labels: ["2015", "2016", "2017", "2018"],
+                labels: totalTaskProofSubmitChartjsLineData.labels,
                 datasets: [{
-                    data: [86,114,106,106],
-                    label: "Pending",
+                    data: totalTaskProofSubmitChartjsLineData.datasets[0].data,
+                    label: totalTaskProofSubmitChartjsLineData.datasets[0].label,
                     borderColor: colors.info,
                     backgroundColor: "transparent",
                     fill: true,
@@ -35,8 +35,8 @@ $(function() {
                     pointHoverBorderWidth: 3,
                     tension: .3
                 }, {
-                    data: [282,350,567,370],
-                    label: "Approved",
+                    data: totalTaskProofSubmitChartjsLineData.datasets[1].data,
+                    label: totalTaskProofSubmitChartjsLineData.datasets[1].label,
                     borderColor: colors.success,
                     backgroundColor: "transparent",
                     fill: true,
@@ -45,8 +45,8 @@ $(function() {
                     pointHoverBorderWidth: 3,
                     tension: .3
                 }, {
-                    data: [411,502,142,207],
-                    label: "Rejected",
+                    data: totalTaskProofSubmitChartjsLineData.datasets[2].data,
+                    label: totalTaskProofSubmitChartjsLineData.datasets[2].label,
                     borderColor: colors.danger,
                     backgroundColor: "transparent",
                     fill: true,
@@ -55,8 +55,8 @@ $(function() {
                     pointHoverBorderWidth: 3,
                     tension: .3
                 }, {
-                    data: [350,411,527,411],
-                    label: "Reviewed",
+                    data: totalTaskProofSubmitChartjsLineData.datasets[3].data,
+                    label: totalTaskProofSubmitChartjsLineData.datasets[3].label,
                     borderColor: colors.warning,
                     backgroundColor: "transparent",
                     fill: true,

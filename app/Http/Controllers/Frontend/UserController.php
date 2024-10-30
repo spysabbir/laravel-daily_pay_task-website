@@ -23,7 +23,6 @@ use App\Models\PostTask;
 use App\Models\ProofTask;
 use App\Events\SupportEvent;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -50,6 +49,45 @@ class UserController extends Controller
                 ->sum('amount');
         }
         $monthlyDeposite = array_reverse($monthlyDeposite, true);
+
+
+        // totalTaskProofSubmitChartjsLineData
+        $totalTaskProofSubmitChartjsLineFixedStatuses = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
+        $totalTaskProofSubmitChartjsLineYears = ProofTask::whereYear('created_at', '<=', date('Y'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y'))->unique()->sort()->values()->toArray();
+        $totalTaskProofSubmitChartjsLineData = [
+            'labels' => $totalTaskProofSubmitChartjsLineYears,
+            'datasets' => []
+        ];
+        foreach ($totalTaskProofSubmitChartjsLineFixedStatuses as $status) {
+            $data = [];
+            foreach ($totalTaskProofSubmitChartjsLineYears as $year) {
+                $count = ProofTask::whereYear('created_at', $year)->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', $status)->count();
+                $data[] = $count;
+            }
+            $totalTaskProofSubmitChartjsLineData['datasets'][] = [
+                'label' => $status,
+                'data' => $data
+            ];
+        }
+
+        // totalWorkedTaskApexLineData
+        $totalWorkedTaskApexLineFixedStatuses = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
+        $totalWorkedTaskApexLineYears = ProofTask::whereYear('created_at', '<=', date('Y'))->where('user_id', Auth::id())->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y'))->unique()->sort()->values()->toArray();
+        $totalWorkedTaskApexLineData = [
+            'categories' => $totalWorkedTaskApexLineYears,
+            'series' => []
+        ];
+        foreach ($totalWorkedTaskApexLineFixedStatuses as $status) {
+            $data = [];
+            foreach ($totalWorkedTaskApexLineYears as $year) {
+                $count = ProofTask::whereYear('created_at', $year)->where('user_id', Auth::id())->where('status', $status)->count();
+                $data[] = $count;
+            }
+            $totalWorkedTaskApexLineData['series'][] = [
+                'name' => $status,
+                'data' => $data
+            ];
+        }
 
         return view('frontend/dashboard', [
             // Posted Task
@@ -101,7 +139,7 @@ class UserController extends Controller
             // Report
             'today_pending_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
             'today_resolved_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Resolved')->count(),
-        ], compact('monthlyWithdraw', 'monthlyDeposite'));
+        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData'));
     }
 
     // Profile.............................................................................................................

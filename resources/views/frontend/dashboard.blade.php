@@ -95,7 +95,19 @@
         <div class="card">
             <div class="card-body">
                 <h6 class="card-title">Today Posted Task Status</h6>
+                @if ($today_pending_posted_task == 0 && $today_running_posted_task == 0 && $today_rejected_posted_task == 0 && $today_canceled_posted_task == 0 && $today_paused_posted_task == 0 && $today_completed_posted_task == 0)
+                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                    <div class="alert-heading mb-3">
+                        <i data-feather="alert-circle"></i>
+                        <h4>No data found!</h4>
+                    </div>
+                    <p class="mt-3">
+                        No data found for today posted task status. Please check back later.
+                    </p>
+                </div>
+                @else
                 <canvas id="todayPostedTaskChartjsPie"></canvas>
+                @endif
             </div>
         </div>
     </div>
@@ -103,7 +115,19 @@
         <div class="card">
             <div class="card-body">
                 <h6 class="card-title">Today Task Proof Submit Status</h6>
+                @if ($today_pending_task_proof_submit == 0 && $today_approved_task_proof_submit == 0 && $today_rejected_task_proof_submit == 0 && $today_reviewed_task_proof_submit == 0)
+                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                    <div class="alert-heading mb-3">
+                        <i data-feather="alert-circle"></i>
+                        <h4>No data found!</h4>
+                    </div>
+                    <p class="mt-3">
+                        No data found for today task proof submit status. Please check back later.
+                    </p>
+                </div>
+                @else
                 <canvas id="todayTaskProofSubmitChartjsDoughnut"></canvas>
+                @endif
             </div>
         </div>
     </div>
@@ -111,7 +135,19 @@
         <div class="card">
             <div class="card-body">
                 <h6 class="card-title">Today Worked Task Status</h6>
+                @if ($today_pending_worked_task == 0 && $today_approved_worked_task == 0 && $today_rejected_worked_task == 0 && $today_reviewed_worked_task == 0)
+                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                    <div class="alert-heading mb-3">
+                        <i data-feather="alert-circle"></i>
+                        <h4>No data found!</h4>
+                    </div>
+                    <p class="mt-3">
+                        No data found for today worked task status. Please check back later.
+                    </p>
+                </div>
+                @else
                 <div id="todayWorkedTaskApexPie"></div>
+                @endif
             </div>
         </div>
     </div>
@@ -119,7 +155,19 @@
         <div class="card">
             <div class="card-body">
                 <h6 class="card-title">Today Report Status</h6>
+                @if ($today_pending_report == 0 && $today_resolved_report == 0)
+                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                    <div class="alert-heading mb-3">
+                        <i data-feather="alert-circle"></i>
+                        <h4>No data found!</h4>
+                    </div>
+                    <p class="mt-3">
+                        No data found for today report status. Please check back later.
+                    </p>
+                </div>
+                @else
                 <div id="todayReportApexDonut"></div>
+                @endif
             </div>
         </div>
     </div>
@@ -530,4 +578,7 @@
 
     var todayReportLabels = ['Pending', 'Resolved'];
     var todayReportSeries = [{{ $today_pending_report }}, {{ $today_resolved_report }}];
+
+    const totalTaskProofSubmitChartjsLineData = @json($totalTaskProofSubmitChartjsLineData);
+    const totalWorkedTaskApexLineData = @json($totalWorkedTaskApexLineData);
 </script>
