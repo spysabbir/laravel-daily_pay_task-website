@@ -63,7 +63,6 @@ $(function() {
                 }
             ],
             xaxis: {
-                type: 'datetime',
                 categories: monthlyDepositAndWithdrawCategories,
                 axisBorder: {
                     color: colors.gridBorder,

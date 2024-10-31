@@ -370,10 +370,10 @@
                         <h4 class="mb-3 mb-md-0">Welcome to @yield('title')</h4>
                     </div>
                     <div class="d-flex align-items-center flex-wrap text-nowrap">
-                        <div class="input-group date datepicker wd-200 me-2 mb-2 mb-md-0" id="dashboardDate">
+                        <div class="input-group date datepicker wd-200 me-2 mb-2 mb-md-0">
                             <span class="input-group-text input-group-addon bg-transparent border-primary">
                             <i data-feather="calendar" class=" text-primary"></i></span>
-                            <input type="text" class="form-control border-primary bg-transparent" disabled>
+                            <input type="text" class="form-control border-primary bg-transparent" value="{{ now()->format('d-F, Y') }}">
                         </div>
                     </div>
                 </div>
