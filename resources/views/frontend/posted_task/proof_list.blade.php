@@ -87,10 +87,92 @@
             <div class="card-body">
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-7">
                             <button type="button" class="btn btn-sm btn-success" id="approvedAll">All Pending Item Approved</button>
                             <button type="button" class="btn btn-sm btn-info" id="selectedItemApproved">Selected Item Approved</button>
                             <button type="button" class="btn btn-sm btn-warning" id="selectedItemRejected">Selected Item Rejected</button>
+                            <button type="button" data-id="" class="btn btn-primary btn-xs checkAllPendingTaskProofBtn" data-bs-toggle="modal" data-bs-target=".checkAllPendingTaskProofModal">Check All Pending Task Proof</button>
+                            <!-- View Modal -->
+                            <div class="modal fade checkAllPendingTaskProofModal" tabindex="-1" aria-labelledby="checkAllPendingTaskProofModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="checkAllPendingTaskProofModalLabel">Check All Pending Task Proof</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-lg-8" id="checkAllPendingTaskProofModalBody">
+                                                    <!-- Check All Pending Task Proof Content -->
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div>
+                                                        <h4>Update Proof Task Status:</h4>
+                                                        <form class="forms-sample border mt-2 p-2" id="checkAllPendingTaskProofEditForm">
+                                                            @csrf
+                                                            <input type="text" id="set_proof_task_id" value="">
+                                                            <div class="mb-3">
+                                                                <label for="status" class="form-label">Status <span class="text-danger">* Required</span></label>
+                                                                <div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input type="radio" class="form-check-input" name="status" id="approve" value="Approved">
+                                                                        <label class="form-check-label" for="approve">
+                                                                            Approved
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input type="radio" class="form-check-input" name="status" id="reject" value="Rejected">
+                                                                        <label class="form-check-label" for="reject">
+                                                                            Rejected
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <span class="text-danger error-text update_status_error"></span>
+                                                            </div>
+                                                            <div id="approved_div">
+                                                                <div class="mb-3">
+                                                                    <label for="rating" class="form-label">Rating (1-5) <span class="text-info">* Optonal</span></label>
+                                                                    <div class="rating-box">
+                                                                        <div class="stars">
+                                                                            <i class="fa-solid fa-star"></i>
+                                                                            <i class="fa-solid fa-star"></i>
+                                                                            <i class="fa-solid fa-star"></i>
+                                                                            <i class="fa-solid fa-star"></i>
+                                                                            <i class="fa-solid fa-star"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" name="rating" id="rating" min="0" max="5">
+                                                                    <span class="text-danger error-text update_rating_error"></span>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="bonus" class="form-label">Bonus <span class="text-info">* Optonal</span></label>
+                                                                    <div class="input-group">
+                                                                        <input type="number" class="form-control" id="bonus" name="bonus" min="0" max="{{ get_default_settings('task_proof_max_bonus_amount') }}" placeholder="Bonus">
+                                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                                    </div>
+                                                                    <small class="text-info">The bonus field must not be greater than {{ get_default_settings('task_proof_max_bonus_amount') }} {{ get_site_settings('site_currency_symbol') }}.</small>
+                                                                    <span class="text-danger error-text update_bonus_error"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div id="rejected_div">
+                                                                <div class="mb-3">
+                                                                    <label for="rejected_reason" class="form-label">Rejected Reason <span class="text-danger">* Required</span></label>
+                                                                    <textarea class="form-control" id="rejected_reason" name="rejected_reason" rows="3" placeholder="Rejected Reason"></textarea>
+                                                                    <span class="text-danger error-text update_rejected_reason_error"></span>
+                                                                </div>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
@@ -103,7 +185,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <button class="btn btn-danger btn-block" id="clear_filters">Clear Filters</button>
                             </div>
@@ -216,6 +298,129 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
+
+        // Get Check All Pending Task Proof
+        function getCheckAllPendingTaskProof() {
+            $.ajax({
+                url: "{{ route('proof_task.all.pending.check', $postTask->id) }}",
+                type: "GET",
+                success: function(response) {
+                    $('#checkAllPendingTaskProofModalBody').html(response);
+                    // Get references to the carousel and hidden input
+                    const carouselElement = document.getElementById('proofTaskListPendingCarousel');
+                    const set_proof_task_id = document.getElementById('set_proof_task_id');
+
+                    // Set the initial ID from the first active item
+                    function setInitialProofTaskId() {
+                        const initialActiveItem = carouselElement.querySelector('.carousel-item.active');
+                        if (initialActiveItem) {
+                            const proofId = initialActiveItem.getAttribute('data-proof-id');
+                            set_proof_task_id.value = proofId;
+                        }
+                    }
+
+                    // Update the ID whenever the carousel slides
+                    function updateProofTaskId() {
+                        const activeItem = carouselElement.querySelector('.carousel-item.active');
+                        if (activeItem) {
+                            const proofId = activeItem.getAttribute('data-proof-id');
+                            set_proof_task_id.value = proofId;
+                        }
+                    }
+
+                    // Set the initial ID when the page loads
+                    setInitialProofTaskId();
+
+                    // Attach the slid.bs.carousel event to update the input value
+                    carouselElement.addEventListener('slid.bs.carousel', updateProofTaskId);
+                },
+            });
+        }
+
+        // Check All Pending Task Proof
+        $(document).on('click', '.checkAllPendingTaskProofBtn', function() {
+            getCheckAllPendingTaskProof();
+        });
+
+        // Rating stars
+        const stars = document.querySelectorAll(".stars i");
+        const ratingInput = document.getElementById('rating');
+        stars.forEach((star, index1) => {
+            star.addEventListener("click", () => {
+                stars.forEach((star, index2) => {
+                    index1 >= index2 ? star.classList.add("active") : star.classList.remove("active");
+                });
+                ratingInput.value = index1 + 1;
+            });
+            star.addEventListener("dblclick", () => {
+                stars.forEach((star) => {
+                    star.classList.remove("active");
+                });
+                ratingInput.value = 0;
+            });
+        });
+
+        // Hide rejected reason div initially
+        $('#approved_div').hide();
+        $('#rejected_div').hide();
+        $('input[name="status"]').change(function() {
+            $('.update_status_error').text('');
+            if ($(this).val() == 'Rejected') {
+                $('#approved_div').hide();
+                $('#rejected_div').show();
+                $('#bonus').val(0);
+                // Reset rating stars
+                stars.forEach((star) => {
+                    star.classList.remove("active");
+                });
+                ratingInput.value = 0;
+            } else {
+                $('#approved_div').show();
+                $('#rejected_div').hide();
+                $('#rejected_reason').val('');
+            }
+        });
+
+        $("body").on("submit", "#checkAllPendingTaskProofEditForm", function(e) {
+            e.preventDefault();
+
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
+            var id = $('#set_proof_task_id').val();
+            var url = "{{ route('proof_task.check.update', ':id') }}".replace(':id', id);
+
+            $.ajax({
+                url: url,
+                type: "PUT",
+                data: $(this).serialize(),
+                beforeSend: function() {
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+                    if (response.status === 400) {
+                        $.each(response.error, function(prefix, val) {
+                            $('span.update_' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        if (response.status === 401) {
+                            toastr.error(response.error);
+                        } else {
+                            getCheckAllPendingTaskProof();
+                            $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
+                            $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.success('Proof Task has been updated successfully.');
+                        }
+                    }
+                },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
+                }
+            });
         });
 
         // Store filters in localStorage

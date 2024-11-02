@@ -74,6 +74,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
 
     Route::get('/proof_task-list/{id}', [PostedTaskController::class, 'proofTaskList'])->name('proof_task.list');
     Route::get('/proof_task-check/{id}', [PostedTaskController::class, 'proofTaskCheck'])->name('proof_task.check');
+    Route::get('/proof_task-all-pending-check/{id}', [PostedTaskController::class, 'proofTaskAllPendingCheck'])->name('proof_task.all.pending.check');
     Route::put('/proof_task-check-update/{id}', [PostedTaskController::class, 'proofTaskCheckUpdate'])->name('proof_task.check.update');
     Route::get('/proof_task-approved-all/{id}', [PostedTaskController::class, 'proofTaskApprovedAll'])->name('proof_task.approved.all');
     Route::post('/proof_task-selected-item-approved', [PostedTaskController::class, 'proofTaskSelectedItemApproved'])->name('proof_task.selected.item.approved');

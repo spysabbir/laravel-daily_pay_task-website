@@ -787,6 +787,12 @@ class PostedTaskController extends Controller
         return view('frontend.posted_task.proof_check', compact('proofTask'));
     }
 
+    public function proofTaskAllPendingCheck($id)
+    {
+        $proofTaskListPending = ProofTask::where('post_task_id', $id)->where('status', 'Pending')->get();
+        return view('frontend.posted_task.pending_proof_task_check', compact('proofTaskListPending'));
+    }
+
     public function proofTaskCheckUpdate(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
