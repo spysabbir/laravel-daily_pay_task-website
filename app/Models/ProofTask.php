@@ -21,6 +21,11 @@ class ProofTask extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function user_detail()
+    {
+        return $this->belongsTo(UserDetail::class, 'user_id', 'user_id');
+    }
+
     public function rating()
     {
         return $this->hasOne(Rating::class, 'post_task_id', 'post_task_id');

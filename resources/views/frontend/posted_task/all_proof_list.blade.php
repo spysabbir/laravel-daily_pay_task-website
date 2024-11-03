@@ -100,17 +100,17 @@
                                             <h5 class="modal-title" id="checkAllPendingTaskProofModalLabel">Check All Pending Task Proof</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                         </div>
-                                        <div class="modal-body">
+                                        <div class="modal-body" id="checkAllPendingTaskProofModalBodyDiv">
                                             <div class="row">
-                                                <div class="col-lg-8" id="checkAllPendingTaskProofModalBody">
+                                                <div class="col-lg-8" id="checkAllPendingTaskProofData">
                                                     <!-- Check All Pending Task Proof Content -->
                                                 </div>
-                                                <div class="col-lg-4">
+                                                <div class="col-lg-4 d-none" id="checkAllPendingTaskProofAction">
                                                     <div>
                                                         <h4>Update Proof Task Status:</h4>
                                                         <form class="forms-sample border mt-2 p-2" id="checkAllPendingTaskProofEditForm">
                                                             @csrf
-                                                            <input type="text" id="set_proof_task_id" value="">
+                                                            <input type="hidden" id="set_proof_task_id" value="">
                                                             <div class="mb-3">
                                                                 <label for="status" class="form-label">Status <span class="text-danger">* Required</span></label>
                                                                 <div>
@@ -240,7 +240,7 @@
                                                 @csrf
                                                 <input type="hidden" id="user_id">
                                                 <input type="hidden" name="post_task_id" id="post_task_id">
-                                                <input type="hidden" name="proof_task_id" id="proof_task_id">
+                                                <input type="hidden" name="proof_task_id" id="report_proof_task_id">
                                                 <input type="hidden" name="type" value="Proof Task">
                                                 <div class="modal-body">
                                                     <div class="mb-3">
@@ -306,34 +306,101 @@
                 url: "{{ route('proof_task.all.pending.check', $postTask->id) }}",
                 type: "GET",
                 success: function(response) {
-                    $('#checkAllPendingTaskProofModalBody').html(response);
-                    // Get references to the carousel and hidden input
-                    const carouselElement = document.getElementById('proofTaskListPendingCarousel');
-                    const set_proof_task_id = document.getElementById('set_proof_task_id');
+                    if (response.proofTaskListPending.length === 0) {
+                        $('#checkAllPendingTaskProofModalBodyDiv').html(`
+                            <div class="alert alert-info" role="alert">
+                                No pending task proof found.
+                            </div>
+                        `);
+                    } else {
+                        $('#checkAllPendingTaskProofAction').removeClass('d-none');
 
-                    // Set the initial ID from the first active item
-                    function setInitialProofTaskId() {
-                        const initialActiveItem = carouselElement.querySelector('.carousel-item.active');
-                        if (initialActiveItem) {
-                            const proofId = initialActiveItem.getAttribute('data-proof-id');
-                            set_proof_task_id.value = proofId;
+                        let indicators = '';
+                        let items = '';
+
+                        response.proofTaskListPending.forEach((proofTask, index) => {
+                            // Carousel Indicators
+                            indicators += `
+                                <li data-bs-target="#proofTaskListPendingCarousel" data-bs-slide-to="${index}" class="${index === 0 ? 'active' : ''}"></li>
+                            `;
+
+                            // Carousel Items
+                            items += `
+                                <div class="carousel-item ${index === 0 ? 'active' : ''}" data-proof-id="${proofTask.id}">
+                                    <div class="mb-3">
+                                        <h4>User Information:</h4>
+                                        <div class="mb-2 border p-2">
+                                            <strong>User Id:</strong> ${proofTask.user_id},
+                                            <strong>User Name:</strong> ${proofTask.user.name},
+                                            <strong>User Ip:</strong> ${proofTask.user_detail.ip}
+                                        </div>
+                                        <h4>Proof Answer:</h4>
+                                        <div class="mb-2 border p-2">
+                                            ${proofTask.proof_answer}
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <h4>Proof Image:</h4>
+                                        <div class="my-2">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                ${
+                                                    JSON.parse(proofTask.proof_photos).map(image => `
+                                                        <a href="{{ asset('uploads/task_proof_photo') }}/${image}" target="_blank" class="m-1">
+                                                            <img src="{{ asset('uploads/task_proof_photo') }}/${image}" style="max-height: 180px; max-width: 180px" alt="Proof Image">
+                                                        </a>
+                                                    `).join('')
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        // Insert HTML into the modal body
+                        $('#checkAllPendingTaskProofData').html(`
+                            <div id="proofTaskListPendingCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <ol class="carousel-indicators">${indicators}</ol>
+                                <div class="carousel-inner">${items}</div>
+                                <a class="carousel-control-prev" data-bs-target="#proofTaskListPendingCarousel" role="button" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" data-bs-target="#proofTaskListPendingCarousel" role="button" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </a>
+                            </div>
+                        `);
+
+                        // Get references to the carousel and hidden input
+                        const carouselElement = document.getElementById('proofTaskListPendingCarousel');
+                        const set_proof_task_id = document.getElementById('set_proof_task_id');
+
+                        // Set the initial ID from the first active item
+                        function setInitialProofTaskId() {
+                            const initialActiveItem = carouselElement.querySelector('.carousel-item.active');
+                            if (initialActiveItem) {
+                                const proofId = initialActiveItem.getAttribute('data-proof-id');
+                                set_proof_task_id.value = proofId;
+                            }
                         }
-                    }
 
-                    // Update the ID whenever the carousel slides
-                    function updateProofTaskId() {
-                        const activeItem = carouselElement.querySelector('.carousel-item.active');
-                        if (activeItem) {
-                            const proofId = activeItem.getAttribute('data-proof-id');
-                            set_proof_task_id.value = proofId;
+                        // Update the ID whenever the carousel slides
+                        function updateProofTaskId() {
+                            const activeItem = carouselElement.querySelector('.carousel-item.active');
+                            if (activeItem) {
+                                const proofId = activeItem.getAttribute('data-proof-id');
+                                set_proof_task_id.value = proofId;
+                            }
                         }
+
+                        // Set the initial ID when the page loads
+                        setInitialProofTaskId();
+
+                        // Attach the slid.bs.carousel event to update the input value
+                        carouselElement.addEventListener('slid.bs.carousel', updateProofTaskId);
                     }
-
-                    // Set the initial ID when the page loads
-                    setInitialProofTaskId();
-
-                    // Attach the slid.bs.carousel event to update the input value
-                    carouselElement.addEventListener('slid.bs.carousel', updateProofTaskId);
                 },
             });
         }
@@ -413,6 +480,17 @@
                             $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
                             $('#allDataTable').DataTable().ajax.reload();
                             toastr.success('Proof Task has been updated successfully.');
+
+                            // Reset the form
+                            $('#checkAllPendingTaskProofEditForm')[0].reset();
+                            $('#approved_div').hide();
+                            $('#rejected_div').hide();
+
+                            // Reset rating stars
+                            stars.forEach((star) => {
+                                star.classList.remove("active");
+                            });
+                            ratingInput.value = 0;
                         }
                     }
                 },
@@ -630,7 +708,7 @@
                 url: url,
                 type: "GET",
                 success: function (response) {
-                    $('#proof_task_id').val(response.proofTask.id);
+                    $('#report_proof_task_id').val(response.proofTask.id);
                     $('#post_task_id').val(response.proofTask.post_task_id);
                     $('#user_id').val(response.proofTask.user_id);
 

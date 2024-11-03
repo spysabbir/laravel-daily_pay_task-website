@@ -691,7 +691,7 @@ class PostedTaskController extends Controller
 
         $postTask = PostTask::findOrFail(decrypt($id));
         $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
-        return view('frontend.posted_task.proof_list', compact('postTask', 'proofSubmitted'));
+        return view('frontend.posted_task.all_proof_list', compact('postTask', 'proofSubmitted'));
     }
 
     public function proofTaskReport($id)
@@ -789,8 +789,12 @@ class PostedTaskController extends Controller
 
     public function proofTaskAllPendingCheck($id)
     {
-        $proofTaskListPending = ProofTask::where('post_task_id', $id)->where('status', 'Pending')->get();
-        return view('frontend.posted_task.pending_proof_task_check', compact('proofTaskListPending'));
+        $proofTaskListPending = ProofTask::where('post_task_id', $id)->where('status', 'Pending')->with('user', 'user_detail')->get();
+
+        return response()->json([
+            'status' => 200,
+            'proofTaskListPending' => $proofTaskListPending,
+        ]);
     }
 
     public function proofTaskCheckUpdate(Request $request, $id)

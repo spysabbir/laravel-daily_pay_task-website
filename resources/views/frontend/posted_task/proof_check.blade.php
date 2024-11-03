@@ -9,10 +9,10 @@
         <div class="mb-3">
             <h4>Proof Image:</h4>
             <div class="my-2">
-                <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                <div id="proofCheckCarousel" class="carousel slide" data-bs-ride="carousel">
                     <ol class="carousel-indicators">
                         @foreach (json_decode($proofTask->proof_photos) as $photo)
-                            <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}"></li>
+                            <li data-bs-target="#proofCheckCarousel" data-bs-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}"></li>
                         @endforeach
                     </ol>
                     <div class="carousel-inner">
@@ -26,11 +26,11 @@
                             </div>
                         @endforeach
                     </div>
-                    <a class="carousel-control-prev" data-bs-target="#carouselExampleCaptions" role="button" data-bs-slide="prev">
+                    <a class="carousel-control-prev" data-bs-target="#proofCheckCarousel" role="button" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </a>
-                    <a class="carousel-control-next" data-bs-target="#carouselExampleCaptions" role="button" data-bs-slide="next">
+                    <a class="carousel-control-next" data-bs-target="#proofCheckCarousel" role="button" data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </a>
@@ -106,30 +106,30 @@
         @else
             <div>
                 <h4>Update Proof Task Status:</h4>
-                <form class="forms-sample border mt-2 p-2" id="editForm">
+                <form class="forms-sample border mt-2 p-2" id="proofCheckEditForm">
                     @csrf
                     <input type="hidden" id="proof_task_id" value="{{ $proofTask->id }}">
                     <div class="mb-3">
                         <label for="status" class="form-label">Status <span class="text-danger">* Required</span></label>
                         <div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" class="form-check-input" name="status" id="approve" value="Approved">
-                                <label class="form-check-label" for="approve">
+                                <input type="radio" class="form-check-input" name="status" id="proof_check_approve" value="Approved">
+                                <label class="form-check-label" for="proof_check_approve">
                                     Approved
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" class="form-check-input" name="status" id="reject" value="Rejected">
-                                <label class="form-check-label" for="reject">
+                                <input type="radio" class="form-check-input" name="status" id="proof_check_reject" value="Rejected">
+                                <label class="form-check-label" for="proof_check_reject">
                                     Rejected
                                 </label>
                             </div>
                         </div>
                         <span class="text-danger error-text update_status_error"></span>
                     </div>
-                    <div id="approved_div">
+                    <div id="proof_check_approved_div">
                         <div class="mb-3">
-                            <label for="rating" class="form-label">Rating (1-5) <span class="text-info">* Optonal</span></label>
+                            <label for="proof_check_rating" class="form-label">Rating (1-5) <span class="text-info">* Optonal</span></label>
                             <div class="rating-box">
                                 <div class="stars">
                                     <i class="fa-solid fa-star"></i>
@@ -139,23 +139,23 @@
                                     <i class="fa-solid fa-star"></i>
                                 </div>
                             </div>
-                            <input type="hidden" name="rating" id="rating" min="0" max="5">
+                            <input type="hidden" name="rating" id="proof_check_rating" min="0" max="5">
                             <span class="text-danger error-text update_rating_error"></span>
                         </div>
                         <div class="mb-3">
-                            <label for="bonus" class="form-label">Bonus <span class="text-info">* Optonal</span></label>
+                            <label for="proof_check_bonus" class="form-label">Bonus <span class="text-info">* Optonal</span></label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="bonus" name="bonus" min="0" max="{{ get_default_settings('task_proof_max_bonus_amount') }}" placeholder="Bonus">
+                                <input type="number" class="form-control" id="proof_check_bonus" name="bonus" min="0" max="{{ get_default_settings('task_proof_max_bonus_amount') }}" placeholder="Bonus">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
                             <small class="text-info">The bonus field must not be greater than {{ get_default_settings('task_proof_max_bonus_amount') }} {{ get_site_settings('site_currency_symbol') }}.</small>
                             <span class="text-danger error-text update_bonus_error"></span>
                         </div>
                     </div>
-                    <div id="rejected_div">
+                    <div id="proof_check_rejected_div">
                         <div class="mb-3">
-                            <label for="rejected_reason" class="form-label">Rejected Reason <span class="text-danger">* Required</span></label>
-                            <textarea class="form-control" id="rejected_reason" name="rejected_reason" rows="3" placeholder="Rejected Reason"></textarea>
+                            <label for="proof_check_rejected_reason" class="form-label">Rejected Reason <span class="text-danger">* Required</span></label>
+                            <textarea class="form-control" id="proof_check_rejected_reason" name="rejected_reason" rows="3" placeholder="Rejected Reason"></textarea>
                             <span class="text-danger error-text update_rejected_reason_error"></span>
                         </div>
                     </div>
@@ -170,7 +170,7 @@
     $(document).ready(function() {
         // Rating stars
         const stars = document.querySelectorAll(".stars i");
-        const ratingInput = document.getElementById('rating');
+        const ratingInput = document.getElementById('proof_check_rating');
         stars.forEach((star, index1) => {
             star.addEventListener("click", () => {
                 stars.forEach((star, index2) => {
@@ -187,28 +187,28 @@
         });
 
         // Hide rejected reason div initially
-        $('#approved_div').hide();
-        $('#rejected_div').hide();
+        $('#proof_check_approved_div').hide();
+        $('#proof_check_rejected_div').hide();
         $('input[name="status"]').change(function() {
             $('.update_status_error').text('');
             if ($(this).val() == 'Rejected') {
-                $('#approved_div').hide();
-                $('#rejected_div').show();
-                $('#bonus').val(0);
+                $('#proof_check_approved_div').hide();
+                $('#proof_check_rejected_div').show();
+                $('#proof_check_bonus').val(0);
                 // Reset rating stars
                 stars.forEach((star) => {
                     star.classList.remove("active");
                 });
                 ratingInput.value = 0;
             } else {
-                $('#approved_div').show();
-                $('#rejected_div').hide();
-                $('#rejected_reason').val('');
+                $('#proof_check_approved_div').show();
+                $('#proof_check_rejected_div').hide();
+                $('#proof_check_rejected_reason').val('');
             }
         });
 
         // Update Data
-        $("body").on("submit", "#editForm", function(e) {
+        $("body").on("submit", "#proofCheckEditForm", function(e) {
             e.preventDefault();
 
             // Disable the submit button to prevent multiple submissions
