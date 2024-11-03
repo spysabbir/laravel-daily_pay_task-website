@@ -44,6 +44,12 @@
             <p>Proof Task has been rejected.</p>
             <hr>
             <p class="mb-0"><strong>Rejected Reason:</strong> {{ $proofTask->rejected_reason }}</p>
+            @if ($proofTask->rejected_reason_photo)
+                <strong>Rejected Reason Photo: </strong>
+                <a href="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" target="_blank">
+                    <img src="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" class="img-fluid" alt="Rejected Reason Photo">
+                </a>
+            @endif
             <p><strong>Rejected Date:</strong> {{ date('d M Y h:i A', strtotime($proofTask->rejected_date)) }}</p>
         </div>
         <div class="alert alert-info" role="alert">
@@ -51,6 +57,12 @@
             <p>Proof Task has been reviewed.</p>
             <hr>
             <p class="mb-0"><strong>Reviewed Reason:</strong> {{ $proofTask->reviewed_reason }}</p>
+            @if ($proofTask->reviewed_reason_photo)
+                <strong>Reviewed Reason Photo: </strong>
+                <a href="{{ asset('uploads/task_proof_reviewed_reason_photo') }}/{{ $proofTask->reviewed_reason_photo }}" target="_blank">
+                    <img src="{{ asset('uploads/task_proof_reviewed_reason_photo') }}/{{ $proofTask->reviewed_reason_photo }}" class="img-fluid" alt="Reviewed Reason Photo">
+                </a>
+            @endif
             <p><strong>Reviewed Date:</strong> {{ date('d M Y h:i A', strtotime($proofTask->reviewed_date)) }}</p>
         </div>
         <div class="mt-3">

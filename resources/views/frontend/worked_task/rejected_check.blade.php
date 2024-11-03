@@ -44,9 +44,23 @@
             <p>Proof Task has been rejected.</p>
             <hr>
             <p class="mb-0"><strong>Rejected Reason:</strong> {{ $proofTask->rejected_reason }}</p>
-            <p><strong>Rejected Date:</strong> {{ date('d M Y h:i A', strtotime($proofTask->rejected_date)) }}</p>
+            @if ($proofTask->rejected_reason_photo)
+                <strong>Rejected Reason Photo: </strong>
+                <a href="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" target="_blank">
+                    <img src="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" class="img-fluid" alt="Rejected Reason Photo">
+                </a>
+            @endif
+            <p><strong>Rejected Date:</strong> {{ date('d M Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
         </div>
-        <form class="forms-sample" id="editForm">
+
+        @if (Carbon\Carbon::parse($proofTask->rejected_at)->addHours(get_default_settings('task_proof_status_rejected_charge_auto_refund_time')) > now())
+        <h4 class="mb-3">Reviewed Task</h4>
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Reviewed Time Limit!</h4>
+            <p>You have to review this task within {{ get_default_settings('task_proof_status_rejected_charge_auto_refund_time') }} hours after that this task review not allowed. This task review time will expire at {{ date('d M Y h:i A', strtotime($proofTask->rejected_at) + (get_default_settings('task_proof_status_rejected_charge_auto_refund_time') * 3600)) }}.</p>
+        </div>
+
+        <form class="forms-sample" id="editForm" enctype="multipart/form-data">
             @csrf
             <input type="hidden" id="proof_task_id" value="{{ $proofTask->id }}">
             <div class="mb-3">
@@ -57,23 +71,55 @@
                 </small>
                 <span class="text-danger error-text update_reviewed_reason_error"></span>
             </div>
+            <div class="mb-3">
+                <label for="reviewed_reason_photo" class="form-label">Reviewed Reason Photo <span class="text-info">* Optonal</span></label>
+                <input type="file" class="form-control" id="reviewed_reason_photo" name="reviewed_reason_photo" accept=".jpg, .jpeg, .png">
+                <small class="text-info d-block">The reviewed reason photo must be jpg, jpeg or png format and less than 2MB.</small>
+                <span class="text-danger error-text update_reviewed_reason_photo_error"></span>
+                <img id="reviewed_reason_photoPreview" class="mt-2 d-block" style="max-height: 200px; max-width: 200px; display: none;">
+            </div>
             <button type="submit" class="btn btn-primary">Reviewed</button>
         </form>
+        @else
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Time Expired!</h4>
+            <p>Sorry, you can't review this task because the time limit has expired.</p>
+        </div>
+        @endif
     </div>
 </div>
 
 <script>
     $(document).ready(function() {
+
+        // Photo Preview
+        $(document).on('change', '#reviewed_reason_photo', function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#reviewed_reason_photoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
         // Update Data
         $("body").on("submit", "#editForm", function(e){
             e.preventDefault();
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             var id = $('#proof_task_id').val();
             var url = "{{ route('rejected.worked_task.reviewed', ":id") }}";
             url = url.replace(':id', id)
+            var formData = new FormData(this);
+            formData.append('_method', 'PUT');
+
             $.ajax({
                 url: url,
-                type: "PUT",
-                data: $(this).serialize(),
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
                 beforeSend:function(){
                     $(document).find('span.error-text').text('');
                 },
@@ -92,6 +138,10 @@
                         }
                     }
                 },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Reviewed");
+                }
             });
         })
     });

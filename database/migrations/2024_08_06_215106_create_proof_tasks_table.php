@@ -19,7 +19,9 @@ return new class extends Migration
             $table->json('proof_photos');
             $table->enum('status', ['Pending', 'Approved', 'Rejected', 'Reviewed'])->default('Pending');
             $table->text('rejected_reason')->nullable();
+            $table->integer('rejected_reason_photo')->nullable();
             $table->text('reviewed_reason')->nullable();
+            $table->integer('reviewed_reason_photo')->nullable();
             $table->integer('approved_by')->nullable();
             $table->integer('rejected_by')->nullable();
             $table->timestamp('approved_at')->nullable();

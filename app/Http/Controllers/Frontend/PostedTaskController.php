@@ -804,6 +804,7 @@ class PostedTaskController extends Controller
             'bonus' => 'nullable|numeric|min:0|max:' . get_default_settings('task_proof_max_bonus_amount'),
             'rating' => 'nullable|numeric|min:0|max:5',
             'rejected_reason' => 'required_if:status,Rejected',
+            'rejected_reason_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -859,8 +860,17 @@ class PostedTaskController extends Controller
                 }
             }
 
+            $rejected_reason_photo_name = null;
+            if ($request->file('rejected_reason_photo')) {
+                $manager = new ImageManager(new Driver());
+                $rejected_reason_photo_name = $id."-rejected_reason_photo-".date('YmdHis').".".$request->file('rejected_reason_photo')->getClientOriginalExtension();
+                $image = $manager->read($request->file('rejected_reason_photo'));
+                $image->toJpeg(80)->save(base_path("public/uploads/task_proof_rejected_reason_photo/").$rejected_reason_photo_name);
+            }
+
             $proofTask->status = $request->status;
             $proofTask->rejected_reason = $request->rejected_reason ?? NULL;
+            $proofTask->rejected_reason_photo = $rejected_reason_photo_name;
             $proofTask->rejected_at = $request->status == 'Rejected' ? now() : NULL;
             $proofTask->rejected_by = $request->status == 'Rejected' ? auth()->user()->id : NULL;
             $proofTask->approved_at = $request->status == 'Approved' ? now() : NULL;

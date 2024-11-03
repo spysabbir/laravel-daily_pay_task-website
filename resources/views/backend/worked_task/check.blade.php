@@ -66,6 +66,12 @@
                 <p>Proof Task has been rejected.</p>
                 <hr>
                 <p><strong>Rejected Reason:</strong> {{ $proofTask->rejected_reason }}</p>
+                @if ($proofTask->rejected_reason_photo)
+                    <strong>Rejected Reason Photo: </strong>
+                    <a href="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" target="_blank">
+                        <img src="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" class="img-fluid" alt="Rejected Reason Photo">
+                    </a>
+                @endif
                 <p>Rejected At: {{ date('d M, Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
                 <p>Rejected By: {{ $proofTask->rejectedBy->name }}</p>
             </div>
@@ -75,6 +81,12 @@
             <p>Proof Task has been rejected.</p>
             <hr>
             <p><strong>Rejected Reason:</strong> {{ $proofTask->rejected_reason }}</p>
+            @if ($proofTask->rejected_reason_photo)
+                <strong>Rejected Reason Photo: </strong>
+                <a href="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" target="_blank">
+                    <img src="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" class="img-fluid" alt="Rejected Reason Photo">
+                </a>
+            @endif
             <p>Rejected At: {{ date('d M, Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
             <p>Rejected By: {{ $proofTask->rejectedBy->name }}</p>
         </div>
@@ -83,12 +95,18 @@
             <p>Proof Task has been reviewed.</p>
             <hr>
             <p><strong>Reviewed Reason:</strong> {{ $proofTask->reviewed_reason }}</p>
+            @if ($proofTask->reviewed_reason_photo)
+                <strong>Reviewed Reason Photo: </strong>
+                <a href="{{ asset('uploads/task_proof_reviewed_reason_photo') }}/{{ $proofTask->reviewed_reason_photo }}" target="_blank">
+                    <img src="{{ asset('uploads/task_proof_reviewed_reason_photo') }}/{{ $proofTask->reviewed_reason_photo }}" class="img-fluid" alt="Reviewed Reason Photo">
+                </a>
+            @endif
             <p>Reviewed At: {{ date('d M, Y h:i A', strtotime($proofTask->reviewed_at)) }}</p>
         </div>
         @endif
         @if ($proofTask->status == 'Reviewed')
         <div class="mt-3">
-            <form class="forms-sample" id="editForm">
+            <form class="forms-sample" id="editForm" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" id="proof_task_id" value="{{ $proofTask->id }}">
                 <div class="mb-3">
@@ -115,6 +133,13 @@
                         <textarea class="form-control" id="rejected_reason" name="rejected_reason" rows="3" placeholder="Rejected Reason"></textarea>
                         <span class="text-danger error-text update_rejected_reason_error"></span>
                     </div>
+                    <div class="mb-3">
+                        <label for="rejected_reason_photo" class="form-label">Rejected Reason Photo <span class="text-info">* Optonal</span></label>
+                        <input type="file" class="form-control" id="rejected_reason_photo" name="rejected_reason_photo" accept=".jpg, .jpeg, .png">
+                        <small class="text-info d-block">The rejected reason photo must be jpg, jpeg or png format and less than 2MB.</small>
+                        <span class="text-danger error-text update_rejected_reason_photo_error"></span>
+                        <img id="rejected_reason_photoPreview" class="mt-2 d-block" style="max-height: 200px; max-width: 200px; display: none;">
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -136,16 +161,33 @@
             }
         });
 
+        // Photo Preview
+        $(document).on('change', '#rejected_reason_photo', function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#rejected_reason_photoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
         // Update Data
         $("body").on("submit", "#editForm", function(e){
             e.preventDefault();
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             var id = $('#proof_task_id').val();
             var url = "{{ route('backend.worked_task_check_update', ":id") }}";
             url = url.replace(':id', id)
+            var formData = new FormData(this);
+            formData.append('_method', 'PUT');
             $.ajax({
                 url: url,
-                type: "PUT",
-                data: $(this).serialize(),
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
                 beforeSend:function(){
                     $(document).find('span.error-text').text('');
                 },
@@ -160,6 +202,10 @@
                         $(".viewModal").modal('hide');
                     }
                 },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         })
     });

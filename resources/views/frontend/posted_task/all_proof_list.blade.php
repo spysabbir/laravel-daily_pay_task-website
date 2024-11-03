@@ -108,7 +108,7 @@
                                                 <div class="col-lg-4 d-none" id="checkAllPendingTaskProofAction">
                                                     <div>
                                                         <h4>Update Proof Task Status:</h4>
-                                                        <form class="forms-sample border mt-2 p-2" id="checkAllPendingTaskProofEditForm">
+                                                        <form class="forms-sample border mt-2 p-2" id="checkAllPendingTaskProofEditForm"  enctype="multipart/form-data">
                                                             @csrf
                                                             <input type="hidden" id="set_proof_task_id" value="">
                                                             <div class="mb-3">
@@ -159,6 +159,13 @@
                                                                     <label for="rejected_reason" class="form-label">Rejected Reason <span class="text-danger">* Required</span></label>
                                                                     <textarea class="form-control" id="rejected_reason" name="rejected_reason" rows="3" placeholder="Rejected Reason"></textarea>
                                                                     <span class="text-danger error-text update_rejected_reason_error"></span>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="rejected_reason_photo" class="form-label">Rejected Reason Photo <span class="text-info">* Optonal</span></label>
+                                                                    <input type="file" class="form-control" id="rejected_reason_photo" name="rejected_reason_photo" accept=".jpg, .jpeg, .png">
+                                                                    <small class="text-info d-block">The rejected reason photo must be jpg, jpeg or png format and less than 2MB.</small>
+                                                                    <span class="text-danger error-text update_rejected_reason_photo_error"></span>
+                                                                    <img id="rejected_reason_photoPreview" class="mt-2 d-block" style="max-height: 200px; max-width: 200px; display: none;">
                                                                 </div>
                                                             </div>
                                                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -249,7 +256,7 @@
                                                         <span class="text-danger error-text reason_error"></span>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="photo" class="form-label">Photo</label>
+                                                        <label for="photo" class="form-label">Photo <span class="text-info">* Optonal</span></label>
                                                         <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .jpeg, .png">
                                                         <span class="text-danger error-text photo_error d-block"></span>
                                                         <img src="" alt="Photo" id="photoPreview" class="mt-2" style="display: none; width: 100px; height: 100px;">
@@ -400,6 +407,11 @@
 
                         // Attach the slid.bs.carousel event to update the input value
                         carouselElement.addEventListener('slid.bs.carousel', updateProofTaskId);
+
+                        // carousel auto slide off
+                        $('#proofTaskListPendingCarousel').carousel({
+                            interval: false
+                        });
                     }
                 },
             });
@@ -449,6 +461,15 @@
             }
         });
 
+        // Photo Preview
+        $(document).on('change', '#rejected_reason_photo', function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#rejected_reason_photoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
         $("body").on("submit", "#checkAllPendingTaskProofEditForm", function(e) {
             e.preventDefault();
 
@@ -458,11 +479,15 @@
 
             var id = $('#set_proof_task_id').val();
             var url = "{{ route('proof_task.check.update', ':id') }}".replace(':id', id);
+            var formData = new FormData(this);
+            formData.append('_method', 'PUT');
 
             $.ajax({
                 url: url,
-                type: "PUT",
-                data: $(this).serialize(),
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
                 beforeSend: function() {
                     $(document).find('span.error-text').text('');
                 },

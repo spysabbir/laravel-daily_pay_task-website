@@ -80,6 +80,12 @@
                 <p>Proof Task has been rejected.</p>
                 <hr>
                 <p><strong>Rejected Reason:</strong> {{ $proofTask->rejected_reason }}</p>
+                @if ($proofTask->rejected_reason_photo)
+                    <strong>Rejected Reason Photo: </strong>
+                    <a href="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" target="_blank">
+                        <img src="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" class="img-fluid" alt="Rejected Reason Photo">
+                    </a>
+                @endif
                 <p>Rejected At: {{ date('d M, Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
                 <p>Rejected By: {{ $proofTask->rejectedBy->name }}</p>
             </div>
@@ -89,6 +95,12 @@
                 <p>Proof Task has been rejected.</p>
                 <hr>
                 <p><strong>Rejected Reason:</strong> {{ $proofTask->rejected_reason }}</p>
+                @if ($proofTask->rejected_reason_photo)
+                    <strong>Rejected Reason Photo: </strong>
+                    <a href="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" target="_blank">
+                        <img src="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" class="img-fluid" alt="Rejected Reason Photo">
+                    </a>
+                @endif
                 <p>Rejected At: {{ date('d M, Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
                 <p>Rejected By: {{ $proofTask->rejectedBy->name }}</p>
             </div>
@@ -106,7 +118,7 @@
         @else
             <div>
                 <h4>Update Proof Task Status:</h4>
-                <form class="forms-sample border mt-2 p-2" id="proofCheckEditForm">
+                <form class="forms-sample border mt-2 p-2" id="proofCheckEditForm" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" id="proof_task_id" value="{{ $proofTask->id }}">
                     <div class="mb-3">
@@ -158,6 +170,13 @@
                             <textarea class="form-control" id="proof_check_rejected_reason" name="rejected_reason" rows="3" placeholder="Rejected Reason"></textarea>
                             <span class="text-danger error-text update_rejected_reason_error"></span>
                         </div>
+                        <div class="mb-3">
+                            <label for="proof_check_rejected_reason_photo" class="form-label">Rejected Reason Photo <span class="text-info">* Optonal</span></label>
+                            <input type="file" class="form-control" id="proof_check_rejected_reason_photo" name="rejected_reason_photo" accept=".jpg, .jpeg, .png">
+                            <small class="text-info d-block">The rejected reason photo must be jpg, jpeg or png format and less than 2MB.</small>
+                            <span class="text-danger error-text update_rejected_reason_photo_error"></span>
+                            <img id="proof_check_rejected_reason_photoPreview" class="mt-2 d-block" style="max-height: 200px; max-width: 200px; display: none;">
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -207,6 +226,15 @@
             }
         });
 
+        // Photo Preview
+        $(document).on('change', '#proof_check_rejected_reason_photo', function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#proof_check_rejected_reason_photoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
         // Update Data
         $("body").on("submit", "#proofCheckEditForm", function(e) {
             e.preventDefault();
@@ -217,11 +245,15 @@
 
             var id = $('#proof_task_id').val();
             var url = "{{ route('proof_task.check.update', ':id') }}".replace(':id', id);
+            var formData = new FormData(this);
+            formData.append('_method', 'PUT');
 
             $.ajax({
                 url: url,
-                type: "PUT",
-                data: $(this).serialize(),
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
                 beforeSend: function() {
                     $(document).find('span.error-text').text('');
                 },
@@ -234,7 +266,6 @@
                         if (response.status === 401) {
                             toastr.error(response.error);
                         } else {
-                            // Update balance displays
                             $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                             $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
                             toastr.success('Proof Task has been updated successfully.');

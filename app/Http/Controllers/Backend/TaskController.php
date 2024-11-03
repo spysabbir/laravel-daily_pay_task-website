@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\UserDetail;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class TaskController extends Controller
 {
@@ -642,6 +644,7 @@ class TaskController extends Controller
         $validator = Validator::make($request->all(), [
             'status' => 'required',
             'rejected_reason' => 'required_if:status,Rejected',
+            'rejected_reason_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -655,12 +658,21 @@ class TaskController extends Controller
             $postTask = PostTask::findOrFail($proofTask->post_task_id);
 
             if ($request->status == 'Rejected') {
-                $user = User::findOrFail($postTask->id);
+                $user = User::findOrFail($postTask->user_id);
                 $user->update([
                     'deposit_balance' => $user->deposit_balance + $postTask->earnings_from_work,
                 ]);
 
+                $rejected_reason_photo_name = null;
+                if ($request->file('rejected_reason_photo')) {
+                    $manager = new ImageManager(new Driver());
+                    $rejected_reason_photo_name = $id."-rejected_reason_photo-".date('YmdHis').".".$request->file('rejected_reason_photo')->getClientOriginalExtension();
+                    $image = $manager->read($request->file('rejected_reason_photo'));
+                    $image->toJpeg(80)->save(base_path("public/uploads/task_proof_rejected_reason_photo/").$rejected_reason_photo_name);
+                }
+
                 $proofTask->rejected_reason = $request->rejected_reason;
+                $proofTask->rejected_reason_photo = $rejected_reason_photo_name;
                 $proofTask->rejected_at = now();
                 $proofTask->rejected_by = auth()->user()->id;
             }else{

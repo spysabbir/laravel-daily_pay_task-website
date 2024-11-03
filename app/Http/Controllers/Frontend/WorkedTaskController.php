@@ -371,6 +371,7 @@ class WorkedTaskController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'reviewed_reason' => 'required',
+            'reviewed_reason_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -394,10 +395,20 @@ class WorkedTaskController extends Controller
                 }
             }
 
+            $reviewed_reason_photo_name = null;
+            if ($request->file('reviewed_reason_photo')) {
+                $manager = new ImageManager(new Driver());
+                $reviewed_reason_photo_name = $id."-reviewed_reason_photo-".date('YmdHis').".".$request->file('reviewed_reason_photo')->getClientOriginalExtension();
+                $image = $manager->read($request->file('reviewed_reason_photo'));
+                $image->toJpeg(80)->save(base_path("public/uploads/task_proof_reviewed_reason_photo/").$reviewed_reason_photo_name);
+            }
+
+
             $proofTask = ProofTask::findOrFail($id);
 
             $proofTask->status = 'Reviewed';
             $proofTask->reviewed_reason = $request->reviewed_reason;
+            $proofTask->reviewed_reason_photo = $reviewed_reason_photo_name;
             $proofTask->reviewed_at = now();
             $proofTask->save();
 
