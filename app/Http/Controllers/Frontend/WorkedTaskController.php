@@ -195,7 +195,7 @@ class WorkedTaskController extends Controller
             'alert-type' => 'success'
         );
 
-        return back()->with($notification);
+        return redirect()->route('find_tasks')->with($notification);
     }
 
     public function workedTaskListPending(Request $request)

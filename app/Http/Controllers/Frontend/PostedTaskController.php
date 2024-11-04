@@ -242,7 +242,7 @@ class PostedTaskController extends Controller
                 return DataTables::of($taskListPending)
                     ->addIndexColumn()
                     ->editColumn('created_at', function ($row) {
-                        return $row->created_at->format('d M Y h:i A');
+                        return $row->created_at->format('d M Y h:i:s A');
                     })
                     ->addColumn('action', function ($row) {
                         $actionBtn = '

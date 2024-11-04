@@ -221,9 +221,15 @@
         // Update Data
         $('#editForm').submit(function (event) {
             event.preventDefault();
+
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             var id = $('#post_task_id').val();
             var url = "{{ route('running.posted_task.update', ":id") }}";
             url = url.replace(':id', id)
+
             $.ajax({
                 url: url,
                 type: "PUT",
@@ -248,6 +254,10 @@
                         }
                     }
                 },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         });
 

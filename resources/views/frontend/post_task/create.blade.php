@@ -100,8 +100,9 @@
                                 <label for="title" class="form-label">
                                     Title <small class="text-danger">* Required</small>
                                 </label>
-                                <input type="text" class="form-control" name="title" id="title" placeholder="Please enter a title." required>
+                                <textarea class="form-control" name="title" id="title" rows="2" placeholder="Please enter a title." required></textarea>
                                 <div class="invalid-feedback">Please enter a title.</div>
+                                <small class="text-danger" id="title_length_error"></small>
                             </div>
                             <div class="mb-2">
                                 <label for="description" class="form-label">
@@ -144,27 +145,31 @@
                                     <label for="work_needed" class="form-label">
                                         Work Needed <small class="text-danger">* Required </small>
                                     </label>
-                                    <input type="number" class="form-control" name="work_needed" min="1" id="work_needed" value="1" required>
+                                    <input type="number" class="form-control" name="work_needed" id="work_needed" min="1" value="1" placeholder="Please enter how many workers are required." required>
                                     <div class="invalid-feedback">Please enter how many workers are required.</div>
+                                    <small class="text-danger" id="work_needed_error"></small>
+                                    <small class="text-info d-block">* Minimum work needed is 1.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="earnings_from_work" class="form-label">
                                         Earnings From Work <small class="text-danger">* Required </small>
                                     </label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" name="earnings_from_work" id="earnings_from_work" required>
+                                        <input type="number" class="form-control" name="earnings_from_work" id="earnings_from_work" placeholder="Please enter the charges for each worker." required>
                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                        <div class="invalid-feedback">Please enter charges for each worker are required</div>
                                     </div>
-                                    <small class="text-info">* Each earnings from work should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
-                                    <div class="invalid-feedback">Please enter the charges for each worker within the allowed range.</div>
+                                    <small class="text-danger" id="earnings_from_work_error"></small>
+                                    <small class="text-info d-block">* Each earnings from work should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="extra_screenshots" class="form-label">
                                         Extra Screenshots <small class="text-danger">* Required </small>
                                     </label>
-                                    <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="0" required>
-                                    <small class="text-info">* Additional screenshot charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_screenshot_charge') }}. Note: You get 1 screenshot for free.</small>
+                                    <input type="number" class="form-control" name="extra_screenshots" id="extra_screenshots" min="0" value="0" placeholder="Please enter how many additional screenshots are required." required>
                                     <div class="invalid-feedback">Please enter how many additional screenshots are required</div>
+                                    <small class="text-danger" id="extra_screenshots_error"></small>
+                                    <small class="text-info d-block">* Additional screenshot charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_screenshot_charge') }} per screenshot. Note: You get 1 screenshot for free.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="boosted_time" class="form-label">
@@ -182,8 +187,8 @@
                                         <option value="300">5 Hours</option>
                                         <option value="360">6 Hours</option>
                                     </select>
-                                    <small class="text-info">* Every 15 minutes boost Charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }}. When the task is boosted, it will be shown at the top of the task list.</small>
                                     <div class="invalid-feedback">Please enter the boosted time.</div>
+                                    <small class="text-info">* Every 15 minutes boost Charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }}. When the task is boosted, it will be shown at the top of the task list.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="work_duration" class="form-label">
@@ -196,8 +201,10 @@
                                         <option value="6">6 Days</option>
                                         <option value="7">1 Week</option>
                                     </select>
-                                    <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
                                     <div class="invalid-feedback">Please enter the work duration.</div>
+                                    <small class="text-info">* Additional work duration charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_work_duration_charge') }} per day. Note: You get 3 days for free.</small>
+                                    <br>
+                                    <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="task_charge" class="form-label">Task Charge</label>
@@ -207,11 +214,12 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
-                                    <label for="site_charge" class="form-label">Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
+                                    <label for="site_charge" class="form-label">Site Charge</label>
                                     <div class="input-group">
                                         <input type="number" class="form-control" id="site_charge" readonly>
                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                     </div>
+                                    <small class="text-info">* Site charge is {{ get_default_settings('task_posting_charge_percentage') }} % of the task charge.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="total_task_charge" class="form-label">Total Task Charge</label>
@@ -240,6 +248,86 @@
 @section('script')
 <script>
     $(document).ready(function() {
+        // Real-time validation for radio buttons
+        $('#taskForm').on('change', 'input[name="category_id"]', function() {
+            var categorySelected = $('input[name="category_id"]:checked').val();
+            if (!categorySelected) {
+                $('#category-options').addClass('is-invalid');
+            } else {
+                $('#category-options').removeClass('is-invalid');
+                $('input[name="sub_category_id"]').prop('checked', false);
+                $('#sub-category-options').addClass('is-invalid');
+            }
+        });
+        $('#taskForm').on('change', 'input[name="sub_category_id"]', function() {
+            var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
+            if (!subCategorySelected) {
+                $('#sub-category-options').addClass('is-invalid');
+            } else {
+                $('#sub-category-options').removeClass('is-invalid');
+                $('input[name="child_category_id"]').prop('checked', false);
+                $('#child-category-options').addClass('is-invalid');
+            }
+        });
+        $('#taskForm').on('change', 'input[name="child_category_id"]', function() {
+            var childCategorySelected = $('input[name="child_category_id"]:checked').val();
+            if (!childCategorySelected) {
+                $('#child-category-options').addClass('is-invalid');
+            } else {
+                $('#child-category-options').removeClass('is-invalid');
+            }
+        });
+
+        // Real-time validation for input fields
+        $('#taskForm').on('input', 'input, textarea', function() {
+            // Add is-invalid class if the field is invalid
+            if ($(this).is(':invalid')) {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+
+            // Validate the title field
+            var title = $('#title').val();
+            if (title.length > 255) {
+                $('#title_length_error').text('Title length should be less than 255 characters. You have entered ' + title.length + ' characters.');
+            } else {
+                $('#title_length_error').text('');
+            }
+
+            // Validate the work needed field
+            var work_needed = parseInt($('#work_needed').val());
+            if (work_needed < 1) {
+                $(this).removeClass('is-invalid');
+                $('#work_needed_error').text('Work needed should be greater than 1.');
+            } else {
+                $('#work_needed_error').text('');
+            }
+
+            // Validate the earnings from work field
+            var earnings_from_work = parseFloat($('#earnings_from_work').val());
+            var minCharge = parseFloat($('#earnings_from_work').attr('min'));
+            var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
+            if (earnings_from_work < minCharge) {
+                $(this).removeClass('is-invalid');
+                $('#earnings_from_work_error').text('Earnings from work should be greater than ' + minCharge + '.');
+            } else if (earnings_from_work > maxCharge) {
+                $(this).removeClass('is-invalid');
+                $('#earnings_from_work_error').text('Earnings from work should be less than ' + maxCharge + '.');
+            } else {
+                $('#earnings_from_work_error').text('');
+            }
+
+            // Validate the extra screenshots field
+            var extra_screenshots = parseInt($('#extra_screenshots').val());
+            if (extra_screenshots < 0) {
+                $(this).removeClass('is-invalid');
+                $('#extra_screenshots_error').text('Extra screenshots should be greater than or equal to 0.');
+            } else {
+                $('#extra_screenshots_error').text('');
+            }
+        });
+
         // Initialize the wizard
         $('#wizard').steps({
             headerTag: 'h2',
@@ -256,6 +344,7 @@
                 var isValid = true;
 
                 if (currentIndex === 1) {
+                    // Validate the category fields
                     var categorySelected = $('input[name="category_id"]:checked').val();
                     if (!categorySelected) {
                         $('#category-options').addClass('is-invalid');
@@ -263,7 +352,7 @@
                     } else {
                         $('#category-options').removeClass('is-invalid');
                     }
-
+                    // Validate the sub category fields
                     var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
                     if (categorySelected && !subCategorySelected) {
                         $('#sub-category-options').addClass('is-invalid');
@@ -271,7 +360,7 @@
                     } else {
                         $('#sub-category-options').removeClass('is-invalid');
                     }
-
+                    // Validate the child category fields
                     var childCategoryData = $('#child-category-options').html();
                     var childCategorySelected = $('input[name="child_category_id"]:checked').val();
                     if (subCategorySelected && !childCategorySelected && childCategoryData) {
@@ -280,11 +369,18 @@
                     } else {
                         $('#child-category-options').removeClass('is-invalid');
                     }
-
-                    return isValid;
                 }
 
                 if (currentIndex === 2) {
+                    // Validate the title field
+                    var title = $('#title').val();
+                    if (title.length > 255) {
+                        $('#title_length_error').text('Title length should be less than 255 characters. You have entered ' + title.length + ' characters.');
+                        isValid = false;
+                    } else {
+                        $('#title_length_error').text('');
+                    }
+                    // Validate the thumbnail file
                     var thumbnail = $('#thumbnail').val();
                     if (thumbnail) {
                         var ext = thumbnail.split('.').pop().toLowerCase();
@@ -315,6 +411,40 @@
                 var form = $('#taskForm');
                 var isValid = true;
 
+                // Validate the work needed field
+                var work_needed = parseInt($('#work_needed').val());
+                if (work_needed < 1) {
+                    $('#work_needed_error').text('Work needed should be greater than 1.');
+                    $(this).removeClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $('#work_needed_error').text('');
+                }
+                // Validate the earnings from work field
+                var earnings_from_work = parseFloat($('#earnings_from_work').val());
+                var minCharge = parseFloat($('#earnings_from_work').attr('min'));
+                var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
+                if (earnings_from_work < minCharge) {
+                    $('#earnings_from_work_error').text('Earnings from work should be greater than ' + minCharge + '.');
+                    $(this).removeClass('is-invalid');
+                    isValid = false;
+                } else if (earnings_from_work > maxCharge) {
+                    $('#earnings_from_work_error').text('Earnings from work should be less than ' + maxCharge + '.');
+                    $(this).removeClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $('#earnings_from_work_error').text('');
+                }
+                // Validate the extra screenshots field
+                var extra_screenshots = parseInt($('#extra_screenshots').val());
+                if (extra_screenshots < 0) {
+                    $('#extra_screenshots_error').text('Extra screenshots should be greater than or equal to 0.');
+                    isValid = false;
+                    $(this).removeClass('is-invalid');
+                } else {
+                    $('#extra_screenshots_error').text('');
+                }
+
                 form.find(':input[required]').each(function() {
                     if (!this.checkValidity()) {
                         $(this).addClass('is-invalid');
@@ -339,6 +469,15 @@
                     isValid = false;
                 }else{
                     $('#taskForm').submit();
+
+                    // Disable the submit button to prevent multiple submissions
+                    $('#wizard').find('.actions a[href="#finish"]').addClass('disabled');
+
+                    // Hide the finish button
+                    $('#wizard').find('.actions a[href="#finish"]').hide();
+
+                    // Show the loading spinner
+                    $('#wizard').find('.actions ul').append('<strong class="btn btn-primary"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...</strong>');
                 }
             }
         });
@@ -472,56 +611,70 @@
         function calculateTotalTaskCharge() {
             var work_needed = parseInt($('#work_needed').val()) || 0;
             var earnings_from_work = parseFloat($('#earnings_from_work').val()) || 0;
+
             var extra_screenshots = parseInt($('#extra_screenshots').val()) || 0;
-            var boosted_time = parseInt($('#boosted_time').val()) || 0;
             var screenshot_charge = {{ get_default_settings('task_posting_additional_screenshot_charge') }};
+
+            var boosted_time = parseInt($('#boosted_time').val()) || 0;
             var boosted_time_charge = {{ get_default_settings('task_posting_boosted_time_charge') }};
+
+            var work_duration = parseInt($('#work_duration').val()) || 0;
+            // var work_duration_charge = {{ get_default_settings('task_posting_additional_work_duration_charge') }};
+            var work_duration_charge = 5;
+
             var task_posting_charge_percentage = {{ get_default_settings('task_posting_charge_percentage') }};
 
-            var task_charge = (work_needed * earnings_from_work) +
-                (extra_screenshots * screenshot_charge) +
-                ((boosted_time / 15) * boosted_time_charge);
+            var total_screenshot_charge = screenshot_charge * extra_screenshots;
+            var total_boosted_time_charge = boosted_time_charge * (boosted_time / 15);
+            var total_work_duration_charge = work_duration_charge * (work_duration - 3);
 
+            var task_charge = (work_needed * earnings_from_work) + total_screenshot_charge + total_boosted_time_charge + total_work_duration_charge;
             $('#task_charge').val(task_charge.toFixed(2));
+
             var site_charge = (task_charge * task_posting_charge_percentage / 100);
             $('#site_charge').val(site_charge.toFixed(2));
+
             $('#total_task_charge').val((task_charge + site_charge).toFixed(2));
         }
 
         // Validate input fields before submitting the form
-        function validateInputFields() {
-            let isValid = true;
+        // function validateInputFields() {
+        //     let isValid = true;
 
-            // Validate work_needed
-            let work_needed = parseInt($('#work_needed').val());
-            if (isNaN(work_needed) || work_needed < 1) {
-                $('#work_needed').addClass('is-invalid');
-                isValid = false;
-            } else {
-                $('#work_needed').removeClass('is-invalid');
-            }
+        //     // Validate work_needed
+        //     let work_needed = parseInt($('#work_needed').val());
+        //     console.log(work_needed);
+        //     if (isNaN(work_needed) || work_needed < 1) {
+        //         $('#work_needed').addClass('is-invalid');
+        //         isValid = false;
+        //     } else {
+        //         $('#work_needed').removeClass('is-invalid');
+        //     }
 
-            // Validate earnings_from_work
-            let earnings_from_work = parseFloat($('#earnings_from_work').val());
-            let minCharge = parseFloat($('#earnings_from_work').attr('min'));
-            if (isNaN(earnings_from_work) || earnings_from_work < minCharge) {
-                $('#earnings_from_work').addClass('is-invalid');
-                isValid = false;
-            } else {
-                $('#earnings_from_work').removeClass('is-invalid');
-            }
+        //     // Validate earnings_from_work
+        //     let earnings_from_work = parseFloat($('#earnings_from_work').val());
+        //     let minCharge = parseFloat($('#earnings_from_work').attr('min'));
+        //     console.log(earnings_from_work);
+        //     console.log(minCharge);
 
-            // Validate extra_screenshots
-            let extraScreenshots = parseInt($('#extra_screenshots').val());
-            if (isNaN(extraScreenshots) || extraScreenshots < 0) {
-                $('#extra_screenshots').addClass('is-invalid');
-                isValid = false;
-            } else {
-                $('#extra_screenshots').removeClass('is-invalid');
-            }
+        //     if (isNaN(earnings_from_work) || earnings_from_work < minCharge) {
+        //         $('#earnings_from_work').addClass('is-invalid');
+        //         isValid = false;
+        //     } else {
+        //         $('#earnings_from_work').removeClass('is-invalid');
+        //     }
 
-            return isValid;
-        }
+        //     // Validate extra_screenshots
+        //     let extraScreenshots = parseInt($('#extra_screenshots').val());
+        //     if (isNaN(extraScreenshots) || extraScreenshots < 0) {
+        //         $('#extra_screenshots').addClass('is-invalid');
+        //         isValid = false;
+        //     } else {
+        //         $('#extra_screenshots').removeClass('is-invalid');
+        //     }
+
+        //     return isValid;
+        // }
 
         // Initialize the total task Charge on page load
         calculateTotalTaskCharge();

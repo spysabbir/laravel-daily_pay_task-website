@@ -283,6 +283,10 @@
                 return; // Stop form submission if validation fails
             }
 
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             // Perform AJAX check for proofCount vs work_needed before submitting the form
             $.ajax({
                 url: '{{ route("find_task.proof.submit.limit.check", encrypt($taskDetails->id)) }}', // Adjust with your actual route
@@ -296,6 +300,10 @@
                         toastr.error('Sorry! This task has been completed.');
                     }
                 },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         });
 
@@ -359,6 +367,10 @@
         $('#reportForm, #reportPostTaskForm').submit(function(event) {
             event.preventDefault();
 
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             var form = $(this); // Get the current form being submitted
             var formData = new FormData(form[0]); // Create FormData from the form
 
@@ -391,6 +403,10 @@
                         form[0].reset(); // Reset the form after successful submission
                     }
                 },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         });
     });

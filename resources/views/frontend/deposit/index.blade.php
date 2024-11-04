@@ -260,7 +260,13 @@
         // Store Data
         $('#createForm').submit(function(event) {
             event.preventDefault();
+
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             var formData = $(this).serialize();
+
             $.ajax({
                 url: "{{ route('deposit.store') }}",
                 type: 'POST',
@@ -284,6 +290,10 @@
                             toastr.success('Deposit request sent successfully.');
                         }
                     }
+                },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });
@@ -300,7 +310,13 @@
         // Store Withdrawal Balance Deposit
         $('#withdrawalBalanceDepositForm').submit(function(event) {
             event.preventDefault();
+
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             var formData = $(this).serialize();
+
             $.ajax({
                 url: "{{ route('withdrawal.balance.deposit.store') }}",
                 type: 'POST',
@@ -327,6 +343,10 @@
                             toastr.success('Withdrawal balance deposit request sent successfully.');
                         }
                     }
+                },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });

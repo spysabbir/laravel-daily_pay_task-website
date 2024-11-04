@@ -249,6 +249,11 @@
         $('#createForm').submit(function(event) {
             event.preventDefault();
             var formData = $(this).serialize();
+
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: "{{ route('withdraw.store') }}",
                 type: 'POST',
@@ -273,6 +278,10 @@
                             toastr.error(response.error);
                         }
                     }
+                },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });

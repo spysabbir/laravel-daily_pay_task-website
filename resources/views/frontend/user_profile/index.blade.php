@@ -197,7 +197,13 @@
         // Report User
         $('#reportForm').submit(function(event) {
             event.preventDefault();
+            
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             var formData = new FormData(this);
+
             $.ajax({
                 url: "{{ route('report.send', $user->id) }}",
                 type: 'POST',
@@ -218,6 +224,10 @@
                         $('#reportForm')[0].reset();
                         toastr.success('User reported successfully.');
                     }
+                },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });
