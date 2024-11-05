@@ -35,6 +35,12 @@
                                 <span>Rejection Reason: {{ $postTask->rejection_reason }}</span> <br>
                             </div>
                             @endif
+                            @if (Auth::user()->deposit_balance < get_default_settings('task_posting_min_budget'))
+                            <div class="alert alert-warning mb-3">
+                                Your current balance is {{ get_site_settings('site_currency_symbol') }} {{ Auth::user()->deposit_balance }}. You need to pay {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }} to post a task. Your balance is not enough to post a task. Please deposit now to post a task.
+                                <a href="{{ route('deposit') }}" class="text-primary">Deposit Now</a>
+                            </div>
+                            @endif
                             <h4 class="mb-3">
                                 <strong>Important Notice:</strong>
                             </h4>
@@ -102,8 +108,9 @@
                                 <label for="title" class="form-label">
                                     Title <small class="text-danger">* Required</small>
                                 </label>
-                                <input type="text" class="form-control" name="title" id="title" placeholder="Please enter a title." value="{{ old('title', $postTask->title) }}" required>
+                                <textarea class="form-control" name="title" id="title" rows="1" placeholder="Please enter a title." required>{{ old('title', $postTask->title) }}</textarea>
                                 <div class="invalid-feedback">Please enter a title.</div>
+                                <small class="text-danger" id="title_error"></small>
                             </div>
                             <div class="mb-2">
                                 <label for="description" class="form-label">
@@ -124,18 +131,20 @@
                                     Additional Note <small class="text-danger">* Required </small>
                                 </label>
                                 <textarea class="form-control" name="additional_note" id="additional_note" rows="4" placeholder="Please enter additional notes." required>{{ old('additional_note', $postTask->additional_note) }}</textarea>
-                                <small class="text-info">* Please provide your task related information here for verification purposes. This is only admin and you can see it.</small>
                                 <div class="invalid-feedback">Please enter additional notes.</div>
+                                <small class="text-info">* Please provide your task related information here for verification purposes. This is only admin and you can see it.</small>
                             </div>
                             <div class="mb-2">
-                                <label for="thumbnail" class="form-label">
+                                <label for="thumbnailEdit" class="form-label">
                                     Thumbnail (Optional)
                                 </label>
-                                <input type="file" class="form-control" name="thumbnail" id="thumbnail" accept=".jpg, .jpeg, .png">
-                                <div id="thumbnailError" class="text-danger"></div>
+                                <input type="file" class="form-control" name="thumbnail" id="thumbnailEdit" accept=".jpg, .jpeg, .png">
+                                <div id="thumbnailEditError" class="text-danger"></div>
                                 <small class="text-info"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
                                 @if ($postTask->thumbnail)
-                                <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $postTask->thumbnail }}" alt="" id="thumbnailPreview" class="img-fluid mt-2 d-block" style="display:none;" alt="Thumbnail">
+                                <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $postTask->thumbnail }}" alt="Thumbnail" class="img-fluid mt-2 d-block" style="display:none;" alt="Thumbnail">
+                                @else
+                                <img src="" alt="" id="thumbnailPreviewEdit" class="img-fluid mt-2 d-block" style="display:none;" alt="Thumbnail">
                                 @endif
                             </div>
                         </section>
@@ -148,25 +157,31 @@
                                     <label for="work_needed" class="form-label">
                                         Work Needed <small class="text-danger">* Required </small>
                                     </label>
-                                    <input type="number" class="form-control" name="work_needed" min="1" id="work_needed" value="{{ old('work_needed', $postTask->work_needed) }}" required>
+                                    <input type="number" class="form-control" name="work_needed" min="1" id="work_needed" value="{{ old('work_needed', $postTask->work_needed) }}" placeholder="Please enter how many workers are required." required>
                                     <div class="invalid-feedback">Please enter how many workers are required.</div>
+                                    <small class="text-danger" id="work_needed_error"></small>
+                                    <small class="text-info d-block">* Minimum work needed is 1.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="earnings_from_work" class="form-label">
                                         Earnings From Work <small class="text-danger">* Required </small>
                                     </label>
-                                    <input type="number" class="form-control" name="earnings_from_work" id="earnings_from_work" value="{{ old('earnings_from_work', $postTask->earnings_from_work) }}" required>
-                                    <small class="text-info">* Each earnings from work should be within the min charge <strong id="min_task_charge">0</strong> and max charge <strong id="max_task_charge">0</strong>.</small>
-                                    <div class="invalid-feedback">Please enter the charges for each worker within the allowed range.</div>
-                                    <span id="min_task_charge"></span>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="earnings_from_work" id="earnings_from_work" value="{{ old('earnings_from_work', $postTask->earnings_from_work) }}" placeholder="Please enter the charges for each worker." required>
+                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                        <div class="invalid-feedback">Please enter charges for each worker are required</div>
+                                    </div>
+                                    <small class="text-danger" id="earnings_from_work_error"></small>
+                                    <small class="text-info d-block">* Each earnings from work should be within the min charge <strong id="min_task_charge">0</strong> and max charge <strong id="max_task_charge">0</strong>.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="extra_screenshots" class="form-label">
                                         Extra Screenshots <small class="text-danger">* Required </small>
                                     </label>
-                                    <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="{{ old('extra_screenshots', $postTask->extra_screenshots) }}" required>
-                                    <small class="text-info">* Additional screenshot charge is {{ get_default_settings('task_posting_additional_screenshot_charge') }} {{ get_site_settings('site_currency_symbol') }}. Note: You get 1 screenshot for free.</small>
+                                    <input type="number" class="form-control" name="extra_screenshots" min="0" id="extra_screenshots" value="{{ old('extra_screenshots', $postTask->extra_screenshots) }}" placeholder="Please enter how many additional screenshots are required." required>
                                     <div class="invalid-feedback">Please enter how many additional screenshots are required</div>
+                                    <small class="text-danger" id="extra_screenshots_error"></small>
+                                    <small class="text-info d-block">* Additional screenshot charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_screenshot_charge') }} per screenshot. Note: You get 1 screenshot for free.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="boosted_time" class="form-label">
@@ -184,8 +199,10 @@
                                         <option value="300" {{ old('boosted_time', $postTask->boosted_time) == 300 ? 'selected' : '' }}>5 Hours</option>
                                         <option value="360" {{ old('boosted_time', $postTask->boosted_time) == 360 ? 'selected' : '' }}>6 Hours</option>
                                     </select>
-                                    <small class="text-info">* Every 15 minutes boost Charges {{ get_default_settings('task_posting_boosted_time_charge') }} {{ get_site_settings('site_currency_symbol') }}. When the task is boosted, it will be shown at the top of the task list.</small>
                                     <div class="invalid-feedback">Please enter the boosted time.</div>
+                                    <small class="text-info">* Every 15 minutes boost charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }}.</small>
+                                    <br>
+                                    <small class="text-info">* When the task is boosted, it will be shown at the top of the task list.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="work_duration" class="form-label">
@@ -198,23 +215,45 @@
                                         <option value="6" {{ old('work_duration', $postTask->work_duration) == 6 ? 'selected' : '' }}>6 Days</option>
                                         <option value="7" {{ old('work_duration', $postTask->work_duration) == 7 ? 'selected' : '' }}>1 Week</option>
                                     </select>
-                                    <small class="text-info">* When work duration is over the task will be closed automatically.</small>
                                     <div class="invalid-feedback">Please enter the work duration.</div>
+                                    <small class="text-info">* Additional work duration charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_work_duration_charge') }} per day. Note: You get 3 days for free.</small>
+                                    <br>
+                                    <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="task_charge" class="form-label">Task Charge</label>
-                                    <input type="number" class="form-control" id="task_charge" readonly>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="task_charge" readonly>
+                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                    </div>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
-                                    <label for="site_charge" class="form-label">Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
-                                    <input type="number" class="form-control" id="site_charge" readonly>
+                                    <label for="site_charge" class="form-label">Site Charge</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="site_charge" readonly>
+                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                    </div>
+                                    <small class="text-info">* Site charge is {{ get_default_settings('task_posting_charge_percentage') }} % of the task charge.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="total_task_charge" class="form-label">Total Task Charge</label>
-                                    <input type="number" class="form-control" id="total_task_charge" readonly>
-                                    <small class="text-info">* Total task charge must be {{ get_default_settings('task_posting_min_budget') }} {{ get_site_settings('site_currency_symbol') }}.</small>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="total_task_charge" readonly>
+                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                    </div>
+                                    <small class="text-info">* Total task charge must be {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }}.</small>
                                 </div>
                             </div>
+
+                            <div class="alert alert-danger text-center" role="alert" id="task_create_message">
+                            </div>
+
+                            @if (Auth::user()->deposit_balance < get_default_settings('task_posting_min_budget'))
+                            <div class="alert alert-warning">
+                                Your current balance is {{ get_site_settings('site_currency_symbol') }} {{ Auth::user()->deposit_balance }}. You need to pay {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }} to post a task. Your balance is not enough to post a task. Please deposit now to post a task.
+                                <a href="{{ route('deposit') }}" class="text-primary">Deposit Now</a>
+                            </div>
+                            @endif
                         </section>
                     </div>
                 </form>
@@ -227,6 +266,87 @@
 @section('script')
 <script>
     $(document).ready(function() {
+        // Real-time validation for radio buttons
+        $('#taskForm').on('change', 'input[name="category_id"]', function() {
+            var categorySelected = $('input[name="category_id"]:checked').val();
+            if (!categorySelected) {
+                $('#category-options').addClass('is-invalid');
+            } else {
+                $('#category-options').removeClass('is-invalid');
+                $('input[name="sub_category_id"]').prop('checked', false);
+                $('#sub-category-options').addClass('is-invalid');
+            }
+        });
+        $('#taskForm').on('change', 'input[name="sub_category_id"]', function() {
+            var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
+            if (!subCategorySelected) {
+                $('#sub-category-options').addClass('is-invalid');
+            } else {
+                $('#sub-category-options').removeClass('is-invalid');
+                $('input[name="child_category_id"]').prop('checked', false);
+                $('#child-category-options').addClass('is-invalid');
+            }
+        });
+        $('#taskForm').on('change', 'input[name="child_category_id"]', function() {
+            var childCategorySelected = $('input[name="child_category_id"]:checked').val();
+            if (!childCategorySelected) {
+                $('#child-category-options').addClass('is-invalid');
+            } else {
+                $('#child-category-options').removeClass('is-invalid');
+            }
+        });
+
+        // Real-time validation for input fields
+        $('#taskForm').on('input', 'input, textarea', function() {
+            // Add is-invalid class if the field is invalid
+            if ($(this).is(':invalid')) {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+
+            // Validate the title field
+            var title = $('#title').val();
+            if (title.length > 255) {
+                $(this).removeClass('is-invalid');
+                $('#title_error').text('Title length should be less than 255 characters. You have entered ' + title.length + ' characters.');
+            } else {
+                $('#title_error').text('');
+            }
+
+            // Validate the work needed field
+            var work_needed = parseInt($('#work_needed').val());
+            if (work_needed < 1) {
+                $('#work_needed').removeClass('is-invalid');
+                $('#work_needed_error').text('Work needed should be greater than or equal to 1.');
+            } else {
+                $('#work_needed_error').text('');
+            }
+
+            // Validate the earnings from work field
+            var earnings_from_work = parseFloat($('#earnings_from_work').val());
+            var minCharge = parseFloat($('#earnings_from_work').attr('min'));
+            var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
+            if (earnings_from_work < minCharge) {
+                $('#earnings_from_work').removeClass('is-invalid');
+                $('#earnings_from_work_error').text('Earnings from work should be greater than or equal to ' + ' {{ get_site_settings('site_currency_symbol') }} ' + minCharge + '.');
+            } else if (earnings_from_work > maxCharge) {
+                $('#earnings_from_work').removeClass('is-invalid');
+                $('#earnings_from_work_error').text('Earnings from work should be less than or equal to ' + ' {{ get_site_settings('site_currency_symbol') }} ' + maxCharge + '.');
+            } else {
+                $('#earnings_from_work_error').text('');
+            }
+
+            // Validate the extra screenshots field
+            var extra_screenshots = parseInt($('#extra_screenshots').val());
+            if (extra_screenshots < 0) {
+                $('#extra_screenshots').removeClass('is-invalid');
+                $('#extra_screenshots_error').text('Extra screenshots should be greater than or equal to 0.');
+            } else {
+                $('#extra_screenshots_error').text('');
+            }
+        });
+
         // Initialize the wizard
         $('#wizard').steps({
             headerTag: 'h2',
@@ -242,51 +362,7 @@
                 var form = $('#taskForm');
                 var isValid = true;
 
-                if (currentIndex === 1) {
-                    var categorySelected = $('input[name="category_id"]:checked').val();
-                    if (!categorySelected) {
-                        $('#category-options').addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        $('#category-options').removeClass('is-invalid');
-                    }
-
-                    var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
-                    if (categorySelected && !subCategorySelected) {
-                        $('#sub-category-options').addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        $('#sub-category-options').removeClass('is-invalid');
-                    }
-
-                    var childCategoryData = $('#child-category-options').html();
-                    var childCategorySelected = $('input[name="child_category_id"]:checked').val();
-                    if (subCategorySelected && !childCategorySelected && childCategoryData) {
-                        $('#child-category-options').addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        $('#child-category-options').removeClass('is-invalid');
-                    }
-
-                    return isValid;
-                }
-
-                if (currentIndex === 2) {
-                    var thumbnail = $('#thumbnail').val();
-                    if (thumbnail) {
-                        var ext = thumbnail.split('.').pop().toLowerCase();
-                        if ($.inArray(ext, ['jpg', 'jpeg', 'png']) == -1) {
-                            $('#thumbnailError').text('Please upload a valid image file. Only jpg, jpeg, png files are allowed.');
-                            isValid = false;
-                        } else if ($('#thumbnail')[0].files[0].size > 2097152) {
-                            $('#thumbnailError').text('Please upload an image file less than 2MB.');
-                            isValid = false;
-                        } else {
-                            $('#thumbnailError').text('');
-                        }
-                    }
-                }
-
+                // Validate the input fields
                 form.find('section').eq(currentIndex).find(':input[required]').each(function() {
                     if (!this.checkValidity()) {
                         $(this).addClass('is-invalid');
@@ -296,12 +372,66 @@
                     }
                 });
 
+                if (currentIndex === 1) {
+                    // Validate the category fields
+                    var categorySelected = $('input[name="category_id"]:checked').val();
+                    if (!categorySelected) {
+                        $('#category-options').addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $('#category-options').removeClass('is-invalid');
+                    }
+                    // Validate the sub category fields
+                    var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
+                    if (categorySelected && !subCategorySelected) {
+                        $('#sub-category-options').addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $('#sub-category-options').removeClass('is-invalid');
+                    }
+                    // Validate the child category fields
+                    var childCategoryData = $('#child-category-options').html();
+                    var childCategorySelected = $('input[name="child_category_id"]:checked').val();
+                    if (subCategorySelected && !childCategorySelected && childCategoryData) {
+                        $('#child-category-options').addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $('#child-category-options').removeClass('is-invalid');
+                    }
+                }
+
+                if (currentIndex === 2) {
+                    // Validate the title field
+                    var title = $('#title').val();
+                    if (title.length > 255) {
+                        $('#title_error').text('Title length should be less than 255 characters. You have entered ' + title.length + ' characters.');
+                        isValid = false;
+                    } else {
+                        $('#title_error').text('');
+                    }
+                    // Validate the thumbnail file
+                    var thumbnail = $('#thumbnailEdit').val();
+                    if (thumbnail) {
+                        var ext = thumbnail.split('.').pop().toLowerCase();
+                        if ($.inArray(ext, ['jpg', 'jpeg', 'png']) == -1) {
+                            $('#thumbnailEditError').text('Please upload a valid image file. Only jpg, jpeg, png files are allowed.');
+                            isValid = false;
+                        } else if ($('#thumbnailEdit')[0].files[0].size > 2097152) {
+                            $('#thumbnailEditError').text('Please upload an image file less than 2MB.');
+                            isValid = false;
+                        } else {
+                            $('#thumbnailEditError').text('');
+                        }
+                    }
+                }
+
                 return isValid;
             },
             onFinishing: function(event, currentIndex) {
                 var form = $('#taskForm');
                 var isValid = true;
 
+                // Validate the input fields
                 form.find(':input[required]').each(function() {
                     if (!this.checkValidity()) {
                         $(this).addClass('is-invalid');
@@ -310,6 +440,40 @@
                         $(this).removeClass('is-invalid');
                     }
                 });
+
+                // Validate the work needed field
+                var work_needed = parseInt($('#work_needed').val());
+                if (work_needed < 1) {
+                    $('#work_needed').removeClass('is-invalid');
+                    $('#work_needed_error').text('Work needed should be greater than or equal to 1.');
+                    isValid = false;
+                } else {
+                    $('#work_needed_error').text('');
+                }
+                // Validate the earnings from work field
+                var earnings_from_work = parseFloat($('#earnings_from_work').val());
+                var minCharge = parseFloat($('#earnings_from_work').attr('min'));
+                var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
+                if (earnings_from_work < minCharge) {
+                    $('#earnings_from_work').removeClass('is-invalid');
+                    $('#earnings_from_work_error').text('Earnings from work should be greater than or equal to ' + ' {{ get_site_settings('site_currency_symbol') }} ' + minCharge + '.');
+                    isValid = false;
+                } else if (earnings_from_work > maxCharge) {
+                    $('#earnings_from_work').removeClass('is-invalid');
+                    $('#earnings_from_work_error').text('Earnings from work should be less than or equal to ' + ' {{ get_site_settings('site_currency_symbol') }} ' + maxCharge + '.');
+                    isValid = false;
+                } else {
+                    $('#earnings_from_work_error').text('');
+                }
+                // Validate the extra screenshots field
+                var extra_screenshots = parseInt($('#extra_screenshots').val());
+                if (extra_screenshots < 0) {
+                    $('#extra_screenshots').removeClass('is-invalid');
+                    $('#extra_screenshots_error').text('Extra screenshots should be greater than or equal to 0.');
+                    isValid = false;
+                } else {
+                    $('#extra_screenshots_error').text('');
+                }
 
                 return isValid;
             },
@@ -326,35 +490,44 @@
                     isValid = false;
                 }else{
                     $('#taskForm').submit();
+
+                    // Disable the submit button to prevent multiple submissions
+                    $('#wizard').find('.actions a[href="#finish"]').addClass('disabled');
+
+                    // Hide the finish button
+                    $('#wizard').find('.actions a[href="#finish"]').hide();
+
+                    // Show the loading spinner
+                    $('#wizard').find('.actions ul').append('<strong class="btn btn-primary"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Editing...</strong>');
                 }
             }
         });
 
         // thumbnail preview
-        document.getElementById('thumbnail').addEventListener('change', function() {
+        document.getElementById('thumbnailEdit').addEventListener('change', function() {
             const file = this.files[0];
             const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             const maxSize = 2 * 1024 * 1024; // 2MB
 
             if (file && allowedTypes.includes(file.type)) {
                 if (file.size > maxSize) {
-                    $('#thumbnailError').text('File size is too large. Max size is 2MB.');
+                    $('#thumbnailEditError').text('File size is too large. Max size is 2MB.');
                     this.value = ''; // Clear file input
                     // Hide preview image
-                    $('#thumbnailPreview').hide();
+                    $('#thumbnailPreviewEdit').hide();
                 } else {
-                    $('#thumbnailError').text('');
+                    $('#thumbnailEditError').text('');
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        $('#thumbnailPreview').attr('src', e.target.result).show();
+                        $('#thumbnailPreviewEdit').attr('src', e.target.result).show();
                     };
                     reader.readAsDataURL(file);
                 }
             } else {
-                $('#thumbnailError').text('Please select a valid image file (jpeg, jpg, png).');
+                $('#thumbnailEditError').text('Please select a valid image file (jpeg, jpg, png).');
                 this.value = ''; // Clear file input
                 // Hide preview image
-                $('#thumbnailPreview').hide();
+                $('#thumbnailPreviewEdit').hide();
             }
         });
 
@@ -479,57 +652,54 @@
 
         // Calculate the total task charge
         function calculateTotalTaskCharge() {
-            var work_needed = parseInt($('#work_needed').val());
-            var earnings_from_work = parseFloat($('#earnings_from_work').val());
-            var extra_screenshots = parseInt($('#extra_screenshots').val());
-            var boosted_time = parseInt($('#boosted_time').val());
+            var work_needed = parseInt($('#work_needed').val()) || 0;
+            var earnings_from_work = parseFloat($('#earnings_from_work').val()) || 0;
+
+            var extra_screenshots = parseInt($('#extra_screenshots').val()) || 0;
             var screenshot_charge = {{ get_default_settings('task_posting_additional_screenshot_charge') }};
+
+            var boosted_time = parseInt($('#boosted_time').val()) || 0;
             var boosted_time_charge = {{ get_default_settings('task_posting_boosted_time_charge') }};
+
+            var work_duration = parseInt($('#work_duration').val()) || 0;
+            var work_duration_charge = {{ get_default_settings('task_posting_additional_work_duration_charge') }};
+
             var task_posting_charge_percentage = {{ get_default_settings('task_posting_charge_percentage') }};
+            var task_posting_min_budget = {{ get_default_settings('task_posting_min_budget') }};
 
-            var task_charge = (work_needed * earnings_from_work) +
-                (extra_screenshots * screenshot_charge) +
-                ((boosted_time / 15) * boosted_time_charge);
+            var total_screenshot_charge = screenshot_charge * extra_screenshots;
+            var total_boosted_time_charge = boosted_time_charge * (boosted_time / 15);
+            var total_work_duration_charge = work_duration_charge * (work_duration - 3);
 
+            var task_charge = (work_needed * earnings_from_work) + total_screenshot_charge + total_boosted_time_charge + total_work_duration_charge;
             $('#task_charge').val(task_charge.toFixed(2));
-            var site_charge = (task_charge * task_posting_charge_percentage / 100);
+
+            var site_charge = (task_charge * task_posting_charge_percentage) / 100;
             $('#site_charge').val(site_charge.toFixed(2));
-            $('#total_task_charge').val((task_charge + site_charge).toFixed(2));
-        }
 
-        // Validate the input fields
-        function validateInputFields() {
-            let isValid = true;
+            var total_task_charge = (task_charge + site_charge).toFixed(2);
+            $('#total_task_charge').val(total_task_charge);
 
-            // Validate work_needed
-            let work_needed = parseInt($('#work_needed').val());
-            if (isNaN(work_needed) || work_needed < 1) {
-                $('#work_needed').addClass('is-invalid');
-                isValid = false;
-            } else {
-                $('#work_needed').removeClass('is-invalid');
+            // Calculate the increase charge
+            var increase_charge = (task_posting_min_budget - total_task_charge).toFixed(2);
+            if (increase_charge > 0) {
+                $('#task_create_message').html('<strong>Posting this task need more  ' + ' {{ get_site_settings('site_currency_symbol') }} ' + increase_charge + ' total task charge. Then you can submit the task.</strong>');
+                $('#task_create_message').addClass('alert-danger');
+                $('#task_create_message').removeClass('alert-success');
+            }else{
+                $('#task_create_message').html('<strong>You can submit the task now by clicking the Create button.</strong>');
+                $('#task_create_message').removeClass('alert-danger');
+                $('#task_create_message').addClass('alert-success');
             }
 
-            // Validate earnings_from_work
-            let earnings_from_work = parseFloat($('#earnings_from_work').val());
-            let minCharge = parseFloat($('#earnings_from_work').attr('min'));
-            if (isNaN(earnings_from_work) || earnings_from_work < minCharge) {
-                $('#earnings_from_work').addClass('is-invalid');
-                isValid = false;
+            // Validate the total task charge
+            if (total_task_charge < task_posting_min_budget) {
+                // desible the submit button
+                $('#wizard').find('.actions a[href="#finish"]').addClass('disabled');
             } else {
-                $('#earnings_from_work').removeClass('is-invalid');
+                // enable the submit button
+                $('#wizard').find('.actions a[href="#finish"]').removeClass('disabled');
             }
-
-            // Validate extra_screenshots
-            let extraScreenshots = parseInt($('#extra_screenshots').val());
-            if (isNaN(extraScreenshots) || extraScreenshots < 0) {
-                $('#extra_screenshots').addClass('is-invalid');
-                isValid = false;
-            } else {
-                $('#extra_screenshots').removeClass('is-invalid');
-            }
-
-            return isValid;
         }
 
         // Initialize the total task Charge on page load

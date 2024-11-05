@@ -112,12 +112,16 @@ class PostedTaskController extends Controller
             $thumbnail_photo_name = null;
         }
 
-        $task_post_charge = (($request->work_needed * $request->earnings_from_work) + ($request->extra_screenshots * get_default_settings('task_posting_additional_screenshot_charge'))) + (($request->boosted_time / 15) * get_default_settings('task_posting_boosted_time_charge'));
+        $total_screenshot_charge = get_default_settings('task_posting_additional_screenshot_charge') * $request->extra_screenshots;
+        $total_boosted_time_charge = get_default_settings('task_posting_boosted_time_charge') * ($request->boosted_time / 15);
+        $total_work_duration_charge = get_default_settings('task_posting_additional_work_duration_charge') * ($request->work_duration - 3);
 
-        $site_charge = $task_post_charge * get_default_settings('task_posting_charge_percentage') / 100;
+        $task_charge = number_format(($request->work_needed * $request->earnings_from_work) + $total_screenshot_charge + $total_boosted_time_charge + $total_work_duration_charge, 2, '.', '');
+        $site_charge = number_format(($task_charge * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
+        $total_task_charge = number_format($task_charge + $site_charge, 2, '.', '');
 
         $request->user()->update([
-            'deposit_balance' => $request->user()->deposit_balance - ($task_post_charge + $site_charge),
+            'deposit_balance' => $request->user()->deposit_balance - $total_task_charge,
         ]);
 
         PostTask::create([
@@ -135,9 +139,9 @@ class PostedTaskController extends Controller
             'extra_screenshots' => $request->extra_screenshots,
             'boosted_time' => $request->boosted_time,
             'work_duration' => $request->work_duration,
-            'charge' => $task_post_charge,
+            'charge' => $task_charge,
             'site_charge' => $site_charge,
-            'total_charge' => $task_post_charge + $site_charge,
+            'total_charge' => $total_task_charge,
             'status' => 'Pending',
         ]);
 
@@ -186,12 +190,16 @@ class PostedTaskController extends Controller
             $thumbnail_photo_name = $postTask->thumbnail;
         }
 
-        $task_post_charge = (($request->work_needed * $request->earnings_from_work) + ($request->extra_screenshots * get_default_settings('task_posting_additional_screenshot_charge'))) + (($request->boosted_time / 15) * get_default_settings('task_posting_boosted_time_charge'));
+        $total_screenshot_charge = get_default_settings('task_posting_additional_screenshot_charge') * $request->extra_screenshots;
+        $total_boosted_time_charge = get_default_settings('task_posting_boosted_time_charge') * ($request->boosted_time / 15);
+        $total_work_duration_charge = get_default_settings('task_posting_additional_work_duration_charge') * ($request->work_duration - 3);
 
-        $site_charge = $task_post_charge * get_default_settings('task_posting_charge_percentage') / 100;
+        $task_charge = number_format(($request->work_needed * $request->earnings_from_work) + $total_screenshot_charge + $total_boosted_time_charge + $total_work_duration_charge, 2, '.', '');
+        $site_charge = number_format(($task_charge * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
+        $total_task_charge = number_format($task_charge + $site_charge, 2, '.', '');
 
         $request->user()->update([
-            'deposit_balance' => $request->user()->deposit_balance - ($task_post_charge + $site_charge),
+            'deposit_balance' => $request->user()->deposit_balance - $total_task_charge,
         ]);
 
         $postTask->update([
@@ -208,9 +216,9 @@ class PostedTaskController extends Controller
             'extra_screenshots' => $request->extra_screenshots,
             'boosted_time' => $request->boosted_time,
             'work_duration' => $request->work_duration,
-            'charge' => $task_post_charge,
+            'charge' => $task_charge,
             'site_charge' => $site_charge,
-            'total_charge' => $task_post_charge + $site_charge,
+            'total_charge' => $total_task_charge,
             'status' => 'Pending',
         ]);
 
@@ -479,7 +487,7 @@ class PostedTaskController extends Controller
             if ($postTask->status != 'Rejected') {
                 $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
 
-                $refundAmount = ($postTask->total_charge / $postTask->work_needed) * ($postTask->work_needed - $proofTasks);
+                $refundAmount = number_format(($postTask->total_charge / $postTask->work_needed) * ($postTask->work_needed - $proofTasks), 2, '.', '');
 
                 $user->deposit_balance = $user->deposit_balance + $refundAmount;
                 $user->save();
@@ -587,11 +595,11 @@ class PostedTaskController extends Controller
         } else {
             $postTask = PostTask::findOrFail($id);
 
-                $task_post_charge = (($request->work_needed * $postTask->earnings_from_work));
+                $task_post_charge = number_format(($request->work_needed * $postTask->earnings_from_work), 2, '.', '');
 
-                $site_charge = $task_post_charge * get_default_settings('task_posting_charge_percentage') / 100;
+                $site_charge = number_format(($task_post_charge * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
 
-                $total_charge = $task_post_charge + $site_charge;
+                $total_charge = number_format( $task_post_charge + $site_charge, 2, '.', '');
 
             if ($request->user()->deposit_balance < $total_charge) {
                 return response()->json([
@@ -720,7 +728,6 @@ class PostedTaskController extends Controller
             'proofTask' => $proofTask,
         ]);
     }
-
 
     public function proofTaskApprovedAll($id)
     {
