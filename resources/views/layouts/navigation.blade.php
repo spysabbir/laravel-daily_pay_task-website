@@ -468,19 +468,9 @@
                 </a>
                 <div class="collapse" id="WorkedTaskMenu">
                     <ul class="nav sub-menu">
-                        @can('worked_task_list.pending')
+                        @can('worked_task_list.all')
                         <li class="nav-item">
-                            <a href="{{ route('backend.worked_task_list.pending') }}" class="nav-link">Pending</a>
-                        </li>
-                        @endcan
-                        @can('worked_task_list.approved')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.worked_task_list.approved') }}" class="nav-link">Approved</a>
-                        </li>
-                        @endcan
-                        @can('worked_task_list.rejected')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.worked_task_list.rejected') }}" class="nav-link">Rejected</a>
+                            <a href="{{ route('backend.worked_task_list.all') }}" class="nav-link">All</a>
                         </li>
                         @endcan
                         @can('worked_task_list.reviewed')

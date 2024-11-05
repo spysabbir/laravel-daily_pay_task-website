@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Worked Task - Rejected')
+@section('title', 'Worked Task - All')
 
 @section('content')
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Worked Task - Rejected</h3>
+                    <h3 class="card-title">Worked Task - All</h3>
                 </div>
             </div>
             <div class="card-body">
@@ -20,7 +20,7 @@
                                 <th>Task ID</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
-                                <th>Rejected Status</th>
+                                <th>Proof Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -50,14 +50,14 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.worked_task_list.rejected') }}",
+                url: "{{ route('backend.worked_task_list.all') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'rejected_status', name: 'rejected_status' },
+                { data: 'proof_status', name: 'proof_status' },
                 { data: 'action', name: 'action' }
             ]
         });

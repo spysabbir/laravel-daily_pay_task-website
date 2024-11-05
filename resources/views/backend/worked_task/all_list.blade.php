@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Task List - Approved')
+@section('title', 'Task List - All')
 
 @section('content')
 <div class="row">
@@ -61,18 +61,24 @@
                 </div>
                 <div class="my-3">
                     @php
-                        $proofSubmittedCount = $proofSubmitted->count();
+                        $pendingProofCount = $proofSubmitted->where('status', 'Pending')->count();
                         $approvedProofCount = $proofSubmitted->where('status', 'Approved')->count();
-                        $approvedProofStyleWidth = $approvedProofCount != 0 ? round(($approvedProofCount / $proofSubmittedCount) * 100, 2) : 100;
-                        $progressBarClass = $proofSubmittedCount == 0 ? 'primary' : 'success';
+                        $rejectedProofCount = $proofSubmitted->where('status', 'Rejected')->count();
+                        $reviewedProofCount = $proofSubmitted->where('status', 'Reviewed')->count();
+
+                        $totalProof = $approvedProofCount + $rejectedProofCount + $reviewedProofCount + $pendingProofCount;
+
+                        $pendingProofStyleWidth = $totalProof != 0 ? round(($pendingProofCount / $totalProof) * 100, 2) : 100;
+                        $approvedProofStyleWidth = $totalProof != 0 ? round(($approvedProofCount / $totalProof) * 100, 2) : 100;
+                        $rejectedProofStyleWidth = $totalProof != 0 ? round(($rejectedProofCount / $totalProof) * 100, 2) : 100;
+                        $reviewedProofStyleWidth = $totalProof != 0 ? round(($reviewedProofCount / $totalProof) * 100, 2) : 100;
                     @endphp
-                    <p class="mb-1">
-                        <strong>Approved Status: </strong>
-                        <span class="text-success">Approved: {{ $approvedProofCount }}</span>
-                        <span class="text-primary">Submit: {{ $proofSubmittedCount }}</span>,
-                    </p>
+                    <p class="mb-1"><strong class="text-info">Check Status: </strong> <span class="text-primary">Pending: {{ $pendingProofCount }}</span>, <span class="text-success">Approved: {{ $approvedProofCount }}</span>, <span class="text-danger">Rejected: {{ $rejectedProofCount }}</span>, <span class="text-warning">Reviewed: {{ $reviewedProofCount }}</span></p>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $progressBarClass }}" role="progressbar" style="width: {{ $approvedProofStyleWidth }}%" aria-valuenow="{{ $approvedProofCount }}" aria-valuemin="0" aria-valuemax="{{ $proofSubmittedCount }}">{{ $approvedProofCount }} / {{ $proofSubmittedCount }}</div>
+                        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ $pendingProofStyleWidth }}%" aria-valuenow="{{ $pendingProofCount }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $pendingProofCount }} / {{ $totalProof }}</div>
+                        <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: {{ $approvedProofStyleWidth }}%" aria-valuenow="{{ $approvedProofCount }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $approvedProofCount }} / {{ $totalProof }}</div>
+                        <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: {{ $rejectedProofStyleWidth }}%" aria-valuenow="{{ $rejectedProofStyleWidth }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $rejectedProofCount }} / {{ $totalProof }}</div>
+                        <div class="progress-bar bg-warning progress-bar-striped" role="progressbar" style="width: {{ $reviewedProofStyleWidth }}%" aria-valuenow="{{ $reviewedProofCount }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $reviewedProofCount }} / {{ $totalProof }}</div>
                     </div>
                 </div>
             </div>
@@ -142,7 +148,7 @@
             // serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.approved.worked_task_view', encrypt($postTask->id)) }}",
+                url: "{{ route('backend.all.worked_task_view', encrypt($postTask->id)) }}",
                 type: 'GET',
             },
             columns: [
