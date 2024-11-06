@@ -9,12 +9,12 @@ use App\Models\PostTask;
 use App\Models\ProofTask;
 use App\Models\Block;
 use App\Models\Report;
+use App\Models\NotInterestedTask;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Yajra\DataTables\Facades\DataTables;
-
 
 class WorkedTaskController extends Controller
 {
@@ -29,13 +29,14 @@ class WorkedTaskController extends Controller
             return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
-                // Handle DataTable logic here
-                $proofTasks = ProofTask::where('user_id', Auth::id())->pluck('post_task_id')->toArray();
-                $blockedUsers = Block::where('blocked_by', Auth::id())->pluck('user_id')->toArray();
+                $proofTaskIds = ProofTask::where('user_id', Auth::id())->pluck('post_task_id')->toArray();
+                $blockedUserIds = Block::where('blocked_by', Auth::id())->pluck('user_id')->toArray();
+                $notInterestedTaskIds = NotInterestedTask::where('user_id', Auth::id())->pluck('post_task_id')->toArray();
                 $query = PostTask::where('status', 'Running')
-                    ->whereNotIn('id', $proofTasks)
                     ->whereNot('user_id', Auth::id())
-                    ->whereNotIn('user_id', $blockedUsers);
+                    ->whereNotIn('id', $proofTaskIds)
+                    ->whereNotIn('user_id', $blockedUserIds)
+                    ->whereNotIn('id', $notInterestedTaskIds);
 
                 if ($request->category_id) {
                     $query->where('post_tasks.category_id', $request->category_id);
@@ -117,6 +118,23 @@ class WorkedTaskController extends Controller
         $blocked = Block::where('user_id', $taskDetails->user_id)->where('blocked_by', Auth::id())->exists();
         $reportPostTask = Report::where('post_task_id', $id)->where('reported_by', Auth::id())->first();
         return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'proofCount', 'blocked', 'reportPostTask'));
+    }
+
+    public function findTaskNotInterested($id)
+    {
+        $id = decrypt($id);
+
+        NotInterestedTask::create([
+            'post_task_id' => $id,
+            'user_id' => Auth::id(),
+        ]);
+
+        $notification = array(
+            'message' => 'This task is not interested in submitting proof.',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('find_tasks')->with($notification);
     }
 
     public function findTaskProofSubmitLimitCheck($id)

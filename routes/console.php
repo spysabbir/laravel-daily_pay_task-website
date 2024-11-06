@@ -3,6 +3,7 @@
 use App\Models\Newsletter;
 use Illuminate\Support\Facades\Schedule;
 use App\Mail\NewsletterMail;
+use App\Models\NotInterestedTask;
 use App\Models\ProofTask;
 use App\Models\PostTask;
 use App\Models\Subscriber;
@@ -138,6 +139,19 @@ Schedule::call(function () {
                 $refundAmount = ($postTask->total_charge / $postTask->work_needed);
                 User::where('id', $postTask->user_id)->increment('deposit_balance', $refundAmount);
             }
+        }
+    }
+})->everyMinute();
+
+// Not interested tasks auto delete
+Schedule::call(function () {
+    $postTasks = PostTask::whereIn('status', ['Canceled', 'Completed'])->get();
+
+    foreach ($postTasks as $postTask) {
+        $not_interested_tasks = NotInterestedTask::where('post_task_id', $postTask->id)->get();
+
+        foreach ($not_interested_tasks as $not_interested_task) {
+            $not_interested_task->delete();
         }
     }
 })->everyMinute();

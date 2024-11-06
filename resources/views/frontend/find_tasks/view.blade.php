@@ -24,19 +24,24 @@
                 <div class="my-2 border p-3 rounded">
                     <div class="border p-2 rounded bg-dark d-flex align-items-center justify-content-between">
                         <div class="p-2">
-                            <p>Category: {{ $taskDetails->category->name }}</p>
-                            <p>Sub Category: {{ $taskDetails->subcategory->name }}</p>
+                            <p><strong class="text-primary">Category:</strong> {{ $taskDetails->category->name }}</p>
+                            <p><strong class="text-primary">Sub Category:</strong> {{ $taskDetails->subcategory->name }}</p>
                             @if ($taskDetails->child_category_id)
-                            <p>Child Category: {{ $taskDetails->childcategory->name }}</p>
+                            <p><strong class="text-primary">Child Category:</strong> {{ $taskDetails->childcategory->name }}</p>
                             @endif
                         </div>
                         <div>
-                            <p>Approved Date: {{ date('d F, Y  H:i A', strtotime($taskDetails->approved_at)) }}</p>
-                            <p>Work Duration: {{ $taskDetails->work_duration }} Days</p>
+                            <p><strong class="text-primary">Approved Date:</strong> {{ date('d F, Y  H:i A', strtotime($taskDetails->approved_at)) }}</p>
+                            <p><strong class="text-primary">Work Needed:</strong> {{ $taskDetails->work_needed }}</p>
+                            <p><strong class="text-primary">Work Duration:</strong> {{ $taskDetails->work_duration }} Days</p>
                         </div>
                         <div>
+                            <a href="{{ route('find_task.not.interested', encrypt($taskDetails->id)) }}" class="btn btn-danger btn-sm d-flex align-items-center m-2">
+                                <i class="icon-md" data-feather="x-circle"></i>
+                                <span class="d-none d-md-block ms-1">Not Interested</span>
+                            </a>
                             <!-- Report Post Task Button -->
-                            <button type="button" class="btn btn-info btn-sm d-flex align-items-center mx-2" data-bs-toggle="modal" data-bs-target=".reportPostTaskModal">
+                            <button type="button" class="btn btn-info btn-sm d-flex align-items-center m-2" data-bs-toggle="modal" data-bs-target=".reportPostTaskModal">
                                 <i class="icon-md" data-feather="message-circle"></i>
                                 <span class="d-none d-md-block ms-1">Report Post Task</span>
                             </button>
