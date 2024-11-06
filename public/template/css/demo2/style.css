@@ -25726,3 +25726,8 @@ div.tox .tox-dialog__body {
 .stars i.active {
     color: #ff9c1a;
 }
+
+.lb-prev, .lb-next {
+    opacity: 1 !important;
+    visibility: visible !important;
+}

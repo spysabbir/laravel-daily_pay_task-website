@@ -65,6 +65,9 @@
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/sweetalert2/sweetalert2.min.css">
 
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.css">
+
+
+    <link rel="stylesheet" href="{{ asset('template') }}/vendors/lightbox2/css/lightbox.min.css"  />
 	<!-- End plugin css for this page -->
 
 	<!-- inject:css -->
@@ -418,6 +421,8 @@
     <script src="{{ asset('template') }}/vendors/toastr/toastr.min.js"></script>
 
     <script src="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.min.js"></script>
+
+    <script src="{{ asset('template') }}/vendors/lightbox2/js/lightbox.min.js"></script>
 	<!-- End plugin js for all pages -->
 
 	<!-- inject:js -->
@@ -432,7 +437,7 @@
     <script src="{{ asset('template') }}/js/data-table.js"></script>
 	<script src="{{ asset('template') }}/js/select2.js"></script>
 
-    <script src="{{ asset('template') }}/js/wizard.js"></script>
+    <script src="{{ asset('template') }}/js/lightbox.js"></script>
 
     <script src="{{ asset('template') }}/js/chat.js"></script>
 
