@@ -290,7 +290,7 @@ class TaskController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'required_proof' => 'required|string',
+            'required_proof_answer' => 'required|string',
             'additional_note' => 'required|string',
             'status' => 'required',
         ]);
@@ -327,7 +327,7 @@ class TaskController extends Controller
         $postTask->update([
             'title' => $request->title,
             'description' => $request->description,
-            'required_proof' => $request->required_proof,
+            'required_proof_answer' => $request->required_proof_answer,
             'status' => $request->status,
             'rejection_reason' => $request->status == 'Rejected' ? $request->rejection_reason : NULL,
             'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,

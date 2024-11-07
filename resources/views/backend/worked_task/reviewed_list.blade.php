@@ -27,11 +27,11 @@
                 </p>
                 <p class="border p-1 m-1"><strong class="text-info">Title:</strong> {{ $postTask->title }}</p>
                 <p class="border p-1 m-1"><strong class="text-info">Description:</strong> {{ $postTask->description }}</p>
-                <p class="border p-1 m-1"><strong class="text-info">Required Proof:</strong> {{ $postTask->required_proof }}</p>
+                <p class="border p-1 m-1"><strong class="text-info">Required Proof Answer:</strong> {{ $postTask->required_proof_answer }}</p>
                 <p class="border p-1 m-1"><strong class="text-info">Additional Note:</strong> {{ $postTask->additional_note }}</p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Warnings From Work:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }},
-                    <strong class="text-info">Screenshots:</strong> Free: 1 & Extra: {{ $postTask->extra_screenshots }} = Total: {{ $postTask->extra_screenshots + 1 }},
+                    <strong class="text-info">Proof Photo:</strong> Free: 1 & Additional: {{ $postTask->required_proof_photo - 1 }} = Total: {{ $postTask->required_proof_photo }},
                     <strong class="text-info">Boosted Time:</strong> {{ $postTask->boosted_time ? $postTask->boosted_time . ' Minutes' : 0 }} ,
                     <strong class="text-info">Work Duration:</strong> {{ $postTask->work_duration }} Days
                 </p>

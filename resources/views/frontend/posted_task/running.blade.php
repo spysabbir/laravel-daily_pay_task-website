@@ -75,7 +75,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                <button type="submit" id="updateBtn" class="btn btn-primary">Update</button>
                                             </div>
                                         </form>
                                     </div>
@@ -223,8 +223,8 @@
             event.preventDefault();
 
             // Disable the submit button to prevent multiple submissions
-            var submitButton = $(this).find("button[type='submit']");
-            submitButton.prop("disabled", true).text("Submitting...");
+            var submitButton = $('#updateBtn');
+            submitButton.prop("disabled", true).text("Updating...");
 
             var id = $('#post_task_id').val();
             var url = "{{ route('running.posted_task.update', ":id") }}";
@@ -256,7 +256,7 @@
                 },
                 complete: function() {
                     // Re-enable the submit button after the request completes
-                    submitButton.prop("disabled", false).text("Submit");
+                    submitButton.prop("disabled", false).text("Update");
                 }
             });
         });

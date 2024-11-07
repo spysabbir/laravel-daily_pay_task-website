@@ -35,6 +35,7 @@
                             <p><strong class="text-primary">Work Needed:</strong> {{ $taskDetails->work_needed }}</p>
                             <p><strong class="text-primary">Work Duration:</strong> {{ $taskDetails->work_duration }} Days</p>
                         </div>
+                        @if (!$taskProofExists)
                         <div>
                             <a href="{{ route('find_task.not.interested', encrypt($taskDetails->id)) }}" class="btn btn-danger btn-sm d-flex align-items-center m-2">
                                 <i class="icon-md" data-feather="x-circle"></i>
@@ -106,14 +107,15 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                     </div>
                     <div class="my-2 border p-2 rounded">
                         <h4 class="text-primary">Description</h4>
                         <p>{{ $taskDetails->description }}</p>
                     </div>
                     <div class="border p-2 rounded">
-                        <h4 class="text-primary">Required Proof</h4>
-                        <p>{{ $taskDetails->required_proof }}</p>
+                        <h4 class="text-primary">Required Proof Answer</h4>
+                        <p>{{ $taskDetails->required_proof_answer }}</p>
                     </div>
                 </div>
                 <hr>
@@ -138,14 +140,14 @@
                         @csrf
                         <div class="mb-3">
                             <label for="proof_answer" class="form-label">Proof Answer <small class="text-danger">* Required </small></label>
-                            <textarea class="form-control" id="proof_answer" name="proof_answer" rows="5" placeholder="Write your answer here">{{ old('proof_answer') }}</textarea>
+                            <textarea class="form-control" id="proof_answer" name="proof_answer" rows="5" placeholder="Write your proof answer here">{{ old('proof_answer') }}</textarea>
                             <span class="text-danger error-message" id="proof_answer_error"></span>
                             @if ($errors->has('proof_answer'))
                                 <span class="text-danger">{{ $errors->first('proof_answer') }}</span>
                             @endif
                         </div>
 
-                        @for ($i = 0; $i < $taskDetails->extra_screenshots + 1; $i++)
+                        @for ($i = 0; $i < $taskDetails->required_proof_photo; $i++)
                             <div class="mb-3">
                                 <label for="proof_photo_{{ $i }}" class="form-label">Proof Photo {{ $i + 1 }} <small class="text-danger">* Required </small></label>
                                 <input class="form-control" type="file" id="proof_photo_{{ $i }}" name="proof_photos[]" accept=".jpg, .jpeg, .png">
@@ -267,7 +269,7 @@
             }
 
             // Check Proof Photos
-            @for ($i = 0; $i < $taskDetails->extra_screenshots + 1; $i++)
+            @for ($i = 0; $i < $taskDetails->required_proof_photo; $i++)
                 if ($('#proof_photo_{{ $i }}').val() === '') {
                     $('#proof_photo_{{ $i }}_error').text('Proof photo {{ $i + 1 }} is required.');
                     isValid = false;
@@ -322,7 +324,7 @@
         });
 
         // Preview proof photos
-        @for ($i = 0; $i < $taskDetails->extra_screenshots + 1; $i++)
+        @for ($i = 0; $i < $taskDetails->required_proof_photo; $i++)
             document.getElementById('proof_photo_{{ $i }}').addEventListener('change', function() {
                 const file = this.files[0];
                 const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];

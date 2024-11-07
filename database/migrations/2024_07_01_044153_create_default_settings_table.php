@@ -26,7 +26,7 @@ return new class extends Migration
             $table->decimal('min_withdraw_amount', 10, 2)->nullable();
             $table->decimal('max_withdraw_amount', 10, 2)->nullable();
             $table->decimal('task_posting_charge_percentage', 10, 2)->nullable();
-            $table->decimal('task_posting_additional_screenshot_charge', 10, 2)->nullable();
+            $table->decimal('task_posting_additional_required_proof_photo_charge', 10, 2)->nullable();
             $table->decimal('task_posting_boosted_time_charge', 10, 2)->nullable();
             $table->decimal('task_posting_additional_work_duration_charge', 10, 2)->nullable();
             $table->decimal('task_posting_min_budget', 10, 2)->nullable();

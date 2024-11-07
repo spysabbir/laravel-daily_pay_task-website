@@ -93,14 +93,14 @@ class PostedTaskController extends Controller
             'child_category_id' => 'nullable|exists:child_categories,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'required_proof' => 'required|string',
+            'required_proof_answer' => 'required|string',
             'additional_note' => 'required|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'work_needed' => 'required|numeric|min:1',
-            'earnings_from_work' => 'required|numeric|min:1',
-            'extra_screenshots' => 'required|numeric|min:0',
+            'earnings_from_work' => 'required|numeric|min:0',
+            'required_proof_photo' => 'required|numeric|min:1',
             'boosted_time' => 'required|numeric|min:0',
-            'work_duration' => 'required|numeric|min:1',
+            'work_duration' => 'required|numeric|min:3',
         ]);
 
         if($request->hasFile('thumbnail')){
@@ -112,11 +112,11 @@ class PostedTaskController extends Controller
             $thumbnail_photo_name = null;
         }
 
-        $total_screenshot_charge = get_default_settings('task_posting_additional_screenshot_charge') * $request->extra_screenshots;
+        $total_required_proof_photo_charge = get_default_settings('task_posting_additional_required_proof_photo_charge') * ($request->required_proof_photo - 1);
         $total_boosted_time_charge = get_default_settings('task_posting_boosted_time_charge') * ($request->boosted_time / 15);
         $total_work_duration_charge = get_default_settings('task_posting_additional_work_duration_charge') * ($request->work_duration - 3);
 
-        $task_charge = number_format(($request->work_needed * $request->earnings_from_work) + $total_screenshot_charge + $total_boosted_time_charge + $total_work_duration_charge, 2, '.', '');
+        $task_charge = number_format(($request->work_needed * $request->earnings_from_work) + $total_required_proof_photo_charge + $total_boosted_time_charge + $total_work_duration_charge, 2, '.', '');
         $site_charge = number_format(($task_charge * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
         $total_task_charge = number_format($task_charge + $site_charge, 2, '.', '');
 
@@ -131,12 +131,12 @@ class PostedTaskController extends Controller
             'child_category_id' => $request->child_category_id,
             'title' => $request->title,
             'description' => $request->description,
-            'required_proof' => $request->required_proof,
+            'required_proof_answer' => $request->required_proof_answer,
             'additional_note' => $request->additional_note,
             'thumbnail' => $thumbnail_photo_name,
             'work_needed' => $request->work_needed,
             'earnings_from_work' => $request->earnings_from_work,
-            'extra_screenshots' => $request->extra_screenshots,
+            'required_proof_photo' => $request->required_proof_photo,
             'boosted_time' => $request->boosted_time,
             'work_duration' => $request->work_duration,
             'charge' => $task_charge,
@@ -169,14 +169,14 @@ class PostedTaskController extends Controller
             'child_category_id' => 'nullable|exists:child_categories,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'required_proof' => 'required|string',
+            'required_proof_answer' => 'required|string',
             'additional_note' => 'required|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'work_needed' => 'required|numeric|min:1',
-            'earnings_from_work' => 'required|numeric|min:1',
-            'extra_screenshots' => 'required|numeric|min:0',
+            'earnings_from_work' => 'required|numeric|min:0',
+            'required_proof_photo' => 'required|numeric|min:1',
             'boosted_time' => 'required|numeric|min:0',
-            'work_duration' => 'required|numeric|min:1',
+            'work_duration' => 'required|numeric|min:3',
         ]);
 
         $postTask = PostTask::findOrFail($id);
@@ -190,11 +190,11 @@ class PostedTaskController extends Controller
             $thumbnail_photo_name = $postTask->thumbnail;
         }
 
-        $total_screenshot_charge = get_default_settings('task_posting_additional_screenshot_charge') * $request->extra_screenshots;
+        $total_required_proof_photo_charge = get_default_settings('task_posting_additional_required_proof_photo_charge') * ($request->required_proof_photo - 1);
         $total_boosted_time_charge = get_default_settings('task_posting_boosted_time_charge') * ($request->boosted_time / 15);
         $total_work_duration_charge = get_default_settings('task_posting_additional_work_duration_charge') * ($request->work_duration - 3);
 
-        $task_charge = number_format(($request->work_needed * $request->earnings_from_work) + $total_screenshot_charge + $total_boosted_time_charge + $total_work_duration_charge, 2, '.', '');
+        $task_charge = number_format(($request->work_needed * $request->earnings_from_work) + $total_required_proof_photo_charge + $total_boosted_time_charge + $total_work_duration_charge, 2, '.', '');
         $site_charge = number_format(($task_charge * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
         $total_task_charge = number_format($task_charge + $site_charge, 2, '.', '');
 
@@ -208,12 +208,12 @@ class PostedTaskController extends Controller
             'child_category_id' => $request->child_category_id,
             'title' => $request->title,
             'description' => $request->description,
-            'required_proof' => $request->required_proof,
+            'required_proof_answer' => $request->required_proof_answer,
             'additional_note' => $request->additional_note,
             'thumbnail' => $thumbnail_photo_name,
             'work_needed' => $request->work_needed,
             'earnings_from_work' => $request->earnings_from_work,
-            'extra_screenshots' => $request->extra_screenshots,
+            'required_proof_photo' => $request->required_proof_photo,
             'boosted_time' => $request->boosted_time,
             'work_duration' => $request->work_duration,
             'charge' => $task_charge,

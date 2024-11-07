@@ -19,12 +19,12 @@ return new class extends Migration
             $table->foreignId('child_category_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description');
-            $table->text('required_proof');
+            $table->text('required_proof_answer');
+            $table->integer('required_proof_photo');
             $table->text('additional_note');
             $table->string('thumbnail')->nullable();
             $table->integer('work_needed');
             $table->decimal('earnings_from_work', 8, 2)->default(0);
-            $table->integer('extra_screenshots');
             $table->integer('boosted_time');
             $table->integer('work_duration');
             $table->decimal('charge', 8, 2)->default(0);

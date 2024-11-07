@@ -135,13 +135,13 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="task_posting_additional_screenshot_charge" class="form-label">Task Posting Additional Screenshot Charge</label>
+                            <label for="task_posting_additional_required_proof_photo_charge" class="form-label">Task Posting Additional Required Proof Photo Charge</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="task_posting_additional_screenshot_charge" name="task_posting_additional_screenshot_charge" value="{{ old('task_posting_additional_screenshot_charge', $defaultSetting->task_posting_additional_screenshot_charge) }}" placeholder="Task Posting Additional Screenshot Charge">
+                                <input type="number" class="form-control" id="task_posting_additional_required_proof_photo_charge" name="task_posting_additional_required_proof_photo_charge" value="{{ old('task_posting_additional_required_proof_photo_charge', $defaultSetting->task_posting_additional_required_proof_photo_charge) }}" placeholder="Task Posting Additional Required Proof Photo Charge">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
-                            <small class="text-info">* Every additional screenshot charge</small>
-                            @error('task_posting_additional_screenshot_charge')
+                            <small class="text-info">* Every additional required proof photo charge</small>
+                            @error('task_posting_additional_required_proof_photo_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

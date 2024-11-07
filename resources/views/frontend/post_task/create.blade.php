@@ -65,7 +65,7 @@
                                     <div class="form-check form-check-inline">
                                         <input type="radio" class="form-check-input" name="category_id" id="category_{{ $category->id }}" value="{{ $category->id }}" required>
                                         <label class="form-check-label" for="category_{{ $category->id }}">
-                                            <span class="badge bg-primary">{{ $category->name }}</span>
+                                            <span class="badge">{{ $category->name }}</span>
                                         </label>
                                     </div>
                                     @endforeach
@@ -111,11 +111,11 @@
                                 <div class="invalid-feedback">Please enter a description.</div>
                             </div>
                             <div class="mb-2">
-                                <label for="required_proof" class="form-label">
-                                    Required Proof <small class="text-danger">* Required</small>
+                                <label for="required_proof_answer" class="form-label">
+                                    Required Proof Answer <small class="text-danger">* Required</small>
                                 </label>
-                                <textarea class="form-control" name="required_proof" id="required_proof" rows="4" placeholder="Please enter the required proof." required></textarea>
-                                <div class="invalid-feedback">Please enter the required proof.</div>
+                                <textarea class="form-control" name="required_proof_answer" id="required_proof_answer" rows="4" placeholder="Please enter the required proof answer." required></textarea>
+                                <div class="invalid-feedback">Please enter the required proof answer.</div>
                             </div>
                             <div class="mb-2">
                                 <label for="additional_note" class="form-label">
@@ -162,13 +162,13 @@
                                     <small class="text-info d-block">* Each earnings from work should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
-                                    <label for="extra_screenshots" class="form-label">
-                                        Extra Screenshots <small class="text-danger">* Required </small>
+                                    <label for="required_proof_photo" class="form-label">
+                                        Required Proof Photo <small class="text-danger">* Required </small>
                                     </label>
-                                    <input type="number" class="form-control" name="extra_screenshots" id="extra_screenshots" min="0" value="0" placeholder="Please enter how many additional screenshots are required." required>
-                                    <div class="invalid-feedback">Please enter how many additional screenshots are required</div>
-                                    <small class="text-danger" id="extra_screenshots_error"></small>
-                                    <small class="text-info d-block">* Additional screenshot charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_screenshot_charge') }} per screenshot. Note: You get 1 screenshot for free.</small>
+                                    <input type="number" class="form-control" name="required_proof_photo" id="required_proof_photo" min="1" value="1" placeholder="Please enter how many additional required proof photo are required." required>
+                                    <div class="invalid-feedback">Please enter how many additional required proof photo are required</div>
+                                    <small class="text-danger" id="required_proof_photo_error"></small>
+                                    <small class="text-info d-block">* Additional required proof photo charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }} per required proof photo. Note: You get 1 required proof photo for free.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="boosted_time" class="form-label">
@@ -250,6 +250,23 @@
 </div>
 @endsection
 
+<style>
+    .form-check-input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+    .form-check-label {
+        cursor: pointer;
+    }
+    .form-check-label .badge {
+        background-color: #007bff;
+    }
+    .form-check-input[type="radio"]:checked + .form-check-label .badge {
+        background-color: rgb(5, 163, 74);
+    }
+</style>
+
 @section('script')
 <script>
     $(document).ready(function() {
@@ -324,13 +341,13 @@
                 $('#earnings_from_work_error').text('');
             }
 
-            // Validate the extra screenshots field
-            var extra_screenshots = parseInt($('#extra_screenshots').val());
-            if (extra_screenshots < 0) {
-                $('#extra_screenshots').removeClass('is-invalid');
-                $('#extra_screenshots_error').text('Extra screenshots should be greater than or equal to 0.');
+            // Validate the extra required proof photo field
+            var required_proof_photo = parseInt($('#required_proof_photo').val());
+            if (required_proof_photo < 1) {
+                $('#required_proof_photo').removeClass('is-invalid');
+                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
             } else {
-                $('#extra_screenshots_error').text('');
+                $('#required_proof_photo_error').text('');
             }
         });
 
@@ -452,14 +469,14 @@
                 } else {
                     $('#earnings_from_work_error').text('');
                 }
-                // Validate the extra screenshots field
-                var extra_screenshots = parseInt($('#extra_screenshots').val());
-                if (extra_screenshots < 0) {
-                    $('#extra_screenshots').removeClass('is-invalid');
-                    $('#extra_screenshots_error').text('Extra screenshots should be greater than or equal to 0.');
+                // Validate the extra required proof photo field
+                var required_proof_photo = parseInt($('#required_proof_photo').val());
+                if (required_proof_photo < 1) {
+                    $('#required_proof_photo').removeClass('is-invalid');
+                    $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
                     isValid = false;
                 } else {
-                    $('#extra_screenshots_error').text('');
+                    $('#required_proof_photo_error').text('');
                 }
 
                 return isValid;
@@ -533,7 +550,7 @@
                         $.each(response.sub_categories, function(index, sub_category) {
                             options += '<div class="form-check form-check-inline">';
                             options += '<input type="radio" class="form-check-input" name="sub_category_id" id="sub_category_' + sub_category.id + '" value="' + sub_category.id + '">';
-                            options += '<label class="form-check-label" for="sub_category_' + sub_category.id + '">' + '<span class="badge bg-primary">' + sub_category.name + '</span>' + '</label>';
+                            options += '<label class="form-check-label" for="sub_category_' + sub_category.id + '">' + '<span class="badge">' + sub_category.name + '</span>' + '</label>';
                             options += '</div>';
                         });
                         $('#sub-category-section').show();
@@ -559,7 +576,7 @@
                         $.each(response.child_categories, function(index, child_category) {
                             options += '<div class="form-check form-check-inline">';
                             options += '<input type="radio" class="form-check-input" name="child_category_id" id="child_category_' + child_category.id + '" value="' + child_category.id + '">';
-                            options += '<label class="form-check-label" for="child_category_' + child_category.id + '">' + '<span class="badge bg-primary">' + child_category.name + '</span>'  + '</label>';
+                            options += '<label class="form-check-label" for="child_category_' + child_category.id + '">' + '<span class="badge">' + child_category.name + '</span>'  + '</label>';
                             options += '</div>';
                         });
                         $('#child-category-options').html(options);
@@ -610,8 +627,8 @@
             calculateTotalTaskCharge();
         });
 
-        // Add keyup event for work_needed, earnings_from_work, and extra_screenshots fields
-        $('#work_needed, #earnings_from_work, #extra_screenshots').on('keyup', function() {
+        // Add keyup event for work_needed, earnings_from_work, and required_proof_photo fields
+        $('#work_needed, #earnings_from_work, #required_proof_photo').on('keyup', function() {
             calculateTotalTaskCharge();
         });
 
@@ -620,8 +637,8 @@
             var work_needed = parseInt($('#work_needed').val()) || 0;
             var earnings_from_work = parseFloat($('#earnings_from_work').val()) || 0;
 
-            var extra_screenshots = parseInt($('#extra_screenshots').val()) || 0;
-            var screenshot_charge = {{ get_default_settings('task_posting_additional_screenshot_charge') }};
+            var required_proof_photo = parseInt($('#required_proof_photo').val()) || 0;
+            var required_proof_photo_charge = {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }};
 
             var boosted_time = parseInt($('#boosted_time').val()) || 0;
             var boosted_time_charge = {{ get_default_settings('task_posting_boosted_time_charge') }};
@@ -632,11 +649,11 @@
             var task_posting_charge_percentage = {{ get_default_settings('task_posting_charge_percentage') }};
             var task_posting_min_budget = {{ get_default_settings('task_posting_min_budget') }};
 
-            var total_screenshot_charge = screenshot_charge * extra_screenshots;
+            var total_proof_photo_charge = required_proof_photo_charge * (required_proof_photo > 1 ? required_proof_photo - 1 : 0);
             var total_boosted_time_charge = boosted_time_charge * (boosted_time / 15);
             var total_work_duration_charge = work_duration_charge * (work_duration - 3);
 
-            var task_charge = (work_needed * earnings_from_work) + total_screenshot_charge + total_boosted_time_charge + total_work_duration_charge;
+            var task_charge = (work_needed * earnings_from_work) + total_proof_photo_charge + total_boosted_time_charge + total_work_duration_charge;
             $('#task_charge').val(task_charge.toFixed(2));
 
             var site_charge = (task_charge * task_posting_charge_percentage) / 100;

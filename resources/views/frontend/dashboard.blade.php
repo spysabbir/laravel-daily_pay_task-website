@@ -567,10 +567,22 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
-                    <h6 class="card-title mb-0">Monthly Deposit & Withdraw Amount</h6>
+                    <h6 class="card-title mb-0">Last 12 Months Deposit and Withdraw Amount Status<h6></h6>
                 </div>
                 <p class="text-muted">This chart shows the monthly deposit and withdraw amount.</p>
+                @if ($total_withdraw == 0 && $total_deposit == 0)
+                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                    <div class="alert-heading mb-3">
+                        <i data-feather="alert-circle"></i>
+                        <h4>No data found!</h4>
+                    </div>
+                    <p class="mt-3">
+                        No data found for monthly deposit and withdraw amount status. Please check back later.
+                    </p>
+                </div>
+                @else
                 <div id="monthlyDepositAndWithdrawChart"></div>
+                @endif
             </div>
         </div>
     </div>
@@ -587,7 +599,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $monthly_deposit }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $monthly_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Monthly - {{ date('F') }}</span>
@@ -596,7 +608,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $yearly_deposit }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $yearly_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Yearly - {{ date('Y') }}</span>
@@ -605,7 +617,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_deposit }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
@@ -625,7 +637,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $monthly_withdraw }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $monthly_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Monthly - {{ date('F') }}</span>
@@ -634,7 +646,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $yearly_withdraw }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $yearly_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Yearly - {{ date('Y') }}</span>
@@ -643,7 +655,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_withdraw }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
@@ -663,7 +675,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_pending_deposit }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_pending_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-info">
                                         <span>Pending</span>
@@ -672,7 +684,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_approved_deposit }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_approved_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-success">
                                         <span>Approved</span>
@@ -681,7 +693,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_rejected_deposit }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_rejected_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-danger">
                                         <span>Rejected</span>
@@ -701,7 +713,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_pending_withdraw }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_pending_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-info">
                                         <span>Pending</span>
@@ -710,7 +722,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_approved_withdraw }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_approved_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-success">
                                         <span>Approved</span>
@@ -719,7 +731,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_rejected_withdraw }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_rejected_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-danger">
                                         <span>Rejected</span>

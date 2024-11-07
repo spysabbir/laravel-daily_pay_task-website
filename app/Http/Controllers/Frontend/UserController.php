@@ -194,7 +194,25 @@ class UserController extends Controller
     {
         $user = User::findOrFail(decrypt($id));
         $blocked = Block::where('user_id', $user->id)->where('blocked_by', Auth::id())->exists();
-        return view('frontend.user_profile.index', compact('user', 'blocked'));
+        $nowPostTaskRunningCount = PostTask::where('user_id', $user->id)->where('status', 'Running')->count();
+        $totalPostTaskApprovedCount = PostTask::where('user_id', $user->id)->where('approved_by', '!=', null)->count();
+        $totalPostTaskApprovedIds = PostTask::where('user_id', $user->id)->where('approved_by', '!=', null)->pluck('id')->toArray();
+
+        $totalPastedTaskProofCount = ProofTask::whereIn('post_task_id', $totalPostTaskApprovedIds)->count();
+        $totalPendingTasksProofCount = ProofTask::whereIn('post_task_id', $totalPostTaskApprovedIds)->where('status', 'Pending')->count();
+        $totalApprovedTasksProofCount = ProofTask::whereIn('post_task_id', $totalPostTaskApprovedIds)->where('status', 'Approved')->count();
+        $totalRejectedTasksProofCount = ProofTask::whereIn('post_task_id', $totalPostTaskApprovedIds)->where('status', 'Rejected')->count();
+        $nowReviewedTasksProofCount = ProofTask::whereIn('post_task_id', $totalPostTaskApprovedIds)->where('status', 'Reviewed')->count();
+        $totalReviewedTasksProofCount = ProofTask::whereIn('post_task_id', $totalPostTaskApprovedIds)->where('reviewed_at', '!=', null)->count();
+
+        $totalWorkedTask = ProofTask::where('user_id', $user->id)->count();
+        $totalPendingWorkedTask = ProofTask::where('user_id', $user->id)->where('status', 'Pending')->count();
+        $totalApprovedWorkedTask = ProofTask::where('user_id', $user->id)->where('status', 'Approved')->count();
+        $totalRejectedWorkedTask = ProofTask::where('user_id', $user->id)->where('status', 'Rejected')->count();
+        $nowReviewedWorkedTask = ProofTask::where('user_id', $user->id)->where('status', 'Reviewed')->count();
+        $totalReviewedWorkedTask = ProofTask::where('user_id', $user->id)->where('reviewed_at', '!=', null)->count();
+
+        return view('frontend.user_profile.index', compact('user', 'blocked', 'nowPostTaskRunningCount', 'totalPostTaskApprovedCount', 'totalPastedTaskProofCount', 'totalPendingTasksProofCount', 'totalApprovedTasksProofCount', 'totalRejectedTasksProofCount', 'nowReviewedTasksProofCount', 'totalReviewedTasksProofCount', 'totalWorkedTask', 'totalPendingWorkedTask', 'totalApprovedWorkedTask', 'totalRejectedWorkedTask', 'nowReviewedWorkedTask', 'totalReviewedWorkedTask'));
     }
 
     // Verification.............................................................................................................

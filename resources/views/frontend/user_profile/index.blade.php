@@ -45,12 +45,12 @@
                                     <input type="hidden" name="type" value="User">
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="reason" class="form-label">Reason</label>
+                                            <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
                                             <textarea class="form-control" id="reason" name="reason" placeholder="Reason"></textarea>
                                             <span class="text-danger error-text reason_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="photo" class="form-label">Photo</label>
+                                            <label for="photo" class="form-label">Photo <span class="text-info">* Optional</span></label>
                                             <input type="file" class="form-control" id="photo" name="photo">
                                             <span class="text-danger error-text photo_error d-none"></span>
                                             <img src="" alt="Photo" id="photoPreview" class="mt-2" style="display: none; width: 100px; height: 100px;">
@@ -99,13 +99,13 @@
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Last Login:</label>
                     <p class="text-muted">
-                        {{ date('F j, Y  h:i:s A', strtotime($user->last_login_at)) ?? 'Not provided' }}
+                        {{ date('j-F, Y  h:i:s A', strtotime($user->last_login_at)) ?? 'Not provided' }}
                     </p>
                 </div>
                 <div class="mt-3">
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Joined:</label>
                     <p class="text-muted">
-                        {{ $user->created_at->format('F j, Y  h:i:s A') }}
+                        {{ $user->created_at->format('j-F, Y  h:i:s A') }}
                     </p>
                 </div>
             </div>
@@ -116,24 +116,45 @@
             <div class="col-md-12 grid-margin">
                 <div class="card rounded">
                     <div class="card-header">
-                        <h4 class="card-title">Task Statistics</h4>
+                        <h4 class="card-title">Posted Task Statistics</h4>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Total Tasks</h6>
-                            <p class="text-muted">0</p>
+                        <div class="d-flex justify-content-between align-items-center text-secondary mb-2">
+                            <h6 class="card-title">Now Running Tasks</h6>
+                            <strong>{{ $nowPostTaskRunningCount }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center text-secondary mb-2">
+                            <h6 class="card-title">Total Posted Approved Tasks</h6>
+                            <strong>{{ $totalPostTaskApprovedCount }}</strong>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Pending Tasks</h6>
-                            <p class="text-muted">0</p>
+                            <h6 class="card-title">Total Posted Tasks Proof</h6>
+                            <strong>{{ $totalPastedTaskProofCount }}</strong>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Approved Tasks</h6>
-                            <p class="text-muted">0</p>
+                        <div class="d-flex justify-content-between align-items-center text-info mb-2">
+                            <h6 class="card-title">Total Pending Tasks Proof</h6>
+                            <strong>{{ $totalPendingTasksProofCount }}</strong>
+                            <strong>( {{ round(($totalPendingTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Rejected Tasks</h6>
-                            <p class="text-muted">0</p>
+                        <div class="d-flex justify-content-between align-items-center text-success mb-2">
+                            <h6 class="card-title">Total Approved Tasks Proof</h6>
+                            <strong>{{ $totalApprovedTasksProofCount }}</strong>
+                            <strong>( {{ round(($totalApprovedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center text-danger mb-2">
+                            <h6 class="card-title">Total Rejected Tasks Proof</h6>
+                            <strong>{{ $totalRejectedTasksProofCount }}</strong>
+                            <strong>( {{ round(($totalRejectedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center text-primary mb-2">
+                            <h6 class="card-title">Now Reviewed Tasks Proof</h6>
+                            <strong>{{ $nowReviewedTasksProofCount }}</strong>
+                            <strong>( {{ round(($nowReviewedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center text-warning mb-2">
+                            <h6 class="card-title">Total Reviewed Tasks Proof</h6>
+                            <strong>{{ $totalReviewedTasksProofCount }}</strong>
+                            <strong>( {{ round(($totalReviewedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong>
                         </div>
                     </div>
                 </div>
@@ -145,28 +166,37 @@
             <div class="col-md-12 grid-margin">
                 <div class="card rounded">
                     <div class="card-header">
-                        <h4 class="card-title">Task Statistics</h4>
+                        <h4 class="card-title">Worked Task Statistics</h4>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Total Tasks</h6>
-                            <p class="text-muted">0</p>
+                            <h6 class="card-title">Total Worked Tasks</h6>
+                            <span class="text-white">{{ $totalWorkedTask }}</span>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Pending Tasks</h6>
-                            <p class="text-muted">0</p>
+                        <div class="d-flex justify-content-between align-items-center text-info mb-2">
+                            <h6 class="card-title">Total Pending  Tasks</h6>
+                            <strong>{{ $totalPendingWorkedTask }}</strong>
+                            <strong>( {{ round(($totalPendingWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Approved Tasks</h6>
-                            <p class="text-muted">0</p>
+                        <div class="d-flex justify-content-between align-items-center text-success mb-2">
+                            <h6 class="card-title">Total Approved Tasks</h6>
+                            <strong>{{ $totalApprovedWorkedTask }}</strong>
+                            <strong>( {{ round(($totalApprovedWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Rejected Tasks</h6>
-                            <p class="text-muted">0</p>
+                        <div class="d-flex justify-content-between align-items-center text-danger mb-2">
+                            <h6 class="card-title">Total Rejected Tasks</h6>
+                            <strong>{{ $totalRejectedWorkedTask }}</strong>
+                            <strong>( {{ round(($totalRejectedWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-title">Reviewed Tasks</h6>
-                            <p class="text-muted">0</p>
+                        <div class="d-flex justify-content-between align-items-center text-primary mb-2">
+                            <h6 class="card-title">Now Reviewed Tasks</h6>
+                            <strong>{{ $nowReviewedWorkedTask }}</strong>
+                            <strong>( {{ round(($nowReviewedWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center text-warning mb-2">
+                            <h6 class="card-title">Total Reviewed Tasks</h6>
+                            <strong>{{ $totalReviewedWorkedTask }}</strong>
+                            <strong>( {{ round(($totalReviewedWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
                         </div>
                     </div>
                 </div>
@@ -197,7 +227,7 @@
         // Report User
         $('#reportForm').submit(function(event) {
             event.preventDefault();
-            
+
             // Disable the submit button to prevent multiple submissions
             var submitButton = $(this).find("button[type='submit']");
             submitButton.prop("disabled", true).text("Submitting...");
