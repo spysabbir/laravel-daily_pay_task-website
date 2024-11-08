@@ -222,7 +222,6 @@
         $('#editForm').submit(function (event) {
             event.preventDefault();
 
-            // Disable the submit button to prevent multiple submissions
             var submitButton = $('#updateBtn');
             submitButton.prop("disabled", true).text("Updating...");
 
@@ -255,7 +254,6 @@
                     }
                 },
                 complete: function() {
-                    // Re-enable the submit button after the request completes
                     submitButton.prop("disabled", false).text("Update");
                 }
             });

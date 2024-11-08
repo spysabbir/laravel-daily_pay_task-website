@@ -93,6 +93,7 @@
 
         // Canceled Data
         $(document).on('click', '.canceledBtn', function(){
+            
             var id = $(this).data('id');
             var url = "{{ route('running.posted_task.canceled', ":id") }}";
             url = url.replace(':id', id);

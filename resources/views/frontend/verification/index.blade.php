@@ -173,13 +173,12 @@
         document.getElementById('id_front_image').addEventListener('change', function() {
             const file = this.files[0];
             const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            const maxSize = 2 * 1024 * 1024; // 2MB
+            const maxSize = 2 * 1024 * 1024;
 
             if (file && allowedTypes.includes(file.type)) {
                 if (file.size > maxSize) {
                     $('#id_front_imageError').text('File size is too large. Max size is 2MB.');
-                    this.value = ''; // Clear file input
-                    // Hide preview image
+                    this.value = '';
                     $('#id_front_image_preview').hide();
                 } else {
                     $('#id_front_imageError').text('');
@@ -191,8 +190,7 @@
                 }
             } else {
                 $('#id_front_imageError').text('Please select a valid image file (jpeg, jpg, png).');
-                this.value = ''; // Clear file input
-                // Hide preview image
+                this.value = '';
                 $('#id_front_image_preview').hide();
             }
         });
@@ -201,13 +199,12 @@
         document.getElementById('id_with_face_image').addEventListener('change', function() {
             const file = this.files[0];
             const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            const maxSize = 2 * 1024 * 1024; // 2MB
+            const maxSize = 2 * 1024 * 1024;
 
             if (file && allowedTypes.includes(file.type)) {
                 if (file.size > maxSize) {
                     $('#id_with_face_imageError').text('File size is too large. Max size is 2MB.');
-                    this.value = ''; // Clear file input
-                    // Hide preview image
+                    this.value = '';
                     $('#id_with_face_image_preview').hide();
                 } else {
                     $('#id_with_face_imageError').text('');
@@ -219,8 +216,7 @@
                 }
             } else {
                 $('#id_with_face_imageError').text('Please select a valid image file (jpeg, jpg, png).');
-                this.value = ''; // Clear file input
-                // Hide preview image
+                this.value = '';
                 $('#id_with_face_image_preview').hide();
             }
         });

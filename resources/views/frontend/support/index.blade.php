@@ -77,13 +77,12 @@
     document.getElementById('fileInput').addEventListener('change', function() {
         const file = this.files[0];
         const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-        const maxSize = 2 * 1024 * 1024; // 2MB
+        const maxSize = 2 * 1024 * 1024;
 
         if (file && allowedTypes.includes(file.type)) {
             if (file.size > maxSize) {
                 $('span.photo_error').text('File size is too large. Max size is 2MB.');
-                this.value = ''; // Clear file input
-                // Hide preview image
+                this.value = '';
                 document.getElementById('imagePreviewContainer').style.display = 'none';
             } else {
                 $('span.photo_error').text('');
@@ -96,8 +95,7 @@
             }
         } else {
             $('span.photo_error').text('Please select a valid image file (jpeg, jpg, png).');
-            this.value = ''; // Clear file input
-            // Hide preview image
+            this.value = '';
             document.getElementById('imagePreviewContainer').style.display = 'none';
         }
     });
@@ -109,7 +107,7 @@
     $('textarea[name="message"]').on('input', function() {
         var message = $(this).val().trim();
         if (message.length > 0) {
-            $('span.message_error').text(''); // Remove error message when input is valid
+            $('span.message_error').text('');
         }else{
             $('span.message_error').text('Message is required!');
         }
@@ -120,6 +118,7 @@
         e.preventDefault();
 
         var formData = new FormData(this);
+        
         $.ajax({
             url: '{{ route("support.send-message") }}',
             method: 'POST',

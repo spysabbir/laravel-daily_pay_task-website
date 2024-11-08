@@ -511,13 +511,9 @@
                 }else{
                     $('#taskForm').submit();
 
-                    // Disable the submit button to prevent multiple submissions
+                    // Disable the finish button and show the spinner
                     $('#wizard').find('.actions a[href="#finish"]').addClass('disabled');
-
-                    // Hide the finish button
                     $('#wizard').find('.actions a[href="#finish"]').hide();
-
-                    // Show the loading spinner
                     $('#wizard').find('.actions ul').append('<strong class="btn btn-primary"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Editing...</strong>');
                 }
             }

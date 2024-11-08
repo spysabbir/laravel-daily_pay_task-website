@@ -257,18 +257,16 @@
 
         // Client-side validation
         $('#proofTaskForm').submit(function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
             let isValid = true;
-            $('.error-message').text(''); // Clear previous error messages
+            $('.error-message').text('');
 
-            // Check Proof Answer
             if ($('#proof_answer').val().trim() === '') {
                 $('#proof_answer_error').text('Proof answer is required.');
                 isValid = false;
             }
 
-            // Check Proof Photos
             @for ($i = 0; $i < $taskDetails->required_proof_photo; $i++)
                 if ($('#proof_photo_{{ $i }}').val() === '') {
                     $('#proof_photo_{{ $i }}_error').text('Proof photo {{ $i + 1 }} is required.');
@@ -287,28 +285,23 @@
             @endfor
 
             if (!isValid) {
-                return; // Stop form submission if validation fails
+                return;
             }
 
-            // Disable the submit button to prevent multiple submissions
             var submitButton = $(this).find("button[type='submit']");
             submitButton.prop("disabled", true).text("Submitting...");
 
-            // Perform AJAX check for proofCount vs work_needed before submitting the form
             $.ajax({
-                url: '{{ route("find_task.proof.submit.limit.check", encrypt($taskDetails->id)) }}', // Adjust with your actual route
+                url: '{{ route("find_task.proof.submit.limit.check", encrypt($taskDetails->id)) }}',
                 type: 'GET',
                 success: function(response) {
                     if (response.canSubmit) {
-                        // If the proof count is below the work_needed, submit the form
                         $('#proofTaskForm')[0].submit();
                     } else {
-                        // Prevent form submission and show an error if limit is reached
                         toastr.error('Sorry! This task has been completed.');
                     }
                 },
                 complete: function() {
-                    // Re-enable the submit button after the request completes
                     submitButton.prop("disabled", false).text("Submit");
                 }
             });
@@ -328,13 +321,12 @@
             document.getElementById('proof_photo_{{ $i }}').addEventListener('change', function() {
                 const file = this.files[0];
                 const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-                const maxSize = 2 * 1024 * 1024; // 2MB
+                const maxSize = 2 * 1024 * 1024;
 
                 if (file && allowedTypes.includes(file.type)) {
                     if (file.size > maxSize) {
                         $('#proof_photo_{{ $i }}_error').text('File size is too large. Max size is 2MB.');
-                        this.value = ''; // Clear file input
-                        // Hide preview image
+                        this.value = '';
                         $('#proof_photo_preview_{{ $i }}').hide();
                     } else {
                         $('#proof_photo_{{ $i }}_error').text('');
@@ -346,8 +338,7 @@
                     }
                 } else {
                     $('#proof_photo_{{ $i }}_error').text('Please select a valid image file (jpeg, jpg, png).');
-                    this.value = ''; // Clear file input
-                    // Hide preview image
+                    this.value = '';
                     $('#proof_photo_preview_{{ $i }}').hide();
                 }
             });
@@ -374,44 +365,39 @@
         $('#reportForm, #reportPostTaskForm').submit(function(event) {
             event.preventDefault();
 
-            // Disable the submit button to prevent multiple submissions
             var submitButton = $(this).find("button[type='submit']");
             submitButton.prop("disabled", true).text("Submitting...");
 
-            var form = $(this); // Get the current form being submitted
-            var formData = new FormData(form[0]); // Create FormData from the form
+            var form = $(this);
+            var formData = new FormData(form[0]);
 
             $.ajax({
-                url: form.attr('action'), // Dynamically get the action URL from the form
+                url: form.attr('action'),
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 dataType: 'json',
                 beforeSend: function() {
-                    form.find('span.error-text').text(''); // Clear previous error messages inside this form
+                    form.find('span.error-text').text('');
                 },
                 success: function(response) {
                     if (response.status === 400) {
-                        // Loop through the errors and display them
                         $.each(response.error, function(prefix, val) {
                             form.find('span.' + prefix + '_error').text(val[0]);
                         });
                     } else {
-                        // Hide the appropriate modal
                         if (form.is('#reportForm')) {
-                            $('.reportModal').modal('hide'); // Hide Report User modal
+                            $('.reportModal').modal('hide');
                             toastr.success('User reported successfully.');
                         } else if (form.is('#reportPostTaskForm')) {
-                            $('.reportPostTaskModal').modal('hide'); // Hide Report Post Task modal
+                            $('.reportPostTaskModal').modal('hide');
                             toastr.success('Post Task reported successfully.');
                         }
-
-                        form[0].reset(); // Reset the form after successful submission
+                        form[0].reset();
                     }
                 },
                 complete: function() {
-                    // Re-enable the submit button after the request completes
                     submitButton.prop("disabled", false).text("Submit");
                 }
             });
