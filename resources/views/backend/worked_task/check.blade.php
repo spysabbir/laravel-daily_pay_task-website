@@ -175,15 +175,18 @@
         // Update Data
         $("body").on("submit", "#editForm", function(e){
             e.preventDefault();
-            // Disable the submit button to prevent multiple submissions
+
             var submitButton = $(this).find("button[type='submit']");
             submitButton.prop("disabled", true).text("Submitting...");
 
             var id = $('#proof_task_id').val();
             var url = "{{ route('backend.worked_task_check_update', ":id") }}";
             url = url.replace(':id', id)
+
             var formData = new FormData(this);
+
             formData.append('_method', 'PUT');
+
             $.ajax({
                 url: url,
                 type: "POST",
@@ -205,7 +208,6 @@
                     }
                 },
                 complete: function() {
-                    // Re-enable the submit button after the request completes
                     submitButton.prop("disabled", false).text("Submit");
                 }
             });

@@ -121,7 +121,12 @@
         // Store Data
         $('#createForm').submit(function(event) {
             event.preventDefault();
+
             var formData = $(this).serialize();
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: "{{ route('backend.permission.store') }}",
                 type: 'POST',
@@ -141,6 +146,9 @@
                         $('#allDataTable').DataTable().ajax.reload();
                         toastr.success('Permission store successfully.');
                     }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });

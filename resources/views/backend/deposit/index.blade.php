@@ -168,9 +168,15 @@
         // Update Data
         $("body").on("submit", "#editForm", function(e){
             e.preventDefault();
+
             var id = $('#deposit_id').val();
             var url = "{{ route('backend.deposit.request.status.change', ":id") }}";
             url = url.replace(':id', id)
+
+            // Disable the submit button to prevent multiple submissions
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: url,
                 type: "PUT",
@@ -192,6 +198,10 @@
                         toastr.success('Deposit status change successfully.');
                     }
                 },
+                complete: function() {
+                    // Re-enable the submit button after the request completes
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         })
 

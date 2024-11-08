@@ -213,7 +213,12 @@
         // Store Data
         $('#createForm').submit(function(event) {
             event.preventDefault();
+
             var formData = new FormData(this);
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: "{{ route('backend.testimonial.store') }}",
                 type: 'POST',
@@ -235,6 +240,9 @@
                         $('#allDataTable').DataTable().ajax.reload();
                         toastr.success('Testimonial store successfully.');
                     }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });
@@ -269,10 +277,15 @@
         // Update Data
         $("#editForm").submit(function(e) {
             e.preventDefault();
+
             var id = $('#testimonial_id').val();
             var url = "{{ route('backend.testimonial.update', ":id") }}";
             url = url.replace(':id', id)
             const form_data = new FormData(this);
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -296,6 +309,9 @@
                         $("#editForm")[0].reset();
                         $('.editModal').modal('hide');
                     }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });

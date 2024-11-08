@@ -28,7 +28,7 @@
                     <strong class="text-info">Warnings From Work:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }},
                     <strong class="text-info">Proof Photo:</strong> Free: 1 & Additional: {{ $postTask->required_proof_photo - 1 }} = Total: {{ $postTask->required_proof_photo }},
                     <strong class="text-info">Boosted Time:</strong> {{ $postTask->boosted_time ? $postTask->boosted_time . ' Minutes' : 0 }} ,
-                    <strong class="text-info">Work Duration:</strong> {{ $postTask->work_duration }} Days
+                    <strong class="text-info">Work Duration:</strong> Free: 3 Days & Additional: {{ $postTask->work_duration - 3 }} Days = Total {{ $postTask->work_duration }} Days
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Charge:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }},

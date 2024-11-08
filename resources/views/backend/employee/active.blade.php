@@ -201,7 +201,12 @@
         // Store Data
         $('#createForm').submit(function(event) {
             event.preventDefault();
+
             var formData = $(this).serialize();
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: "{{ route('backend.employee.store') }}",
                 type: 'POST',
@@ -221,6 +226,9 @@
                         $('#allDataTable').DataTable().ajax.reload();
                         toastr.success('Employee store successfully.');
                     }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Create");
                 }
             });
         });
@@ -259,9 +267,14 @@
         // Update Data
         $('#editForm').submit(function (event) {
             event.preventDefault();
+
             var id = $('#employee_id').val();
             var url = "{{ route('backend.employee.update', ":id") }}";
             url = url.replace(':id', id)
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: url,
                 type: "PUT",
@@ -280,6 +293,9 @@
                         toastr.success('Employee update successfully.');
                     }
                 },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         });
 

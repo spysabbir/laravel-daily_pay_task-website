@@ -133,9 +133,14 @@
         // Update Data
         $('#editForm').submit(function (event) {
             event.preventDefault();
+
             var id = $('#role_id').val();
             var url = "{{ route('backend.role-permission.update', ":id") }}";
             url = url.replace(':id', id)
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: url,
                 type: "PUT",
@@ -153,6 +158,9 @@
                         toastr.success('Role in permission update successfully.');
                     }
                 },
+                complete: function () {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         });
     });

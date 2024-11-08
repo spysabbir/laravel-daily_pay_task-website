@@ -277,6 +277,10 @@
     // Create form submission
     $('#createForm').submit(function(event) {
         event.preventDefault();
+
+        var submitButton = $(this).find("button[type='submit']");
+        submitButton.prop("disabled", true).text("Submitting...");
+
         $.ajax({
             url: "{{ route('backend.task_post_charge.store') }}",
             type: 'POST',
@@ -296,6 +300,9 @@
                     table.ajax.reload();
                     toastr.success('Task Post Charge created successfully.');
                 }
+            },
+            complete: function() {
+                submitButton.prop("disabled", false).text("Submit");
             }
         });
     });
@@ -317,8 +324,13 @@
     // Update form submission
     $('#editForm').submit(function(event) {
         event.preventDefault();
+
         var id = $('#task_post_charge_id').val();
         var url = "{{ route('backend.task_post_charge.update', ":id") }}".replace(':id', id);
+
+        var submitButton = $(this).find("button[type='submit']");
+        submitButton.prop("disabled", true).text("Submitting...");
+
         $.ajax({
             url: url,
             type: "PUT",
@@ -336,6 +348,9 @@
                     table.ajax.reload();
                     toastr.success('Task Post Charge updated successfully.');
                 }
+            },
+            complete: function() {
+                submitButton.prop("disabled", false).text("Submit");
             }
         });
     });

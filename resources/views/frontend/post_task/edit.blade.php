@@ -344,7 +344,10 @@
             var earnings_from_work = parseFloat($('#earnings_from_work').val());
             var minCharge = parseFloat($('#earnings_from_work').attr('min'));
             var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
-            if (earnings_from_work < minCharge) {
+            if (isNaN(earnings_from_work)) {
+                $(this).addClass('is-invalid');
+                $('#earnings_from_work_error').text('');
+            } else if (earnings_from_work < minCharge) {
                 $('#earnings_from_work').removeClass('is-invalid');
                 $('#earnings_from_work_error').text('Earnings from work should be greater than or equal to ' + ' {{ get_site_settings('site_currency_symbol') }} ' + minCharge + '.');
             } else if (earnings_from_work > maxCharge) {

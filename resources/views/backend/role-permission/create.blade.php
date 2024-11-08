@@ -67,7 +67,7 @@
                         </div><!-- Col -->
                     </div>
                     @endforeach
-                    
+
                     <span class="text-danger error-text permission_id_error"></span>
                     <div class="row mt-3">
                         <button type="submit" class="btn btn-primary">Create</button>
@@ -139,7 +139,12 @@
         // Store Data
         $('#createForm').submit(function(event) {
             event.preventDefault();
+
             var formData = $(this).serialize();
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: "{{ route('backend.role-permission.store') }}",
                 type: 'POST',
@@ -162,6 +167,9 @@
                             toastr.success('Role in permission store successfully.');
                         }
                     }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });

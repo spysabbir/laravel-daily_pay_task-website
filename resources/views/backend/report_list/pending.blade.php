@@ -108,9 +108,15 @@
         // Reply Form
         $("body").on("submit", "#replyForm", function(e){
             e.preventDefault();
+
             var url = "{{ route('backend.report.reply') }}";
-            var form = $(this); // Get the current form being submitted
+
+            var form = $(this);
             var formData = new FormData(form[0]);
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: url,
                 type: "POST",
@@ -132,6 +138,9 @@
                         toastr.success('Reply Submitted Successfully');
                     }
                 },
+                complete: function () {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         })
     });

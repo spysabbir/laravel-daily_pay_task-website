@@ -110,14 +110,16 @@
                     <i data-feather="menu"></i>
                 </a>
                 <div class="navbar-content">
-                    <form class="search-form">
-						<div class="input-group">
-                            <div class="input-group-text">
-                                <i data-feather="search"></i>
+                    <div class="search-form">
+						{{-- <form action="" method="GET">
+                            <div class="input-group">
+                                <div class="input-group-text">
+                                    <button type="submit" class="btn btn-dark"><i data-feather="search"></i></button>
+                                </div>
+                                <input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
                             </div>
-							<input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
-						</div>
-					</form>
+                        </form> --}}
+					</div>
                     @if (auth()->user()->user_type === 'Frontend')
                     <div class="d-xl-flex py-xl-3">
                         <div class="badge bg-primary mx-1" id="deposit_balance_div">

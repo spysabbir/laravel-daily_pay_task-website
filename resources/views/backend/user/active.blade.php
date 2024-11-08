@@ -164,9 +164,14 @@
         // Update Data
         $("body").on("submit", "#statusForm", function(e){
             e.preventDefault();
+
             var id = $('#user_id').val();
             var url = "{{ route('backend.user.status.update', ":id") }}";
             url = url.replace(':id', id)
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: url,
                 type: "POST",
@@ -186,6 +191,9 @@
                         toastr.success('User status update successfully.');
                     }
                 },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         })
 

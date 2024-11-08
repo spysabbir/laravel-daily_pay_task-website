@@ -109,7 +109,12 @@
         // Store Data
         $('#createForm').submit(function(event) {
             event.preventDefault();
+
             var formData = $(this).serialize();
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: "{{ route('backend.role.store') }}",
                 type: 'POST',
@@ -129,6 +134,9 @@
                         $('#allDataTable').DataTable().ajax.reload();
                         toastr.success('Role store successfully.');
                     }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
                 }
             });
         });
@@ -151,9 +159,14 @@
         // Update Data
         $('#editForm').submit(function (event) {
             event.preventDefault();
+
             var id = $('#role_id').val();
             var url = "{{ route('backend.role.update', ":id") }}";
             url = url.replace(':id', id)
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
             $.ajax({
                 url: url,
                 type: "PUT",
@@ -172,6 +185,9 @@
                         toastr.success('Role update successfully.');
                     }
                 },
+                complete: function () {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         });
 
