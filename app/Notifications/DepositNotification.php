@@ -27,7 +27,7 @@ class DepositNotification extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Now your deposit status is ' . $this->deposit['status'],
+            'title' => 'Now your deposit amount is ' . get_site_settings('site_currency_symbol'). ' ' . $this->deposit['amount'] . ' and status is ' . $this->deposit['status'],
             'message' => $this->deposit['rejected_reason'] ?? 'Thank you for using our application!',
         ];
     }

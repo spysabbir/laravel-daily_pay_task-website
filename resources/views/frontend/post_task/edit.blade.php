@@ -111,6 +111,7 @@
                                 <textarea class="form-control" name="title" id="title" rows="1" placeholder="Please enter a title." required>{{ old('title', $postTask->title) }}</textarea>
                                 <div class="invalid-feedback">Please enter a title.</div>
                                 <small class="text-danger" id="title_error"></small>
+                                <small class="text-info d-block">*Note: Only 255 characters are allowed.</small>
                             </div>
                             <div class="mb-2">
                                 <label for="description" class="form-label">
@@ -132,8 +133,7 @@
                                 </label>
                                 <textarea class="form-control" name="additional_note" id="additional_note" rows="4" placeholder="Please enter additional notes." required>{{ old('additional_note', $postTask->additional_note) }}</textarea>
                                 <div class="invalid-feedback">Please enter additional notes.</div>
-                                <small class="text-info">* Please provide your task related information here for verification purposes. This is only admin and you can see it.</small>
-                            </div>
+                                <small class="text-info d-block">*Note: Please provide additional note information about your task here for verification purposes and if you need any question answered from worker please enter the answer here, Only admin and you can see.</small>                            </div>
                             <div class="mb-2">
                                 <label for="thumbnailEdit" class="form-label">
                                     Thumbnail (Optional)

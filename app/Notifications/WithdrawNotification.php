@@ -27,7 +27,7 @@ class WithdrawNotification extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Now your withdraw status is ' . $this->withdraw['status'],
+            'title' => 'Now your withdraw amount is ' . get_site_settings('site_currency_symbol') . ' ' . $this->withdraw['amount'] . ' and status is ' . $this->withdraw['status'],
             'message' => $this->withdraw['rejected_reason'] ?? 'Thank you for using our application!',
         ];
     }

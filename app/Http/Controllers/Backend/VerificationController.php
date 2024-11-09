@@ -9,6 +9,9 @@ use App\Models\Verification;
 use App\Notifications\VerificationNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\Bonus;
+use App\Notifications\BonusNotification;
+use App\Notifications\ReferralRegistrationNotification;
 
 class VerificationController extends Controller
 {
@@ -61,6 +64,7 @@ class VerificationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'status' => 'required',
+            'rejected_reason' => 'required_if:status,Rejected',
         ]);
 
         if ($validator->fails()) {
@@ -68,38 +72,48 @@ class VerificationController extends Controller
                 'status' => 400,
                 'error' => $validator->errors()->toArray()
             ]);
-        } else {
-            if($request->status == 'Rejected' && empty($request->rejected_reason)) {
-                return response()->json([
-                    'status' => 401,
-                    'error' => 'The rejected reason field is required.'
-                ]);
-            }
-
-            $verification = Verification::findOrFail($id);
-            $verification->update([
-                'status' => $request->status,
-                'rejected_reason' => $request->rejected_reason,
-                'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
-                'rejected_at' => $request->status == 'Rejected' ? now() : NULL,
-                'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,
-                'approved_at' => $request->status == 'Approved' ? now() : NULL,
-            ]);
-
-            $user = User::findOrFail($verification->user_id);
-
-            if ($request->status == 'Approved') {
-                $user->update([
-                    'status' => 'Active',
-                ]);
-            }
-
-            $user->notify(new VerificationNotification($verification));
-
-            return response()->json([
-                'status' => 200,
-            ]);
         }
+
+        $verification = Verification::findOrFail($id);
+        $verification->update([
+            'status' => $request->status,
+            'rejected_reason' => $request->status == 'Rejected' ? $request->rejected_reason : NULL,
+            'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
+            'rejected_at' => $request->status == 'Rejected' ? now() : NULL,
+            'approved_by' => $request->status == 'Approved' ? auth()->user()->id : NULL,
+            'approved_at' => $request->status == 'Approved' ? now() : NULL,
+        ]);
+
+        $user = User::findOrFail($verification->user_id);
+
+        if ($request->status == 'Approved') {
+            $user->update([
+                'status' => 'Active',
+            ]);
+
+            $user = User::where('id', $verification->user_id)->first();
+            $referralBonus = get_default_settings('referral_registration_bonus_amount');
+            if ($user->referred_by) {
+                $referrer = User::where('id', $user->referred_by)->first();
+                $referrer->increment('withdraw_balance', $referralBonus);
+
+                $referrerBonus = Bonus::create([
+                    'user_id' => $referrer->id,
+                    'bonus_by' => $user->id,
+                    'type' => 'Referral Registration Bonus',
+                    'amount' => $referralBonus,
+                ]);
+
+                $referrer->notify(new BonusNotification($referrerBonus));
+                $referrer->notify(new ReferralRegistrationNotification($referrer, $user));
+            }
+        }
+
+        $user->notify(new VerificationNotification($verification));
+
+        return response()->json([
+            'status' => 200,
+        ]);
     }
 
     public function verificationRequestRejected(Request $request)

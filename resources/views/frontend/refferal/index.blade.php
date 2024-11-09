@@ -27,13 +27,10 @@
                         {{ get_site_settings('site_currency_symbol') }} {{ $referralEarned }} earned from your refferal link.
                     </strong>
                     <p class="mt-3">
-                        Share your referral link with your friends and earn {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('referral_registration_bonus_amount') }} for each friend that signs up using your link.
+                        Share your referral link with your friends, both you and your friend will get {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('referral_registration_bonus_amount') }} bonus for signing up using your referral link.
                     </p>
                     <p class="mt-3">
-                        If your friends sign up using your referral link and work on our platform, you will earn {{ get_default_settings('referral_withdrawal_bonus_percentage') }} % of their every withdrawal amount.
-                    </p>
-                    <p class="mt-3">
-                        Your friends will also get {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('referral_registration_bonus_amount') }} when they sign up using your referral link.
+                        If your friends sign up using your referral link and work on our platform, you will {{ get_default_settings('referral_withdrawal_bonus_percentage') }} % bonus of their every withdrawal amount.
                     </p>
                     <p class="mt-3">
                         You can also share your referral link on social media platforms like Facebook, Twitter, WhatsApp, etc.

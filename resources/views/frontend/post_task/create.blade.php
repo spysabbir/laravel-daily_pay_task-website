@@ -28,7 +28,7 @@
                         <section>
                             @if (Auth::user()->deposit_balance < get_default_settings('task_posting_min_budget'))
                             <div class="alert alert-warning mb-3">
-                                Your current balance is {{ get_site_settings('site_currency_symbol') }} {{ Auth::user()->deposit_balance }}. You need to pay {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }} to post a task. Your balance is not enough to post a task. Please deposit now to post a task.
+                                Your current balance is {{ get_site_settings('site_currency_symbol') }} {{ Auth::user()->deposit_balance }}. You need to pay minimum {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }} to post a task. Your balance is not enough to post task. Please deposit now to post task.
                                 <a href="{{ route('deposit') }}" class="text-primary">Deposit Now</a>
                             </div>
                             @endif
@@ -102,6 +102,7 @@
                                 <textarea class="form-control" name="title" id="title" rows="1" placeholder="Please enter a title." required></textarea>
                                 <div class="invalid-feedback">Please enter a title.</div>
                                 <small class="text-danger" id="title_error"></small>
+                                <small class="text-info d-block">*Note: Only 255 characters are allowed.</small>
                             </div>
                             <div class="mb-2">
                                 <label for="description" class="form-label">
@@ -123,7 +124,7 @@
                                 </label>
                                 <textarea class="form-control" name="additional_note" id="additional_note" rows="4" placeholder="Please enter additional notes." required></textarea>
                                 <div class="invalid-feedback">Please enter additional notes.</div>
-                                <small class="text-info">* Please provide your task related information here for verification purposes. This is only admin and you can see it.</small>
+                                <small class="text-info d-block">*Note: Please provide additional note information about your task here for verification purposes and if you need any question answered from worker please enter the answer here, Only admin and you can see.</small>
                             </div>
                             <div class="mb-2">
                                 <label for="thumbnail" class="form-label">
@@ -237,7 +238,7 @@
 
                             @if (Auth::user()->deposit_balance < get_default_settings('task_posting_min_budget'))
                             <div class="alert alert-warning">
-                                Your current balance is {{ get_site_settings('site_currency_symbol') }} {{ Auth::user()->deposit_balance }}. You need to pay {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }} to post a task. Your balance is not enough to post a task. Please deposit now to post a task.
+                                Your current balance is {{ get_site_settings('site_currency_symbol') }} {{ Auth::user()->deposit_balance }}. You need to pay minimum {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }} to post a task. Your balance is not enough to post task. Please deposit now to post task.
                                 <a href="{{ route('deposit') }}" class="text-primary">Deposit Now</a>
                             </div>
                             @endif
@@ -301,58 +302,52 @@
         });
 
         // Real-time validation for input fields
-        $('#taskForm').on('input', 'input, textarea', function() {
-            // Add is-invalid class if the field is invalid
-            if ($(this).is(':invalid')) {
-                $(this).addClass('is-invalid');
-            } else {
-                $(this).removeClass('is-invalid');
-            }
+        $('#taskForm').on('input', '#work_needed, #earnings_from_work, #required_proof_photo', function() {
+        // Validate the work needed field
+        var work_needed = parseInt($('#work_needed').val());
+        if (isNaN(work_needed)) {
+            $('#work_needed').addClass('is-invalid');
+        } else if (work_needed < 1) {
+            $('#work_needed').addClass('is-invalid');
+            $('#work_needed_error').text('Work needed should be greater than or equal to 1.');
+        } else {
+            $('#work_needed').removeClass('is-invalid');
+            $('#work_needed_error').text('');
+        }
 
-            // Validate the title field
-            var title = $('#title').val();
-            if (title.length > 255) {
-                $(this).removeClass('is-invalid');
-                $('#title_error').text('Title length should be less than 255 characters. You have entered ' + title.length + ' characters.');
-            } else {
-                $('#title_error').text('');
-            }
+    // Validate the earnings from work field
+    var earnings_from_work = parseFloat($('#earnings_from_work').val());
+    var minCharge = parseFloat($('#earnings_from_work').attr('min'));
+    var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
+    if (isNaN(earnings_from_work) || earnings_from_work < minCharge || earnings_from_work > maxCharge) {
+        $('#earnings_from_work').addClass('is-invalid');
+        if (earnings_from_work < minCharge) {
+            $('#earnings_from_work_error').text('Earnings from work should be greater than or equal to {{ get_site_settings("site_currency_symbol") }}' + minCharge + '.');
+        } else if (earnings_from_work > maxCharge) {
+            $('#earnings_from_work_error').text('Earnings from work should be less than or equal to {{ get_site_settings("site_currency_symbol") }}' + maxCharge + '.');
+        } else {
+            $('#earnings_from_work_error').text('');
+        }
+    } else {
+        $('#earnings_from_work').removeClass('is-invalid');
+        $('#earnings_from_work_error').text('');
+    }
 
-            // Validate the work needed field
-            var work_needed = parseInt($('#work_needed').val());
-            if (work_needed < 1) {
-                $('#work_needed').removeClass('is-invalid');
-                $('#work_needed_error').text('Work needed should be greater than or equal to 1.');
-            } else {
-                $('#work_needed_error').text('');
-            }
+    // Validate the extra required proof photo field
+    var required_proof_photo = parseInt($('#required_proof_photo').val());
+    if (isNaN(required_proof_photo)) {
+        $('#required_proof_photo').addClass('is-invalid');
+        $('#required_proof_photo_error').text(''); // Clear error message if NaN
+    } else if (required_proof_photo < 1) {
+        $('#required_proof_photo').removeClass('is-invalid');
+        $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
+    } else {
+        $('#required_proof_photo').removeClass('is-invalid');
+        $('#required_proof_photo_error').text('');
+    }
+});
 
-            // Validate the earnings from work field
-            var earnings_from_work = parseFloat($('#earnings_from_work').val());
-            var minCharge = parseFloat($('#earnings_from_work').attr('min'));
-            var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
-            if (isNaN(earnings_from_work)) {
-                $(this).addClass('is-invalid');
-                $('#earnings_from_work_error').text('');
-            } else if (earnings_from_work < minCharge) {
-                $('#earnings_from_work').removeClass('is-invalid');
-                $('#earnings_from_work_error').text('Earnings from work should be greater than or equal to ' + ' {{ get_site_settings('site_currency_symbol') }} ' + minCharge + '.');
-            } else if (earnings_from_work > maxCharge) {
-                $('#earnings_from_work').removeClass('is-invalid');
-                $('#earnings_from_work_error').text('Earnings from work should be less than or equal to ' + ' {{ get_site_settings('site_currency_symbol') }} ' + maxCharge + '.');
-            } else {
-                $('#earnings_from_work_error').text('');
-            }
 
-            // Validate the extra required proof photo field
-            var required_proof_photo = parseInt($('#required_proof_photo').val());
-            if (required_proof_photo < 1) {
-                $('#required_proof_photo').removeClass('is-invalid');
-                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
-            } else {
-                $('#required_proof_photo_error').text('');
-            }
-        });
 
         // Initialize the wizard
         $('#wizard').steps({

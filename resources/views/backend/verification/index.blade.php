@@ -155,14 +155,10 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        if (response.status == 401) {
-                            toastr.error(response.error);
-                        }else{
-                            $('#pendingDataTable').DataTable().ajax.reload();
-                            $('#rejectedDataTable').DataTable().ajax.reload();
-                            $(".viewModal").modal('hide');
-                            toastr.success('Verification status change successfully.');
-                        }
+                        $('#pendingDataTable').DataTable().ajax.reload();
+                        $('#rejectedDataTable').DataTable().ajax.reload();
+                        $(".viewModal").modal('hide');
+                        toastr.success('Verification status change successfully.');
                     }
                 },
                 complete: function() {

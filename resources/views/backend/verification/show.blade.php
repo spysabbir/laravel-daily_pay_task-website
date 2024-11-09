@@ -51,14 +51,18 @@
                         </ol>
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image }}" class="d-block w-100" alt="Id Front Image">
+                                <a href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image  }}" data-lightbox="gallery" data-title="Id Front Image">
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image }}" style="max-height: 400px;" class="d-block w-100" alt="Id Front Image">
+                                </a>
                                 <div class="carousel-caption d-none d-md-block">
                                     <h5 class="mb-2"><strong class="badge bg-dark">Id Front Image</strong></h5>
                                     <strong><a href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image }}" target="_blank">View Full Image</a></strong>
                                 </div>
                             </div>
                             <div class="carousel-item">
-                                <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image }}" class="d-block w-100" alt="Id With Face Image">
+                                <a href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image  }}" data-lightbox="gallery" data-title="Id With Face Image">
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image }}" style="max-height: 400px;" class="d-block w-100" alt="Id With Face Image">
+                                </a>
                                 <div class="carousel-caption d-none d-md-block">
                                     <h5 class="mb-2"><strong class="badge bg-dark">Id With Face Image</strong></h5>
                                     <strong><a href="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image }}" target="_blank">View Full Image</a></strong>
@@ -120,7 +124,8 @@
                     </div>
                     <div class="mb-3" id="verification_rejected_reason_div" style="display: none;">
                         <label for="verification_rejected_reason" class="form-label">Rejected Reason</label>
-                        <textarea class="form-control" id="verification_rejected_reason" name="rejected_reason" rows="4" placeholder="Rejected Reason"></textarea>
+                        <textarea class="form-control" id="verification_rejected_reason" name="rejected_reason" rows="4" placeholder="Rejected Reason">Submitted information not matching with your profile information. Please check and try again.</textarea>
+                        <span class="text-danger error-text update_rejected_reason_error"></span>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>

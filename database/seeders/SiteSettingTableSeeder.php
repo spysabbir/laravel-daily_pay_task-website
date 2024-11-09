@@ -28,7 +28,7 @@ class SiteSettingTableSeeder extends Seeder
             'site_main_phone' => '1234567890',
             'site_support_phone' => '1234567890',
             'site_address' => 'Dhaka, Bangladesh',
-            'site_notice' => 'Welcome to our website.',
+            'site_notice' => 'Submit only authentic evidence. Your account may be suspended if you submit false or group work evidence. Thanks for your cooperation in keeping our community fair and trustworthy.',
             'site_facebook_url' => 'https://facebook.com',
             'site_twitter_url' => 'https://twitter.com',
             'site_instagram_url' => 'https://instagram.com',

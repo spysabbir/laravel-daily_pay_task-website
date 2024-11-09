@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Carbon\Carbon;
 
-class ReferralNotification extends Notification implements ShouldQueue
+class ReferralRegistrationNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -29,7 +29,7 @@ class ReferralNotification extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Referral Notification',
+            'title' => 'Referral Registration Notification',
             'message' => $this->user->name . ' has been referred by ' . $this->referrer->name . '.',
         ];
     }
@@ -37,7 +37,7 @@ class ReferralNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Referral Notification')
+                    ->subject('Referral Registration Notification')
                     ->greeting('Hello ' . $this->user->name . '!')
                     ->line($this->user->name . ' has been referred by ' . $this->referrer->name . '.')
                     ->line('Updated on: ' . Carbon::parse($this->user->updated_at)->format('d M Y h:i:s'))

@@ -28,9 +28,15 @@
                             $status = $user->status;
                             $buttonClass = $statusClasses[$status] ?? 'btn-danger';
                         @endphp
-
                         <button class="btn {{ $buttonClass }} btn-icon-text">
-                            Status: {{ $status }}
+                            Account Status: {{ $status }}
+                        </button>
+
+                        <button class="btn btn-primary btn-icon-text">
+                            @php
+                                $verification = App\Models\Verification::where('user_id', $user->id)->first()
+                            @endphp
+                            Verification Status: {{ $verification->status ?? 'Not Submitted' }}
                         </button>
                     </div>
                 </div>

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use App\Notifications\ReferralNotification;
+use App\Notifications\ReferralRegistrationNotification;
 use App\Notifications\BonusNotification;
 
 class RegisteredUserController extends Controller
@@ -23,10 +23,12 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request)
     {
-        $referralBonus = get_default_settings('referral_registration_bonus_amount');
+        $referrer = User::where('referral_code', $request->referral_code)->first();
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'date_of_birth' => ['required', 'date'],
+            'gender' => ['required', 'in:Male,Female,Other'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', 'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/'],
             'password' => [
                 'required', 'string', 'min:8', 'max:20',
@@ -49,29 +51,19 @@ class RegisteredUserController extends Controller
             'g-recaptcha-response.captcha' => 'Failed to validate captcha response.',
         ]);
 
-        $referrer = User::where('referral_code', $request->referral_code)->where('user_type', 'Frontend')->first();
-
         $user = User::create([
             'name' => $request->name,
+            'date_of_birth' => $request->date_of_birth,
+            'gender' => $request->gender,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'referral_code' => Str::random(12),
             'referred_by' => $referrer ? $referrer->id : null,
         ]);
 
-        if ($referrer) {
-            $referrer->increment('withdraw_balance', $referralBonus);
+        $referralBonus = get_default_settings('referral_registration_bonus_amount');
+        if ($request->referral_code) {
             $user->update(['withdraw_balance' => $referralBonus]);
-
-            $referrerBonus = Bonus::create([
-                'user_id' => $referrer->id,
-                'bonus_by' => $user->id,
-                'type' => 'Referral Registration Bonus',
-                'amount' => $referralBonus,
-            ]);
-
-            $referrer->notify(new BonusNotification($referrerBonus));
-            $referrer->notify(new ReferralNotification($referrer, $user));
 
             $userBonus = Bonus::create([
                 'user_id' => $user->id,
@@ -80,6 +72,7 @@ class RegisteredUserController extends Controller
                 'amount' => $referralBonus,
             ]);
 
+            $user->notify(new ReferralRegistrationNotification($referrer, $user));
             $user->notify(new BonusNotification($userBonus));
         }
 

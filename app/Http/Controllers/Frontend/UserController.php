@@ -390,7 +390,11 @@ class UserController extends Controller
                         } else if ($row->status == 'Rejected') {
                             $date = date('d M Y h:i A', strtotime($row->rejected_at));
                         } else {
-                            $date = 'N/A';
+                            if ($row->created_at->addHours(24) > now()) {
+                                $date = 'Waiting until ' . $row->created_at->addHours(24)->format('d M Y h:i A');
+                            } else {
+                                $date = 'Please contact with us.';
+                            }
                         }
                         return $date;
                     })
@@ -487,6 +491,7 @@ class UserController extends Controller
                     'method' => 'Withdrawal Balance',
                     'amount' => $request->deposit_amount,
                     'payable_amount' => $deposit_amount,
+                    'approved_at' => now(),
                     'status' => 'Approved',
                 ]);
 
@@ -580,7 +585,19 @@ class UserController extends Controller
                         } else if ($row->status == 'Rejected') {
                             $date = date('d M Y h:i A', strtotime($row->rejected_at));
                         } else {
-                            $date = 'N/A';
+                            if ($row->type == 'Instant') {
+                                if ($row->created_at->addMinutes(30) > now()) {
+                                    $date = 'Waiting until ' . $row->created_at->addMinutes(30)->format('d M Y h:i A');
+                                } else {
+                                    $date = 'Please contact with us.';
+                                }
+                            } else {
+                                if ($row->created_at->addHours(24) > now()) {
+                                    $date = 'Waiting until ' . $row->created_at->addHours(24)->format('d M Y h:i A');
+                                } else {
+                                    $date = 'Please contact with us.';
+                                }
+                            }
                         }
                         return $date;
                     })
