@@ -70,7 +70,7 @@
                                     </div>
                                     @endforeach
                                 </div>
-                                <div class="invalid-feedback">Please select a category.</div>
+                                <small class="text-danger" id="category_error"></small>
                             </div>
                             <div class="mb-3 border p-2" id="sub-category-section" style="display:none;">
                                 <h5 class="bg-dark text-center py-1 mb-3 rounded">
@@ -79,7 +79,7 @@
                                 <div id="sub-category-options">
                                     <!-- Sub-category radio buttons will be loaded here -->
                                 </div>
-                                <div class="invalid-feedback">Please select a sub category.</div>
+                                <small class="text-danger" id="sub_category_error"></small>
                             </div>
                             <div class="mb-3 border p-2" id="child-category-section" style="display:none;">
                                 <h5 class="bg-dark text-center py-1 mb-3 rounded">
@@ -88,7 +88,7 @@
                                 <div id="child-category-options">
                                     <!-- Child-category radio buttons will be loaded here -->
                                 </div>
-                                <div class="invalid-feedback">Please select a child category.</div>
+                                <small class="text-danger" id="child_category_error"></small>
                             </div>
                         </section>
 
@@ -100,7 +100,6 @@
                                     Title <small class="text-danger">* Required</small>
                                 </label>
                                 <textarea class="form-control" name="title" id="title" rows="1" placeholder="Please enter a title." required></textarea>
-                                <div class="invalid-feedback">Please enter a title.</div>
                                 <small class="text-danger" id="title_error"></small>
                                 <small class="text-info d-block">*Note: Only 255 characters are allowed.</small>
                             </div>
@@ -109,21 +108,21 @@
                                     Description <small class="text-danger">* Required</small>
                                 </label>
                                 <textarea class="form-control" name="description" id="description" rows="4" placeholder="Please enter a description." required></textarea>
-                                <div class="invalid-feedback">Please enter a description.</div>
+                                <small class="text-danger" id="description_error"></small>
                             </div>
                             <div class="mb-2">
                                 <label for="required_proof_answer" class="form-label">
                                     Required Proof Answer <small class="text-danger">* Required</small>
                                 </label>
                                 <textarea class="form-control" name="required_proof_answer" id="required_proof_answer" rows="4" placeholder="Please enter the required proof answer." required></textarea>
-                                <div class="invalid-feedback">Please enter the required proof answer.</div>
+                                <small class="text-danger" id="required_proof_answer_error"></small>
                             </div>
                             <div class="mb-2">
                                 <label for="additional_note" class="form-label">
                                     Additional Note <small class="text-danger">* Required </small>
                                 </label>
                                 <textarea class="form-control" name="additional_note" id="additional_note" rows="4" placeholder="Please enter additional notes." required></textarea>
-                                <div class="invalid-feedback">Please enter additional notes.</div>
+                                <small class="text-danger" id="additional_note_error"></small>
                                 <small class="text-info d-block">*Note: Please provide additional note information about your task here for verification purposes and if you need any question answered from worker please enter the answer here, Only admin and you can see.</small>
                             </div>
                             <div class="mb-2">
@@ -131,7 +130,7 @@
                                     Thumbnail (Optional)
                                 </label>
                                 <input type="file" class="form-control" name="thumbnail" id="thumbnail" accept=".jpg, .jpeg, .png">
-                                <div id="thumbnailError" class="text-danger"></div>
+                                <small id="thumbnailError" class="text-danger"></small>
                                 <small class="text-info d-block"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
                                 <img src="" alt="Thumbnail" id="thumbnailPreview" class="mt-2" style="height: 320px; display: none;" alt="Thumbnail">
                             </div>
@@ -146,7 +145,6 @@
                                         Work Needed <small class="text-danger">* Required </small>
                                     </label>
                                     <input type="number" class="form-control" name="work_needed" id="work_needed" min="1" value="1" placeholder="Please enter how many workers are required." required>
-                                    <div class="invalid-feedback">Please enter how many workers are required.</div>
                                     <small class="text-danger" id="work_needed_error"></small>
                                     <small class="text-info d-block">* Minimum work needed is 1.</small>
                                 </div>
@@ -157,7 +155,6 @@
                                     <div class="input-group">
                                         <input type="number" class="form-control" name="earnings_from_work" id="earnings_from_work" placeholder="Please enter the charges for each worker." required>
                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                        <div class="invalid-feedback">Please enter charges for each worker are required</div>
                                     </div>
                                     <small class="text-danger" id="earnings_from_work_error"></small>
                                     <small class="text-info d-block">* Each earnings from work should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
@@ -167,9 +164,9 @@
                                         Required Proof Photo <small class="text-danger">* Required </small>
                                     </label>
                                     <input type="number" class="form-control" name="required_proof_photo" id="required_proof_photo" min="1" value="1" placeholder="Please enter how many additional required proof photo are required." required>
-                                    <div class="invalid-feedback">Please enter how many additional required proof photo are required</div>
                                     <small class="text-danger" id="required_proof_photo_error"></small>
-                                    <small class="text-info d-block">* Additional required proof photo charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }} per required proof photo. Note: You get 1 required proof photo for free.</small>
+                                    <small class="text-info d-block">* Additional required proof photo charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }} per required proof photo.</small>
+                                    <small class="text-info d-block">* Note: You get 1 required proof photo for free.</small>
                                 </div>
                                 <div class="col-lg-6 col-12 mb-3">
                                     <label for="boosted_time" class="form-label">
@@ -187,7 +184,7 @@
                                         <option value="300">5 Hours</option>
                                         <option value="360">6 Hours</option>
                                     </select>
-                                    <div class="invalid-feedback">Please enter the boosted time.</div>
+                                    <small class="text-danger" id="boosted_time_error"></small>
                                     <small class="text-info">* Every 15 minutes boost charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }}.</small>
                                     <br>
                                     <small class="text-info">* When the task is boosted, it will be shown at the top of the task list.</small>
@@ -203,7 +200,7 @@
                                         <option value="6">6 Days</option>
                                         <option value="7">1 Week</option>
                                     </select>
-                                    <div class="invalid-feedback">Please enter the work duration.</div>
+                                    <small class="text-danger" id="work_duration_error"></small>
                                     <small class="text-info">* Additional work duration charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_work_duration_charge') }} per day. Note: You get 3 days for free.</small>
                                     <br>
                                     <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
@@ -271,83 +268,124 @@
 @section('script')
 <script>
     $(document).ready(function() {
-        // Real-time validation for radio buttons
+        // Real-time validation 1st step
         $('#taskForm').on('change', 'input[name="category_id"]', function() {
             var categorySelected = $('input[name="category_id"]:checked').val();
             if (!categorySelected) {
-                $('#category-options').addClass('is-invalid');
+                $('#category_error').text('Please select a category.');
             } else {
-                $('#category-options').removeClass('is-invalid');
+                $('#category_error').text('');
                 $('input[name="sub_category_id"]').prop('checked', false);
-                $('#sub-category-options').addClass('is-invalid');
+                $('#sub_category_error').text('Please select a sub category.');
             }
         });
         $('#taskForm').on('change', 'input[name="sub_category_id"]', function() {
             var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
             if (!subCategorySelected) {
-                $('#sub-category-options').addClass('is-invalid');
+                $('#sub_category_error').text('Please select a sub category.');
             } else {
-                $('#sub-category-options').removeClass('is-invalid');
+                $('#sub_category_error').text('');
                 $('input[name="child_category_id"]').prop('checked', false);
-                $('#child-category-options').addClass('is-invalid');
+                $('#child_category_error').text('Please select a child category.');
             }
         });
         $('#taskForm').on('change', 'input[name="child_category_id"]', function() {
             var childCategorySelected = $('input[name="child_category_id"]:checked').val();
             if (!childCategorySelected) {
-                $('#child-category-options').addClass('is-invalid');
+                $('#child_category_error').text('Please select a child category.');
             } else {
-                $('#child-category-options').removeClass('is-invalid');
+                $('#child_category_error').text('');
             }
         });
 
-        // Real-time validation for input fields
+        // Real-time validation 2nd step
+        $('#taskForm').on('input', '#title, #description, #required_proof_answer, #additional_note', function() {
+            // Validate the title field
+            var title = $('#title').val();
+            if (!title) {
+                $('#title_error').text('Title is required.');
+            } else if (title.length > 255) {
+                $('#title_error').text('Title length should be less than 255 characters. You have entered ' + title.length + ' characters.');
+            } else {
+                $('#title_error').text('');
+            }
+            // Validate the description field
+            var description = $('#description').val();
+            if (!description) {
+                $('#description_error').text('Description is required.');
+            } else {
+                $('#description_error').text('');
+            }
+            // Validate the required proof answer field
+            var required_proof_answer = $('#required_proof_answer').val();
+            if (!required_proof_answer) {
+                $('#required_proof_answer_error').text('Required proof answer is required.');
+            } else {
+                $('#required_proof_answer_error').text('');
+            }
+            // Validate the additional note field
+            var additional_note = $('#additional_note').val();
+            if (!additional_note) {
+                $('#additional_note_error').text('Additional note is required.');
+            } else {
+                $('#additional_note_error').text('');
+            }
+        });
+
+        // Real-time validation 3rd step
         $('#taskForm').on('input', '#work_needed, #earnings_from_work, #required_proof_photo', function() {
-        // Validate the work needed field
-        var work_needed = parseInt($('#work_needed').val());
-        if (isNaN(work_needed)) {
-            $('#work_needed').addClass('is-invalid');
-        } else if (work_needed < 1) {
-            $('#work_needed').addClass('is-invalid');
-            $('#work_needed_error').text('Work needed should be greater than or equal to 1.');
-        } else {
-            $('#work_needed').removeClass('is-invalid');
-            $('#work_needed_error').text('');
-        }
-
-    // Validate the earnings from work field
-    var earnings_from_work = parseFloat($('#earnings_from_work').val());
-    var minCharge = parseFloat($('#earnings_from_work').attr('min'));
-    var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
-    if (isNaN(earnings_from_work) || earnings_from_work < minCharge || earnings_from_work > maxCharge) {
-        $('#earnings_from_work').addClass('is-invalid');
-        if (earnings_from_work < minCharge) {
-            $('#earnings_from_work_error').text('Earnings from work should be greater than or equal to {{ get_site_settings("site_currency_symbol") }}' + minCharge + '.');
-        } else if (earnings_from_work > maxCharge) {
-            $('#earnings_from_work_error').text('Earnings from work should be less than or equal to {{ get_site_settings("site_currency_symbol") }}' + maxCharge + '.');
-        } else {
-            $('#earnings_from_work_error').text('');
-        }
-    } else {
-        $('#earnings_from_work').removeClass('is-invalid');
-        $('#earnings_from_work_error').text('');
-    }
-
-    // Validate the extra required proof photo field
-    var required_proof_photo = parseInt($('#required_proof_photo').val());
-    if (isNaN(required_proof_photo)) {
-        $('#required_proof_photo').addClass('is-invalid');
-        $('#required_proof_photo_error').text(''); // Clear error message if NaN
-    } else if (required_proof_photo < 1) {
-        $('#required_proof_photo').removeClass('is-invalid');
-        $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
-    } else {
-        $('#required_proof_photo').removeClass('is-invalid');
-        $('#required_proof_photo_error').text('');
-    }
-});
-
-
+            // Validate the work needed field
+            var work_needed = parseInt($('#work_needed').val());
+            if (isNaN(work_needed)) {
+                $('#work_needed_error').text('Please enter how many workers are required.');
+            } else if (work_needed < 1) {
+                $('#work_needed_error').text('Work needed should be greater than or equal to 1.');
+            } else {
+                $('#work_needed_error').text('');
+            }
+            // Validate the earnings from work field
+            var earnings_from_work = parseFloat($('#earnings_from_work').val());
+            var minCharge = parseFloat($('#earnings_from_work').attr('min'));
+            var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
+            if (isNaN(earnings_from_work)) {
+                $('#earnings_from_work_error').text('Please enter charges for each worker are required.');
+            } else if (earnings_from_work < minCharge) {
+                $('#earnings_from_work_error').text('Earnings from work should be greater than or equal to {{ get_site_settings("site_currency_symbol") }} ' + minCharge + '.');
+            } else if (earnings_from_work > maxCharge) {
+                $('#earnings_from_work_error').text('Earnings from work should be less than or equal to {{ get_site_settings("site_currency_symbol") }} ' + maxCharge + '.');
+            } else {
+                $('#earnings_from_work_error').text('');
+            }
+            // Validate the extra required proof photo field
+            var required_proof_photo = parseInt($('#required_proof_photo').val());
+            if (isNaN(required_proof_photo)) {
+                $('#required_proof_photo_error').text('Please enter how many additional required proof photo are required.');
+            } else if (required_proof_photo < 1) {
+                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
+            } else {
+                $('#required_proof_photo_error').text('');
+            }
+        });
+        $('#taskForm').on('change', '#boosted_time, #work_duration', function() {
+            // Validate the boosted time field
+            var boosted_time = parseInt($('#boosted_time').val());
+            if (isNaN(boosted_time)) {
+                $('#boosted_time_error').text('Please select a boosted time.');
+            } else if (boosted_time < 0) {
+                $('#boosted_time_error').text('Boosted time should be greater than or equal to 0.');
+            } else {
+                $('#boosted_time_error').text('');
+            }
+            // Validate the work duration field
+            var work_duration = parseInt($('#work_duration').val());
+            if (isNaN(work_duration)) {
+                $('#work_duration_error').text('Please select a work duration.');
+            } else if (work_duration < 3) {
+                $('#work_duration_error').text('Work duration should be greater than or equal to 3.');
+            } else {
+                $('#work_duration_error').text('');
+            }
+        });
 
         // Initialize the wizard
         $('#wizard').steps({
@@ -364,52 +402,69 @@
                 var form = $('#taskForm');
                 var isValid = true;
 
-                // Validate the input fields
-                form.find('section').eq(currentIndex).find(':input[required]').each(function() {
-                    if (!this.checkValidity()) {
-                        $(this).addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        $(this).removeClass('is-invalid');
-                    }
-                });
-
                 if (currentIndex === 1) {
                     // Validate the category fields
                     var categorySelected = $('input[name="category_id"]:checked').val();
                     if (!categorySelected) {
-                        $('#category-options').addClass('is-invalid');
+                        $('#category_error').text('Please select a category.');
                         isValid = false;
                     } else {
-                        $('#category-options').removeClass('is-invalid');
+                        $('#category_error').text('');
                     }
                     // Validate the sub category fields
                     var subCategorySelected = $('input[name="sub_category_id"]:checked').val();
                     if (categorySelected && !subCategorySelected) {
-                        $('#sub-category-options').addClass('is-invalid');
+                        $('#sub_category_error').text('Please select a sub category.');
                         isValid = false;
                     } else {
-                        $('#sub-category-options').removeClass('is-invalid');
+                        $('#sub_category_error').text('');
                     }
                     // Validate the child category fields
                     var childCategoryData = $('#child-category-options').html();
                     var childCategorySelected = $('input[name="child_category_id"]:checked').val();
                     if (subCategorySelected && !childCategorySelected && childCategoryData) {
-                        $('#child-category-options').addClass('is-invalid');
+                        $('#child_category_error').text('Please select a child category.');
                         isValid = false;
                     } else {
-                        $('#child-category-options').removeClass('is-invalid');
+                        $('#child_category_error').text('');
                     }
                 }
 
                 if (currentIndex === 2) {
                     // Validate the title field
                     var title = $('#title').val();
-                    if (title.length > 255) {
+                    if (!title) {
+                        $('#title_error').text('Title is required.');
+                        isValid = false;
+                    } else if (title.length > 255) {
                         $('#title_error').text('Title length should be less than 255 characters. You have entered ' + title.length + ' characters.');
                         isValid = false;
                     } else {
                         $('#title_error').text('');
+                    }
+                    // Validate the description field
+                    var description = $('#description').val();
+                    if (!description) {
+                        $('#description_error').text('Description is required.');
+                        isValid = false;
+                    } else {
+                        $('#description_error').text('');
+                    }
+                    // Validate the required proof answer field
+                    var required_proof_answer = $('#required_proof_answer').val();
+                    if (!required_proof_answer) {
+                        $('#required_proof_answer_error').text('Required proof answer is required.');
+                        isValid = false;
+                    } else {
+                        $('#required_proof_answer_error').text('');
+                    }
+                    // Validate the additional note field
+                    var additional_note = $('#additional_note').val();
+                    if (!additional_note) {
+                        $('#additional_note_error').text('Additional note is required.');
+                        isValid = false;
+                    } else {
+                        $('#additional_note_error').text('');
                     }
                     // Validate the thumbnail file
                     var thumbnail = $('#thumbnail').val();
@@ -433,20 +488,12 @@
                 var form = $('#taskForm');
                 var isValid = true;
 
-                // Validate the input fields
-                form.find(':input[required]').each(function() {
-                    if (!this.checkValidity()) {
-                        $(this).addClass('is-invalid');
-                        isValid = false;
-                    } else {
-                        $(this).removeClass('is-invalid');
-                    }
-                });
-
                 // Validate the work needed field
                 var work_needed = parseInt($('#work_needed').val());
-                if (work_needed < 1) {
-                    $('#work_needed').removeClass('is-invalid');
+                if (isNaN(work_needed)) {
+                    $('#work_needed_error').text('Please enter how many workers are required.');
+                    isValid = false;
+                } else if (work_needed < 1) {
                     $('#work_needed_error').text('Work needed should be greater than or equal to 1.');
                     isValid = false;
                 } else {
@@ -456,25 +503,50 @@
                 var earnings_from_work = parseFloat($('#earnings_from_work').val());
                 var minCharge = parseFloat($('#earnings_from_work').attr('min'));
                 var maxCharge = parseFloat($('#earnings_from_work').attr('max'));
-                if (earnings_from_work < minCharge) {
-                    $('#earnings_from_work').removeClass('is-invalid');
-                    $('#earnings_from_work_error').text('Earnings from work should be greater than or equal to ' + ' {{ get_site_settings('site_currency_symbol') }} ' + minCharge + '.');
+                if (isNaN(earnings_from_work)) {
+                    $('#earnings_from_work_error').text('Please enter charges for each worker are required.');
+                    isValid = false;
+                } else if (earnings_from_work < minCharge) {
+                    $('#earnings_from_work_error').text('Earnings from work should be greater than or equal to {{ get_site_settings("site_currency_symbol") }} ' + minCharge + '.');
                     isValid = false;
                 } else if (earnings_from_work > maxCharge) {
-                    $('#earnings_from_work').removeClass('is-invalid');
-                    $('#earnings_from_work_error').text('Earnings from work should be less than or equal to ' + ' {{ get_site_settings('site_currency_symbol') }} ' + maxCharge + '.');
+                    $('#earnings_from_work_error').text('Earnings from work should be less than or equal to {{ get_site_settings("site_currency_symbol") }} ' + maxCharge + '.');
                     isValid = false;
                 } else {
                     $('#earnings_from_work_error').text('');
                 }
                 // Validate the extra required proof photo field
                 var required_proof_photo = parseInt($('#required_proof_photo').val());
-                if (required_proof_photo < 1) {
-                    $('#required_proof_photo').removeClass('is-invalid');
+                if (isNaN(required_proof_photo)) {
+                    $('#required_proof_photo_error').text('Please enter how many additional required proof photo are required.');
+                    isValid = false;
+                } else if (required_proof_photo < 1) {
                     $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
                     isValid = false;
                 } else {
                     $('#required_proof_photo_error').text('');
+                }
+                // Validate the boosted time field
+                var boosted_time = parseInt($('#boosted_time').val());
+                if (isNaN(boosted_time)) {
+                    $('#boosted_time_error').text('Please select a boosted time.');
+                    isValid = false;
+                } else if (boosted_time < 0) {
+                    $('#boosted_time_error').text('Boosted time should be greater than or equal to 0.');
+                    isValid = false;
+                } else {
+                    $('#boosted_time_error').text('');
+                }
+                // Validate the work duration field
+                var work_duration = parseInt($('#work_duration').val());
+                if (isNaN(work_duration)) {
+                    $('#work_duration_error').text('Please select a work duration.');
+                    isValid = false;
+                } else if (work_duration < 3) {
+                    $('#work_duration_error').text('Work duration should be greater than or equal to 3.');
+                    isValid = false;
+                } else {
+                    $('#work_duration_error').text('');
                 }
 
                 return isValid;
