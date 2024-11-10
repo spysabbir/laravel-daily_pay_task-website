@@ -22,6 +22,8 @@ use App\Models\Support;
 use App\Models\PostTask;
 use App\Models\ProofTask;
 use App\Models\UserStatus;
+use App\Models\UserDetail;
+use App\Models\Rating;
 use App\Events\SupportEvent;
 use Carbon\Carbon;
 
@@ -181,13 +183,21 @@ class UserController extends Controller
     public function profileEdit(Request $request)
     {
         $user = $request->user();
-        return view('profile.edit', compact('user'));
+        $verification = Verification::where('user_id', $user->id)->first();
+        $ratingGiven = Rating::where('rated_by', $user->id)->get();
+        $ratingReceived  = Rating::where('user_id', $user->id)->get();
+        $userDetails = UserDetail::where('user_id', $user->id)->latest()->take(5)->get();
+        return view('profile.edit', compact('user', 'verification', 'userDetails', 'ratingGiven', 'ratingReceived'));
     }
 
     public function profileSetting(Request $request)
     {
         $user = $request->user();
-        return view('profile.setting', compact('user'));
+        $verification = Verification::where('user_id', $user->id)->first();
+        $ratingGiven = Rating::where('rated_by', $user->id)->get();
+        $ratingReceived  = Rating::where('user_id', $user->id)->get();
+        $blockedStatuses = UserStatus::where('user_id', $user->id)->where('status', 'Blocked')->latest()->get();
+        return view('profile.setting', compact('user', 'verification', 'ratingGiven', 'ratingReceived', 'blockedStatuses'));
     }
 
     public function userProfile($id)

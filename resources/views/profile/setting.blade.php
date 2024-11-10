@@ -14,8 +14,8 @@
                     <div class="d-flex">
                         <img class="wd-70 rounded-circle" src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="profile">
                         <div>
-                            <h4 class="ms-3 text-dark">{{ $user->name }}</h4>
-                            <h6 class="ms-3 text-dark">{{ $user->email }}</h6>
+                            <h4 class="ms-3">{{ $user->name }}</h4>
+                            <h6 class="ms-3">{{ $user->email }}</h6>
                         </div>
                     </div>
                     <div class="d-none d-md-block">
@@ -32,12 +32,19 @@
                             Account Status: {{ $status }}
                         </button>
 
-                        <button class="btn btn-primary btn-icon-text">
-                            @php
-                                $verification = App\Models\Verification::where('user_id', $user->id)->first()
-                            @endphp
-                            Verification Status: {{ $verification->status ?? 'Not Submitted' }}
-                        </button>
+                        @if (Auth::user()->isFrontendUser())
+                            <button class="btn btn-info btn-icon-text">
+                                Verification Status: {{ $verification->status ?? 'Not Submitted' }}
+                            </button>
+                            @if ($user->hasVerification('Approved'))
+                                <button class="btn btn-success btn-icon-text">
+                                    Rating Given: {{ $ratingGiven->count() }} Task | {{ round($ratingGiven->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
+                                </button>
+                                <button class="btn btn-success btn-icon-text">
+                                    Rating Received: {{ $ratingReceived->count() }} Task | {{ round($ratingReceived->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
+                                </button>
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>
@@ -60,7 +67,7 @@
         <div class="card rounded">
             <div class="card-header">
                 <h4 class="card-title">Update Password</h4>
-                <p class="text-info">NB: The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.</p>
+                <p class="text-info">Note: The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.</p>
             </div>
             <div class="card-body">
                 <form method="post" action="{{ route('password.update') }}" class="forms-sample">
@@ -96,14 +103,51 @@
     </div>
     @if (Auth::user()->isFrontendUser())
     <div class="col-xl-6 col-lg-12 grid-margin">
-        <div class="card rounded">
+        <div class="card rounded mb-3">
+            <div class="card-header">
+                <h6 class="card-title">Blocked Statuses</h6>
+                <p class="text-info">
+                    Note: If your account is blocked maximum {{ get_default_settings('user_max_blocked_time') }} times, eventually your account will be permanently banned.
+                </p>
+            </div>
             <div class="card-body">
+                <h3 class="text-danger text-center mb-2">Total Blocked: {{ $blockedStatuses->count() }}</h3>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Reason</th>
+                                <th>Blocked Time</th>
+                                <th>Duration</th>
+                                <th>Resolved Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($blockedStatuses as $blockedStatus)
+                            <tr>
+                                <td>{{ $blockedStatus->reason }}</td>
+                                <td>{{ $blockedStatus->created_at->format('d M, Y h:i A') }}</td>
+                                <td>{{ $blockedStatus->blocked_duration }} Hours</td>
+                                <td>{{ $blockedStatus->blocked_resolved->format('d M, Y h:i A') }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-info">No blocked status found!</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card rounded mb-3">
+            <div class="card-header">
                 <h6 class="card-title">Delete Account</h6>
                 <h2 class="text-info">
                     Are you sure you want to delete your account?
                 </h2>
             </div>
-            <div class="card-footer">
+            <div class="card-body">
                 <form method="post" action="{{ route('profile.destroy') }}">
                     @csrf
                     @method('delete')

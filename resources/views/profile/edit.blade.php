@@ -14,8 +14,8 @@
                     <div class="d-flex">
                         <img class="wd-70 rounded-circle" id="userProfilePhotoPreview" src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="profile">
                         <div>
-                            <h4 class="ms-3 text-dark">{{ $user->name }}</h4>
-                            <h6 class="ms-3 text-dark">{{ $user->email }}</h6>
+                            <h4 class="ms-3">{{ $user->name }}</h4>
+                            <h6 class="ms-3">{{ $user->email }}</h6>
                         </div>
                     </div>
                     <div class="d-none d-md-block">
@@ -31,13 +31,19 @@
                         <button class="btn {{ $buttonClass }} btn-icon-text">
                             Account Status: {{ $status }}
                         </button>
-
-                        <button class="btn btn-primary btn-icon-text">
-                            @php
-                                $verification = App\Models\Verification::where('user_id', $user->id)->first()
-                            @endphp
-                            Verification Status: {{ $verification->status ?? 'Not Submitted' }}
-                        </button>
+                        @if (Auth::user()->isFrontendUser())
+                            <button class="btn btn-info btn-icon-text">
+                                Verification Status: {{ $verification->status ?? 'Not Submitted' }}
+                            </button>
+                            @if ($user->hasVerification('Approved'))
+                                <button class="btn btn-success btn-icon-text">
+                                    Rating Given: {{ $ratingGiven->count() }} Task | {{ round($ratingGiven->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
+                                </button>
+                                <button class="btn btn-success btn-icon-text">
+                                    Rating Received: {{ $ratingReceived->count() }} Task | {{ round($ratingReceived->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
+                                </button>
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>
@@ -57,12 +63,12 @@
 
 <div class="row profile-body">
     <!-- left wrapper start -->
-    <div class="d-none d-md-block col-md-4 left-wrapper">
-        <div class="card rounded">
+    <div class="d-none d-md-block col-md-5 left-wrapper">
+        <div class="card rounded mb-3">
+            <div class="card-header">
+                <h6 class="card-title mb-0">About</h6>
+            </div>
             <div class="card-body">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <h6 class="card-title mb-0">About</h6>
-                </div>
                 <div>
                     <label class="tx-11 fw-bolder mb-0 text-uppercase">Username:</label>
                     <p class="text-muted">
@@ -107,10 +113,38 @@
                 </div>
             </div>
         </div>
+        <div class="card rounded mb-3">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Ip Address</h6>
+                <small class="text-muted">Note: latest 5 IP addresses are shown here.</small>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Ip</th>
+                                <th>Device</th>
+                                <th>Updated Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($userDetails as $userDetail)
+                            <tr>
+                                <td>{{ $userDetail->ip }}</td>
+                                <td>{{ $userDetail->device }}</td>
+                                <td>{{ date('j M, Y  h:i:s A', strtotime($userDetail->updated_at)) }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- left wrapper end -->
     <!-- middle wrapper start -->
-    <div class="col-md-8 middle-wrapper">
+    <div class="col-md-7 middle-wrapper">
         <div class="row">
             <div class="col-md-12 grid-margin">
                 <div class="card rounded">
