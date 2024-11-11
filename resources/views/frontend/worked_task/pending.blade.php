@@ -35,7 +35,7 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>Task Title</th>
-                                <th>You Earn</th>
+                                <th>Task Rate</th>
                                 <th>Submit Date</th>
                             </tr>
                         </thead>

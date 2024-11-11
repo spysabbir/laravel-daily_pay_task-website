@@ -255,6 +255,7 @@ class PostedTaskController extends Controller
                     ->addColumn('action', function ($row) {
                         $actionBtn = '
                             <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
                         return $actionBtn;
                     })
@@ -484,7 +485,10 @@ class PostedTaskController extends Controller
             ]);
         } else {
             $user = User::findOrFail($postTask->user_id);
-            if ($postTask->status != 'Rejected') {
+            if ($postTask->status == 'Pending') {
+                $user->deposit_balance = $user->deposit_balance + $postTask->total_charge;
+                $user->save();
+            }else if ($postTask->status == 'Running' || $postTask->status == 'Paused') {
                 $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
 
                 $refundAmount = number_format(($postTask->total_charge / $postTask->work_needed) * ($postTask->work_needed - $proofTasks), 2, '.', '');

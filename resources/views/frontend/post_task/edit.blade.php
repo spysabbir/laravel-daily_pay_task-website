@@ -31,7 +31,7 @@
                             <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 <strong>Warning!</strong> This task post has been rejected. <br>
-                                <span>Rejected At: {{ date('d-m-Y h:i:s A', strtotime($postTask->rejected_at)) }}</span> <br>
+                                <span>Rejected At: {{ date('d M, Y h:i:s A', strtotime($postTask->rejected_at)) }}</span> <br>
                                 <span>Rejection Reason: {{ $postTask->rejection_reason }}</span> <br>
                             </div>
                             @endif

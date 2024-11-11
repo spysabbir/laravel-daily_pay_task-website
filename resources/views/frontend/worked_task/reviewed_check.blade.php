@@ -69,7 +69,7 @@
         </div>
         <div class="mt-3">
             <strong>Note: </strong>
-            <p class="text-info">Proof Task has been reviewed by Admin and waiting for your action. Please with for Admin's decision. If you have any query, please contact with Admin.</p>
+            <p class="text-info">Thank you for submitting us your work for review. We will review your work and provide feedback within the next 72 hours. Please wait for Admin's decision. If you have any query, please contact with Admin.</p>
         </div>
     </div>
 </div>

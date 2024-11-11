@@ -13,6 +13,7 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="mb-3">
+                    <h4 class="card-title">Reported ID: {{ $report->reported->id }}</h4>
                     <h4 class="card-title">Reported User: {{ $report->reported->name }}</h4>
                     <p class="mb-2">Reason: {{ $report->reason }}</p>
                     @if ($report->photo)
@@ -21,7 +22,7 @@
                 </div>
                 <div>
                     <strong>Reported By: {{ $report->reportedBy->name }}</strong><br>
-                    <strong>Reported At: {{ $report->created_at->format('d-M-Y h:i A') }}</strong>
+                    <strong>Reported At: {{ $report->created_at->format('d M, Y h:i A') }}</strong>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -54,7 +55,7 @@
                             <img src="{{ asset('uploads/report_photo') }}/{{ $report_reply->reply_photo }}" alt="Reply Photo" class="img-fluid my-3">
                             @endif
                             <strong>Resolved By:</strong> {{ $report_reply->resolvedBy->name }}<br>
-                            <strong>Resolved_at:</strong> {{ date('d-M-Y h:i A', strtotime($report_reply->resolved_at)) }}<br>
+                            <strong>Resolved_at:</strong> {{ date('d M, Y h:i A', strtotime($report_reply->resolved_at)) }}<br>
                         </p>
                     </div>
                 </div>

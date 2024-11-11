@@ -8,20 +8,22 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title">Task Details</h3>
+                @if (!$taskProofExists)
                 <div class="d-flex align-items-center">
                     <h4>Proof Submitted: </h4>
                     <div class="progress mx-1" style="width: 250px">
                         <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $proofCount == 0 ? 'primary' : 'success' }}" role="progressbar" style="width: {{ $proofCount == 0 ? 100 : round(($proofCount / $taskDetails->work_needed) * 100, 2) }}%" aria-valuenow="{{ $proofCount }}" aria-valuemin="0" aria-valuemax="{{ $taskDetails->work_needed }}">{{ $proofCount }}/{{ $taskDetails->work_needed }}</div>
                     </div>
                 </div>
+                @endif
                 <h4 class="mx-2">Earnings From Work: <strong class="badge bg-primary">{{ get_site_settings('site_currency_symbol') }} {{ $taskDetails->earnings_from_work }}</strong></h4>
             </div>
             <div class="card-body">
-                <h3 class="mb-3">Title: <span class="text-info">{{ $taskDetails->title }}</span></h3>
                 @if ($taskDetails->thumbnail)
                 <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $taskDetails->thumbnail }}" alt="Thumbnail image for {{ $taskDetails->title }}" class="img-fluid my-3">
                 @endif
                 <div class="my-2 border p-3 rounded">
+                    <h3 class="mb-3">Title: <span class="text-info">{{ $taskDetails->title }}</span></h3>
                     <div class="border p-2 rounded bg-dark d-flex align-items-center justify-content-between">
                         <div class="p-2">
                             <p><strong class="text-primary">Category:</strong> {{ $taskDetails->category->name }}</p>
@@ -31,7 +33,7 @@
                             @endif
                         </div>
                         <div>
-                            <p><strong class="text-primary">Approved Date:</strong> {{ date('d F, Y  H:i A', strtotime($taskDetails->approved_at)) }}</p>
+                            <p><strong class="text-primary">Approved Date:</strong> {{ date('d F, Y  h:i:s A', strtotime($taskDetails->approved_at)) }}</p>
                             <p><strong class="text-primary">Work Needed:</strong> {{ $taskDetails->work_needed }}</p>
                             <p><strong class="text-primary">Work Duration:</strong> {{ $taskDetails->work_duration }} Days</p>
                         </div>
@@ -110,16 +112,17 @@
                         @endif
                     </div>
                     <div class="my-2 border p-2 rounded">
-                        <h4 class="text-primary">Description</h4>
+                        <h4 class="text-primary">Description:</h4>
                         <p>{{ $taskDetails->description }}</p>
                     </div>
                     <div class="border p-2 rounded">
-                        <h4 class="text-primary">Required Proof Answer</h4>
+                        <h4 class="text-primary">Required Proof Answer:</h4>
                         <p>{{ $taskDetails->required_proof_answer }}</p>
                     </div>
                 </div>
                 <hr>
                 <h3 class="mb-3">Submit Proof</h3>
+                <marquee><strong class="text-warning">Notice: Submit only authentic evidence. Your account may be suspended if you submit false or group work evidence. Thanks for your cooperation in keeping our community fair and trustworthy.</strong></marquee>
                 @if ($proofCount < $taskDetails->work_needed)
                 <div class="my-2 border p-3 rounded bg-dark">
                     @if ($taskProofExists)

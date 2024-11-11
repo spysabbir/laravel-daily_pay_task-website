@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\UserDetail;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Notifications\ReviewedTaskProofCheckNotification;
 
 class TaskController extends Controller
 {
@@ -32,7 +33,7 @@ class TaskController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -69,7 +70,7 @@ class TaskController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->editColumn('rejected_by', function ($row) {
@@ -79,7 +80,7 @@ class TaskController extends Controller
                 })
                 ->editColumn('rejected_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->rejected_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->rejected_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -146,12 +147,12 @@ class TaskController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->editColumn('approved_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y h:i:s A', strtotime($row->approved_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('d M, Y h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -218,12 +219,12 @@ class TaskController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->editColumn('canceled_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->canceled_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->canceled_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -264,7 +265,7 @@ class TaskController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -293,6 +294,7 @@ class TaskController extends Controller
             'required_proof_answer' => 'required|string',
             'additional_note' => 'required|string',
             'status' => 'required',
+            'rejection_reason' => 'required_if:status,Rejected',
         ]);
 
         if ($validator->fails()) {
@@ -303,19 +305,6 @@ class TaskController extends Controller
         }
 
         $postTask = PostTask::findOrFail($id);
-
-        if ($request->status == 'Rejected') {
-            $validator = Validator::make($request->all(), [
-                'rejection_reason' => 'required',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 400,
-                    'error' => $validator->errors()->toArray()
-                ]);
-            }
-        }
 
         $user = User::findOrFail($postTask->user_id);
         if ($request->status == 'Rejected') {
@@ -328,6 +317,7 @@ class TaskController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'required_proof_answer' => $request->required_proof_answer,
+            'additional_note' => $request->additional_note,
             'status' => $request->status,
             'rejection_reason' => $request->status == 'Rejected' ? $request->rejection_reason : NULL,
             'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
@@ -483,6 +473,7 @@ class TaskController extends Controller
                 ->editColumn('user', function ($row) {
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
+                        <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
                         <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
                         <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
                     ';
@@ -529,10 +520,12 @@ class TaskController extends Controller
 
             $postTask = PostTask::findOrFail($proofTask->post_task_id);
 
+            $postTaskUser = User::findOrFail($postTask->user_id);
+            $proofTaskUser = User::findOrFail($proofTask->user_id);
+            
             if ($request->status == 'Rejected') {
-                $user = User::findOrFail($postTask->user_id);
-                $user->update([
-                    'deposit_balance' => $user->deposit_balance + $postTask->earnings_from_work,
+                $postTaskUser->update([
+                    'deposit_balance' => $postTaskUser->deposit_balance + $postTask->earnings_from_work,
                 ]);
 
                 $rejected_reason_photo_name = null;
@@ -548,9 +541,8 @@ class TaskController extends Controller
                 $proofTask->rejected_at = now();
                 $proofTask->rejected_by = auth()->user()->id;
             }else{
-                $user = User::findOrFail($proofTask->user_id);
-                $user->update([
-                    'withdraw_balance' => $user->withdraw_balance + $postTask->earnings_from_work,
+                $proofTaskUser->update([
+                    'withdraw_balance' => $proofTaskUser->withdraw_balance + $postTask->earnings_from_work,
                 ]);
 
                 $proofTask->approved_at = now();
@@ -559,6 +551,9 @@ class TaskController extends Controller
 
             $proofTask->status = $request->status;
             $proofTask->save();
+
+            $postTaskUser->notify(new ReviewedTaskProofCheckNotification($proofTask));
+            $proofTaskUser->notify(new ReviewedTaskProofCheckNotification($proofTask));
 
             return response()->json([
                 'status' => 200,

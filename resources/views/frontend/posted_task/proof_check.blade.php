@@ -8,7 +8,14 @@
         </div>
         <div class="mb-3">
             <h4>Proof Image:</h4>
-            <div class="my-2">
+            @foreach (json_decode($proofTask->proof_photos) as $photo)
+                <div class="d-flex justify-content-between">
+                    <a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-lightbox="gallery" data-title="Proof Task Photo {{ $loop->iteration }}">
+                        <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" style="max-height: 400px;" class="my-3 w-100" alt="Proof Task Photo {{ $loop->iteration }}">
+                    </a>
+                </div>
+            @endforeach
+            {{-- <div class="my-2">
                 <div id="proofCheckCarousel" class="carousel slide" data-bs-ride="carousel">
                     <ol class="carousel-indicators">
                         @foreach (json_decode($proofTask->proof_photos) as $photo)
@@ -37,7 +44,7 @@
                         <span class="visually-hidden">Next</span>
                     </a>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
     <div class="col-lg-4">

@@ -32,7 +32,7 @@
                                     <td>{{ $status->reason }}</td>
                                     <td>{{ $status->blocked_duration ? $status->blocked_duration . ' hours' : 'N/A' }}</td>
                                     <td>{{ $status->createdBy->name }}</td>
-                                    <td>{{ date('d-M-Y h:i A', strtotime($status->created_at)) }}</td>
+                                    <td>{{ date('d M, Y h:i A', strtotime($status->created_at)) }}</td>
                                 </tr>
                             @empty
                                 <tr>

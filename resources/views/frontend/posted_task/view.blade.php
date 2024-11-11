@@ -1,65 +1,24 @@
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-6">
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">Post Task Details - Id: {{ $postTask->id }}</h4>
             </div>
             <div class="card-body">
-                @if ($postTask->status == 'Pending')
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        <strong>Warning!</strong> Your task is pending. Please wait for approval.
-                    </div>
-                @elseif ($postTask->status == 'Canceled')
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        <strong>Warning!</strong> Your task is canceled. Please check the reason.
-                        <p class="mt-3">
-                            <strong>Canceled At:</strong> {{ date('d-m-Y h:i:s A', strtotime($postTask->canceled_at)) }} <br>
-                            <strong>Canceled Reason:</strong> {{ $postTask->cancellation_reason }}
-                        </p>
-                    </div>
-                @endif
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
                                 <td>Category</td>
-                                <td><span class="badge bg-primary">{{ $postTask->category->name }}</span></td>
+                                <td>{{ $postTask->category->name }}</td>
                             </tr>
                             <tr>
                                 <td>Sub Category</td>
-                                <td><span class="badge bg-primary">{{ $postTask->subCategory->name }}</span></td>
+                                <td>{{ $postTask->subCategory->name }}</td>
                             </tr>
-                            @if ($postTask->child_category_id)
                             <tr>
                                 <td>Child Category</td>
-                                <td><span class="badge bg-primary">{{ $postTask->childCategory->name }}</span></td>
-                            </tr>
-                            @endif
-                            @if ($postTask->thumbnail)
-                            <tr>
-                                <td>Thumbnail</td>
-                                <td>
-                                    <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $postTask->thumbnail }}" alt="thumbnail" style="width: 280px; height: 280px">
-                                </td>
-                            </tr>
-                            @endif
-                            <tr>
-                                <td>Task Title</td>
-                                <td>{{ $postTask->title }}</td>
-                            </tr>
-                            <tr>
-                                <td>Task Description</td>
-                                <td>{{ $postTask->description }}</td>
-                            </tr>
-                            <tr>
-                                <td>Required Proof Answer</td>
-                                <td>{{ $postTask->required_proof_answer }}</td>
-                            </tr>
-                            <tr>
-                                <td>Additional Note</td>
-                                <td>{{ $postTask->additional_note }}</td>
+                                <td>{{ $postTask->child_category_id ? $postTask->childCategory->name : 'N/A' }}</td>
                             </tr>
                             <tr>
                                 <td>Work Needed</td>
@@ -70,20 +29,15 @@
                                 <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }}</span></td>
                             </tr>
                             <tr>
+                                <td>Required Proof Photo</td>
                                 <td>
-                                    Required Proof Photo
-                                </td>
-                                <td>
-                                    Free: 1 + Additional: {{ $postTask->required_proof_photo - 1 }} = Total: {{ $postTask->required_proof_photo }} Required Proof Photo{{ $postTask->required_proof_photo > 1 ? 's' : '' }} <br>
+                                    Free: 1 + Additional: {{ $postTask->required_proof_photo - 1 }} <br>
+                                    = Total: {{ $postTask->required_proof_photo }} Required Proof Photo{{ $postTask->required_proof_photo > 1 ? 's' : '' }} <br>
                                     <span class="text-primary">( Charge: {{ $postTask->required_proof_photo - 1 }} * {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->required_proof_photo - 1) * get_default_settings('task_posting_additional_required_proof_photo_charge') }} )</span>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    Boosted Time <br>
-                                    <span class="text-info">Every 15 minutes boost Charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }}. <br>
-                                    When the task is boosted, it will be shown at the top of the task list.</span>
-                                </td>
+                                <td>Boosted Time</td>
                                 <td>
                                     @if($postTask->boosted_time < 60)
                                         {{ $postTask->boosted_time }} Minute{{ $postTask->boosted_time > 1 ? 's' : '' }} <br>
@@ -94,25 +48,23 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>Work Duration</td>
                                 <td>
-                                    Work Duration <br>
-                                    <span class="text-info">When work duration is over the task will be canceled automatically.</span>
-                                </td>
-                                <td>
-                                    Free: 3 Days + Additional: {{ $postTask->work_duration - 3 }} Days = Total: {{ $postTask->work_duration }} Days <br>
+                                    Free: 3 Days + Additional: {{ $postTask->work_duration - 3 }} Days <br>
+                                    = Total: {{ $postTask->work_duration }} Days <br>
                                     <span class="text-primary">( Charge: {{ $postTask->work_duration - 3 }} * {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_work_duration_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->work_duration - 3) * get_default_settings('task_posting_additional_work_duration_charge') }} )</span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Task Charge</td>
                                 <td>
-                                    <span class="text-primary">( {{ $postTask->work_needed }} * {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }} ) + {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->required_proof_photo - 1) * get_default_settings('task_posting_additional_required_proof_photo_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ $postTask->boosted_time / 15 * get_default_settings('task_posting_boosted_time_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->work_duration - 3) * get_default_settings('task_posting_boosted_time_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }}</span>
+                                    <span class="text-primary">( {{ $postTask->work_needed }} * {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }} ) + {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->required_proof_photo - 1) * get_default_settings('task_posting_additional_required_proof_photo_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ $postTask->boosted_time / 15 * get_default_settings('task_posting_boosted_time_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->work_duration - 3) * get_default_settings('task_posting_boosted_time_charge') }} <br>
+                                    = {{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }}</span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    Site Charge <br>
-                                    <span class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</span>
+                                    Site Charge
                                 </td>
                                 <td>
                                     <span class="text-primary">{{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }} * {{ get_default_settings('task_posting_charge_percentage') }} % = {{ get_site_settings('site_currency_symbol') }} {{ $postTask->site_charge }}</span>
@@ -126,14 +78,61 @@
                             </tr>
                             <tr>
                                 <td>Created At</td>
-                                <td>{{ $postTask->created_at->format('d-m-Y h:i:s A') }}</td>
+                                <td>{{ $postTask->created_at->format('d M,Y h:i:s A') }}</td>
                             </tr>
                             <tr>
                                 <td>Updated At</td>
-                                <td>{{ $postTask->updated_at->format('d-m-Y h:i:s A') }}</td>
+                                <td>{{ $postTask->updated_at->format('d M,Y h:i:s A') }}</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        @if ($postTask->status == 'Pending')
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <strong>Warning!</strong> Your task is pending. Please wait for approval.
+            </div>
+        @elseif ($postTask->status == 'Canceled')
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <strong>Warning!</strong> Your task is canceled. Please check the reason.
+                <p class="mt-3">
+                    <strong>Canceled At:</strong> {{ date('d M, Y h:i:s A', strtotime($postTask->canceled_at)) }} <br>
+                    <strong>Canceled Reason:</strong> {{ $postTask->cancellation_reason }}
+                </p>
+            </div>
+        @endif
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    Task Details
+                </h4>
+            </div>
+            <div class="card-body">
+                @if ($postTask->thumbnail)
+                <div class="mb-3">
+                    <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $postTask->thumbnail }}" alt="Task Thumbnail" class="img-fluid">
+                </div>
+                @endif
+                <div class="mb-3">
+                    <strong>Task Title: </strong>
+                    <p>{{ $postTask->title }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Task Description: </strong>
+                    <p>{{ $postTask->description }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Task Required Proof Answer: </strong>
+                    <p>{{ $postTask->required_proof_answer }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Task Additional Note: </strong>
+                    <p>{{ $postTask->additional_note }}</p>
                 </div>
             </div>
         </div>

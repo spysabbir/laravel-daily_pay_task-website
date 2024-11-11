@@ -39,6 +39,7 @@
                                 <th>Submit Date</th>
                                 <th>Rejected Reason</th>
                                 <th>Rejected Date</th>
+                                <th>Rejected By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -97,6 +98,7 @@
                 { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'rejected_at', name: 'rejected_at' },
+                { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'action', name: 'action' }
             ]
         });

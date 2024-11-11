@@ -36,6 +36,8 @@ class ReportReplyNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
+                    ->subject('Report Resolved')
+                    ->greeting('Hello ' . $notifiable->name . ',')
                     ->line('Your report has been resolved.')
                     ->line('Report ID: ' . $this->report['id'] . ' has been resolved.')
                     ->line('Report Reason: ' . $this->report['reason'])

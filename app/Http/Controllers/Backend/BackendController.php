@@ -72,12 +72,12 @@ class BackendController extends Controller
                 ->addIndexColumn()
                 ->editColumn('last_login', function ($row) {
                     return '
-                        <span class="badge text-white bg-dark">' . date('F j, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
+                        <span class="badge text-white bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
                         ';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-info bg-dark">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->editColumn('status', function ($row) {
@@ -112,12 +112,12 @@ class BackendController extends Controller
                 ->addIndexColumn()
                 ->editColumn('last_login', function ($row) {
                     return '
-                        <span class="badge text-white bg-dark">' . date('F j, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
+                        <span class="badge text-white bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
                         ';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-info bg-dark">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
@@ -147,12 +147,12 @@ class BackendController extends Controller
                 ->addIndexColumn()
                 ->editColumn('last_login', function ($row) {
                     return '
-                        <span class="badge text-white bg-dark">' . date('F j, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
+                        <span class="badge text-white bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
                         ';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-info bg-dark">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->editColumn('status', function ($row) {
@@ -187,12 +187,12 @@ class BackendController extends Controller
                 ->addIndexColumn()
                 ->editColumn('last_login', function ($row) {
                     return '
-                        <span class="badge text-white bg-dark">' . date('F j, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
+                        <span class="badge text-white bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
                         ';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-info bg-dark">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->editColumn('status', function ($row) {
@@ -575,7 +575,7 @@ class BackendController extends Controller
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
-                        <span class="badge text-info bg-dark">' . date('F j, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {

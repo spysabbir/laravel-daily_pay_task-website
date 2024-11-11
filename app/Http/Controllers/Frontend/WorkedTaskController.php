@@ -305,13 +305,20 @@ class WorkedTaskController extends Controller
                     ->editColumn('approved_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->approved_at));
                     })
+                    ->editColumn('approved_by', function ($row) {
+                        if ($row->approvedBy->user_type =='Backend') {
+                            return '<span class="badge bg-primary">Admin</span>';
+                        } else {
+                            return '<span class="badge bg-info">'. $row->approvedBy->name .'</span>';
+                        }
+                    })
                     ->addColumn('action', function ($row) {
                         $action = '
                         <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                         ';
                         return $action;
                     })
-                    ->rawColumns(['title', 'rating', 'bonus', 'action'])
+                    ->rawColumns(['title', 'rating', 'bonus', 'approved_by', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.approved');
@@ -365,13 +372,20 @@ class WorkedTaskController extends Controller
                     ->editColumn('rejected_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->rejected_at));
                     })
+                    ->editColumn('rejected_by', function ($row) {
+                        if ($row->rejectedBy->user_type =='Backend') {
+                            return '<span class="badge bg-primary">Admin</span>';
+                        } else {
+                            return '<span class="badge bg-info">'. $row->rejectedBy->name .'</span>';
+                        }
+                    })
                     ->addColumn('action', function ($row) {
                         $action = '
                         <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
                         ';
                         return $action;
                     })
-                    ->rawColumns(['title', 'rating', 'action'])
+                    ->rawColumns(['title', 'rating', 'rejected_by', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.rejected');

@@ -90,11 +90,11 @@
                             </tr>
                             <tr>
                                 <td>Created At</td>
-                                <td>{{ $postTask->created_at->format('d-m-Y h:i:s A') }}</td>
+                                <td>{{ $postTask->created_at->format('d M,Y h:i:s A') }}</td>
                             </tr>
                             <tr>
                                 <td>Updated At</td>
-                                <td>{{ $postTask->updated_at->format('d-m-Y h:i:s A') }}</td>
+                                <td>{{ $postTask->updated_at->format('d M,Y h:i:s A') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -115,7 +115,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     <strong>Warning!</strong> This task post has been previously rejected. <br>
                     <span>Rejected By: {{ $postTask->rejectedBy->name }}</span> <br>
-                    <span>Rejected At: {{ date('d-m-Y h:i:s A', strtotime($postTask->rejected_at)) }}</span> <br>
+                    <span>Rejected At: {{ date('d M, Y h:i:s A', strtotime($postTask->rejected_at)) }}</span> <br>
                     <span>Rejection Reason: {{ $postTask->rejection_reason }}</span> <br>
                 </div>
                 @endif
@@ -149,7 +149,7 @@
                         <label for="task_post_status" class="form-label">Post Task Status <span class="text-danger">* Required</span></label>
                         <select class="form-select" id="task_post_status" name="status">
                             <option value="">-- Select Status --</option>
-                            <option value="Running">Running</option>
+                            <option value="Running">Approved</option>
                             <option value="Rejected">Rejected</option>
                         </select>
                         <span class="text-danger error-text update_status_error"></span>

@@ -72,7 +72,7 @@
     <div>
         <strong>Blocked Reason: {{ $userStatus->reason }}</strong><br>
         <strong>Blocked Duration: {{ $userStatus->blocked_duration }} hours</strong><br>
-        <strong>Blocked At: {{ date('d-M-Y h:i A', strtotime($userStatus->created_at)) }}</strong>
+        <strong>Blocked At: {{ date('d M, Y h:i A', strtotime($userStatus->created_at)) }}</strong>
     </div>
 	<hr>
 	<div class="mb-0">
@@ -93,7 +93,7 @@
 	<hr>
     <div>
         <strong>Banned Reason: {{ $userStatus->reason }}</strong><br>
-        <strong>Banned At: {{ date('d-M-Y h:i A', strtotime($userStatus->created_at)) }}</strong>
+        <strong>Banned At: {{ date('d M, Y h:i A', strtotime($userStatus->created_at)) }}</strong>
     </div>
 	<hr>
 	<div class="mb-0">
@@ -177,7 +177,7 @@
                                 <h3 class="mb-2">{{ $total_posted_task }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
+                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -215,7 +215,7 @@
                                 <h3 class="mb-2">{{ $total_task_proof_submit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
+                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -303,7 +303,7 @@
                                 <h3 class="mb-2">{{ $total_worked_task }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
+                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -341,7 +341,7 @@
                                 <h3 class="mb-2">{{ $total_report }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
+                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -621,7 +621,7 @@
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_deposit }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
+                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
@@ -659,7 +659,7 @@
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_withdraw }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d-M-Y') }}</span>
+                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>

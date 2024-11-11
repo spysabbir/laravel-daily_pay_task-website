@@ -40,6 +40,7 @@
                                 <th>Bonus</th>
                                 <th>Submit Date</th>
                                 <th>Approved Date</th>
+                                <th>Approved By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -99,6 +100,7 @@
                 { data: 'bonus', name: 'bonus' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'approved_at', name: 'approved_at' },
+                { data: 'approved_by', name: 'approved_by' },
                 { data: 'action', name: 'action' }
             ]
         });

@@ -22,7 +22,7 @@
                             </tr>
                             <tr>
                                 <td>Date of Birth</td>
-                                <td>{{ $verification->user->date_of_birth ? date('F j, Y', strtotime($verification->user->date_of_birth)) : 'Not Found' }}</td>
+                                <td>{{ $verification->user->date_of_birth ? date('d M, Y', strtotime($verification->user->date_of_birth)) : 'Not Found' }}</td>
                             </tr>
                             <tr>
                                 <td>Gender</td>
@@ -86,14 +86,14 @@
         @if ($verification->status == 'Approved')
             <div class="alert alert-success" role="alert">
                 <h4 class="alert-heading">Approved!</h4>
-                <p>This verification request has been approved by <strong>{{ $verification->approvedBy->name }}</strong> at <strong>{{ date('F j, Y  h:i:s A', strtotime($verification->approved_at)) }}</strong></p>
+                <p>This verification request has been approved by <strong>{{ $verification->approvedBy->name }}</strong> at <strong>{{ date('d M, Y  h:i:s A', strtotime($verification->approved_at)) }}</strong></p>
             </div>
         @else
         <div class="mb-3">
             @if ($verification->rejected_by)
                 <div class="alert alert-danger" role="alert">
                     <h4 class="alert-heading">Previously Rejected!</h4>
-                    <p>This verification request has been rejected by <strong>{{ $verification->rejectedBy->name }}</strong> at <strong>{{ date('F j, Y  h:i:s A', strtotime($verification->rejected_at)) }}</strong></p>
+                    <p>This verification request has been rejected by <strong>{{ $verification->rejectedBy->name }}</strong> at <strong>{{ date('d M, Y  h:i:s A', strtotime($verification->rejected_at)) }}</strong></p>
                     <p><strong>Rejected Reason:</strong> {{ $verification->rejected_reason }}</p>
                 </div>
             @else
