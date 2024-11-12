@@ -36,6 +36,14 @@
                     <strong class="text-info">Total Charge:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->total_charge }}
                 </p>
                 <p class="border p-1 m-1">
+                    <strong class="text-info">Charge Status</strong>,
+                    <span class="text-secondary">Waiting: {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->total_charge / $postTask->work_needed) * ($postTask->work_needed - $proofSubmitted->count()) }}</span>,
+                    <span class="text-primary">Pending: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) * $pendingProof, 2) }}</span>,
+                    <span class="text-success">Payment: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) * $approvedProof, 2) }}</span>,
+                    <span class="text-danger">Refund: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) * $finallyRejectedProof, 2) }}</span>,
+                    <span class="text-warning">Hold: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) *  $waitingRejectedProof, 2) }}</span>
+                </p>
+                <p class="border p-1 m-1">
                     <strong class="text-info">Submited At:</strong> {{ $postTask->created_at->format('d F, Y h:i:s A') }},
                     <strong class="text-info">Approved At:</strong> {{ date('d F, Y h:i:s A', strtotime($postTask->approved_at)) }}
                 </p>
@@ -88,6 +96,9 @@
             <div class="card-body">
                 <div class="mb-3">
                     <div class="row">
+                        <div class="mb-3">
+                            <strong class="text-danger">Warning: if you Reject the proof, the worker can request for review within 72 hours. The admin will check the proof and if it is correct then the worker will be paid or if the proof is wrong then the worker will not be paid. Because of this, only Rejected money will be on hold for 72 hours because you Proof Rejected. If the worker does not request for review within 72 hours, your money will be automatically add your deposit balance. If the worker request for review within 72 hours, the admin will review the proof within 72 hours. Both you and the worker will receive a notification with the results. Please be careful and work well with integrity and don't intentionally reject someone's work.</strong>
+                        </div>
                         <div class="col-md-7">
                             <button type="button" class="btn btn-sm btn-success" id="approvedAll">All Pending Item Approved</button>
                             <button type="button" class="btn btn-sm btn-info" id="selectedItemApproved">Selected Item Approved</button>

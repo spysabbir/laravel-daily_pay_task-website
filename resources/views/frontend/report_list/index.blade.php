@@ -31,9 +31,10 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>ID</th>
                                 <th>Type</th>
                                 <th>User</th>
-                                <th>Created At</th>
+                                <th>Submited At</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -88,6 +89,7 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'id', name: 'id' },
                 { data: 'type', name: 'type' },
                 { data: 'user', name: 'user' },
                 { data: 'created_at', name: 'created_at' },

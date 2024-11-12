@@ -22,6 +22,8 @@
                                 <th>Submited At</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
+                                <th>Total Charge</th>
+                                <th>Charge Status</th>
                                 <th>Cancellation Reason</th>
                                 <th>Canceled At</th>
                                 <th>Canceled By</th>
@@ -80,6 +82,8 @@
                 { data: 'created_at', name: 'created_at' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
+                { data: 'total_charge', name: 'total_charge' },
+                { data: 'charge_status', name: 'charge_status' },
                 { data: 'cancellation_reason', name: 'cancellation_reason' },
                 { data: 'canceled_at', name: 'canceled_at' },
                 { data: 'canceled_by', name: 'canceled_by' },

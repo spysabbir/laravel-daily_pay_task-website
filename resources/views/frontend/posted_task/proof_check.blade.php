@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-lg-8">
+    <marquee class="mb-3"><strong class="text-danger">Warning: if you Reject the proof, the worker can request for review within 72 hours. The admin will check the proof and if it is correct then the worker will be paid or if the proof is wrong then the worker will not be paid. Because of this, only Rejected money will be on hold for 72 hours because you Proof Rejected. If the worker does not request for review within 72 hours, your money will be automatically add your deposit balance. If the worker request for review within 72 hours, the admin will review the proof within 72 hours. Both you and the worker will receive a notification with the results. Please be careful and work well with integrity and don't intentionally reject someone's work.</strong></marquee>    <div class="col-lg-8">
         <div class="mb-3">
             <h4>Proof Answer:</h4>
             <div>
@@ -8,43 +8,13 @@
         </div>
         <div class="mb-3">
             <h4>Proof Image:</h4>
-            @foreach (json_decode($proofTask->proof_photos) as $photo)
-                <div class="d-flex justify-content-between">
+            <div class="image-grid">
+                @foreach (json_decode($proofTask->proof_photos) as $photo)
                     <a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-lightbox="gallery" data-title="Proof Task Photo {{ $loop->iteration }}">
-                        <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" style="max-height: 400px;" class="my-3 w-100" alt="Proof Task Photo {{ $loop->iteration }}">
+                        <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" class="proof-image my-3" alt="Proof Task Photo {{ $loop->iteration }}">
                     </a>
-                </div>
-            @endforeach
-            {{-- <div class="my-2">
-                <div id="proofCheckCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <ol class="carousel-indicators">
-                        @foreach (json_decode($proofTask->proof_photos) as $photo)
-                            <li data-bs-target="#proofCheckCarousel" data-bs-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}"></li>
-                        @endforeach
-                    </ol>
-                    <div class="carousel-inner">
-                        @foreach (json_decode($proofTask->proof_photos) as $photo)
-                            <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                                <a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-lightbox="gallery" data-title="Proof Task Photo {{ $loop->iteration }}">
-                                    <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" style="max-height: 400px;" class="d-block w-100" alt="Proof Task Photo {{ $loop->iteration }}">
-                                </a>
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5 class="mb-2"><strong class="badge bg-dark">Proof Task Photo {{ $loop->iteration }}</strong></h5>
-                                    <strong><a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" target="_blank">View Full Image</a></strong>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <a class="carousel-control-prev" data-bs-target="#proofCheckCarousel" role="button" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" data-bs-target="#proofCheckCarousel" role="button" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </a>
-                </div>
-            </div> --}}
+                @endforeach
+            </div>
         </div>
     </div>
     <div class="col-lg-4">
@@ -149,7 +119,7 @@
                         <span class="text-danger error-text update_status_error"></span>
                     </div>
                     <div id="proof_check_approved_div">
-                        <div class="mb-3">
+                        <div class="mb-3 proof_check_rating">
                             <label for="proof_check_rating" class="form-label">Rating (1-5) <span class="text-info">* Optonal</span></label>
                             <div class="rating-box">
                                 <div class="stars">
@@ -193,11 +163,54 @@
         @endif
     </div>
 </div>
+{{-- <div class="my-2">
+    <div id="proofCheckCarousel" class="carousel slide" data-bs-ride="carousel">
+        <ol class="carousel-indicators">
+            @foreach (json_decode($proofTask->proof_photos) as $photo)
+                <li data-bs-target="#proofCheckCarousel" data-bs-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}"></li>
+            @endforeach
+        </ol>
+        <div class="carousel-inner">
+            @foreach (json_decode($proofTask->proof_photos) as $photo)
+                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                    <a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-lightbox="gallery" data-title="Proof Task Photo {{ $loop->iteration }}">
+                        <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" style="max-height: 400px;" class="d-block w-100" alt="Proof Task Photo {{ $loop->iteration }}">
+                    </a>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5 class="mb-2"><strong class="badge bg-dark">Proof Task Photo {{ $loop->iteration }}</strong></h5>
+                        <strong><a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" target="_blank">View Full Image</a></strong>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+        <a class="carousel-control-prev" data-bs-target="#proofCheckCarousel" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" data-bs-target="#proofCheckCarousel" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
+    </div>
+</div> --}}
+<style>
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Adjust min width as needed */
+    gap: 10px;
+}
+
+.proof-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+</style>
 
 <script>
     $(document).ready(function() {
         // Rating stars
-        const stars = document.querySelectorAll(".stars i");
+        const stars = document.querySelectorAll(".proof_check_rating .stars i");
         const ratingInput = document.getElementById('proof_check_rating');
         stars.forEach((star, index1) => {
             star.addEventListener("click", () => {
@@ -271,15 +284,11 @@
                             $('span.update_' + prefix + '_error').text(val[0]);
                         });
                     } else {
-                        if (response.status === 401) {
-                            toastr.error(response.error);
-                        } else {
-                            $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
-                            $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
-                            toastr.success('Proof Task has been updated successfully.');
-                            $('#allDataTable').DataTable().ajax.reload();
-                            $(".viewModal").modal('hide');
-                        }
+                        $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
+                        $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
+                        toastr.success('Proof Task has been updated successfully.');
+                        $('#allDataTable').DataTable().ajax.reload();
+                        $(".viewModal").modal('hide');
                     }
                 },
                 complete: function() {

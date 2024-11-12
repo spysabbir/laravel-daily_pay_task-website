@@ -69,6 +69,7 @@
                                             </div>
                                             @endif
                                             <div>
+                                                <p>Report ID: {{ $reportPostTask->id }}</p>
                                                 <p>Report Reason: {{ $reportPostTask->reason }}</p>
                                                 <p>Report Date: {{ date('d F, Y  H:i A', strtotime($reportPostTask->created_at)) }}</p>
                                                 @if ($reportPostTask->photo)
