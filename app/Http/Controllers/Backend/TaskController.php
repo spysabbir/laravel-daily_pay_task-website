@@ -120,8 +120,9 @@ class TaskController extends Controller
                     $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
+                    <div class="progress position-relative">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
                     </div>
                     ';
                 })
@@ -158,6 +159,7 @@ class TaskController extends Controller
                 ->addColumn('action', function ($row) {
                     $btn = '
                     <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                     ';
                 return $btn;
                 })
@@ -192,8 +194,9 @@ class TaskController extends Controller
                     $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
+                    <div class="progress position-relative">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
                     </div>
                     ';
                 })
@@ -227,13 +230,18 @@ class TaskController extends Controller
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->canceled_at)) . '</span>
                         ';
                 })
+                ->editColumn('canceled_by', function ($row) {
+                    return '
+                        <span class="badge bg-info text-dark">' . $row->canceledBy->name . '</span>
+                        ';
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '
                     <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'canceled_at', 'action'])
+                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'canceled_at', 'canceled_by', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.canceled');
@@ -260,8 +268,15 @@ class TaskController extends Controller
                     return $row->user->name;
                 })
                 ->editColumn('work_needed', function ($row) {
-                    $proofCount = ProofTask::where('post_task_id', $row->id)->where('status', '!=', 'Rejected')->count();
-                    return  '<span class="badge bg-success">' . $proofCount . ' / ' .$row->work_needed . '</span>';
+                    $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    return '
+                    <div class="progress position-relative">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                    </div>
+                    ';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
@@ -306,6 +321,9 @@ class TaskController extends Controller
 
         $postTask = PostTask::findOrFail($id);
 
+        // Store the previous status
+        $previousStatus = $postTask->status;
+
         $user = User::findOrFail($postTask->user_id);
         if ($request->status == 'Rejected') {
             $user->update([
@@ -326,11 +344,50 @@ class TaskController extends Controller
             'approved_at' => $request->status == 'Running' ? now() : NULL,
         ]);
 
-        $user->notify(new PostTaskCheckNotification($postTask));
+        if ($previousStatus === 'Pending') {
+            $user->notify(new PostTaskCheckNotification($postTask));
+        }
 
         return response()->json([
             'status' => 200,
         ]);
+    }
+
+    public function runningPostedTaskCanceled(Request $request, string $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'message' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 401,
+                'error' => 'Please enter a valid reason.'
+            ]);
+        } else {
+            $postTask = PostTask::findOrFail($id);
+            $user = User::findOrFail($postTask->user_id);
+
+            $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
+
+            $refundAmount = number_format(($postTask->total_charge / $postTask->work_needed) * ($postTask->work_needed - $proofTasks), 2, '.', '');
+            $user->deposit_balance = $user->deposit_balance + $refundAmount;
+            $user->save();
+
+            $postTask->status = 'Canceled';
+            $postTask->cancellation_reason = $request->message;
+            $postTask->canceled_by = auth()->user()->id;
+            $postTask->canceled_at = now();
+            $postTask->save();
+
+            $user->notify(new PostTaskCheckNotification($postTask));
+
+
+            return response()->json([
+                'status' => 200,
+                'success' => 'Task canceled successfully.'
+            ]);
+        }
     }
 
     // Worked Task .............................................................................................
@@ -350,8 +407,9 @@ class TaskController extends Controller
                     $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
+                    <div class="progress position-relative">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
                     </div>
                     ';
                 })
@@ -438,8 +496,9 @@ class TaskController extends Controller
                     $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
+                    <div class="progress position-relative">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
                     </div>
                     ';
                 })
@@ -522,7 +581,7 @@ class TaskController extends Controller
 
             $postTaskUser = User::findOrFail($postTask->user_id);
             $proofTaskUser = User::findOrFail($proofTask->user_id);
-            
+
             if ($request->status == 'Rejected') {
                 $postTaskUser->update([
                     'deposit_balance' => $postTaskUser->deposit_balance + $postTask->earnings_from_work,

@@ -39,7 +39,7 @@ class VerificationNotification extends Notification implements ShouldQueue
                     ->greeting('Hello ' . $notifiable->name . ',')
                     ->line('Your ' . $this->verification['id_type'] . ' verification status is now ' . $this->verification['status'] . '.')
                     ->line($this->verification['rejected_reason'] ?? 'Thank you for using our application!')
-                    ->line('Updated on: ' . Carbon::parse($this->verification['created_at'])->format('d-F-Y h:i:s'))
+                    ->line('Updated on: ' . Carbon::parse($this->verification['created_at'])->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }
 }

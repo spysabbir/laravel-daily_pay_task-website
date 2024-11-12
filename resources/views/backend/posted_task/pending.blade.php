@@ -125,15 +125,9 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        if (response.status == 401) {
-                            $.each(response.error, function(prefix, val){
-                                $('span.update_'+prefix+'_error').text(val[0]);
-                            })
-                        }else{
-                            $('#pendingDataTable').DataTable().ajax.reload();
-                            $(".viewModal").modal('hide');
-                            toastr.success('Task post update successfully.');
-                        }
+                        $('#pendingDataTable').DataTable().ajax.reload();
+                        $(".viewModal").modal('hide');
+                        toastr.success('Task post update successfully.');
                     }
                 },
                 complete: function() {

@@ -80,8 +80,9 @@ class WorkedTaskController extends Controller
                         $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
+                        <div class="progress position-relative">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
                         </div>
                         ';
                     })

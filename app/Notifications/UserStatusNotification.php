@@ -39,7 +39,7 @@ class UserStatusNotification extends Notification implements ShouldQueue
                     ->greeting('Hello ' . $notifiable->name . ',')
                     ->line('Your account status is now ' . $this->userStatus['status'] . '.')
                     ->line('Reason: ' . $this->userStatus['reason'] . $this->userStatus['blocked_duration'] ? 'Blocked until: ' . $this->userStatus['blocked_duration'] . ' hours' : 'Please stay active!')
-                    ->line('Updated on: ' . Carbon::parse($this->userStatus['created_at'])->format('d-F-Y h:i:s'))
+                    ->line('Updated on: ' . Carbon::parse($this->userStatus['created_at'])->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }
 }

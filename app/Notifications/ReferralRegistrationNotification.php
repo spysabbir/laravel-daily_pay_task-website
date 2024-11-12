@@ -40,7 +40,7 @@ class ReferralRegistrationNotification extends Notification implements ShouldQue
                     ->subject('Referral Registration Notification')
                     ->greeting('Hello ' . $this->user->name . '!')
                     ->line($this->user->name . ' has been referred by ' . $this->referrer->name . '.')
-                    ->line('Updated on: ' . Carbon::parse($this->user->updated_at)->format('d M Y h:i:s'))
+                    ->line('Updated on: ' . Carbon::parse($this->user->updated_at)->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }
 }

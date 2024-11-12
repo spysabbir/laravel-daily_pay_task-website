@@ -46,8 +46,9 @@
                         $progressBarClass = $proofSubmittedCount == 0 ? 'primary' : 'success';
                     @endphp
                     <p class="mb-1"><strong class="text-info">Proof Status: </strong> <span class="text-success">Submit: {{ $proofSubmittedCount }}</span>, Need: {{ $postTask->work_needed }}</p>
-                    <div class="progress">
-                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated bg-{{ $progressBarClass }}" role="progressbar" style="width: {{ $proofStyleWidth }}%" aria-valuenow="{{ $proofSubmittedCount }}" aria-valuemin="0" aria-valuemax="{{ $postTask->work_needed }}">{{ $proofSubmittedCount }} / {{ $postTask->work_needed }}</div>
+                    <div class="progress position-relative">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated bg-{{ $progressBarClass }}" role="progressbar" style="width: {{ $proofStyleWidth }}%" aria-valuenow="{{ $proofSubmittedCount }}" aria-valuemin="0" aria-valuemax="{{ $postTask->work_needed }}"></div>
+                        <span class="position-absolute w-100 text-center">{{ $proofSubmittedCount }} / {{ $postTask->work_needed }}</span>
                     </div>
                 </div>
                 <div class="my-3">

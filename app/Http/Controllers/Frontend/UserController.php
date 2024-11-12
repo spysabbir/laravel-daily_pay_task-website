@@ -187,7 +187,10 @@ class UserController extends Controller
         $ratingGiven = Rating::where('rated_by', $user->id)->get();
         $ratingReceived  = Rating::where('user_id', $user->id)->get();
         $userDetails = UserDetail::where('user_id', $user->id)->latest()->take(5)->get();
-        return view('profile.edit', compact('user', 'verification', 'userDetails', 'ratingGiven', 'ratingReceived'));
+        $reportUserCount = Report::where('user_id', $user->id)->where('type', 'User')->count();
+        $reportPostTaskCount = Report::where('user_id', $user->id)->where('type', 'Post Task')->count();
+        $reportProofTaskCount = Report::where('user_id', $user->id)->where('type', 'Proof Task')->count();
+        return view('profile.edit', compact('user', 'verification', 'userDetails', 'ratingGiven', 'ratingReceived', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
     }
 
     public function profileSetting(Request $request)
@@ -197,7 +200,10 @@ class UserController extends Controller
         $ratingGiven = Rating::where('rated_by', $user->id)->get();
         $ratingReceived  = Rating::where('user_id', $user->id)->get();
         $blockedStatuses = UserStatus::where('user_id', $user->id)->where('status', 'Blocked')->latest()->get();
-        return view('profile.setting', compact('user', 'verification', 'ratingGiven', 'ratingReceived', 'blockedStatuses'));
+        $reportUserCount = Report::where('user_id', $user->id)->where('type', 'User')->count();
+        $reportPostTaskCount = Report::where('user_id', $user->id)->where('type', 'Post Task')->count();
+        $reportProofTaskCount = Report::where('user_id', $user->id)->where('type', 'Proof Task')->count();
+        return view('profile.setting', compact('user', 'verification', 'ratingGiven', 'ratingReceived', 'blockedStatuses', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
     }
 
     public function userProfile($id)

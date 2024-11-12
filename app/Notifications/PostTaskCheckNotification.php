@@ -26,19 +26,34 @@ class PostTaskCheckNotification extends Notification implements ShouldQueue
 
     public function toDatabase($notifiable)
     {
+        if ($this->postTask['status'] === 'Rejected') {
+            $message = 'Rejected Reason: ' . $this->postTask['rejection_reason'];
+        } else if ($this->postTask['status'] === 'Canceled') {
+            $message = 'Canceled Reason: ' . $this->postTask['cancellation_reason'];
+        } else {
+            $message = 'Please check the task post. Thank you!';
+        }
         return [
-            'title' => 'Now your task post status is ' . $this->postTask['status'],
-            'message' => $this->postTask['rejection_reason'] ?? 'Thank you for using our application!',
+            'title' => 'Now your task post status is ' . $this->postTask['status'] . ' and the task post id is ' . $this->postTask['id'] . '.',
+            'message' => $message,
         ];
     }
 
     public function toMail($notifiable)
     {
+        if ($this->postTask['status'] === 'Rejected') {
+            $message = 'Rejected Reason: ' . $this->postTask['rejection_reason'];
+        } else if ($this->postTask['status'] === 'Canceled') {
+            $message = 'Canceled Reason: ' . $this->postTask['cancellation_reason'];
+        } else {
+            $message = 'Please check the task post. Thank you!';
+        }
         return (new MailMessage)
                     ->subject('Post Task Status')
                     ->greeting('Hello ' . $notifiable->name . ',')
-                    ->line('Now your task post status is ' . $this->postTask['status'] . ' and the title is ' . $this->postTask['title'] . '.' . $this->postTask['status'] == 'Rejected' ? ' The reason is ' . $this->postTask['rejection_reason'] : '' . ' If you have any questions, please feel free to contact us.')
-                    ->line('Updated on: ' . Carbon::parse($this->postTask['created_at'])->format('d-F-Y h:i:s'))
+                    ->line('Now your task post status is ' . $this->postTask['status'] . ' and the task post id is ' . $this->postTask['id'] . '. and the title is ' . $this->postTask['title'] . '.')
+                    ->line($message)
+                    ->line('Updated on: ' . Carbon::parse($this->postTask['updated_at'])->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }
 

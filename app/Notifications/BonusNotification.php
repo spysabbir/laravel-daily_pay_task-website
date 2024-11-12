@@ -45,7 +45,7 @@ class BonusNotification extends Notification implements ShouldQueue
             ->greeting('Hello ' . $notifiable->name . ',')
             ->line('You have received a bonus of ' . get_site_settings('site_currency_symbol') . ' ' . $bonus['amount'])
             ->line('The bonus type is ' . $bonus['type'])
-            ->line('Updated on: ' . Carbon::now()->format('d-F-Y h:i:s'))
+            ->line('Updated on: ' . Carbon::now()->format('d M, Y h:i:s A'))
             ->line('Thank you for using our application!');
     }
 }

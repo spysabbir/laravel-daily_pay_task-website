@@ -153,6 +153,7 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('posted_task_list-completed', [TaskController::class, 'postedTaskListCompleted'])->name('posted_task_list.completed');
     Route::get('completed-posted_task_view/{id}', [TaskController::class, 'completedPostedTaskView'])->name('completed.posted_task_view');
 
+    Route::post('running-posted_task_canceled/{id}', [TaskController::class, 'runningPostedTaskCanceled'])->name('running.posted_task_canceled');
     Route::put('posted_task_status_update/{id}', [TaskController::class, 'postedTaskStatusUpdate'])->name('posted_task_status_update');
     // Worked  Task
     Route::get('worked_task_list-all', [TaskController::class, 'workedTaskListAll'])->name('worked_task_list.all');

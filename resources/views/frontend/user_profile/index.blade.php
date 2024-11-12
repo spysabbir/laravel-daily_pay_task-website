@@ -133,28 +133,28 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-info mb-2">
                             <h6 class="card-title">Total Pending Tasks Proof</h6>
+                            <strong>( {{ $totalPastedTaskProofCount != 0 ? round(($totalPendingTasksProofCount / $totalPastedTaskProofCount) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $totalPendingTasksProofCount }}</strong>
-                            {{-- <strong>( {{ round(($totalPendingTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong> --}}
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-success mb-2">
                             <h6 class="card-title">Total Approved Tasks Proof</h6>
+                            <strong>( {{ $totalPastedTaskProofCount != 0 ? round(($totalApprovedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $totalApprovedTasksProofCount }}</strong>
-                            {{-- <strong>( {{ round(($totalApprovedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong> --}}
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-danger mb-2">
                             <h6 class="card-title">Total Rejected Tasks Proof</h6>
+                            <strong>( {{ $totalPastedTaskProofCount != 0 ? round(($totalRejectedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $totalRejectedTasksProofCount }}</strong>
-                            {{-- <strong>( {{ round(($totalRejectedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong> --}}
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-warning mb-2">
                             <h6 class="card-title">Total Reviewed Tasks Proof</h6>
+                            <strong>( {{ $totalPastedTaskProofCount != 0 ? round(($totalReviewedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $totalReviewedTasksProofCount }}</strong>
-                            {{-- <strong>( {{ round(($totalReviewedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong> --}}
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-primary mb-2">
                             <h6 class="card-title">Pending Reviewed Tasks Proof</h6>
+                            <strong>( {{ $totalPastedTaskProofCount != 0 ? round(($nowReviewedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $nowReviewedTasksProofCount }}</strong>
-                            {{-- <strong>( {{ round(($nowReviewedTasksProofCount / $totalPastedTaskProofCount) * 100, 2) }} % )</strong> --}}
                         </div>
                     </div>
                 </div>
@@ -175,28 +175,28 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-info mb-2">
                             <h6 class="card-title">Total Pending  Tasks</h6>
+                            <strong>( {{ $totalWorkedTask != 0 ? round(($totalPendingWorkedTask / $totalWorkedTask) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $totalPendingWorkedTask }}</strong>
-                            <strong>( {{ round(($totalPendingWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-success mb-2">
                             <h6 class="card-title">Total Approved Tasks</h6>
+                            <strong>( {{ $totalWorkedTask != 0 ? round(($totalApprovedWorkedTask / $totalWorkedTask) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $totalApprovedWorkedTask }}</strong>
-                            <strong>( {{ round(($totalApprovedWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-danger mb-2">
                             <h6 class="card-title">Total Rejected Tasks</h6>
+                            <strong>( {{ $totalWorkedTask != 0 ? round(($totalRejectedWorkedTask / $totalWorkedTask) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $totalRejectedWorkedTask }}</strong>
-                            <strong>( {{ round(($totalRejectedWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-warning mb-2">
                             <h6 class="card-title">Total Reviewed Tasks</h6>
+                            <strong>( {{ $totalWorkedTask != 0 ? round(($totalReviewedWorkedTask / $totalWorkedTask) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $totalReviewedWorkedTask }}</strong>
-                            <strong>( {{ round(($totalReviewedWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
                         </div>
                         <div class="d-flex justify-content-between align-items-center text-primary mb-2">
                             <h6 class="card-title">Pending Reviewed Tasks</h6>
+                            <strong>( {{ $totalWorkedTask != 0 ? round(($nowReviewedWorkedTask / $totalWorkedTask) * 100, 2) : 0 }} % )</strong>
                             <strong>{{ $nowReviewedWorkedTask }}</strong>
-                            <strong>( {{ round(($nowReviewedWorkedTask / $totalWorkedTask) * 100, 2) }} % )</strong>
                         </div>
                     </div>
                 </div>

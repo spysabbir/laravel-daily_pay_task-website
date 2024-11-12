@@ -97,6 +97,86 @@
             });
         });
 
+        // Update Data
+        $("body").on("submit", "#editForm", function(e){
+            e.preventDefault();
+
+            var id = $('#post_task_id').val();
+            var url = "{{ route('backend.posted_task_status_update', ":id") }}";
+            url = url.replace(':id', id)
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
+            $.ajax({
+                url: url,
+                type: "PUT",
+                data: $(this).serialize(),
+                beforeSend:function(){
+                    $(document).find('span.error-text').text('');
+                },
+                success: function (response) {
+                    if (response.status == 400) {
+                        $.each(response.error, function(prefix, val){
+                            $('span.update_'+prefix+'_error').text(val[0]);
+                        })
+                    }else{
+                        $('#runningDataTable').DataTable().ajax.reload();
+                        $(".viewModal").modal('hide');
+                        toastr.success('Task post update successfully.');
+                    }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
+            });
+        })
+
+        // Canceled Data
+        $(document).on('click', '.canceledBtn', function(){
+            var id = $(this).data('id');
+            var url = "{{ route('backend.running.posted_task_canceled', ":id") }}";
+            url = url.replace(':id', id);
+
+            Swal.fire({
+                input: "textarea",
+                inputLabel: "Cancellation Reason",
+                inputPlaceholder: "Type cancellation reason here...",
+                inputAttributes: {
+                    "aria-label": "Type cancellation reason here..."
+                },
+                title: 'Are you sure?',
+                text: "You want to cancel this task!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Cancel it!',
+                preConfirm: () => {
+                    const message = Swal.getInput().value;
+                    if (!message) {
+                        Swal.showValidationMessage('Cancellation Reason is required');
+                    }
+                    return message;
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: { id: id, message: result.value },
+                        success: function(response) {
+                            if (response.status == 401) {
+                                toastr.error(response.error);
+                            } else {
+                                $('#runningDataTable').DataTable().ajax.reload();
+                                toastr.error('Task Canceled Successfully');
+                            }
+                        },
+                    });
+                }
+            });
+        });
     });
 </script>
 @endsection

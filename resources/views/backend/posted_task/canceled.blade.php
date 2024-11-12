@@ -22,6 +22,7 @@
                                 <th>Proof Status</th>
                                 <th>Submited At</th>
                                 <th>Canceled At</th>
+                                <th>Canceled By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -79,6 +80,7 @@
                 { data: 'proof_status', name: 'proof_status' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'canceled_at', name: 'canceled_at' },
+                { data: 'canceled_by', name: 'canceled_by' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

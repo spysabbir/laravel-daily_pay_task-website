@@ -101,6 +101,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <strong>Warning!</strong> Your task is canceled. Please check the reason.
                 <p class="mt-3">
+                    <strong>Canceled By:</strong> {{ $postTask->canceledBy->user_type == 'Backend' ? 'Admin' : $postTask->canceledBy->name }} <br>
                     <strong>Canceled At:</strong> {{ date('d M, Y h:i:s A', strtotime($postTask->canceled_at)) }} <br>
                     <strong>Canceled Reason:</strong> {{ $postTask->cancellation_reason }}
                 </p>

@@ -24,6 +24,7 @@
                                 <th>Proof Status</th>
                                 <th>Cancellation Reason</th>
                                 <th>Canceled At</th>
+                                <th>Canceled By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -81,6 +82,7 @@
                 { data: 'proof_status', name: 'proof_status' },
                 { data: 'cancellation_reason', name: 'cancellation_reason' },
                 { data: 'canceled_at', name: 'canceled_at' },
+                { data: 'canceled_by', name: 'canceled_by' },
                 { data: 'action', name: 'action' },
             ]
         });

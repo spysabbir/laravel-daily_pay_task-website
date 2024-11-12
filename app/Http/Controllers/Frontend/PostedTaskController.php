@@ -335,9 +335,10 @@ class PostedTaskController extends Controller
                         $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
-                        </div>
+                        <div class="progress position-relative">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                            </div>
                         ';
                     })
                     ->editColumn('proof_status', function ($row) {
@@ -373,6 +374,13 @@ class PostedTaskController extends Controller
                     ->editColumn('canceled_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->canceled_at));
                     })
+                    ->editColumn('canceled_by', function ($row) {
+                        if ($row->canceledBy->user_type =='Backend') {
+                            return '<span class="badge bg-primary">Admin</span>';
+                        } else {
+                            return '<span class="badge bg-info">'. $row->canceledBy->name .'</span>';
+                        }
+                    })
                     ->editColumn('action', function ($row) {
                         $btn = '
                             <a href="' . route('proof_task.list', encrypt($row->id)) . '" class="btn btn-success btn-xs">Check</a>
@@ -380,7 +388,7 @@ class PostedTaskController extends Controller
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['proof_submitted', 'proof_status', 'cancellation_reason', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_status', 'cancellation_reason', 'canceled_by', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.canceled');
@@ -411,9 +419,10 @@ class PostedTaskController extends Controller
                         $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
-                        </div>
+                        <div class="progress position-relative">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                            </div>
                         ';
                     })
                     ->editColumn('proof_status', function ($row) {
@@ -535,9 +544,10 @@ class PostedTaskController extends Controller
                         $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
-                        </div>
+                        <div class="progress position-relative">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                            </div>
                         ';
                     })
                     ->editColumn('proof_status', function ($row) {
@@ -937,9 +947,10 @@ class PostedTaskController extends Controller
                         $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '">' . $proofSubmitted . '/' . $row->work_needed . '</div>
-                        </div>
+                        <div class="progress position-relative">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                            </div>
                         ';
                     })
                     ->editColumn('proof_status', function ($row) {

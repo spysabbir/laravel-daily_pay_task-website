@@ -11,8 +11,9 @@
                 @if (!$taskProofExists)
                 <div class="d-flex align-items-center">
                     <h4>Proof Submitted: </h4>
-                    <div class="progress mx-1" style="width: 250px">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $proofCount == 0 ? 'primary' : 'success' }}" role="progressbar" style="width: {{ $proofCount == 0 ? 100 : round(($proofCount / $taskDetails->work_needed) * 100, 2) }}%" aria-valuenow="{{ $proofCount }}" aria-valuemin="0" aria-valuemax="{{ $taskDetails->work_needed }}">{{ $proofCount }}/{{ $taskDetails->work_needed }}</div>
+                    <div class="progress mx-1 position-relative" style="width: 250px">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $proofCount == 0 ? 'primary' : 'success' }}" role="progressbar" style="width: {{ $proofCount == 0 ? $taskDetails->work_needed : round(($proofCount / $taskDetails->work_needed) * 100, 2) }}%" aria-valuenow="{{ $proofCount }}" aria-valuemin="0" aria-valuemax="{{ $taskDetails->work_needed }}"></div>
+                        <span class="position-absolute w-100 text-center">{{ $proofCount }}/{{ $taskDetails->work_needed }}</span>
                     </div>
                 </div>
                 @endif
@@ -93,7 +94,7 @@
                                                     <span class="text-danger error-text reason_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="reportPostTaskPhoto" class="form-label">Photo</label>
+                                                    <label for="reportPostTaskPhoto" class="form-label">Photo <span class="text-info">* Optional</span></label>
                                                     <input type="file" class="form-control" id="reportPostTaskPhoto" name="photo" accept=".jpg, .jpeg, .png">
                                                     <span class="text-danger error-text photo_error d-block"></span>
                                                     <img src="" alt="Photo" id="reportPostTaskPhotoPreview" class="mt-2" style="display: none; width: 100px; height: 100px;">
@@ -220,7 +221,7 @@
                                             <span class="text-danger error-text reason_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="photo" class="form-label">Photo</label>
+                                            <label for="photo" class="form-label">Photo <span class="text-info">* Optional</span></label>
                                             <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .jpeg, .png">
                                             <span class="text-danger error-text photo_error d-block"></span>
                                             <img src="" alt="Photo" id="photoPreview" class="mt-2" style="display: none; width: 100px; height: 100px;">
@@ -398,6 +399,7 @@
                             toastr.success('Post Task reported successfully.');
                         }
                         form[0].reset();
+                        location.reload();
                     }
                 },
                 complete: function() {

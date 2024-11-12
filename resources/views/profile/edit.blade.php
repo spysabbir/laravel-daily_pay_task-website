@@ -42,6 +42,9 @@
                                 <button class="btn btn-success btn-icon-text">
                                     Rating Received: {{ $ratingReceived->count() }} Task | {{ round($ratingReceived->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
                                 </button>
+                                <button class="btn btn-warning btn-icon-text">
+                                    Report Received: {{ $reportUserCount }} Profile | {{ $reportPostTaskCount }} Post Task | {{ $reportProofTaskCount }} Proof Task
+                                </button>
                             @endif
                         @endif
                     </div>

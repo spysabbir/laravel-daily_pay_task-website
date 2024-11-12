@@ -39,7 +39,7 @@ class RatingNotification extends Notification implements ShouldQueue
                     ->greeting('Hello ' . $notifiable->name . ',')
                     ->line('You have received a rating of ' . $this->rating['rating'] . ' stars')
                     ->line('The rating is task completion rating')
-                    ->line('Updated on: ' . Carbon::parse($this->rating['created_at'])->format('d-F-Y h:i:s'))
+                    ->line('Updated on: ' . Carbon::parse($this->rating['created_at'])->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Carbon\Carbon;
 
 class ReportReplyNotification extends Notification implements ShouldQueue
 {
@@ -42,7 +43,7 @@ class ReportReplyNotification extends Notification implements ShouldQueue
                     ->line('Report ID: ' . $this->report['id'] . ' has been resolved.')
                     ->line('Report Reason: ' . $this->report['reason'])
                     ->line('Reply: ' . $this->report_reply['reply'])
-                    ->line('Resolved on: ' . $this->report_reply['resolved_at'])
+                    ->line('Resolved on: ' . Carbon::parse($this->report_reply['created_at'])->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }
 }
