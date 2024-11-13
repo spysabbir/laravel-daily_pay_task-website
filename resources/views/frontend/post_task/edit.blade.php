@@ -373,8 +373,8 @@
             var required_proof_photo = parseInt($('#required_proof_photo').val());
             if (isNaN(required_proof_photo)) {
                 $('#required_proof_photo_error').text('Please enter how many additional required proof photo are required.');
-            } else if (required_proof_photo < 1) {
-                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
+            } else if (required_proof_photo < 0) {
+                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
             } else {
                 $('#required_proof_photo_error').text('');
             }
@@ -533,8 +533,8 @@
                 if (isNaN(required_proof_photo)) {
                     $('#required_proof_photo_error').text('Please enter how many additional required proof photo are required.');
                     isValid = false;
-                } else if (required_proof_photo < 1) {
-                    $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
+                } else if (required_proof_photo < 0) {
+                    $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
                     isValid = false;
                 } else {
                     $('#required_proof_photo_error').text('');

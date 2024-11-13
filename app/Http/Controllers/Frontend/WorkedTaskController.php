@@ -158,8 +158,10 @@ class WorkedTaskController extends Controller
 
         $rules = [
             'proof_answer' => 'required|string|max:5000',
-            'proof_photos' => 'required|array|min:' . $taskDetails->required_proof_photo, // Ensure all required photos are uploaded
-            'proof_photos.*' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Each photo must be an image
+            'proof_photos' => $taskDetails->required_proof_photo > 0
+                ? 'required|array|min:' . $taskDetails->required_proof_photo
+                : 'nullable|array', // Set to nullable if no photos are required
+            'proof_photos.*' => 'image|mimes:jpg,jpeg,png|max:2048', // Each photo must be an image if provided
         ];
 
         $messages = [
@@ -169,7 +171,6 @@ class WorkedTaskController extends Controller
             'proof_photos.required' => 'You must upload all required proof photos.',
             'proof_photos.array' => 'The proof photos must be an array.',
             'proof_photos.min' => 'You must upload at least ' . $taskDetails->required_proof_photo . ' proof photos.',
-            'proof_photos.*.required' => 'Each proof photo is required.',
             'proof_photos.*.image' => 'Each proof photo must be an image.',
             'proof_photos.*.mimes' => 'Each proof photo must be a file of type: jpg, jpeg, png.',
             'proof_photos.*.max' => 'Each proof photo may not be greater than 2MB.',
@@ -194,11 +195,13 @@ class WorkedTaskController extends Controller
 
         $proof_photos = [];
         $manager = new ImageManager(new Driver());
-        foreach ($request->file('proof_photos') as $key => $photo) {
-            $proof_photo_name = $id . "-" . $request->user()->id . "-proof_photo-".($key+1).".". $photo->getClientOriginalExtension();
-            $image = $manager->read($photo);
-            $image->toJpeg(80)->save(base_path("public/uploads/task_proof_photo/").$proof_photo_name);
-            $proof_photos[] = $proof_photo_name;
+        if ($request->hasFile('proof_photos')) {
+            foreach ($request->file('proof_photos') as $key => $photo) {
+                $proof_photo_name = $id . "-" . $request->user()->id . "-proof_photo-".($key+1).".". $photo->getClientOriginalExtension();
+                $image = $manager->read($photo);
+                $image->toJpeg(80)->save(base_path("public/uploads/task_proof_photo/").$proof_photo_name);
+                $proof_photos[] = $proof_photo_name;
+            }
         }
 
         ProofTask::create([

@@ -123,7 +123,7 @@
                                 </label>
                                 <textarea class="form-control" name="additional_note" id="additional_note" rows="4" placeholder="Please enter additional notes." required></textarea>
                                 <small class="text-danger" id="additional_note_error"></small>
-                                <small class="text-info d-block">*Note: Please provide additional note information about your task here for verification purposes and if you need any question answered from worker please enter the answer here, Only admin and you can see.</small>
+                                <small class="text-info d-block">*Note: Please must be add answers to your questions in the additional note field for proof checking purposes. After submitting the task only you and the admin can see the additional note field.</small>
                             </div>
                             <div class="mb-2">
                                 <label for="thumbnail" class="form-label">
@@ -163,7 +163,7 @@
                                     <label for="required_proof_photo" class="form-label">
                                         Required Proof Photo <small class="text-danger">* Required </small>
                                     </label>
-                                    <input type="number" class="form-control" name="required_proof_photo" id="required_proof_photo" min="1" value="1" placeholder="Please enter how many additional required proof photo are required." required>
+                                    <input type="number" class="form-control" name="required_proof_photo" id="required_proof_photo" min="0" value="0" placeholder="Please enter how many additional required proof photo are required." required>
                                     <small class="text-danger" id="required_proof_photo_error"></small>
                                     <small class="text-info d-block">* Additional required proof photo charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }} per required proof photo.</small>
                                     <small class="text-info d-block">* Note: You get 1 required proof photo for free.</small>
@@ -360,8 +360,8 @@
             var required_proof_photo = parseInt($('#required_proof_photo').val());
             if (isNaN(required_proof_photo)) {
                 $('#required_proof_photo_error').text('Please enter how many additional required proof photo are required.');
-            } else if (required_proof_photo < 1) {
-                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
+            } else if (required_proof_photo < 0) {
+                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
             } else {
                 $('#required_proof_photo_error').text('');
             }
@@ -520,8 +520,8 @@
                 if (isNaN(required_proof_photo)) {
                     $('#required_proof_photo_error').text('Please enter how many additional required proof photo are required.');
                     isValid = false;
-                } else if (required_proof_photo < 1) {
-                    $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 1.');
+                } else if (required_proof_photo < 0) {
+                    $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
                     isValid = false;
                 } else {
                     $('#required_proof_photo_error').text('');

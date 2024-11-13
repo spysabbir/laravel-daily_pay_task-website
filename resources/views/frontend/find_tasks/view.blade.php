@@ -12,7 +12,7 @@
                 <div class="d-flex align-items-center">
                     <h4>Proof Submitted: </h4>
                     <div class="progress mx-1 position-relative" style="width: 250px">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $proofCount == 0 ? 'primary' : 'success' }}" role="progressbar" style="width: {{ $proofCount == 0 ? $taskDetails->work_needed : round(($proofCount / $taskDetails->work_needed) * 100, 2) }}%" aria-valuenow="{{ $proofCount }}" aria-valuemin="0" aria-valuemax="{{ $taskDetails->work_needed }}"></div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $proofCount == 0 ? 'primary' : 'success' }}" role="progressbar" style="width: {{ $proofCount == 0 ? 100 : round(($proofCount / $taskDetails->work_needed) * 100, 2) }}%" aria-valuenow="{{ $proofCount }}" aria-valuemin="0" aria-valuemax="{{ $taskDetails->work_needed }}"></div>
                         <span class="position-absolute w-100 text-center">{{ $proofCount }}/{{ $taskDetails->work_needed }}</span>
                     </div>
                 </div>

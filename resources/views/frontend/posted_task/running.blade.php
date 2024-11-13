@@ -20,6 +20,7 @@
                                 <th>Task ID</th>
                                 <th>Title</th>
                                 <th>Approved At</th>
+                                <th>Boosted Time</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
                                 <th>Total Charge</th>
@@ -131,13 +132,48 @@
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'approved_at', name: 'approved_at' },
+                { data: 'boosted_time', name: 'boosted_time' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
                 { data: 'total_charge', name: 'total_charge' },
                 { data: 'charge_status', name: 'charge_status' },
                 { data: 'action', name: 'action' }
-            ]
+            ],
+            drawCallback: function(settings) {
+                updateCountdowns();
+            }
         });
+
+        // Function to update countdowns
+        function updateCountdowns() {
+            $(".countdown").each(function() {
+                const $element = $(this);
+                const endTime = new Date($element.data('end-time')).getTime();
+
+                if (isNaN(endTime)) {
+                    console.error("Error: Invalid end time format.");
+                    $element.text("Invalid end time.");
+                    return;
+                }
+
+                function updateCountdown() {
+                    const now = new Date().getTime();
+                    const remainingTime = endTime - now;
+
+                    if (remainingTime <= 0) {
+                        $element.text("Boosted time has expired.");
+                    } else {
+                        const hours = Math.floor(remainingTime / (1000 * 60 * 60));
+                        const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                        $element.text(`${hours}h ${minutes}m ${seconds}s remaining`);
+                    }
+                }
+                setInterval(updateCountdown, 1000);
+                updateCountdown();
+            });
+        }
 
         // Paused Data
         $(document).on('click', '.pausedBtn', function(){

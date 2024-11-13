@@ -21,6 +21,7 @@ use App\Models\Bonus;
 use App\Models\Report;
 use App\Notifications\RatingNotification;
 use App\Notifications\BonusNotification;
+use Carbon\Carbon;
 
 
 class PostedTaskController extends Controller
@@ -98,7 +99,7 @@ class PostedTaskController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'work_needed' => 'required|numeric|min:1',
             'earnings_from_work' => 'required|numeric|min:0',
-            'required_proof_photo' => 'required|numeric|min:1',
+            'required_proof_photo' => 'required|numeric|min:0',
             'boosted_time' => 'required|numeric|min:0',
             'work_duration' => 'required|numeric|min:3',
         ]);
@@ -112,7 +113,7 @@ class PostedTaskController extends Controller
             $thumbnail_photo_name = null;
         }
 
-        $total_required_proof_photo_charge = get_default_settings('task_posting_additional_required_proof_photo_charge') * ($request->required_proof_photo - 1);
+        $total_required_proof_photo_charge = get_default_settings('task_posting_additional_required_proof_photo_charge') * ($request->required_proof_photo > 1 ? $request->required_proof_photo - 1 : 0);
         $total_boosted_time_charge = get_default_settings('task_posting_boosted_time_charge') * ($request->boosted_time / 15);
         $total_work_duration_charge = get_default_settings('task_posting_additional_work_duration_charge') * ($request->work_duration - 3);
 
@@ -174,7 +175,7 @@ class PostedTaskController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'work_needed' => 'required|numeric|min:1',
             'earnings_from_work' => 'required|numeric|min:0',
-            'required_proof_photo' => 'required|numeric|min:1',
+            'required_proof_photo' => 'required|numeric|min:0',
             'boosted_time' => 'required|numeric|min:0',
             'work_duration' => 'required|numeric|min:3',
         ]);
@@ -190,7 +191,7 @@ class PostedTaskController extends Controller
             $thumbnail_photo_name = $postTask->thumbnail;
         }
 
-        $total_required_proof_photo_charge = get_default_settings('task_posting_additional_required_proof_photo_charge') * ($request->required_proof_photo - 1);
+        $total_required_proof_photo_charge = get_default_settings('task_posting_additional_required_proof_photo_charge') * ($request->required_proof_photo > 1 ? $request->required_proof_photo - 1 : 0);
         $total_boosted_time_charge = get_default_settings('task_posting_boosted_time_charge') * ($request->boosted_time / 15);
         $total_work_duration_charge = get_default_settings('task_posting_additional_work_duration_charge') * ($request->work_duration - 3);
 
@@ -480,7 +481,28 @@ class PostedTaskController extends Controller
                         return $proofStatus ?: '<span class="badge bg-secondary">Proof not submitted yet.</span>';
                     })
                     ->editColumn('approved_at', function ($row) {
-                        return date('d M Y h:i A', strtotime($row->approved_at));
+                        return date('d M, Y h:i A', strtotime($row->approved_at));
+                    })
+                    ->editColumn('boosted_time', function ($row) {
+                        $approvedAt = Carbon::parse($row->approved_at);
+                        $boostedEndTime = $approvedAt->addMinutes($row->boosted_time);
+
+                        if ($row->boosted_time == null) {
+                            return '<span class="badge bg-secondary">Not boosted</span>';
+                        } else if ($boostedEndTime->isFuture()) {
+                            return '<span class="countdown badge bg-success" data-end-time="' . $boostedEndTime->toIso8601String() .'">.....</span>';
+                        } else {
+                            if ($row->boosted_time < 60) {
+                                return '
+                                <span class="badge bg-danger">' . $row->boosted_time . ' Minute' . ($row->boosted_time > 1 ? 's' : '') . ' | Expired</span>
+                                ';
+                            } else {
+                                $hours = round($row->boosted_time / 60, 1);
+                                return '
+                                <span class="badge bg-danger">' . $hours . ' Hour' . ($hours > 1 ? 's' : '') . ' | Expired</span>
+                                ';
+                            }
+                        }
                     })
                     ->editColumn('action', function ($row) {
                         $btn = '
@@ -492,7 +514,7 @@ class PostedTaskController extends Controller
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['proof_submitted', 'proof_status', 'total_charge', 'charge_status', 'approved_at', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_status', 'total_charge', 'charge_status', 'approved_at', 'boosted_time', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.running');
