@@ -170,6 +170,7 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'posted_task_list.rejected', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'posted_task_list.running', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'posted_task_list.canceled', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],
+            ['name' => 'posted_task_list.paused', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'posted_task_list.completed', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],
 
             ['name' => 'WorkedTaskMenu', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],

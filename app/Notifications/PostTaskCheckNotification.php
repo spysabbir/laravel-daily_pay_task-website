@@ -27,9 +27,11 @@ class PostTaskCheckNotification extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         if ($this->postTask['status'] === 'Rejected') {
-            $message = 'Rejected Reason: ' . $this->postTask['rejection_reason'];
+            $message = 'Rejection Reason: ' . $this->postTask['rejection_reason'];
         } else if ($this->postTask['status'] === 'Canceled') {
-            $message = 'Canceled Reason: ' . $this->postTask['cancellation_reason'];
+            $message = 'Cancellation Reason: ' . $this->postTask['cancellation_reason'];
+        } else if ($this->postTask['status'] === 'Paused') {
+            $message = 'Pausing Reason: ' . $this->postTask['pausing_reason'];
         } else {
             $message = 'Please check the task post. Thank you!';
         }
@@ -42,9 +44,11 @@ class PostTaskCheckNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         if ($this->postTask['status'] === 'Rejected') {
-            $message = 'Rejected Reason: ' . $this->postTask['rejection_reason'];
+            $message = 'Rejection Reason: ' . $this->postTask['rejection_reason'];
         } else if ($this->postTask['status'] === 'Canceled') {
-            $message = 'Canceled Reason: ' . $this->postTask['cancellation_reason'];
+            $message = 'Cancellation Reason: ' . $this->postTask['cancellation_reason'];
+        } else if ($this->postTask['status'] === 'Paused') {
+            $message = 'Pausing Reason: ' . $this->postTask['pausing_reason'];
         } else {
             $message = 'Please check the task post. Thank you!';
         }

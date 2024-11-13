@@ -150,10 +150,14 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('rejected-posted_task_view/{id}', [TaskController::class, 'rejectedPostedTaskView'])->name('rejected.posted_task_view');
     Route::get('posted_task_list-canceled', [TaskController::class, 'postedTaskListCanceled'])->name('posted_task_list.canceled');
     Route::get('canceled-posted_task_view/{id}', [TaskController::class, 'canceledPostedTaskView'])->name('canceled.posted_task_view');
+    Route::get('posted_task_list-paused', [TaskController::class, 'postedTaskListPaused'])->name('posted_task_list.paused');
+    Route::get('paused-posted_task_view/{id}', [TaskController::class, 'pausedPostedTaskView'])->name('paused.posted_task_view');
     Route::get('posted_task_list-completed', [TaskController::class, 'postedTaskListCompleted'])->name('posted_task_list.completed');
     Route::get('completed-posted_task_view/{id}', [TaskController::class, 'completedPostedTaskView'])->name('completed.posted_task_view');
 
     Route::post('running-posted_task_canceled/{id}', [TaskController::class, 'runningPostedTaskCanceled'])->name('running.posted_task_canceled');
+    Route::post('running-posted_task_paused/{id}', [TaskController::class, 'runningPostedTaskPaused'])->name('running.posted_task_paused');
+    Route::get('running-posted_task_paused_resume/{id}', [TaskController::class, 'runningPostedTaskPausedResume'])->name('running.posted_task_paused_resume');
     Route::put('posted_task_status_update/{id}', [TaskController::class, 'postedTaskStatusUpdate'])->name('posted_task_status_update');
     // Worked  Task
     Route::get('worked_task_list-all', [TaskController::class, 'workedTaskListAll'])->name('worked_task_list.all');

@@ -177,6 +177,52 @@
                 }
             });
         });
+
+        // Paused Data
+        $(document).on('click', '.pausedBtn', function(){
+            var id = $(this).data('id');
+            var url = "{{ route('backend.running.posted_task_paused', ":id") }}";
+            url = url.replace(':id', id);
+
+            Swal.fire({
+                input: "textarea",
+                inputLabel: "Pausing Reason",
+                inputPlaceholder: "Type pausing reason here...",
+                inputAttributes: {
+                    "aria-label": "Type pausing reason here..."
+                },
+                title: 'Are you sure?',
+                text: "You want to paused this task!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, paused it!',
+                preConfirm: () => {
+                    const message = Swal.getInput().value;
+                    if (!message) {
+                        Swal.showValidationMessage('Pausing Reason is required');
+                    }
+                    return message;
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: { id: id, message: result.value },
+                        success: function(response) {
+                            if (response.status == 401) {
+                                toastr.error(response.error);
+                            } else {
+                                $('#runningDataTable').DataTable().ajax.reload();
+                                toastr.error('Task Paused Successfully');
+                            }
+                        },
+                    });
+                }
+            });
+        });
     });
 </script>
 @endsection

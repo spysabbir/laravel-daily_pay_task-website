@@ -1,32 +1,26 @@
 @extends('layouts.template_master')
 
-@section('title', 'Posting Task List - Paused')
+@section('title', 'Task List - Paused')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <div class="text">
-                    <h3 class="card-title">Posting Task List - Paused</h3>
-                    <p class="card-description text-warning">
-                        Note: If your task paused by admin, you can see the reason here. If you want to resume the task, you can contact with admin.
-                    </p>
-                </div>
+                <h3 class="card-title">Task List (Paused)</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="allDataTable" class="table">
+                    <table id="pausedDataTable" class="table">
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Task ID</th>
+                                <th>Task Id</th>
+                                <th>User</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
-                                <th>Total Charge</th>
-                                <th>Charge Status</th>
-                                <th>Pausing Reason</th>
+                                <th>Submited At</th>
                                 <th>Paused At</th>
                                 <th>Paused By</th>
                                 <th>Action</th>
@@ -69,33 +63,32 @@
             }
         });
 
-        // Read Data
-        $('#allDataTable').DataTable({
+        // Paused Data
+        $('#pausedDataTable').DataTable({
             processing: true,
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('posted_task.list.paused') }}",
+                url: "{{ route('backend.posted_task_list.paused') }}",
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
+                { data: 'user', name: 'user' },
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
-                { data: 'total_charge', name: 'total_charge' },
-                { data: 'charge_status', name: 'charge_status' },
-                { data: 'pausing_reason', name: 'pausing_reason' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'paused_at', name: 'paused_at' },
                 { data: 'paused_by', name: 'paused_by' },
-                { data: 'action', name: 'action' },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
         // View Data
         $(document).on('click', '.viewBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('posted_task.view', ":id") }}";
+            var url = "{{ route('backend.paused.posted_task_view', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -109,7 +102,7 @@
         // Resume Data
         $(document).on('click', '.resumeBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('running.posted_task.paused.resume', ":id") }}";
+            var url = "{{ route('backend.running.posted_task_paused_resume', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -125,72 +118,14 @@
                         url: url,
                         method: 'GET',
                         success: function(response) {
-                            $('#allDataTable').DataTable().ajax.reload();
+                            $('#pausedDataTable').DataTable().ajax.reload();
                             toastr.success('Task Resumed Successfully');
                         }
                     });
                 }
             })
         })
-
-        // Canceled Data
-        $(document).on('click', '.canceledBtn', function(){
-
-            var id = $(this).data('id');
-            var url = "{{ route('running.posted_task.canceled', ":id") }}";
-            url = url.replace(':id', id);
-
-            $.ajax({
-                url: url,
-                method: 'POST',
-                data: { id: id, check: true },
-                success: function(response) {
-                    if (response.status == 400) {
-                        toastr.error(response.error);
-                    } else {
-                        Swal.fire({
-                            input: "textarea",
-                            inputLabel: "Cancellation Reason",
-                            inputPlaceholder: "Type cancellation reason here...",
-                            inputAttributes: {
-                                "aria-label": "Type cancellation reason here..."
-                            },
-                            title: 'Are you sure?',
-                            text: "You want to cancel this task!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, Cancel it!',
-                            preConfirm: () => {
-                                const message = Swal.getInput().value;
-                                if (!message) {
-                                    Swal.showValidationMessage('Cancellation Reason is required');
-                                }
-                                return message;
-                            }
-                        }).then((result) => {
-                            if (result.isConfirmed && result.value) {
-                                $.ajax({
-                                    url: url,
-                                    method: 'POST',
-                                    data: { id: id, message: result.value },
-                                    success: function(response) {
-                                        if (response.status == 401) {
-                                            toastr.error(response.error);
-                                        } else {
-                                            $('#allDataTable').DataTable().ajax.reload();
-                                            $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
-                                            toastr.error('Task Canceled Successfully');
-                                        }
-                                    },
-                                });
-                            }
-                        });
-                    }
-                },
-            });
-        });
     });
 </script>
 @endsection
+

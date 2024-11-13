@@ -160,6 +160,7 @@ class TaskController extends Controller
                     $btn = '
                     <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
                     <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>
                     ';
                 return $btn;
                 })
@@ -251,6 +252,103 @@ class TaskController extends Controller
     {
         $postTask = PostTask::where('id', $id)->first();
         return view('backend.posted_task.canceled_show', compact('postTask'));
+    }
+
+    public function postedTaskListPaused(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = PostTask::where('status', 'Paused');
+
+            $query->select('post_tasks.*')->orderBy('paused_at', 'desc');
+
+            $taskList = $query->get();
+
+            return DataTables::of($taskList)
+                ->addIndexColumn()
+                ->editColumn('user', function ($row) {
+                    return $row->user->name;
+                })
+                ->editColumn('proof_submitted', function ($row) {
+                    $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    return '
+                    <div class="progress position-relative">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                    </div>
+                    ';
+                })
+                ->editColumn('proof_status', function ($row) {
+                    $statuses = [
+                        'Pending' => 'bg-warning',
+                        'Approved' => 'bg-success',
+                        'Rejected' => 'bg-danger',
+                        'Reviewed' => 'bg-info'
+                    ];
+                    $proofStatus = '';
+                    $proofCount = ProofTask::where('post_task_id', $row->id)->count();
+                    if ($proofCount === 0) {
+                        return '<span class="badge bg-secondary">Proof not submitted yet.</span>';
+                    }
+                    foreach ($statuses as $status => $class) {
+                        $count = ProofTask::where('post_task_id', $row->id)->where('status', $status)->count();
+                        if ($count > 0) {
+                            $proofStatus .= "<span class=\"badge $class\"> $status: $count</span> ";
+                        }
+                    }
+                    return $proofStatus;
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->editColumn('paused_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->paused_at)) . '</span>
+                        ';
+                })
+                ->editColumn('paused_by', function ($row) {
+                    return '
+                        <span class="badge bg-info text-dark">' . $row->pausedBy->name . '</span>
+                        ';
+                })
+                ->editColumn('action', function ($row) {
+                    $btn = '';
+
+                    if ($row->pausedBy->user_type == 'Backend') {
+                        $btn .= '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs resumeBtn">Resume</button>';
+                    }
+
+                    $btn .= '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    ';
+
+                    return $btn;
+                })
+                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'paused_at', 'paused_by', 'action'])
+                ->make(true);
+        }
+        return view('backend.posted_task.paused');
+    }
+
+    public function pausedPostedTaskView(string $id)
+    {
+        $postTask = PostTask::where('id', $id)->first();
+        return view('backend.posted_task.paused_show', compact('postTask'));
+    }
+
+    public function runningPostedTaskPausedResume($id)
+    {
+        $postTask = PostTask::findOrFail($id);
+        $postTask->status = 'Running';
+        $postTask->save();
+
+        $user = User::findOrFail($postTask->user_id);
+        $user->notify(new PostTaskCheckNotification($postTask));
+
+        return response()->json(['success' => 'Status updated successfully.']);
     }
 
     public function postedTaskListCompleted(Request $request)
@@ -386,6 +484,36 @@ class TaskController extends Controller
             return response()->json([
                 'status' => 200,
                 'success' => 'Task canceled successfully.'
+            ]);
+        }
+    }
+
+    public function runningPostedTaskPaused(Request $request, string $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'message' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 401,
+                'error' => 'Please enter a valid reason.'
+            ]);
+        } else {
+            $postTask = PostTask::findOrFail($id);
+
+            $postTask->status = 'Paused';
+            $postTask->pausing_reason = $request->message;
+            $postTask->paused_by = auth()->user()->id;
+            $postTask->paused_at = now();
+            $postTask->save();
+
+            $user = User::findOrFail($postTask->user_id);
+            $user->notify(new PostTaskCheckNotification($postTask));
+
+            return response()->json([
+                'status' => 200,
+                'success' => 'Task paused successfully.'
             ]);
         }
     }

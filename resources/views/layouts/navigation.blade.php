@@ -449,6 +449,11 @@
                             <a href="{{ route('backend.posted_task_list.canceled') }}" class="nav-link">Canceled</a>
                         </li>
                         @endcan
+                        @can('posted_task_list.paused')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.posted_task_list.paused') }}" class="nav-link">Paused</a>
+                        </li>
+                        @endcan
                         @can('posted_task_list.completed')
                         <li class="nav-item">
                             <a href="{{ route('backend.posted_task_list.completed') }}" class="nav-link">Completed</a>

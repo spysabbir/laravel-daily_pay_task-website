@@ -9,6 +9,18 @@
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
+                                <td>User Id</td>
+                                <td>{{ $postTask->user->id }}</td>
+                            </tr>
+                            <tr>
+                                <td>User Name</td>
+                                <td>{{ $postTask->user->name }}</td>
+                            </tr>
+                            <tr>
+                                <td>User Email</td>
+                                <td>{{ $postTask->user->email }}</td>
+                            </tr>
+                            <tr>
                                 <td>Category</td>
                                 <td>{{ $postTask->category->name }}</td>
                             </tr>
@@ -91,92 +103,13 @@
         </div>
     </div>
     <div class="col-lg-6">
-        @if ($postTask->status == 'Pending')
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>Warning!</strong> Your task is pending. Please wait for approval. <br>
-                <strong>Submited At:</strong> {{ date('d M, Y h:i:s A', strtotime($postTask->created_at)) }} <br>
-            </div>
-        @else
-            @if ($postTask->status == 'Running')
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>Success!</strong> Your task is approved. Please start your work. <br>
-                <strong>Approved At:</strong> {{ date('d M, Y h:i:s A', strtotime($postTask->approved_at)) }} <br>
-            </div>
-            @endif
-            @if ($postTask->status == 'Canceled')
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>Warning!</strong> Your task is canceled. Please check the reason.
-                <div class="mt-3">
-                    <strong>Canceled By:</strong> {{ $postTask->canceledBy->user_type == 'Backend' ? 'Admin' : $postTask->canceledBy->name }} <br>
-                    <strong>Canceled At:</strong> {{ date('d M, Y h:i:s A', strtotime($postTask->canceled_at)) }} <br>
-                    <strong>Cancellation Reason:</strong> {{ $postTask->cancellation_reason }}
-                </div>
-            </div>
-            @endif
-            @if ($postTask->status == 'Paused')
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>Warning!</strong> Your task is paused. Please wait for Resume.
-                <div class="mt-3">
-                    <strong>Paused By:</strong> {{ $postTask->pausedBy->user_type == 'Backend' ? 'Admin' : $postTask->pausedBy->name }} <br>
-                    <strong>Paused At:</strong> {{ date('d M, Y h:i:s A', strtotime($postTask->paused_at)) }} <br>
-                    <strong>Pausing Reason:</strong> {{ $postTask->pausing_reason }}
-                </div>
-            </div>
-            @endif
-            @if ($postTask->status == 'Completed')
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>Success!</strong> Your task is completed. Please check the proof.
-                <strong>Completed At:</strong> {{ date('d M, Y h:i:s A', strtotime($postTask->completed_at)) }} <br>
-            </div>
-            @endif
-            <div class="border p-1 m-1">
-                @php
-                    $proofSubmittedCount = $proofSubmitted->count();
-                    $proofStyleWidth = $proofSubmittedCount != 0 ? round(($proofSubmittedCount / $postTask->work_needed) * 100, 2) : 100;
-                    $progressBarClass = $proofSubmittedCount == 0 ? 'primary' : 'success';
-                @endphp
-                <p class="mb-1"><strong class="text-info">Proof Status: </strong> <span class="text-success">Submit: {{ $proofSubmittedCount }}</span>, Need: {{ $postTask->work_needed }}</p>
-                <div class="progress position-relative">
-                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated bg-{{ $progressBarClass }}" role="progressbar" style="width: {{ $proofStyleWidth }}%" aria-valuenow="{{ $proofSubmittedCount }}" aria-valuemin="0" aria-valuemax="{{ $postTask->work_needed }}"></div>
-                    <span class="position-absolute w-100 text-center">{{ $proofSubmittedCount }} / {{ $postTask->work_needed }}</span>
-                </div>
-            </div>
-            <div class="border p-1 m-1">
-                @php
-                    $pendingProofCount = $proofSubmitted->where('status', 'Pending')->count();
-                    $approvedProofCount = $proofSubmitted->where('status', 'Approved')->count();
-                    $rejectedProofCount = $proofSubmitted->where('status', 'Rejected')->count();
-                    $reviewedProofCount = $proofSubmitted->where('status', 'Reviewed')->count();
-
-                    $totalProof = $approvedProofCount + $rejectedProofCount + $reviewedProofCount + $pendingProofCount;
-
-                    $pendingProofStyleWidth = $totalProof != 0 ? round(($pendingProofCount / $totalProof) * 100, 2) : 100;
-                    $approvedProofStyleWidth = $totalProof != 0 ? round(($approvedProofCount / $totalProof) * 100, 2) : 100;
-                    $rejectedProofStyleWidth = $totalProof != 0 ? round(($rejectedProofCount / $totalProof) * 100, 2) : 100;
-                    $reviewedProofStyleWidth = $totalProof != 0 ? round(($reviewedProofCount / $totalProof) * 100, 2) : 100;
-                @endphp
-                <p class="mb-1"><strong class="text-info">Check Status: </strong> <span class="text-primary">Pending: {{ $pendingProofCount }}</span>, <span class="text-success">Approved: {{ $approvedProofCount }}</span>, <span class="text-danger">Rejected: {{ $rejectedProofCount }}</span>, <span class="text-warning">Reviewed: {{ $reviewedProofCount }}</span></p>
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ $pendingProofStyleWidth }}%" aria-valuenow="{{ $pendingProofCount }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $pendingProofCount }} / {{ $totalProof }}</div>
-                    <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: {{ $approvedProofStyleWidth }}%" aria-valuenow="{{ $approvedProofCount }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $approvedProofCount }} / {{ $totalProof }}</div>
-                    <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: {{ $rejectedProofStyleWidth }}%" aria-valuenow="{{ $rejectedProofStyleWidth }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $rejectedProofCount }} / {{ $totalProof }}</div>
-                    <div class="progress-bar bg-warning progress-bar-striped" role="progressbar" style="width: {{ $reviewedProofStyleWidth }}%" aria-valuenow="{{ $reviewedProofCount }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $reviewedProofCount }} / {{ $totalProof }}</div>
-                </div>
-            </div>
-            <div class="border p-1 m-1">
-                <strong class="text-info">Charge Status: </strong>,
-                <span class="text-secondary">Waiting: {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->total_charge / $postTask->work_needed) * ($postTask->work_needed - $proofSubmitted->count()) }}</span>,
-                <span class="text-primary">Pending: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) * $pendingProof, 2) }}</span>,
-                <span class="text-success">Payment: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) * $approvedProof, 2) }}</span>,
-                <span class="text-danger">Refund: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) * $finallyRejectedProof, 2) }}</span>,
-                <span class="text-warning">Hold: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) *  $waitingRejectedProof, 2) }}</span>
-            </div>
-        @endif
+        <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <strong>Warning!</strong> This task post has been paused. <br>
+            <span>Paused By: {{ $postTask->pausedBy->name }}</span> <br>
+            <span>Paused At: {{ date('d M, Y h:i:s A', strtotime($postTask->paused_at)) }}</span> <br>
+            <span>Pausing Reason: {{ $postTask->pausing_reason }}</span> <br>
+        </div>
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">

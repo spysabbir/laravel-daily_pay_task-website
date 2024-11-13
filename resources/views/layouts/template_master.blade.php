@@ -63,10 +63,7 @@
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/datatable/css/buttons.dataTables.min.css">
 	<link rel="stylesheet" href="{{ asset('template') }}/vendors/select2/select2.min.css">
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/sweetalert2/sweetalert2.min.css">
-
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.css">
-
-
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/lightbox2/css/lightbox.min.css"  />
 	<!-- End plugin css for this page -->
 
@@ -79,7 +76,9 @@
         <link rel="stylesheet" href="{{ asset('template') }}/css/demo2/style.css">
     <!-- End layout styles -->
 
+    <!-- toastr css -->
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/toastr/toastr.css" >
+    <!-- End toastr css -->
 </head>
 <body>
 	<div class="main-wrapper">
@@ -147,26 +146,36 @@
                                     <p>{{ $supports->count() }} New Messages</p>
                                 </div>
                                 <div class="p-1">
-                                    @forelse ($supports as $support)
-                                    <a href="{{ Auth::user()->isFrontendUser() ? route('support') : route('backend.support') }}" class="dropdown-item d-flex align-items-center py-2">
-                                        <div class="me-3">
-                                            <img class="wd-30 ht-30 rounded-circle" src="{{ asset('uploads/profile_photo') }}/{{ $support->sender->profile_photo }}" alt="userr">
+                                    @if ($supports->count() > 0)
+                                        <div style="max-height: 500px; overflow-y: auto;">
+                                            @forelse ($supports as $support)
+                                                <a href="{{ Auth::user()->isFrontendUser() ? route('support') : route('backend.support') }}" class="dropdown-item d-flex align-items-center py-2">
+                                                    <div class="me-3">
+                                                        <img class="wd-30 ht-30 rounded-circle" src="{{ asset('uploads/profile_photo') }}/{{ $support->sender->profile_photo }}" alt="user">
+                                                    </div>
+                                                    <div class="d-flex justify-content-between flex-grow-1">
+                                                        <div class="me-4">
+                                                            <p>{{ $support->message }}</p>
+                                                            <p class="tx-12 text-info">{{ $support->photo ? 'Attachment' : '' }}</p>
+                                                        </div>
+                                                        <p class="tx-12 text-muted">{{ $support->created_at->diffForHumans() }}</p>
+                                                    </div>
+                                                </a>
+                                            @empty
+                                                <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+                                                    <div class="flex-grow-1 me-2">
+                                                        <p class="text-center">No new messages</p>
+                                                    </div>
+                                                </a>
+                                            @endforelse
                                         </div>
-                                        <div class="d-flex justify-content-between flex-grow-1">
-                                            <div class="me-4">
-                                                <p>{{ $support->message }}</p>
-                                                <p class="tx-12 text-info">{{ $support->photo ? 'Attachment' : '' }}</p>
+                                    @else
+                                        <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+                                            <div class="flex-grow-1 me-2">
+                                                <p class="text-center">No new messages</p>
                                             </div>
-                                            <p class="tx-12 text-muted">{{ $support->created_at->diffForHumans() }}</p>
-                                        </div>
-                                    </a>
-                                    @empty
-                                    <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
-                                        <div class="flex-grow-1 me-2">
-                                            <p class="text-center">No new messages</p>
-                                        </div>
-                                    </a>
-                                    @endforelse
+                                        </a>
+                                    @endif
                                 </div>
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
                                     <a href="{{ Auth::user()->isFrontendUser() ? route('support') : route('backend.support') }}">View all</a>
@@ -198,33 +207,33 @@
                                     <a href="{{ route('notification.read.all') }}" class="text-warning mx-2">Clear all</a>
                                 </div>
                                 <div class="p-1">
-                                        @if (Auth::user()->unreadNotifications->count() > 0)
+                                    @if (Auth::user()->unreadNotifications->count() > 0)
+                                        <div style="max-height: 500px; overflow-y: auto;">
                                             @foreach (Auth::user()->unreadNotifications as $notification)
-                                            <a href="{{ route('notification.read', $notification->id) }}" class="dropdown-item d-flex align-items-center py-2">
-                                                <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
-                                                    @if (class_basename($notification->type) === 'DepositNotification')
-                                                        <i class="icon-sm text-white" data-feather="dollar-sign"></i>
-                                                    @elseif (class_basename($notification->type) === 'WithdrawNotification')
-                                                        <i class="icon-sm text-white" data-feather="credit-card"></i>
-                                                    @else
-                                                        <i class="icon-sm text-white" data-feather="alert-circle"></i>
-                                                    @endif
-                                                </div>
-                                                <div class="flex-grow-1 me-2">
-                                                    <p>
-                                                        <strong>{{ $notification->data['title'] }}</strong>
-                                                    </p>
-                                                    <p class="tx-12 text-muted">{{ $notification->created_at->diffForHumans() }}</p>
-                                                </div>
-                                            </a>
+                                                <a href="{{ route('notification.read', $notification->id) }}" class="dropdown-item d-flex align-items-center py-2">
+                                                    <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                                        @if (class_basename($notification->type) === 'DepositNotification' || class_basename($notification->type) === 'WithdrawNotification' || class_basename($notification->type) === 'BonusNotification')
+                                                            <i class="icon-sm text-white" data-feather="dollar-sign"></i>
+                                                        @else
+                                                            <i class="icon-sm text-white" data-feather="alert-circle"></i>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex-grow-1 me-2">
+                                                        <p>
+                                                            <strong>{{ $notification->data['title'] }}</strong>
+                                                        </p>
+                                                        <p class="tx-12 text-muted">{{ $notification->created_at->diffForHumans() }}</p>
+                                                    </div>
+                                                </a>
                                             @endforeach
-                                        @else
-                                            <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
-                                                <div class="flex-grow-1 me-2">
-                                                    <p class="text-center">No new notifications</p>
-                                                </div>
-                                            </a>
-                                        @endif
+                                        </div>
+                                    @else
+                                        <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+                                            <div class="flex-grow-1 me-2">
+                                                <p class="text-center">No new notifications</p>
+                                            </div>
+                                        </a>
+                                    @endif
                                 </div>
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
                                     <a href="{{ route('notification') }}">View all</a>
@@ -378,7 +387,7 @@
                         <div class="input-group date datepicker wd-200 me-2 mb-2 mb-md-0">
                             <span class="input-group-text input-group-addon bg-transparent border-primary">
                             <i data-feather="calendar" class=" text-primary"></i></span>
-                            <input type="text" class="form-control border-primary bg-transparent" value="{{ now()->format('d-F, Y') }}">
+                            <input type="text" class="form-control border-primary bg-transparent" value="{{ now()->format('d F, Y') }}" readonly>
                         </div>
                     </div>
                 </div>

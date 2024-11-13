@@ -33,6 +33,7 @@ return new class extends Migration
             $table->enum('status', ['Pending', 'Running', 'Rejected', 'Canceled', 'Paused', 'Completed']);
             $table->text('rejection_reason')->nullable();
             $table->text('cancellation_reason')->nullable();
+            $table->text('pausing_reason')->nullable();
             $table->integer('approved_by')->nullable();
             $table->integer('rejected_by')->nullable();
             $table->integer('canceled_by')->nullable();
