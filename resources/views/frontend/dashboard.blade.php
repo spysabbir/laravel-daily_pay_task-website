@@ -105,8 +105,12 @@
 <div class="row">
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Today Posted Task Status</h6>
+                </div>
+            </div>
             <div class="card-body">
-                <h6 class="card-title">Today Posted Task Status</h6>
                 @if ($today_pending_posted_task == 0 && $today_running_posted_task == 0 && $today_rejected_posted_task == 0 && $today_canceled_posted_task == 0 && $today_paused_posted_task == 0 && $today_completed_posted_task == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
@@ -125,8 +129,12 @@
     </div>
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Today Task Proof Submit Status</h6>
+                </div>
+            </div>
             <div class="card-body">
-                <h6 class="card-title">Today Task Proof Submit Status</h6>
                 @if ($today_pending_task_proof_submit == 0 && $today_approved_task_proof_submit == 0 && $today_rejected_task_proof_submit == 0 && $today_reviewed_task_proof_submit == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
@@ -150,9 +158,13 @@
         <div class="row flex-grow-1">
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Posted Task Status</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-baseline">
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
@@ -188,9 +200,13 @@
             </div>
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Task Proof Submit Status</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-baseline">
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
@@ -231,8 +247,12 @@
 <div class="row">
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Today Worked Task Status</h6>
+                </div>
+            </div>
             <div class="card-body">
-                <h6 class="card-title">Today Worked Task Status</h6>
                 @if ($today_pending_worked_task == 0 && $today_approved_worked_task == 0 && $today_rejected_worked_task == 0 && $today_reviewed_worked_task == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
@@ -251,8 +271,12 @@
     </div>
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Today Report Status</h6>
+                </div>
+            </div>
             <div class="card-body">
-                <h6 class="card-title">Today Report Status</h6>
                 @if ($today_pending_report == 0 && $today_resolved_report == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
@@ -276,10 +300,12 @@
         <div class="row flex-grow-1">
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Worked Task Status</h6>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
                                 <h3 class="mb-2">{{ $monthly_worked_task }}</h3>
@@ -314,10 +340,12 @@
             </div>
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Report Status</h6>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
                                 <h3 class="mb-2">{{ $monthly_report }}</h3>
@@ -357,8 +385,12 @@
 <div class="row">
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Total Task Proof Submit Status</h6>
+                </div>
+            </div>
             <div class="card-body">
-                <h6 class="card-title">Total Task Proof Submit Status</h6>
                 @if ($total_task_proof_submit == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
@@ -377,8 +409,12 @@
     </div>
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Total Worked Task Status</h6>
+                </div>
+            </div>
             <div class="card-body">
-                <h6 class="card-title">Total Worked Task Status</h6>
                 @if ($total_worked_task == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
@@ -402,10 +438,12 @@
         <div class="row flex-grow-1">
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Total Task Proof Submit Status</h6>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ $total_pending_task_proof_submit }}</h3>
@@ -449,10 +487,12 @@
             </div>
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Total Worked Task Status</h6>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ $total_pending_worked_task }}</h3>
@@ -496,10 +536,12 @@
             </div>
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Total Posted Task Status</h6>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-xl-2">
                                 <h3 class="mb-2">{{ $total_pending_posted_task }}</h3>
@@ -559,6 +601,73 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <h6 class="card-title mb-2">Total Posted Task Charge Status</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWaiting, 2) + round($postTaskChargeHold, 2) + round($postTaskChargeRefund, 2) + round($postTaskChargePayment, 2) + round($postTaskChargePending, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Total</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargePending, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-info">
+                                        <span>Pending</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargePayment, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-success">
+                                        <span>Payment</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeRefund, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-danger">
+                                        <span>Refund</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeHold, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-warning">
+                                        <span>Hold</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-2">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWaiting, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-secondary">
+                                        <span>Waiting</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div> <!-- row -->
@@ -566,11 +675,13 @@
 <div class="row">
     <div class="col-xl-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-body">
+            <div class="card-header">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
                     <h6 class="card-title mb-0">Last 12 Months Deposit and Withdraw Amount Status<h6></h6>
                 </div>
                 <p class="text-muted">This chart shows the monthly deposit and withdraw amount.</p>
+            </div>
+            <div class="card-body">
                 @if ($total_withdraw == 0 && $total_deposit == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
@@ -594,10 +705,12 @@
         <div class="row flex-grow-1">
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Deposit Amount</h6>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $monthly_deposit }}</h3>
@@ -632,10 +745,12 @@
             </div>
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Withdraw Amount</h6>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $monthly_withdraw }}</h3>
@@ -670,10 +785,12 @@
             </div>
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Total Deposit Amount</h6>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_pending_deposit }}</h3>
@@ -708,10 +825,12 @@
             </div>
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
                             <h6 class="card-title mb-2">Total Withdraw Amount</h6>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-xl-4">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_pending_withdraw }}</h3>

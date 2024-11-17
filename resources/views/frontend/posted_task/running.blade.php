@@ -43,9 +43,43 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="post_task_id">
                                                 <div class="mb-3">
-                                                    <label for="work_needed" class="form-label">Additional Work Needed </label>
+                                                    <label for="work_needed" class="form-label">Additional Work Needed <small class="text-danger">* Required </small></label>
                                                     <input type="number" class="form-control" id="work_needed" value="0" name="work_needed" min="1" placeholder="Work Needed">
                                                     <span class="text-danger error-text update_work_needed_error"></span>
+                                                </div>
+                                                {{-- <div class="mb-3">
+                                                    <label for="boosted_time" class="form-label">Boosted Time <small class="text-danger">* Required </small></label>
+                                                    <select class="form-select" name="boosted_time" id="boosted_time" required>
+                                                        <option value="0" selected>No Boost</option>
+                                                        <option value="15">15 Minutes</option>
+                                                        <option value="30">30 Minutes</option>
+                                                        <option value="45">45 Minutes</option>
+                                                        <option value="60">1 Hour</option>
+                                                        <option value="120">2 Hours</option>
+                                                        <option value="180">3 Hours</option>
+                                                        <option value="240">4 Hours</option>
+                                                        <option value="300">5 Hours</option>
+                                                        <option value="360">6 Hours</option>
+                                                    </select>
+                                                    <span class="text-danger error-text update_boosted_time_error"></span>
+                                                    <small class="text-info">* Every 15 minutes boost charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }}.</small>
+                                                    <br>
+                                                    <small class="text-info">* When the task is boosted, it will be shown at the top of the task list.</small>
+                                                </div> --}}
+                                                <div class="mb-3">
+                                                    <input type="hidden" id="old_work_duration">
+                                                    <label for="work_duration" class="form-label"> Work Duration <small class="text-danger">* Required </small></label>
+                                                    <select class="form-select" name="work_duration" id="work_duration">
+                                                        <option value="3">3 Days</option>
+                                                        <option value="4">4 Days</option>
+                                                        <option value="5">5 Days</option>
+                                                        <option value="6">6 Days</option>
+                                                        <option value="7">1 Week</option>
+                                                    </select>
+                                                    <span class="text-danger error-text update_work_duration_error"></span>
+                                                    <small class="text-info">* Additional work duration charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_work_duration_charge') }} per day. Note: You get 3 days for free.</small>
+                                                    <br>
+                                                    <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="earnings_from_work" class="form-label">Earnings From Work</label>
@@ -270,10 +304,28 @@
                 type: "GET",
                 success: function (response) {
                     $('#post_task_id').val(response.id);
+                    $('#work_duration').val(response.work_duration);
+                    $('#old_work_duration').val(response.work_duration);
                     $('#earnings_from_work').val(response.earnings_from_work);
+
+                    // Disable lower options based on old_work_duration
+                    disableLowerOptions(response.work_duration);
                 },
             });
         });
+
+        // Disable lower options based on oldWorkDuration
+        function disableLowerOptions(oldWorkDuration) {
+            // Enable all options first
+            $('#work_duration option').prop('disabled', false);
+
+            // Disable options with value less than oldWorkDuration
+            $('#work_duration option').each(function () {
+                if (parseInt($(this).val()) < oldWorkDuration) {
+                    $(this).prop('disabled', true);
+                }
+            });
+        }
 
         // Update Data
         $('#editForm').submit(function (event) {
@@ -317,10 +369,19 @@
         });
 
         // Earnings From Work Calculation keyup and change event
-        $(document).on('change keyup', '#work_needed', function(){
-            var work_needed = parseInt($(this).val()) || 0;
+        $(document).on('change keyup', '#work_needed, #work_duration', function () {
+            var work_needed = parseInt($('#work_needed').val()) || 0;
+
+            var old_work_duration = parseInt($('#old_work_duration').val()) || 0;
+            var work_duration = parseInt($('#work_duration').val()) || 0;
+            var work_duration_charge = {{ get_default_settings('task_posting_additional_work_duration_charge') }};
+
             var earnings_from_work = parseFloat($('#earnings_from_work').val()) || 0;
-            var task_charge = work_needed * earnings_from_work;
+
+            var total_work_duration_charge = work_duration_charge * (work_duration - old_work_duration);
+
+            var task_charge = (work_needed * earnings_from_work) + total_work_duration_charge;
+
             var site_charge = (task_charge * {{ get_default_settings('task_posting_charge_percentage') }}) / 100;
             var total_task_charge = task_charge + site_charge;
             $('#update_task_charge').val(task_charge.toFixed(2));

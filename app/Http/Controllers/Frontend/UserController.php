@@ -103,6 +103,60 @@ class UserController extends Controller
 
         $userStatus = UserStatus::where('user_id', Auth::id())->latest()->first();
 
+
+        // Initialize charges
+        $postTaskChargeWaiting = 0;
+        $postTaskChargePending = 0;
+        $postTaskChargePayment = 0;
+        $postTaskChargeRefund = 0;
+        $postTaskChargeHold = 0;
+
+        $postTaskRunningIds = PostTask::where('user_id', Auth::id())->whereIn('status', ['Running', 'Paused'])->pluck('id')->toArray();
+        foreach ($postTaskRunningIds as $postTaskRunningId) {
+            $postTaskRunning = PostTask::find($postTaskRunningId);
+
+            if (!$postTaskRunning) {
+                continue; // Skip if no PostTask found
+            }
+
+            $chargePerTask = $postTaskRunning->total_charge / $postTaskRunning->work_needed;
+
+            // Calculate counts and charges
+            $proofCount = ProofTask::where('post_task_id', $postTaskRunningId)->count();
+            $postTaskChargeWaiting += $postTaskRunning->total_charge - ($chargePerTask * $proofCount);
+        }
+
+        $postTaskIds = PostTask::where('user_id', Auth::id())->pluck('id')->toArray();
+        foreach ($postTaskIds as $postTaskId) {
+            $postTask = PostTask::find($postTaskId);
+
+            if (!$postTask) {
+                continue; // Skip if no PostTask found
+            }
+
+            $chargePerTask = $postTask->total_charge / $postTask->work_needed;
+
+            // Calculate counts and charges
+            $pendingCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Pending')->count();
+            $paymentCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Approved')->count();
+            $refundCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Rejected')
+                ->where(function ($query) {
+                    $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(72))
+                        ->orWhereNotNull('reviewed_at');
+                })->count();
+            $holdCount = ProofTask::where('post_task_id', $postTaskId)
+                ->where(function ($query) {
+                    $query->where('status', 'Reviewed')
+                        ->orWhere('status', 'Rejected')->whereNull('reviewed_at')
+                        ->where('rejected_at', '>', now()->subHours(72));
+                })->count();
+
+            $postTaskChargePending += $chargePerTask * $pendingCount;
+            $postTaskChargePayment += $chargePerTask * $paymentCount;
+            $postTaskChargeRefund += $chargePerTask * $refundCount;
+            $postTaskChargeHold += $chargePerTask * $holdCount;
+        }
+
         return view('frontend/dashboard', [
             // Posted Task .............................................................................................................
             // Today Status
@@ -175,7 +229,7 @@ class UserController extends Controller
             'monthly_report' => Report::where('reported_by', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
             'yearly_report' => Report::where('reported_by', Auth::id())->whereYear('created_at', date('Y'))->count(),
             'total_report' => Report::where('reported_by', Auth::id())->count(),
-        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData', 'userStatus'));
+        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData', 'userStatus', 'postTaskChargeWaiting', 'postTaskChargePending', 'postTaskChargePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
     }
 
     // Profile.............................................................................................................
