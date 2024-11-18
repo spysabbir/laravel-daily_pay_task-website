@@ -117,12 +117,12 @@ class TaskController extends Controller
                 })
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
                     <div class="progress position-relative">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                     </div>
                     ';
                 })
@@ -192,12 +192,12 @@ class TaskController extends Controller
                 })
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
                     <div class="progress position-relative">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                     </div>
                     ';
                 })
@@ -270,12 +270,12 @@ class TaskController extends Controller
                 })
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
                     <div class="progress position-relative">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                     </div>
                     ';
                 })
@@ -365,14 +365,14 @@ class TaskController extends Controller
                 ->editColumn('user', function ($row) {
                     return $row->user->name;
                 })
-                ->editColumn('work_needed', function ($row) {
+                ->editColumn('worker_needed', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
                     <div class="progress position-relative">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                     </div>
                     ';
                 })
@@ -387,7 +387,7 @@ class TaskController extends Controller
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user', 'work_needed', 'created_at', 'action'])
+                ->rawColumns(['user', 'worker_needed', 'created_at', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.completed');
@@ -443,6 +443,9 @@ class TaskController extends Controller
         ]);
 
         if ($previousStatus === 'Pending') {
+            $postTask->update([
+                'boosting_start_at' => $request->status == 'Running' && $postTask->boosting_time != NULL ? now() : NULL,
+            ]);
             $user->notify(new PostTaskCheckNotification($postTask));
         }
 
@@ -468,7 +471,7 @@ class TaskController extends Controller
 
             $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
 
-            $refundAmount = number_format(($postTask->total_charge / $postTask->work_needed) * ($postTask->work_needed - $proofTasks), 2, '.', '');
+            $refundAmount = number_format(($postTask->charge / $postTask->worker_needed) * ($postTask->worker_needed - $proofTasks), 2, '.', '');
             $user->deposit_balance = $user->deposit_balance + $refundAmount;
             $user->save();
 
@@ -532,12 +535,12 @@ class TaskController extends Controller
                 ->addIndexColumn()
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
                     <div class="progress position-relative">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                     </div>
                     ';
                 })
@@ -621,12 +624,12 @@ class TaskController extends Controller
                 ->addIndexColumn()
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                     $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                     return '
                     <div class="progress position-relative">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                     </div>
                     ';
                 })
@@ -712,7 +715,7 @@ class TaskController extends Controller
 
             if ($request->status == 'Rejected') {
                 $postTaskUser->update([
-                    'deposit_balance' => $postTaskUser->deposit_balance + $postTask->earnings_from_work,
+                    'deposit_balance' => $postTaskUser->deposit_balance + $postTask->working_charge,
                 ]);
 
                 $rejected_reason_photo_name = null;
@@ -729,7 +732,7 @@ class TaskController extends Controller
                 $proofTask->rejected_by = auth()->user()->id;
             }else{
                 $proofTaskUser->update([
-                    'withdraw_balance' => $proofTaskUser->withdraw_balance + $postTask->earnings_from_work,
+                    'withdraw_balance' => $proofTaskUser->withdraw_balance + $postTask->working_charge,
                 ]);
 
                 $proofTask->approved_at = now();

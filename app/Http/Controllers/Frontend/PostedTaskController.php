@@ -97,10 +97,10 @@ class PostedTaskController extends Controller
             'required_proof_answer' => 'required|string',
             'additional_note' => 'required|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'work_needed' => 'required|numeric|min:1',
-            'earnings_from_work' => 'required|numeric|min:0',
+            'worker_needed' => 'required|numeric|min:1',
+            'working_charge' => 'required|numeric|min:0',
             'required_proof_photo' => 'required|numeric|min:0',
-            'boosted_time' => 'required|numeric|min:0',
+            'boosting_time' => 'required|numeric|min:0',
             'work_duration' => 'required|numeric|min:3',
         ]);
 
@@ -114,12 +114,12 @@ class PostedTaskController extends Controller
         }
 
         $total_required_proof_photo_charge = get_default_settings('task_posting_additional_required_proof_photo_charge') * ($request->required_proof_photo > 1 ? $request->required_proof_photo - 1 : 0);
-        $total_boosted_time_charge = get_default_settings('task_posting_boosted_time_charge') * ($request->boosted_time / 15);
+        $total_boosting_time_charge = get_default_settings('task_posting_boosting_time_charge') * ($request->boosting_time / 15);
         $total_work_duration_charge = get_default_settings('task_posting_additional_work_duration_charge') * ($request->work_duration - 3);
 
-        $task_charge = number_format(($request->work_needed * $request->earnings_from_work) + $total_required_proof_photo_charge + $total_boosted_time_charge + $total_work_duration_charge, 2, '.', '');
-        $site_charge = number_format(($task_charge * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
-        $total_task_charge = number_format($task_charge + $site_charge, 2, '.', '');
+        $site_charge = number_format((($request->worker_needed * $request->working_charge) * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
+        $task_charge = number_format(($request->worker_needed * $request->working_charge) + $site_charge, 2, '.', '');
+        $total_task_charge = number_format($task_charge + $total_required_proof_photo_charge + $total_boosting_time_charge + $total_work_duration_charge, 2, '.', '');
 
         $request->user()->update([
             'deposit_balance' => $request->user()->deposit_balance - $total_task_charge,
@@ -133,15 +133,19 @@ class PostedTaskController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'required_proof_answer' => $request->required_proof_answer,
+            'required_proof_photo' => $request->required_proof_photo,
+            'required_proof_photo_charge' => $total_required_proof_photo_charge,
             'additional_note' => $request->additional_note,
             'thumbnail' => $thumbnail_photo_name,
-            'work_needed' => $request->work_needed,
-            'earnings_from_work' => $request->earnings_from_work,
-            'required_proof_photo' => $request->required_proof_photo,
-            'boosted_time' => $request->boosted_time,
-            'work_duration' => $request->work_duration,
-            'charge' => $task_charge,
+            'worker_needed' => $request->worker_needed,
+            'working_charge' => $request->working_charge,
             'site_charge' => $site_charge,
+            'charge' => $task_charge,
+            'boosting_time' => $request->boosting_time,
+            'total_boosting_time' => $request->boosting_time,
+            'boosting_time_charge' => $total_boosting_time_charge,
+            'work_duration' => $request->work_duration,
+            'work_duration_charge' => $total_work_duration_charge,
             'total_charge' => $total_task_charge,
             'status' => 'Pending',
         ]);
@@ -173,10 +177,10 @@ class PostedTaskController extends Controller
             'required_proof_answer' => 'required|string',
             'additional_note' => 'required|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'work_needed' => 'required|numeric|min:1',
-            'earnings_from_work' => 'required|numeric|min:0',
+            'worker_needed' => 'required|numeric|min:1',
+            'working_charge' => 'required|numeric|min:0',
             'required_proof_photo' => 'required|numeric|min:0',
-            'boosted_time' => 'required|numeric|min:0',
+            'boosting_time' => 'required|numeric|min:0',
             'work_duration' => 'required|numeric|min:3',
         ]);
 
@@ -192,12 +196,12 @@ class PostedTaskController extends Controller
         }
 
         $total_required_proof_photo_charge = get_default_settings('task_posting_additional_required_proof_photo_charge') * ($request->required_proof_photo > 1 ? $request->required_proof_photo - 1 : 0);
-        $total_boosted_time_charge = get_default_settings('task_posting_boosted_time_charge') * ($request->boosted_time / 15);
+        $total_boosting_time_charge = get_default_settings('task_posting_boosting_time_charge') * ($request->boosting_time / 15);
         $total_work_duration_charge = get_default_settings('task_posting_additional_work_duration_charge') * ($request->work_duration - 3);
 
-        $task_charge = number_format(($request->work_needed * $request->earnings_from_work) + $total_required_proof_photo_charge + $total_boosted_time_charge + $total_work_duration_charge, 2, '.', '');
-        $site_charge = number_format(($task_charge * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
-        $total_task_charge = number_format($task_charge + $site_charge, 2, '.', '');
+        $site_charge = number_format((($request->worker_needed * $request->working_charge) * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
+        $task_charge = number_format(($request->worker_needed * $request->working_charge) + $site_charge, 2, '.', '');
+        $total_task_charge = number_format($task_charge + $total_required_proof_photo_charge + $total_boosting_time_charge + $total_work_duration_charge, 2, '.', '');
 
         $request->user()->update([
             'deposit_balance' => $request->user()->deposit_balance - $total_task_charge,
@@ -210,15 +214,19 @@ class PostedTaskController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'required_proof_answer' => $request->required_proof_answer,
+            'required_proof_photo' => $request->required_proof_photo,
+            'required_proof_photo_charge' => $total_required_proof_photo_charge,
             'additional_note' => $request->additional_note,
             'thumbnail' => $thumbnail_photo_name,
-            'work_needed' => $request->work_needed,
-            'earnings_from_work' => $request->earnings_from_work,
-            'required_proof_photo' => $request->required_proof_photo,
-            'boosted_time' => $request->boosted_time,
-            'work_duration' => $request->work_duration,
-            'charge' => $task_charge,
+            'worker_needed' => $request->worker_needed,
+            'working_charge' => $request->working_charge,
             'site_charge' => $site_charge,
+            'charge' => $task_charge,
+            'boosting_time' => $request->boosting_time,
+            'total_boosting_time' => $request->boosting_time,
+            'boosting_time_charge' => $total_boosting_time_charge,
+            'work_duration' => $request->work_duration,
+            'work_duration_charge' => $total_work_duration_charge,
             'total_charge' => $total_task_charge,
             'status' => 'Pending',
         ]);
@@ -364,13 +372,13 @@ class PostedTaskController extends Controller
             ]);
         } else {
             $user = User::findOrFail($postTask->user_id);
-            if ($postTask->status == 'Pending') {
+            $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
+            if ($proofTasks == 0) {
                 $user->deposit_balance = $user->deposit_balance + $postTask->total_charge;
                 $user->save();
             }else if ($postTask->status == 'Running' || $postTask->status == 'Paused') {
-                $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
 
-                $refundAmount = number_format(($postTask->total_charge / $postTask->work_needed) * ($postTask->work_needed - $proofTasks), 2, '.', '');
+                $refundAmount = number_format(($postTask->charge / $postTask->worker_needed) * ($postTask->worker_needed - $proofTasks), 2, '.', '');
 
                 $user->deposit_balance = $user->deposit_balance + $refundAmount;
                 $user->save();
@@ -411,12 +419,12 @@ class PostedTaskController extends Controller
                     ->addIndexColumn()
                     ->editColumn('proof_submitted', function ($row) {
                         $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
                         <div class="progress position-relative">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                             </div>
                         ';
                     })
@@ -463,7 +471,7 @@ class PostedTaskController extends Controller
 
                         $proofStatus = '';
                         $currency = get_site_settings('site_currency_symbol');
-                        $rate = $row->total_charge / $row->work_needed;
+                        $rate = $row->total_charge / $row->worker_needed;
 
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
@@ -483,21 +491,21 @@ class PostedTaskController extends Controller
                     ->editColumn('approved_at', function ($row) {
                         return date('d M, Y h:i A', strtotime($row->approved_at));
                     })
-                    ->editColumn('boosted_time', function ($row) {
-                        $approvedAt = Carbon::parse($row->approved_at);
-                        $boostedEndTime = $approvedAt->addMinutes($row->boosted_time);
+                    ->editColumn('boosting_time', function ($row) {
+                        $boosting_start_at = Carbon::parse($row->boosting_start_at);
+                        $boostingEndTime = $boosting_start_at->addMinutes($row->boosting_time);
 
-                        if ($row->boosted_time == null) {
-                            return '<span class="badge bg-secondary">Not boosted</span>';
-                        } else if ($boostedEndTime->isFuture()) {
-                            return '<span class="countdown badge bg-success" data-end-time="' . $boostedEndTime->toIso8601String() .'">.....</span>';
+                        if ($row->boosting_time == null) {
+                            return '<span class="badge bg-secondary">Not boosting</span>';
+                        } else if ($boostingEndTime->isFuture()) {
+                            return '<span class="countdown badge bg-success" data-end-time="' . $boostingEndTime->toIso8601String() .'"></span>';
                         } else {
-                            if ($row->boosted_time < 60) {
+                            if ($row->boosting_time < 60) {
                                 return '
-                                <span class="badge bg-danger">' . $row->boosted_time . ' Minute' . ($row->boosted_time > 1 ? 's' : '') . ' | Expired</span>
+                                <span class="badge bg-danger">' . $row->boosting_time . ' Minute' . ($row->boosting_time > 1 ? 's' : '') . ' | Expired</span>
                                 ';
                             } else {
-                                $hours = round($row->boosted_time / 60, 1);
+                                $hours = round($row->boosting_time / 60, 1);
                                 return '
                                 <span class="badge bg-danger">' . $hours . ' Hour' . ($hours > 1 ? 's' : '') . ' | Expired</span>
                                 ';
@@ -514,7 +522,7 @@ class PostedTaskController extends Controller
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['proof_submitted', 'proof_status', 'total_charge', 'charge_status', 'approved_at', 'boosted_time', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_status', 'total_charge', 'charge_status', 'approved_at', 'boosting_time', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.running');
@@ -529,8 +537,12 @@ class PostedTaskController extends Controller
 
     public function runningPostedTaskUpdate(Request $request, string $id)
     {
+        $postTask = PostTask::findOrFail($id);
+
         $validator = Validator::make($request->all(), [
-            'work_needed' => 'required|numeric|min:1',
+            'worker_needed' => 'nullable|numeric|min:0',
+            'boosting_time' => 'nullable|numeric|min:0',
+            'work_duration' => 'nullable|numeric|min:3',
         ]);
 
         if ($validator->fails()) {
@@ -539,13 +551,15 @@ class PostedTaskController extends Controller
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
-            $postTask = PostTask::findOrFail($id);
+            $site_charge = number_format((($request->worker_needed * $postTask->working_charge) * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
 
-                $task_post_charge = number_format(($request->work_needed * $postTask->earnings_from_work), 2, '.', '');
+            $worker_needed_charge = number_format((($request->worker_needed * $postTask->working_charge) + $site_charge), 2, '.', '');
 
-                $site_charge = number_format(($task_post_charge * get_default_settings('task_posting_charge_percentage')) / 100, 2, '.', '');
+            $boosting_time_charge = number_format(get_default_settings('task_posting_boosting_time_charge') * ($request->boosting_time / 15), 2, '.', '');
+            
+            $work_duration_charge = number_format((($request->work_duration > $postTask->work_duration ? $request->work_duration - $postTask->work_duration : 0) * get_default_settings('task_posting_additional_work_duration_charge')), 2, '.', '');
 
-                $total_charge = number_format( $task_post_charge + $site_charge, 2, '.', '');
+            $total_charge = number_format( $worker_needed_charge + $boosting_time_charge + $work_duration_charge, 2, '.', '');
 
             if ($request->user()->deposit_balance < $total_charge) {
                 return response()->json([
@@ -553,15 +567,19 @@ class PostedTaskController extends Controller
                     'error' => 'Insufficient balance. Please deposit first. Your current balance is ' . $request->user()->deposit_balance . ' ' . get_site_settings('site_currency_symbol') . '.'
                 ]);
             } else {
-
                 $request->user()->update([
                     'deposit_balance' => $request->user()->deposit_balance - $total_charge,
                 ]);
 
                 PostTask::where('id', $id)->update([
-                    'work_needed' => $postTask->work_needed + $request->work_needed,
-                    'charge' => $postTask->charge + $task_post_charge,
+                    'worker_needed' => $postTask->worker_needed + $request->worker_needed,
                     'site_charge' => $postTask->site_charge + $site_charge,
+                    'charge' => $postTask->charge + $worker_needed_charge,
+                    'boosting_time' => $request->boosting_time > 0 ? $request->boosting_time : $postTask->boosting_time,
+                    'total_boosting_time' => $postTask->total_boosting_time + $request->boosting_time,
+                    'boosting_time_charge' => $postTask->boosting_time_charge + $boosting_time_charge,
+                    'boosting_start_at' => $request->boosting_time > 0 ? now() : $postTask->boosting_start_at,
+                    'work_duration' => $request->work_duration,
                     'total_charge' => $postTask->total_charge + $total_charge,
                 ]);
 
@@ -704,7 +722,7 @@ class PostedTaskController extends Controller
 
         foreach ($proofTasks->pluck('user_id') as $user_id) {
             $user = User::findOrFail($user_id);
-            $user->withdraw_balance = $user->withdraw_balance + $postTask->earnings_from_work;
+            $user->withdraw_balance = $user->withdraw_balance + $postTask->working_charge;
             $user->save();
         }
 
@@ -726,7 +744,7 @@ class PostedTaskController extends Controller
 
         foreach ($proofTasks as $proofTask) {
             $user = User::findOrFail($proofTask->user_id);
-            $user->withdraw_balance = $user->withdraw_balance + $postTask->earnings_from_work;
+            $user->withdraw_balance = $user->withdraw_balance + $postTask->working_charge;
             $user->save();
         }
 
@@ -792,7 +810,7 @@ class PostedTaskController extends Controller
             $user = User::findOrFail($proofTask->user_id);
 
             if ($request->status == 'Approved') {
-                $user->withdraw_balance = $user->withdraw_balance + $postTask->earnings_from_work + $request->bonus;
+                $user->withdraw_balance = $user->withdraw_balance + $postTask->working_charge + $request->bonus;
                 $user->save();
 
                 if ($request->rating) {
@@ -897,12 +915,12 @@ class PostedTaskController extends Controller
                     ->addIndexColumn()
                     ->editColumn('proof_submitted', function ($row) {
                         $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
                         <div class="progress position-relative">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                             </div>
                         ';
                     })
@@ -949,7 +967,7 @@ class PostedTaskController extends Controller
 
                         $proofStatus = '';
                         $currency = get_site_settings('site_currency_symbol');
-                        $rate = $row->total_charge / $row->work_needed;
+                        $rate = $row->total_charge / $row->worker_needed;
 
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
@@ -1021,12 +1039,12 @@ class PostedTaskController extends Controller
                     ->addIndexColumn()
                     ->editColumn('proof_submitted', function ($row) {
                         $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
                         <div class="progress position-relative">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                             </div>
                         ';
                     })
@@ -1073,7 +1091,7 @@ class PostedTaskController extends Controller
 
                         $proofStatus = '';
                         $currency = get_site_settings('site_currency_symbol');
-                        $rate = $row->total_charge / $row->work_needed;
+                        $rate = $row->total_charge / $row->worker_needed;
 
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
@@ -1150,12 +1168,12 @@ class PostedTaskController extends Controller
                     ->addIndexColumn()
                     ->editColumn('proof_submitted', function ($row) {
                         $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
                         <div class="progress position-relative">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                             </div>
                         ';
                     })
@@ -1202,7 +1220,7 @@ class PostedTaskController extends Controller
 
                         $proofStatus = '';
                         $currency = get_site_settings('site_currency_symbol');
-                        $rate = $row->total_charge / $row->work_needed;
+                        $rate = $row->total_charge / $row->worker_needed;
 
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';

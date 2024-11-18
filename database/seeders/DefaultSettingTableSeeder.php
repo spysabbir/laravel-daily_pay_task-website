@@ -28,7 +28,7 @@ class DefaultSettingTableSeeder extends Seeder
             'max_withdraw_amount' => 10000.00, // every withdrawal
             'task_posting_charge_percentage' => 5.00, // every task
             'task_posting_additional_required_proof_photo_charge' => 2.50, // every required proof photo
-            'task_posting_boosted_time_charge' => 5.00, // every 15 minutes
+            'task_posting_boosting_time_charge' => 5.00, // every 15 minutes
             'task_posting_additional_work_duration_charge' => 2.50, // every day
             'task_posting_min_budget' => 100.00, // every task
             'task_proof_max_bonus_amount' => 20.00, // every proof

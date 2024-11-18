@@ -146,13 +146,13 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="task_posting_boosted_time_charge" class="form-label">Task Posting Boosted Time Charge</label>
+                            <label for="task_posting_boosting_time_charge" class="form-label">Task Posting Boosting Time Charge</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="task_posting_boosted_time_charge" name="task_posting_boosted_time_charge" value="{{ old('task_posting_boosted_time_charge', $defaultSetting->task_posting_boosted_time_charge) }}" placeholder="Task Posting Boosted Time Charge">
+                                <input type="number" class="form-control" id="task_posting_boosting_time_charge" name="task_posting_boosting_time_charge" value="{{ old('task_posting_boosting_time_charge', $defaultSetting->task_posting_boosting_time_charge) }}" placeholder="Task Posting Boosting Time Charge">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
                             <small class="text-info">* Every 15 minutes charge</small>
-                            @error('task_posting_boosted_time_charge')
+                            @error('task_posting_boosting_timeee_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

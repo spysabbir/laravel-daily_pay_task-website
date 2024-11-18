@@ -20,7 +20,7 @@
                                 <th>Task ID</th>
                                 <th>Title</th>
                                 <th>Approved At</th>
-                                <th>Boosted Time</th>
+                                <th>Boosting Time</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
                                 <th>Total Charge</th>
@@ -43,32 +43,50 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="post_task_id">
                                                 <div class="mb-3">
-                                                    <label for="work_needed" class="form-label">Additional Work Needed <small class="text-danger">* Required </small></label>
-                                                    <input type="number" class="form-control" id="work_needed" value="0" name="work_needed" min="1" placeholder="Work Needed">
-                                                    <span class="text-danger error-text update_work_needed_error"></span>
+                                                    <label for="worker_needed" class="form-label">Additional Worker Needed <small class="text-danger">* Required </small></label>
+                                                    <input type="number" class="form-control" id="worker_needed" name="worker_needed" value="0" min="0" placeholder="Worker Needed">
+                                                    <span class="text-danger error-text update_worker_needed_error"></span>
+                                                    <small class="text-info d-block">* Each working charge {{ get_site_settings('site_currency_symbol') }} <span id="working_charge"></span>.</small>
                                                 </div>
-                                                {{-- <div class="mb-3">
-                                                    <label for="boosted_time" class="form-label">Boosted Time <small class="text-danger">* Required </small></label>
-                                                    <select class="form-select" name="boosted_time" id="boosted_time" required>
-                                                        <option value="0" selected>No Boost</option>
-                                                        <option value="15">15 Minutes</option>
-                                                        <option value="30">30 Minutes</option>
-                                                        <option value="45">45 Minutes</option>
-                                                        <option value="60">1 Hour</option>
-                                                        <option value="120">2 Hours</option>
-                                                        <option value="180">3 Hours</option>
-                                                        <option value="240">4 Hours</option>
-                                                        <option value="300">5 Hours</option>
-                                                        <option value="360">6 Hours</option>
-                                                    </select>
-                                                    <span class="text-danger error-text update_boosted_time_error"></span>
-                                                    <small class="text-info">* Every 15 minutes boost charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }}.</small>
-                                                    <br>
-                                                    <small class="text-info">* When the task is boosted, it will be shown at the top of the task list.</small>
-                                                </div> --}}
+                                                <div class="mb-3">
+                                                    <label for="site_charge" class="form-label">Additional Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="update_site_charge" value="0" readonly>
+                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="task_charge" class="form-label">Additional Task Charge</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="update_task_charge" value="0" readonly>
+                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div id="boosting_time_div">
+                                                        <label for="boosting_time" class="form-label">Additional Boosting Time <small class="text-danger">* Required </small></label>
+                                                        <select class="form-select" name="boosting_time" id="boosting_time">
+                                                            <option value="0">No Boost</option>
+                                                            <option value="15">15 Minutes</option>
+                                                            <option value="30">30 Minutes</option>
+                                                            <option value="45">45 Minutes</option>
+                                                            <option value="60">1 Hour</option>
+                                                            <option value="120">2 Hours</option>
+                                                            <option value="180">3 Hours</option>
+                                                            <option value="240">4 Hours</option>
+                                                            <option value="300">5 Hours</option>
+                                                            <option value="360">6 Hours</option>
+                                                        </select>
+                                                        <span class="text-danger error-text update_boosting_time_error"></span>
+                                                        <small class="text-info">* Every 15 minutes boost charges {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosting_time_charge') }}.</small>
+                                                        <br>
+                                                        <small class="text-info">* When the task is boosting, it will be shown at the top of the task list.</small>
+                                                    </div>
+                                                    <div class="border p-1" id="boosting_time_countdown_div"></div>
+                                                </div>
                                                 <div class="mb-3">
                                                     <input type="hidden" id="old_work_duration">
-                                                    <label for="work_duration" class="form-label"> Work Duration <small class="text-danger">* Required </small></label>
+                                                    <label for="work_duration" class="form-label">Additional Work Duration <small class="text-danger">* Required </small></label>
                                                     <select class="form-select" name="work_duration" id="work_duration">
                                                         <option value="3">3 Days</option>
                                                         <option value="4">4 Days</option>
@@ -77,33 +95,12 @@
                                                         <option value="7">1 Week</option>
                                                     </select>
                                                     <span class="text-danger error-text update_work_duration_error"></span>
-                                                    <small class="text-info">* Additional work duration charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_work_duration_charge') }} per day. Note: You get 3 days for free.</small>
+                                                    <small class="text-info">* Additional work duration charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_work_duration_charge') }} per day.</small>
                                                     <br>
                                                     <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="earnings_from_work" class="form-label">Earnings From Work</label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="earnings_from_work" readonly>
-                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="task_charge" class="form-label">Task Charge</label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="update_task_charge" value="0" readonly>
-                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="site_charge" class="form-label">Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="update_site_charge" value="0" readonly>
-                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="total_task_charge" class="form-label">Total Task Charge</label>
+                                                    <label for="total_task_charge" class="form-label">Additional Total Task Charge</label>
                                                     <div class="input-group">
                                                         <input type="number" class="form-control" id="update_total_task_charge" value="0" readonly>
                                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
@@ -166,7 +163,7 @@
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'approved_at', name: 'approved_at' },
-                { data: 'boosted_time', name: 'boosted_time' },
+                { data: 'boosting_time', name: 'boosting_time' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
                 { data: 'total_charge', name: 'total_charge' },
@@ -195,7 +192,7 @@
                     const remainingTime = endTime - now;
 
                     if (remainingTime <= 0) {
-                        $element.text("Boosted time has expired.");
+                        $element.text("Boosting time has expired.");
                     } else {
                         const hours = Math.floor(remainingTime / (1000 * 60 * 60));
                         const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
@@ -306,13 +303,55 @@
                     $('#post_task_id').val(response.id);
                     $('#work_duration').val(response.work_duration);
                     $('#old_work_duration').val(response.work_duration);
-                    $('#earnings_from_work').val(response.earnings_from_work);
+                    $('#working_charge').text(response.working_charge);
 
+                    // Calculate boosting end time
+                    let startTime = new Date(response.boosting_start_at);
+                    startTime.setMinutes(startTime.getMinutes() + response.boosting_time);
+
+                    let currentTime = new Date(); // Get the current time
+
+                    // Format dates
+                    const boostingStartAt = formatDate(new Date(response.boosting_start_at));
+                    const boostingEndAt = formatDate(startTime);
+
+                    // Check if boosting time is still active
+                    if (currentTime < startTime) {
+                        // Boosting is active
+                        $('#boosting_time_div').hide();
+                        $('#boosting_time_countdown_div').html(`
+                            <p>Boosting Time: ${response.boosting_time} Minutes</p>
+                            <p>Boosting Start At: ${boostingStartAt}</p>
+                            <p>Boosting End At: ${boostingEndAt}</p>
+                            <p class="countdown" data-end-time="${startTime.toISOString()}"></p>
+                        `).show();
+                    } else {
+                        // Boosting has ended
+                        $('#boosting_time_countdown_div').hide();
+                        $('#boosting_time_div').show();
+                    }
+                    
                     // Disable lower options based on old_work_duration
                     disableLowerOptions(response.work_duration);
                 },
             });
         });
+
+        function formatDate(date) {
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            let day = date.getDate();
+            let month = months[date.getMonth()]; // Get month abbreviation
+            let year = date.getFullYear();
+            let hours = date.getHours();
+            let minutes = String(date.getMinutes()).padStart(2, '0');
+            let seconds = String(date.getSeconds()).padStart(2, '0');
+            let period = hours >= 12 ? "PM" : "AM";
+
+            // Convert to 12-hour format
+            hours = hours % 12 || 12; // Convert 0 to 12 for midnight
+
+            return `${day} ${month}, ${year} ${hours}:${minutes}:${seconds} ${period}`;
+        }
 
         // Disable lower options based on oldWorkDuration
         function disableLowerOptions(oldWorkDuration) {
@@ -368,22 +407,27 @@
             });
         });
 
-        // Earnings From Work Calculation keyup and change event
-        $(document).on('change keyup', '#work_needed, #work_duration', function () {
-            var work_needed = parseInt($('#work_needed').val()) || 0;
+        // Working Charge Calculation keyup and change event
+        $(document).on('change keyup', '#worker_needed, #boosting_time, #work_duration', function () {
+            var worker_needed = parseInt($('#worker_needed').val()) || 0;
+            var working_charge = parseFloat($('#working_charge').text()) || 0;
+
+            var total_worker_needed_charge = working_charge * worker_needed;
+            var site_charge = (total_worker_needed_charge * {{ get_default_settings('task_posting_charge_percentage') }}) / 100;
+            var task_charge = total_worker_needed_charge + site_charge;
+
+            var boosting_time = parseInt($('#boosting_time').val()) || 0;
+            var boosting_time_charge = {{ get_default_settings('task_posting_boosting_time_charge') }};
 
             var old_work_duration = parseInt($('#old_work_duration').val()) || 0;
             var work_duration = parseInt($('#work_duration').val()) || 0;
             var work_duration_charge = {{ get_default_settings('task_posting_additional_work_duration_charge') }};
 
-            var earnings_from_work = parseFloat($('#earnings_from_work').val()) || 0;
-
+            var total_boosting_time_charge = boosting_time_charge * (boosting_time / 15);
             var total_work_duration_charge = work_duration_charge * (work_duration - old_work_duration);
 
-            var task_charge = (work_needed * earnings_from_work) + total_work_duration_charge;
+            var total_task_charge = task_charge + total_boosting_time_charge + total_work_duration_charge;
 
-            var site_charge = (task_charge * {{ get_default_settings('task_posting_charge_percentage') }}) / 100;
-            var total_task_charge = task_charge + site_charge;
             $('#update_task_charge').val(task_charge.toFixed(2));
             $('#update_site_charge').val(site_charge.toFixed(2));
             $('#update_total_task_charge').val(total_task_charge.toFixed(2));

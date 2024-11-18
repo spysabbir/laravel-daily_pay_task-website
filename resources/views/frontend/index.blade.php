@@ -155,7 +155,7 @@
                                     </li>
                                     <li>
                                         <i class='bx bx-male-female'></i>
-                                        <strong>Work Needed: {{ $postTask->work_needed }}</strong>
+                                        <strong>Worker Needed: {{ $postTask->worker_needed }}</strong>
                                     </li>
                                     <li>
                                         <i class='bx bx-calendar' ></i>
@@ -169,9 +169,9 @@
                             <div class="job-save">
                                 <span>
                                     <strong class="text-success">
-                                        Earnings From Work:
+                                        Working Charge:
                                         <br>
-                                        {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }}
+                                        {{ get_site_settings('site_currency_symbol') }} {{ $postTask->working_charge }}
                                     </strong>
                                 </span>
                                 <span>

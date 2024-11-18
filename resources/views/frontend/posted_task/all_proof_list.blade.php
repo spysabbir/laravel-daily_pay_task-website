@@ -25,9 +25,9 @@
                 <p class="border p-1 m-1"><strong class="text-info">Required Proof Answer:</strong> {{ $postTask->required_proof_answer }}</p>
                 <p class="border p-1 m-1"><strong class="text-info">Additional Note:</strong> {{ $postTask->additional_note }}</p>
                 <p class="border p-1 m-1">
-                    <strong class="text-info">Warnings From Work:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }},
+                    <strong class="text-info">Warnings From Work:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->working_charge }},
                     <strong class="text-info">Required Proof Photo:</strong> Free: {{ $postTask->required_proof_photo >= 1 ? 1 : 0 }} & Additional: {{ $postTask->required_proof_photo >= 1 ? $postTask->required_proof_photo - 1 : 0 }} = Total: {{ $postTask->required_proof_photo }},
-                    <strong class="text-info">Boosted Time:</strong> {{ $postTask->boosted_time ? $postTask->boosted_time . ' Minutes' : 0 }} ,
+                    <strong class="text-info">Boosting Time:</strong> {{ $postTask->boosting_time ? $postTask->boosting_time . ' Minutes' : 0 }} ,
                     <strong class="text-info">Work Duration:</strong> Free: 3 Days & Additional: {{ $postTask->work_duration - 3 }} Days = Total {{ $postTask->work_duration }} Days
                 </p>
                 <p class="border p-1 m-1">
@@ -37,11 +37,11 @@
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Charge Status: </strong>,
-                    <span class="text-secondary">Waiting: {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->total_charge / $postTask->work_needed) * ($postTask->work_needed - $proofSubmitted->count()) }}</span>,
-                    <span class="text-primary">Pending: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) * $pendingProof, 2) }}</span>,
-                    <span class="text-success">Payment: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) * $approvedProof, 2) }}</span>,
-                    <span class="text-danger">Refund: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) * $finallyRejectedProof, 2) }}</span>,
-                    <span class="text-warning">Hold: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->work_needed) *  $waitingRejectedProof, 2) }}</span>
+                    <span class="text-secondary">Waiting: {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->total_charge / $postTask->worker_needed) * ($postTask->worker_needed - $proofSubmitted->count()) }}</span>,
+                    <span class="text-primary">Pending: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->worker_needed) * $pendingProof, 2) }}</span>,
+                    <span class="text-success">Payment: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->worker_needed) * $approvedProof, 2) }}</span>,
+                    <span class="text-danger">Refund: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->worker_needed) * $finallyRejectedProof, 2) }}</span>,
+                    <span class="text-warning">Hold: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->worker_needed) *  $waitingRejectedProof, 2) }}</span>
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Submited At:</strong> {{ $postTask->created_at->format('d F, Y h:i:s A') }},
@@ -50,13 +50,13 @@
                 <div class="my-3">
                     @php
                         $proofSubmittedCount = $proofSubmitted->count();
-                        $proofStyleWidth = $proofSubmittedCount != 0 ? round(($proofSubmittedCount / $postTask->work_needed) * 100, 2) : 100;
+                        $proofStyleWidth = $proofSubmittedCount != 0 ? round(($proofSubmittedCount / $postTask->worker_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmittedCount == 0 ? 'primary' : 'success';
                     @endphp
-                    <p class="mb-1"><strong class="text-info">Proof Status: </strong> <span class="text-success">Submit: {{ $proofSubmittedCount }}</span>, Need: {{ $postTask->work_needed }}</p>
+                    <p class="mb-1"><strong class="text-info">Proof Status: </strong> <span class="text-success">Submit: {{ $proofSubmittedCount }}</span>, Need: {{ $postTask->worker_needed }}</p>
                     <div class="progress position-relative">
-                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated bg-{{ $progressBarClass }}" role="progressbar" style="width: {{ $proofStyleWidth }}%" aria-valuenow="{{ $proofSubmittedCount }}" aria-valuemin="0" aria-valuemax="{{ $postTask->work_needed }}"></div>
-                        <span class="position-absolute w-100 text-center">{{ $proofSubmittedCount }} / {{ $postTask->work_needed }}</span>
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated bg-{{ $progressBarClass }}" role="progressbar" style="width: {{ $proofStyleWidth }}%" aria-valuenow="{{ $proofSubmittedCount }}" aria-valuemin="0" aria-valuemax="{{ $postTask->worker_needed }}"></div>
+                        <span class="position-absolute w-100 text-center">{{ $proofSubmittedCount }} / {{ $postTask->worker_needed }}</span>
                     </div>
                 </div>
                 <div class="my-3">

@@ -95,7 +95,7 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'title', name: 'title' },
-                { data: 'earnings_from_work', name: 'earnings_from_work' },
+                { data: 'working_charge', name: 'working_charge' },
                 { data: 'rating', name: 'rating' },
                 { data: 'bonus', name: 'bonus' },
                 { data: 'created_at', name: 'created_at' },

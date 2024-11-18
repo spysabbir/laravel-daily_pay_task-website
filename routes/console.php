@@ -79,7 +79,7 @@ Schedule::call(function () {
 
             $postTask = PostTask::find($proofTask->post_task_id);
             if ($postTask) {
-                User::where('id', $proofTask->user_id)->increment('withdraw_balance', $postTask->earnings_from_work);
+                User::where('id', $proofTask->user_id)->increment('withdraw_balance', $postTask->working_charge);
             }
         }
     }
@@ -92,7 +92,7 @@ Schedule::call(function () {
     foreach ($postTasks as $postTask) {
         $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
 
-        if ($postTask->work_needed == $proofTasks) {
+        if ($postTask->worker_needed == $proofTasks) {
             $postTask->update([
                 'status' => 'Completed',
                 'completed_at' => now(),
@@ -118,7 +118,7 @@ Schedule::call(function () {
 
             $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
 
-            $refundAmount = $postTask->total_charge - (($postTask->total_charge / $postTask->work_needed) * $proofTasks);
+            $refundAmount = $postTask->total_charge - (($postTask->charge / $postTask->worker_needed) * $proofTasks);
             User::where('id', $postTask->user_id)->increment('deposit_balance', $refundAmount);
         }
     }
@@ -136,7 +136,7 @@ Schedule::call(function () {
         if ($now->isSameMinute($refundTime)) {
             $postTask = PostTask::find($proofTask->post_task_id);
             if ($postTask) {
-                $refundAmount = ($postTask->total_charge / $postTask->work_needed);
+                $refundAmount = ($postTask->charge / $postTask->worker_needed);
                 User::where('id', $postTask->user_id)->increment('deposit_balance', $refundAmount);
             }
         }

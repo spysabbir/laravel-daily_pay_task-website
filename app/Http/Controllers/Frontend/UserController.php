@@ -119,7 +119,7 @@ class UserController extends Controller
                 continue; // Skip if no PostTask found
             }
 
-            $chargePerTask = $postTaskRunning->total_charge / $postTaskRunning->work_needed;
+            $chargePerTask = $postTaskRunning->total_charge / $postTaskRunning->worker_needed;
 
             // Calculate counts and charges
             $proofCount = ProofTask::where('post_task_id', $postTaskRunningId)->count();
@@ -134,7 +134,7 @@ class UserController extends Controller
                 continue; // Skip if no PostTask found
             }
 
-            $chargePerTask = $postTask->total_charge / $postTask->work_needed;
+            $chargePerTask = $postTask->total_charge / $postTask->worker_needed;
 
             // Calculate counts and charges
             $pendingCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Pending')->count();

@@ -12,12 +12,12 @@
                 <div class="d-flex align-items-center">
                     <h4>Proof Submitted: </h4>
                     <div class="progress mx-1 position-relative" style="width: 250px">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $proofCount == 0 ? 'primary' : 'success' }}" role="progressbar" style="width: {{ $proofCount == 0 ? 100 : round(($proofCount / $taskDetails->work_needed) * 100, 2) }}%" aria-valuenow="{{ $proofCount }}" aria-valuemin="0" aria-valuemax="{{ $taskDetails->work_needed }}"></div>
-                        <span class="position-absolute w-100 text-center">{{ $proofCount }}/{{ $taskDetails->work_needed }}</span>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $proofCount == 0 ? 'primary' : 'success' }}" role="progressbar" style="width: {{ $proofCount == 0 ? 100 : round(($proofCount / $taskDetails->worker_needed) * 100, 2) }}%" aria-valuenow="{{ $proofCount }}" aria-valuemin="0" aria-valuemax="{{ $taskDetails->worker_needed }}"></div>
+                        <span class="position-absolute w-100 text-center">{{ $proofCount }}/{{ $taskDetails->worker_needed }}</span>
                     </div>
                 </div>
                 @endif
-                <h4 class="mx-2">Earnings From Work: <strong class="badge bg-primary">{{ get_site_settings('site_currency_symbol') }} {{ $taskDetails->earnings_from_work }}</strong></h4>
+                <h4 class="mx-2">Working Charge: <strong class="badge bg-primary">{{ get_site_settings('site_currency_symbol') }} {{ $taskDetails->working_charge }}</strong></h4>
             </div>
             <div class="card-body">
                 @if ($taskDetails->thumbnail)
@@ -35,7 +35,7 @@
                         </div>
                         <div>
                             <p><strong class="text-primary">Approved Date:</strong> {{ date('d F, Y  h:i:s A', strtotime($taskDetails->approved_at)) }}</p>
-                            <p><strong class="text-primary">Work Needed:</strong> {{ $taskDetails->work_needed }}</p>
+                            <p><strong class="text-primary">Worker Needed:</strong> {{ $taskDetails->worker_needed }}</p>
                             <p><strong class="text-primary">Work Duration:</strong> {{ $taskDetails->work_duration }} Days</p>
                         </div>
                         @if (!$taskProofExists)
@@ -125,7 +125,7 @@
                 <hr>
                 <h3 class="mb-3">Submit Proof</h3>
                 <marquee><strong class="text-warning">Notice: Submit only authentic evidence. Your account may be suspended if you submit false or group work evidence. Thanks for your cooperation in keeping our community fair and trustworthy.</strong></marquee>
-                @if ($proofCount < $taskDetails->work_needed)
+                @if ($proofCount < $taskDetails->worker_needed)
                 <div class="my-2 border p-3 rounded bg-dark">
                     @if ($taskProofExists)
                     <div class="alert alert-warning">

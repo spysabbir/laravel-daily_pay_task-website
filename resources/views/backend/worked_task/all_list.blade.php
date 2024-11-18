@@ -30,9 +30,9 @@
                 <p class="border p-1 m-1"><strong class="text-info">Required Proof Answer:</strong> {{ $postTask->required_proof_answer }}</p>
                 <p class="border p-1 m-1"><strong class="text-info">Additional Note:</strong> {{ $postTask->additional_note }}</p>
                 <p class="border p-1 m-1">
-                    <strong class="text-info">Warnings From Work:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }},
+                    <strong class="text-info">Warnings From Work:</strong> {{ get_site_settings('site_currency_symbol') }} {{ $postTask->working_charge }},
                     <strong class="text-info">Required Proof Photo:</strong> Free: {{ $postTask->required_proof_photo >= 1 ? 1 : 0 }} & Additional: {{ $postTask->required_proof_photo >= 1 ? $postTask->required_proof_photo - 1 : 0 }} = Total: {{ $postTask->required_proof_photo }},
-                    <strong class="text-info">Boosted Time:</strong> {{ $postTask->boosted_time ? $postTask->boosted_time . ' Minutes' : 0 }} ,
+                    <strong class="text-info">Boosting Time:</strong> {{ $postTask->boosting_time ? $postTask->boosting_time . ' Minutes' : 0 }} ,
                     <strong class="text-info">Work Duration:</strong> Free: 3 Days & Additional: {{ $postTask->work_duration - 3 }} Days = Total {{ $postTask->work_duration }} Days
                 </p>
                 <p class="border p-1 m-1">
@@ -47,16 +47,16 @@
                 <div class="my-3">
                     @php
                         $proofSubmittedCount = $proofSubmitted->count();
-                        $proofStyleWidth = $proofSubmittedCount != 0 ? round(($proofSubmittedCount / $postTask->work_needed) * 100, 2) : 100;
+                        $proofStyleWidth = $proofSubmittedCount != 0 ? round(($proofSubmittedCount / $postTask->worker_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmittedCount == 0 ? 'primary' : 'success';
                     @endphp
                     <p class="mb-1">
                         <strong>Proof Status: </strong>
                         <span class="text-success">Submit: {{ $proofSubmittedCount }}</span>,
-                        <span class="text-primary">Need: {{ $postTask->work_needed }}</span>,
+                        <span class="text-primary">Need: {{ $postTask->worker_needed }}</span>,
                     </p>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $progressBarClass }}" role="progressbar" style="width: {{ $proofStyleWidth }}%" aria-valuenow="{{ $proofSubmittedCount }}" aria-valuemin="0" aria-valuemax="{{ $postTask->work_needed }}">{{ $proofSubmittedCount }} / {{ $postTask->work_needed }}</div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ $progressBarClass }}" role="progressbar" style="width: {{ $proofStyleWidth }}%" aria-valuenow="{{ $proofSubmittedCount }}" aria-valuemin="0" aria-valuemax="{{ $postTask->worker_needed }}">{{ $proofSubmittedCount }} / {{ $postTask->worker_needed }}</div>
                     </div>
                 </div>
                 <div class="my-3">

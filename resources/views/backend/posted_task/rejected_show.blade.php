@@ -33,12 +33,12 @@
                                 <td>{{ $postTask->child_category_id ? $postTask->childCategory->name : 'N/A' }}</td>
                             </tr>
                             <tr>
-                                <td>Work Needed</td>
-                                <td>{{ $postTask->work_needed }}</td>
+                                <td>Worker Needed</td>
+                                <td>{{ $postTask->worker_needed }}</td>
                             </tr>
                             <tr>
-                                <td>Earnings From Work</td>
-                                <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }}</span></td>
+                                <td>Working Charge</td>
+                                <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->working_charge }}</span></td>
                             </tr>
                             <tr>
                                 <td>Required Proof Photo</td>
@@ -49,14 +49,14 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Boosted Time</td>
+                                <td>Boosting Time</td>
                                 <td>
-                                    @if($postTask->boosted_time < 60)
-                                        {{ $postTask->boosted_time }} Minute{{ $postTask->boosted_time > 1 ? 's' : '' }} <br>
-                                    @elseif($postTask->boosted_time >= 60)
-                                        {{ round($postTask->boosted_time / 60, 1) }} Hour{{ round($postTask->boosted_time / 60, 1) > 1 ? 's' : '' }} <br>
+                                    @if($postTask->boosting_time < 60)
+                                        {{ $postTask->boosting_time }} Minute{{ $postTask->boosting_time > 1 ? 's' : '' }} <br>
+                                    @elseif($postTask->boosting_time >= 60)
+                                        {{ round($postTask->boosting_time / 60, 1) }} Hour{{ round($postTask->boosting_time / 60, 1) > 1 ? 's' : '' }} <br>
                                     @endif
-                                    <span class="text-primary">( Charge: {{ $postTask->boosted_time }} * {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosted_time_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ $postTask->boosted_time / 15 * get_default_settings('task_posting_boosted_time_charge') }} )</span>
+                                    <span class="text-primary">( Charge: {{ $postTask->boosting_time }} * {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_boosting_time_charge') }} = {{ get_site_settings('site_currency_symbol') }} {{ $postTask->boosting_time / 15 * get_default_settings('task_posting_boosting_time_charge') }} )</span>
                                 </td>
                             </tr>
                             <tr>
@@ -70,7 +70,7 @@
                             <tr>
                                 <td>Task Charge</td>
                                 <td>
-                                    <span class="text-primary">( {{ $postTask->work_needed }} * {{ get_site_settings('site_currency_symbol') }} {{ $postTask->earnings_from_work }} ) + {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->required_proof_photo >= 1 ? $postTask->required_proof_photo - 1 : 0) * get_default_settings('task_posting_additional_required_proof_photo_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ $postTask->boosted_time / 15 * get_default_settings('task_posting_boosted_time_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->work_duration - 3) * get_default_settings('task_posting_boosted_time_charge') }} <br>
+                                    <span class="text-primary">( {{ $postTask->worker_needed }} * {{ get_site_settings('site_currency_symbol') }} {{ $postTask->working_charge }} ) + {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->required_proof_photo >= 1 ? $postTask->required_proof_photo - 1 : 0) * get_default_settings('task_posting_additional_required_proof_photo_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ $postTask->boosting_time / 15 * get_default_settings('task_posting_boosting_time_charge') }} + {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->work_duration - 3) * get_default_settings('task_posting_boosting_time_charge') }} <br>
                                     = {{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }}</span>
                                 </td>
                             </tr>

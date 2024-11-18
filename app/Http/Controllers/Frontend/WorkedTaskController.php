@@ -43,9 +43,9 @@ class WorkedTaskController extends Controller
                 }
                 if ($request->sort_by) {
                     if ($request->sort_by == 'low_to_high') {
-                        $query->orderBy('earnings_from_work', 'asc');
+                        $query->orderBy('working_charge', 'asc');
                     } else if ($request->sort_by == 'high_to_low') {
-                        $query->orderBy('earnings_from_work', 'desc');
+                        $query->orderBy('working_charge', 'desc');
                     } else if ($request->sort_by == 'latest') {
                         $query->orderBy('approved_at', 'desc');
                     } else if ($request->sort_by == 'oldest') {
@@ -55,7 +55,7 @@ class WorkedTaskController extends Controller
 
                 $findTasks = $query->orderByRaw("
                     CASE
-                        WHEN NOW() <= DATE_ADD(post_tasks.approved_at, INTERVAL post_tasks.boosted_time MINUTE)
+                        WHEN NOW() <= DATE_ADD(post_tasks.approved_at, INTERVAL post_tasks.boosting_time MINUTE)
                         THEN 0
                         ELSE 1
                     END
@@ -75,19 +75,19 @@ class WorkedTaskController extends Controller
                             </a>
                         ';
                     })
-                    ->editColumn('work_needed', function ($row) {
+                    ->editColumn('worker_needed', function ($row) {
                         $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
-                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->work_needed) * 100, 2) : 100;
+                        $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
                         $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
                         return '
                         <div class="progress position-relative">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->work_needed . '"></div>
-                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->work_needed . '</span>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                            <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
                         </div>
                         ';
                     })
-                    ->editColumn('earnings_from_work', function ($row) {
-                        return '<span class="badge bg-success">'.get_site_settings('site_currency_symbol') . ' ' . $row->earnings_from_work.'</span>';
+                    ->editColumn('working_charge', function ($row) {
+                        return '<span class="badge bg-success">'.get_site_settings('site_currency_symbol') . ' ' . $row->working_charge.'</span>';
                     })
                     ->editColumn('approved_at', function ($row) {
                         return '<span class="badge bg-dark">'.date('d M Y h:i A', strtotime($row->approved_at)).'</span>';
@@ -100,7 +100,7 @@ class WorkedTaskController extends Controller
                         ';
                         return $action;
                     })
-                    ->rawColumns(['category_name', 'title', 'work_needed', 'earnings_from_work', 'approved_at', 'action'])
+                    ->rawColumns(['category_name', 'title', 'worker_needed', 'working_charge', 'approved_at', 'action'])
                     ->make(true);
             }
 
@@ -142,9 +142,9 @@ class WorkedTaskController extends Controller
     {
         $id = decrypt($id);
         $proofCount = ProofTask::where('post_task_id', $id)->count();
-        $workNeeded =  PostTask::findOrFail($id)->work_needed;
+        $WorkerNeeded =  PostTask::findOrFail($id)->worker_needed;
 
-        if ($proofCount >= $workNeeded) {
+        if ($proofCount >= $WorkerNeeded) {
             return response()->json(['canSubmit' => false]);
         }
 
@@ -184,7 +184,7 @@ class WorkedTaskController extends Controller
 
         $proofCount = ProofTask::where('post_task_id', $id)->count();
 
-        if ($proofCount >= $taskDetails->work_needed) {
+        if ($proofCount >= $taskDetails->worker_needed) {
             $notification = array(
                 'message' => 'Sorry, the required number of work have already submitted proof for this task.',
                 'alert-type' => 'error'
@@ -250,8 +250,8 @@ class WorkedTaskController extends Controller
                             </a>
                         ';
                     })
-                    ->editColumn('earnings_from_work', function ($row) {
-                        return get_site_settings('site_currency_symbol') . ' ' . $row->postTask->earnings_from_work;
+                    ->editColumn('working_charge', function ($row) {
+                        return get_site_settings('site_currency_symbol') . ' ' . $row->postTask->working_charge;
                     })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
@@ -294,8 +294,8 @@ class WorkedTaskController extends Controller
                             </a>
                         ';
                     })
-                    ->editColumn('earnings_from_work', function ($row) {
-                        return  get_site_settings('site_currency_symbol') . ' ' . $row->postTask->earnings_from_work;
+                    ->editColumn('working_charge', function ($row) {
+                        return  get_site_settings('site_currency_symbol') . ' ' . $row->postTask->working_charge;
                     })
                     ->editColumn('rating', function ($row) {
                         return $row->rating ? $row->rating->rating . ' <i class="fa-solid fa-star text-warning"></i>' : 'Not Rated';

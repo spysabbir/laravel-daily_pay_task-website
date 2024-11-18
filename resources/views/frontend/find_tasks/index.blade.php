@@ -50,7 +50,7 @@
                                 <th>Category</th>
                                 <th>Task Title</th>
                                 <th>Proof Submitted</th>
-                                <th>Earnings From Work</th>
+                                <th>Working Charge</th>
                                 <th>Approved At</th>
                                 <th>Action</th>
                             </tr>
@@ -108,8 +108,8 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'category_name', name: 'category_name' },
                 { data: 'title', name: 'title' },
-                { data: 'work_needed', name: 'work_needed' },
-                { data: 'earnings_from_work', name: 'earnings_from_work' },
+                { data: 'worker_needed', name: 'worker_needed' },
+                { data: 'working_charge', name: 'working_charge' },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]

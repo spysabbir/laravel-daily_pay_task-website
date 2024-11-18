@@ -18,7 +18,7 @@
                                 <th>Task Id</th>
                                 <th>User</th>
                                 <th>Title</th>
-                                <th>Work Needed</th>
+                                <th>Worker Needed</th>
                                 <th>Created At</th>
                                 <th>Action</th>
                             </tr>
@@ -73,7 +73,7 @@
                 { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
                 { data: 'title', name: 'title' },
-                { data: 'work_needed', name: 'work_needed' },
+                { data: 'worker_needed', name: 'worker_needed' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
