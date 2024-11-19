@@ -83,7 +83,7 @@
                             <tr>
                                 <td>Work Duration</td>
                                 <td>
-                                    Free: 3 Days <br>
+                                    Default: 3 Days <br>
                                     Additional: {{ $postTask->work_duration - 3 }} Days <br>
                                     Total: {{ $postTask->work_duration }} Days
                                 </td>
@@ -98,11 +98,11 @@
                             </tr>
                             <tr>
                                 <td>Created At</td>
-                                <td>{{ $postTask->created_at->format('d M,Y h:i:s A') }}</td>
+                                <td>{{ $postTask->created_at->format('d M, Y h:i:s A') }}</td>
                             </tr>
                             <tr>
                                 <td>Updated At</td>
-                                <td>{{ $postTask->updated_at->format('d M,Y h:i:s A') }}</td>
+                                <td>{{ $postTask->updated_at->format('d M, Y h:i:s A') }}</td>
                             </tr>
                         </tbody>
                     </table>

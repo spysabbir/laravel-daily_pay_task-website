@@ -20,7 +20,7 @@
                                 <th>Task ID</th>
                                 <th>Title</th>
                                 <th>Approved At</th>
-                                <th>Boosting Time</th>
+                                <th>Total Boosting Time</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
                                 <th>Total Charge</th>
@@ -63,7 +63,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <div id="boosting_time_div">
+                                                    <div id="boosting_time_input_div">
                                                         <label for="boosting_time" class="form-label">Additional Boosting Time <small class="text-danger">* Required </small></label>
                                                         <select class="form-select" name="boosting_time" id="boosting_time">
                                                             <option value="0">No Boost</option>
@@ -82,7 +82,7 @@
                                                         <br>
                                                         <small class="text-info">* When the task is boosting, it will be shown at the top of the task list.</small>
                                                     </div>
-                                                    <div class="border p-1" id="boosting_time_countdown_div"></div>
+                                                    <div class="border text-center py-3" id="boosting_time_countdown_div"></div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <input type="hidden" id="old_work_duration">
@@ -163,7 +163,7 @@
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'approved_at', name: 'approved_at' },
-                { data: 'boosting_time', name: 'boosting_time' },
+                { data: 'total_boosting_time', name: 'total_boosting_time' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
                 { data: 'total_charge', name: 'total_charge' },
@@ -295,7 +295,8 @@
         $(document).on('click', '.editBtn', function () {
             var id = $(this).data('id');
             var url = "{{ route('running.posted_task.edit', ":id") }}";
-            url = url.replace(':id', id)
+            url = url.replace(':id', id);
+
             $.ajax({
                 url: url,
                 type: "GET",
@@ -311,32 +312,56 @@
 
                     let currentTime = new Date(); // Get the current time
 
-                    // Format dates
-                    const boostingStartAt = formatDate(new Date(response.boosting_start_at));
-                    const boostingEndAt = formatDate(startTime);
-
                     // Check if boosting time is still active
                     if (currentTime < startTime) {
                         // Boosting is active
-                        $('#boosting_time_div').hide();
+                        $('#boosting_time_input_div').hide();
                         $('#boosting_time_countdown_div').html(`
+                            <h4 class="text-info mb-2">Boosting Time</h4>
                             <p>Boosting Time: ${response.boosting_time} Minutes</p>
-                            <p>Boosting Start At: ${boostingStartAt}</p>
-                            <p>Boosting End At: ${boostingEndAt}</p>
-                            <p class="countdown" data-end-time="${startTime.toISOString()}"></p>
+                            <p>Boosting Start At: ${formatDate(new Date(response.boosting_start_at))}</p>
+                            <p>Boosting End At: ${formatDate(startTime)}</p>
+                            <p class="text-primary" id="countdown-${response.id}" data-end-time="${startTime.toISOString()}"></p>
                         `).show();
+
+                        // Pass the unique element ID to startCountdown
+                        startCountdown(startTime, `#countdown-${response.id}`);
                     } else {
                         // Boosting has ended
                         $('#boosting_time_countdown_div').hide();
-                        $('#boosting_time_div').show();
+                        $('#boosting_time_input_div').show();
                     }
-                    
+
                     // Disable lower options based on old_work_duration
                     disableLowerOptions(response.work_duration);
                 },
             });
         });
 
+        function startCountdown(endTime, elementSelector) {
+            let interval = setInterval(function () {
+                let currentTime = new Date();
+                let timeRemaining = Math.max(0, endTime - currentTime); // Ensure no negative values
+
+                if (timeRemaining <= 0) {
+                    clearInterval(interval);
+                    $(elementSelector).text("Boosting time has ended!");
+                    return;
+                }
+
+                // Calculate remaining hours, minutes, and seconds
+                let hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+                let minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                // Update the specific countdown element
+                $(elementSelector).text(
+                    `Time Remaining: ${hours}h ${minutes}m ${seconds}s`
+                );
+            }, 1000); // Update every second
+        }
+
+        // Function to format date as 18 Nov, 2024 05:15:30 PM
         function formatDate(date) {
             const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             let day = date.getDate();

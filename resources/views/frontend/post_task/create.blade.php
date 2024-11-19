@@ -218,7 +218,7 @@
                                     <small class="text-danger" id="work_duration_error"></small>
                                     <small class="text-info">* Additional work duration charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_work_duration_charge') }} per day.</small>
                                     <br>
-                                    <small class="text-info">* Note: You get 3 days for free.</small>
+                                    <small class="text-info">* Note: You will get a default time of 3 days.</small>
                                     <br>
                                     <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
                                 </div>

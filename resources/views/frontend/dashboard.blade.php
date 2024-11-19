@@ -601,7 +601,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 grid-margin stretch-card">
+            <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
@@ -610,8 +610,8 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12 col-xl-2">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWaiting, 2) + round($postTaskChargeHold, 2) + round($postTaskChargeRefund, 2) + round($postTaskChargePayment, 2) + round($postTaskChargePending, 2) }}</h3>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeTotal, 2) }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Total</span>
@@ -619,7 +619,25 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-2">
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWaiting, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-secondary">
+                                        <span>Waiting</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeCanceled, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-danger">
+                                        <span>Canceled</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargePending, 2) }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-info">
@@ -628,16 +646,38 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-2">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargePayment, 2) }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <h6 class="card-title mb-2">Total Posted Task Charge Status</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWorkerPayment, 2) }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-success">
-                                        <span>Payment</span>
+                                        <span>Worker Payment</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-2">
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeSitePayment, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-success">
+                                        <span>Site Payment</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeRefund, 2) }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-danger">
@@ -646,20 +686,11 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-2">
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeHold, 2) }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-warning">
                                         <span>Hold</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-2">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWaiting, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-secondary">
-                                        <span>Waiting</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>

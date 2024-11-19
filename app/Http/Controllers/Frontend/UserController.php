@@ -101,15 +101,35 @@ class UserController extends Controller
             ];
         }
 
+        $postTaskChargeWaiting = 0;
+
         $userStatus = UserStatus::where('user_id', Auth::id())->latest()->first();
 
+        return $postTaskIds = PostTask::where('user_id', Auth::id())
+        ->where(function ($query) {
+            $query->where('status', 'Canceled')
+                  ->orWhereNotIn('status', ['Pending', 'Rejected']);
+        })
+        ->pluck('id')
+        ->toArray();
 
-        // Initialize charges
-        $postTaskChargeWaiting = 0;
-        $postTaskChargePending = 0;
-        $postTaskChargePayment = 0;
-        $postTaskChargeRefund = 0;
-        $postTaskChargeHold = 0;
+// Initialize an array to store valid PostTask IDs
+$validPostTaskIds = [];
+
+// Loop through each postTaskId and check the ProofTask count
+foreach ($postTaskIds as $postTaskId) {
+    // Check the count of ProofTask related to this PostTask ID
+    $proofCount = ProofTask::where('post_task_id', $postTaskId)->count();
+
+    // Only add postTaskId to validPostTaskIds if proofCount is greater than 0
+    if ($proofCount > 0) {
+    return $validPostTaskIds[] = $postTaskId;
+    }
+}
+
+
+
+        $postTaskChargeTotal = PostTask::where('user_id', Auth::id())->whereNot('status', 'Canceled')->sum('total_charge');
 
         $postTaskRunningIds = PostTask::where('user_id', Auth::id())->whereIn('status', ['Running', 'Paused'])->pluck('id')->toArray();
         foreach ($postTaskRunningIds as $postTaskRunningId) {
@@ -119,12 +139,19 @@ class UserController extends Controller
                 continue; // Skip if no PostTask found
             }
 
-            $chargePerTask = $postTaskRunning->total_charge / $postTaskRunning->worker_needed;
+            $chargePerTask = $postTaskRunning->charge / $postTaskRunning->worker_needed;
 
             // Calculate counts and charges
             $proofCount = ProofTask::where('post_task_id', $postTaskRunningId)->count();
-            $postTaskChargeWaiting += $postTaskRunning->total_charge - ($chargePerTask * $proofCount);
+            $postTaskChargeWaiting += $chargePerTask * ($postTaskRunning->worker_needed - $proofCount) ?? 0;
         }
+
+        $postTaskChargeCanceled = 0;
+        $postTaskChargePending = 0;
+        $postTaskChargeWorkerPayment = 0;
+        $postTaskChargeSitePayment = 0;
+        $postTaskChargeRefund = 0;
+        $postTaskChargeHold = 0;
 
         $postTaskIds = PostTask::where('user_id', Auth::id())->pluck('id')->toArray();
         foreach ($postTaskIds as $postTaskId) {
@@ -134,27 +161,29 @@ class UserController extends Controller
                 continue; // Skip if no PostTask found
             }
 
-            $chargePerTask = $postTask->total_charge / $postTask->worker_needed;
+            $chargePerTask = $postTask->charge / $postTask->worker_needed;
 
             // Calculate counts and charges
             $pendingCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Pending')->count();
-            $paymentCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Approved')->count();
-            $refundCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Rejected')
+            $approvedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Approved')->count();
+            $rejectedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Rejected')
                 ->where(function ($query) {
                     $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(72))
                         ->orWhereNotNull('reviewed_at');
                 })->count();
-            $holdCount = ProofTask::where('post_task_id', $postTaskId)
+            $reviewedCount = ProofTask::where('post_task_id', $postTaskId)
                 ->where(function ($query) {
                     $query->where('status', 'Reviewed')
                         ->orWhere('status', 'Rejected')->whereNull('reviewed_at')
                         ->where('rejected_at', '>', now()->subHours(72));
                 })->count();
 
-            $postTaskChargePending += $chargePerTask * $pendingCount;
-            $postTaskChargePayment += $chargePerTask * $paymentCount;
-            $postTaskChargeRefund += $chargePerTask * $refundCount;
-            $postTaskChargeHold += $chargePerTask * $holdCount;
+            $postTaskChargePending += $chargePerTask * $pendingCount ?? 0;
+            $postTaskChargeWorkerPayment += $postTask->working_charge * $approvedCount ?? 0;
+            $postTaskChargeSitePayment += $postTask->site_charge / $postTask->worker_needed * $approvedCount + $postTask->required_proof_photo_charge + $postTask->boosting_time_charge +  $postTask->work_duration_charge ?? 0;
+
+            $postTaskChargeRefund += $chargePerTask * $rejectedCount ?? 0;
+            $postTaskChargeHold += $chargePerTask * $reviewedCount ?? 0;
         }
 
         return view('frontend/dashboard', [
@@ -229,7 +258,7 @@ class UserController extends Controller
             'monthly_report' => Report::where('reported_by', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
             'yearly_report' => Report::where('reported_by', Auth::id())->whereYear('created_at', date('Y'))->count(),
             'total_report' => Report::where('reported_by', Auth::id())->count(),
-        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData', 'userStatus', 'postTaskChargeWaiting', 'postTaskChargePending', 'postTaskChargePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
+        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData', 'userStatus', 'postTaskChargeTotal', 'postTaskChargeWaiting', 'postTaskChargeCanceled', 'postTaskChargePending', 'postTaskChargeWorkerPayment', 'postTaskChargeSitePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
     }
 
     // Profile.............................................................................................................

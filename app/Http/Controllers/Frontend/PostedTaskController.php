@@ -471,7 +471,7 @@ class PostedTaskController extends Controller
 
                         $proofStatus = '';
                         $currency = get_site_settings('site_currency_symbol');
-                        $rate = $row->total_charge / $row->worker_needed;
+                        $rate = $row->charge / $row->worker_needed;
 
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
@@ -491,21 +491,21 @@ class PostedTaskController extends Controller
                     ->editColumn('approved_at', function ($row) {
                         return date('d M, Y h:i A', strtotime($row->approved_at));
                     })
-                    ->editColumn('boosting_time', function ($row) {
+                    ->editColumn('total_boosting_time', function ($row) {
                         $boosting_start_at = Carbon::parse($row->boosting_start_at);
                         $boostingEndTime = $boosting_start_at->addMinutes($row->boosting_time);
 
-                        if ($row->boosting_time == null) {
+                        if ($row->total_boosting_time == null) {
                             return '<span class="badge bg-secondary">Not boosting</span>';
                         } else if ($boostingEndTime->isFuture()) {
                             return '<span class="countdown badge bg-success" data-end-time="' . $boostingEndTime->toIso8601String() .'"></span>';
                         } else {
-                            if ($row->boosting_time < 60) {
+                            if ($row->total_boosting_time < 60) {
                                 return '
-                                <span class="badge bg-danger">' . $row->boosting_time . ' Minute' . ($row->boosting_time > 1 ? 's' : '') . ' | Expired</span>
+                                <span class="badge bg-danger">' . $row->total_boosting_time . ' Minute' . ($row->total_boosting_time > 1 ? 's' : '') . ' | Expired</span>
                                 ';
                             } else {
-                                $hours = round($row->boosting_time / 60, 1);
+                                $hours = round($row->total_boosting_time / 60, 1);
                                 return '
                                 <span class="badge bg-danger">' . $hours . ' Hour' . ($hours > 1 ? 's' : '') . ' | Expired</span>
                                 ';
@@ -522,7 +522,7 @@ class PostedTaskController extends Controller
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['proof_submitted', 'proof_status', 'total_charge', 'charge_status', 'approved_at', 'boosting_time', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_status', 'total_charge', 'charge_status', 'approved_at', 'total_boosting_time', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.running');
@@ -556,7 +556,7 @@ class PostedTaskController extends Controller
             $worker_needed_charge = number_format((($request->worker_needed * $postTask->working_charge) + $site_charge), 2, '.', '');
 
             $boosting_time_charge = number_format(get_default_settings('task_posting_boosting_time_charge') * ($request->boosting_time / 15), 2, '.', '');
-            
+
             $work_duration_charge = number_format((($request->work_duration > $postTask->work_duration ? $request->work_duration - $postTask->work_duration : 0) * get_default_settings('task_posting_additional_work_duration_charge')), 2, '.', '');
 
             $total_charge = number_format( $worker_needed_charge + $boosting_time_charge + $work_duration_charge, 2, '.', '');
@@ -967,7 +967,7 @@ class PostedTaskController extends Controller
 
                         $proofStatus = '';
                         $currency = get_site_settings('site_currency_symbol');
-                        $rate = $row->total_charge / $row->worker_needed;
+                        $rate = $row->charge / $row->worker_needed;
 
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
@@ -1091,7 +1091,7 @@ class PostedTaskController extends Controller
 
                         $proofStatus = '';
                         $currency = get_site_settings('site_currency_symbol');
-                        $rate = $row->total_charge / $row->worker_needed;
+                        $rate = $row->charge / $row->worker_needed;
 
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
@@ -1220,7 +1220,7 @@ class PostedTaskController extends Controller
 
                         $proofStatus = '';
                         $currency = get_site_settings('site_currency_symbol');
-                        $rate = $row->total_charge / $row->worker_needed;
+                        $rate = $row->charge / $row->worker_needed;
 
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';

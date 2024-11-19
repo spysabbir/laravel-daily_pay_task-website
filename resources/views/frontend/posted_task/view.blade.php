@@ -71,7 +71,7 @@
                             <tr>
                                 <td>Work Duration</td>
                                 <td>
-                                    Free: 3 Days <br>
+                                    Default: 3 Days <br>
                                     Additional: {{ $postTask->work_duration - 3 }} Days <br>
                                     Total: {{ $postTask->work_duration }} Days
                                 </td>
@@ -86,11 +86,11 @@
                             </tr>
                             <tr>
                                 <td>Created At</td>
-                                <td>{{ $postTask->created_at->format('d M,Y h:i:s A') }}</td>
+                                <td>{{ $postTask->created_at->format('d M, Y h:i:s A') }}</td>
                             </tr>
                             <tr>
                                 <td>Updated At</td>
-                                <td>{{ $postTask->updated_at->format('d M,Y h:i:s A') }}</td>
+                                <td>{{ $postTask->updated_at->format('d M, Y h:i:s A') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -131,7 +131,7 @@
                 <div class="mt-3">
                     <strong>Paused By:</strong> {{ $postTask->pausedBy->user_type == 'Backend' ? 'Admin' : $postTask->pausedBy->name }} <br>
                     <strong>Paused At:</strong> {{ date('d M, Y h:i:s A', strtotime($postTask->paused_at)) }} <br>
-                    <strong>Pausing Reason:</strong> {{ $postTask->pausing_reason }}
+                    <strong>Pausing Reason:</strong> {{ $postTask->pausing_reason ?? 'N/A' }}
                 </div>
             </div>
             @endif
@@ -177,7 +177,7 @@
                 </div>
             </div>
             <div class="border p-1 m-1">
-                <strong class="text-info">Charge Status: </strong>,
+                <strong class="text-info">Charge Status: </strong>
                 <span class="text-secondary">Waiting: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->worker_needed) * ($postTask->worker_needed - $proofSubmitted->count()), 2) }}</span>,
                 <span class="text-primary">Pending: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->worker_needed) * $pendingProof, 2) }}</span>,
                 <span class="text-success">Payment: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->total_charge / $postTask->worker_needed) * $approvedProof, 2) }}</span>,
