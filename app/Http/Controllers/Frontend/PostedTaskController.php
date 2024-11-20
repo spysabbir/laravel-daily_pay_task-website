@@ -345,7 +345,7 @@ class PostedTaskController extends Controller
     {
         $postTask = PostTask::findOrFail($id);
 
-        $proofTasks = ProofTask::where('post_task_id', $id)->whereIn('status', ['Pending', 'Reviewed'])->count();
+        $proofTasks = ProofTask::where('post_task_id', $id)->whereIn('status', ['Pending'])->count();
 
         if ($proofTasks > 0) {
             return response()->json([
@@ -373,11 +373,10 @@ class PostedTaskController extends Controller
         } else {
             $user = User::findOrFail($postTask->user_id);
             $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
-            if ($proofTasks == 0) {
+            if ($proofTasks == 0 && $postTask->status != 'Rejected') {
                 $user->deposit_balance = $user->deposit_balance + $postTask->total_charge;
                 $user->save();
             }else if ($postTask->status == 'Running' || $postTask->status == 'Paused') {
-
                 $refundAmount = number_format(($postTask->charge / $postTask->worker_needed) * ($postTask->worker_needed - $proofTasks), 2, '.', '');
 
                 $user->deposit_balance = $user->deposit_balance + $refundAmount;
@@ -430,10 +429,10 @@ class PostedTaskController extends Controller
                     })
                     ->editColumn('proof_status', function ($row) {
                         $statuses = [
-                            'Pending' => 'bg-warning',
+                            'Pending' => 'bg-primary',
                             'Approved' => 'bg-success',
                             'Rejected' => 'bg-danger',
-                            'Reviewed' => 'bg-info'
+                            'Reviewed' => 'bg-warning'
                         ];
                         $proofStatus = '';
                         $proofCount = ProofTask::where('post_task_id', $row->id)->count();
@@ -455,6 +454,7 @@ class PostedTaskController extends Controller
                         return $total_charge;
                     })
                     ->editColumn('charge_status', function ($row) {
+                        $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                         $pendingProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Pending')->count();
                         $approvedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Approved')->count();
                         $finallyRejectedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')
@@ -473,11 +473,15 @@ class PostedTaskController extends Controller
                         $currency = get_site_settings('site_currency_symbol');
                         $rate = $row->charge / $row->worker_needed;
 
+                        if ($proofSubmitted > 0) {
+                            $proofStatus .= '<span class="badge bg-dark">Waiting: ' . $currency . ' ' . number_format($rate * ($row->worker_needed - $proofSubmitted), 2) . '</span> ';
+                        }
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
                         }
-                        if ($approvedProof > 0) {
-                            $proofStatus .= '<span class="badge bg-success">Expenses: ' . $currency . ' ' . number_format($rate * $approvedProof, 2) . '</span> ';
+                        if ($approvedProof > 0 || $proofSubmitted > 0) {
+                            $approvedCharge = ($row->working_charge * $approvedProof);
+                            $proofStatus .= '<span class="badge bg-success">Expenses: ' . $currency . ' ' . number_format($approvedCharge + (($rate * $approvedProof) - $approvedCharge + $row->required_proof_photo_charge + $row->boosting_time_charge +  $row->work_duration_charge), 2) . '</span> ';
                         }
                         if ($finallyRejectedProof > 0) {
                             $proofStatus .= '<span class="badge bg-danger">Refund: ' . $currency . ' ' . number_format($rate * $finallyRejectedProof, 2) . '</span> ';
@@ -486,7 +490,7 @@ class PostedTaskController extends Controller
                             $proofStatus .= '<span class="badge bg-warning">Hold: ' . $currency . ' ' . number_format($rate * $waitingRejectedProof, 2) . '</span> ';
                         }
 
-                        return $proofStatus ?: '<span class="badge bg-secondary">Proof not submitted yet.</span>';
+                        return $proofStatus ?: '<span class="badge bg-dark">Waiting: ' . number_format( $row->total_charge, 2) . '</span>';
                     })
                     ->editColumn('approved_at', function ($row) {
                         return date('d M, Y h:i A', strtotime($row->approved_at));
@@ -666,7 +670,7 @@ class PostedTaskController extends Controller
         $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
         $pendingProof = ProofTask::where('post_task_id', $postTask->id)->where('status', 'Pending')->count();
         $approvedProof = ProofTask::where('post_task_id', $postTask->id)->where('status', 'Approved')->count();
-        $finallyRejectedProof = ProofTask::where('post_task_id', $postTask->id)->where('status', 'Rejected')
+        $refundProof = ProofTask::where('post_task_id', $postTask->id)->where('status', 'Rejected')
                         ->where(function ($query) {
                             $query->where(function ($query) {
                                     $query->whereNull('reviewed_at')
@@ -675,7 +679,7 @@ class PostedTaskController extends Controller
                                 ->orWhereNotNull('reviewed_at');
                         })->count();
 
-        $waitingRejectedProof = ProofTask::where('post_task_id', $postTask->id)
+        $holdProof = ProofTask::where('post_task_id', $postTask->id)
                         ->where(function ($query) {
                             $query->where('status', 'Reviewed')
                                 ->orWhere(function ($query) {
@@ -684,7 +688,7 @@ class PostedTaskController extends Controller
                                             ->where('rejected_at', '>', now()->subHours(72));
                                 });
                         })->count();
-        return view('frontend.posted_task.all_proof_list', compact('postTask', 'proofSubmitted', 'pendingProof', 'approvedProof', 'finallyRejectedProof', 'waitingRejectedProof'));
+        return view('frontend.posted_task.all_proof_list', compact('postTask', 'proofSubmitted', 'pendingProof', 'approvedProof', 'refundProof', 'holdProof'));
     }
 
     public function proofTaskReport($id)
@@ -951,6 +955,7 @@ class PostedTaskController extends Controller
                         return $total_charge;
                     })
                     ->editColumn('charge_status', function ($row) {
+                        $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                         $pendingProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Pending')->count();
                         $approvedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Approved')->count();
                         $finallyRejectedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')
@@ -969,20 +974,24 @@ class PostedTaskController extends Controller
                         $currency = get_site_settings('site_currency_symbol');
                         $rate = $row->charge / $row->worker_needed;
 
+                        if ($proofSubmitted > 0) {
+                            $proofStatus .= '<span class="badge bg-danger">Canceled Refund: ' . $currency . ' ' . number_format($rate * ($row->worker_needed - $proofSubmitted), 2) . '</span> ';
+                        }
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
                         }
-                        if ($approvedProof > 0) {
-                            $proofStatus .= '<span class="badge bg-success">Expenses: ' . $currency . ' ' . number_format($rate * $approvedProof, 2) . '</span> ';
+                        if ($approvedProof > 0 || $proofSubmitted > 0) {
+                            $approvedCharge = ($row->working_charge * $approvedProof);
+                            $proofStatus .= '<span class="badge bg-success">Expenses: ' . $currency . ' ' . number_format($approvedCharge + (($rate * $approvedProof) - $approvedCharge + $row->required_proof_photo_charge + $row->boosting_time_charge +  $row->work_duration_charge), 2) . '</span> ';
                         }
                         if ($finallyRejectedProof > 0) {
-                            $proofStatus .= '<span class="badge bg-danger">Refund: ' . $currency . ' ' . number_format($rate * $finallyRejectedProof, 2) . '</span> ';
+                            $proofStatus .= '<span class="badge bg-danger">Rejected Refund: ' . $currency . ' ' . number_format($rate * $finallyRejectedProof, 2) . '</span> ';
                         }
                         if ($waitingRejectedProof > 0) {
                             $proofStatus .= '<span class="badge bg-warning">Hold: ' . $currency . ' ' . number_format($rate * $waitingRejectedProof, 2) . '</span> ';
                         }
 
-                        return $proofStatus ?: '<span class="badge bg-secondary">Proof not submitted yet.</span>';
+                        return $proofStatus ?: '<span class="badge bg-danger">Canceled Refund: ' . $currency . ' ' . number_format( ($row->total_charge), 2) . '</span>';
                     })
                     ->editColumn('cancellation_reason', function ($row) {
                         if ($row->cancellation_reason == 'Work duration exceeded') {
@@ -1075,6 +1084,7 @@ class PostedTaskController extends Controller
                         return $total_charge;
                     })
                     ->editColumn('charge_status', function ($row) {
+                        $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                         $pendingProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Pending')->count();
                         $approvedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Approved')->count();
                         $finallyRejectedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')
@@ -1093,11 +1103,15 @@ class PostedTaskController extends Controller
                         $currency = get_site_settings('site_currency_symbol');
                         $rate = $row->charge / $row->worker_needed;
 
+                        if ($proofSubmitted > 0) {
+                            $proofStatus .= '<span class="badge bg-dark">Waiting: ' . $currency . ' ' . number_format($rate * ($row->worker_needed - $proofSubmitted), 2) . '</span> ';
+                        }
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
                         }
-                        if ($approvedProof > 0) {
-                            $proofStatus .= '<span class="badge bg-success">Expenses: ' . $currency . ' ' . number_format($rate * $approvedProof, 2) . '</span> ';
+                        if ($approvedProof > 0 || $proofSubmitted > 0) {
+                            $approvedCharge = ($row->working_charge * $approvedProof);
+                            $proofStatus .= '<span class="badge bg-success">Expenses: ' . $currency . ' ' . number_format($approvedCharge + (($rate * $approvedProof) - $approvedCharge + $row->required_proof_photo_charge + $row->boosting_time_charge +  $row->work_duration_charge), 2) . '</span> ';
                         }
                         if ($finallyRejectedProof > 0) {
                             $proofStatus .= '<span class="badge bg-danger">Refund: ' . $currency . ' ' . number_format($rate * $finallyRejectedProof, 2) . '</span> ';
@@ -1106,7 +1120,7 @@ class PostedTaskController extends Controller
                             $proofStatus .= '<span class="badge bg-warning">Hold: ' . $currency . ' ' . number_format($rate * $waitingRejectedProof, 2) . '</span> ';
                         }
 
-                        return $proofStatus ?: '<span class="badge bg-secondary">Proof not submitted yet.</span>';
+                        return $proofStatus ?: '<span class="badge bg-dark">Waiting: ' . number_format( $row->total_charge, 2) . '</span>';
                     })
                     ->editColumn('pausing_reason', function ($row) {
                         if ($row->pausing_reason == null) {
@@ -1204,6 +1218,7 @@ class PostedTaskController extends Controller
                         return $total_charge;
                     })
                     ->editColumn('charge_status', function ($row) {
+                        $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                         $pendingProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Pending')->count();
                         $approvedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Approved')->count();
                         $finallyRejectedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')
@@ -1222,11 +1237,15 @@ class PostedTaskController extends Controller
                         $currency = get_site_settings('site_currency_symbol');
                         $rate = $row->charge / $row->worker_needed;
 
+                        if ($proofSubmitted > 0) {
+                            $proofStatus .= '<span class="badge bg-dark">Waiting: ' . $currency . ' ' . number_format($rate * ($row->worker_needed - $proofSubmitted), 2) . '</span> ';
+                        }
                         if ($pendingProof > 0) {
                             $proofStatus .= '<span class="badge bg-primary">Pending: ' . $currency . ' ' . number_format($rate * $pendingProof, 2) . '</span> ';
                         }
-                        if ($approvedProof > 0) {
-                            $proofStatus .= '<span class="badge bg-success">Expenses: ' . $currency . ' ' . number_format($rate * $approvedProof, 2) . '</span> ';
+                        if ($approvedProof > 0 || $proofSubmitted > 0) {
+                            $approvedCharge = ($row->working_charge * $approvedProof);
+                            $proofStatus .= '<span class="badge bg-success">Expenses: ' . $currency . ' ' . number_format($approvedCharge + (($rate * $approvedProof) - $approvedCharge + $row->required_proof_photo_charge + $row->boosting_time_charge +  $row->work_duration_charge), 2) . '</span> ';
                         }
                         if ($finallyRejectedProof > 0) {
                             $proofStatus .= '<span class="badge bg-danger">Refund: ' . $currency . ' ' . number_format($rate * $finallyRejectedProof, 2) . '</span> ';
@@ -1235,7 +1254,7 @@ class PostedTaskController extends Controller
                             $proofStatus .= '<span class="badge bg-warning">Hold: ' . $currency . ' ' . number_format($rate * $waitingRejectedProof, 2) . '</span> ';
                         }
 
-                        return $proofStatus ?: '<span class="badge bg-secondary">Proof not submitted yet.</span>';
+                        return $proofStatus ?: '<span class="badge bg-dark">Waiting: ' . number_format( $row->total_charge, 2) . '</span>';
                     })
                     ->editColumn('approved_at', function ($row) {
                         return '<span class="badge bg-dark">' . date('d M Y h:i A', strtotime($row->approved_at)) . '</span>';

@@ -118,8 +118,12 @@ Schedule::call(function () {
 
             $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
 
-            $refundAmount = $postTask->total_charge - (($postTask->charge / $postTask->worker_needed) * $proofTasks);
-            User::where('id', $postTask->user_id)->increment('deposit_balance', $refundAmount);
+            if ($proofTasks == 0) {
+                User::where('id', $postTask->user_id)->increment('deposit_balance', $postTask->total_charge);
+            } else {
+                $refundAmount = $postTask->total_charge - (($postTask->charge / $postTask->worker_needed) * $proofTasks);
+                User::where('id', $postTask->user_id)->increment('deposit_balance', $refundAmount);
+            }
         }
     }
 })->everyMinute();

@@ -16,11 +16,6 @@
             </div>
             <div class="card-body">
                 <p class="border p-1 m-1">
-                    <strong class="text-info">User Id: </strong>{{ $postTask->user->id }},
-                    <strong class="text-info">User Name: </strong>{{ $postTask->user->name }},
-                    <strong class="text-info">User Email: </strong>{{ $postTask->user->email }}
-                </p>
-                <p class="border p-1 m-1">
                     <strong class="text-info">Category: </strong>{{ $postTask->category->name }},
                     <strong class="text-info">Sub Category: </strong>{{ $postTask->subCategory->name }},
                     <strong class="text-info">Child Category: </strong>{{ $postTask->childCategory->name ?? 'N/A' }}
@@ -37,7 +32,7 @@
                 <p class="border p-1 m-1">
                     <strong class="text-info">Working Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->working_charge }},
                     <strong class="text-info">Site Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->site_charge }},
-                    <strong class="text-info">Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }},
+                    <strong class="text-info">Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }}
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Boosting Time: </strong>
@@ -63,12 +58,15 @@
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Charge Status: </strong>
-                    <span class="text-secondary">Waiting: {{ get_site_settings('site_currency_symbol') }} {{ ($postTask->charge / $postTask->worker_needed) * ($postTask->worker_needed - $proofSubmitted->count()) }}</span>,
+                    <span class="text-secondary">Waiting: {{ get_site_settings('site_currency_symbol') }} {{ $postTask->status != 'Canceled' ? $proofSubmitted->count() > 0 ? round(($postTask->charge / $postTask->worker_needed) * ($postTask->worker_needed - $proofSubmitted->count()), 2) : $postTask->total_charge : 0 }}</span>,
                     <span class="text-primary">Pending: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->charge / $postTask->worker_needed) * $pendingProof, 2) }}</span>,
                     <span class="text-success">Worker Payment: {{ get_site_settings('site_currency_symbol') }} {{ round($postTask->working_charge * $approvedProof, 2) }}</span>,
-                    <span class="text-success">Site Payment: {{ get_site_settings('site_currency_symbol') }} {{ round(((($postTask->charge / $postTask->worker_needed) * $approvedProof) - ($postTask->working_charge * $approvedProof)) + $postTask->required_proof_photo_charge + $postTask->boosting_time_charge +  $postTask->work_duration_charge, 2) }}</span>,
-                    <span class="text-danger">Refund: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->charge / $postTask->worker_needed) * $finallyRejectedProof, 2) }}</span>,
-                    <span class="text-warning">Hold: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->charge / $postTask->worker_needed) *  $waitingRejectedProof, 2) }}</span>
+                    <span class="text-success">Site Payment: {{ get_site_settings('site_currency_symbol') }} {{ $proofSubmitted->count() > 0 ? round(((($postTask->charge / $postTask->worker_needed) * $approvedProof) - ($postTask->working_charge * $approvedProof)) + $postTask->required_proof_photo_charge + $postTask->boosting_time_charge +  $postTask->work_duration_charge, 2) : 0 }}</span>,
+                    <span class="text-danger">Rejected Refund: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->charge / $postTask->worker_needed) * $refundProof, 2) }}</span>,
+                    @if ($postTask->status == 'Canceled')
+                    <span class="text-danger">Canceled Refund: {{ get_site_settings('site_currency_symbol') }} {{ $postTask->status == 'Canceled' ? $proofSubmitted->count() > 0 ? round(($postTask->charge / $postTask->worker_needed) *  ($postTask->worker_needed - $proofSubmitted->count()), 2) : round($postTask->total_charge, 0) : 0 }}</span>,
+                    @endif
+                    <span class="text-warning">Hold: {{ get_site_settings('site_currency_symbol') }} {{ round(($postTask->charge / $postTask->worker_needed) *  $holdProof, 2) }}</span>
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Submited At: </strong>{{ $postTask->created_at->format('d F, Y h:i:s A') }},

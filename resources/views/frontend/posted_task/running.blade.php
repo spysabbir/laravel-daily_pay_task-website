@@ -23,7 +23,7 @@
                                 <th>Total Boosting Time</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
-                                <th>Total Charge</th>
+                                {{-- <th>Total Charge</th> --}}
                                 <th>Charge Status</th>
                                 <th>Action</th>
                             </tr>
@@ -166,7 +166,7 @@
                 { data: 'total_boosting_time', name: 'total_boosting_time' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
-                { data: 'total_charge', name: 'total_charge' },
+                // { data: 'total_charge', name: 'total_charge' },
                 { data: 'charge_status', name: 'charge_status' },
                 { data: 'action', name: 'action' }
             ],

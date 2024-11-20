@@ -101,51 +101,28 @@ class UserController extends Controller
             ];
         }
 
-        $postTaskChargeWaiting = 0;
-
         $userStatus = UserStatus::where('user_id', Auth::id())->latest()->first();
 
-        return $postTaskIds = PostTask::where('user_id', Auth::id())
-        ->where(function ($query) {
-            $query->where('status', 'Canceled')
-                  ->orWhereNotIn('status', ['Pending', 'Rejected']);
-        })
-        ->pluck('id')
-        ->toArray();
+        // PostTask Charges
+        $postTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Pending', 'Rejected'])->get();
 
-// Initialize an array to store valid PostTask IDs
-$validPostTaskIds = [];
+        $canceledTaskIds = [];
+        $otherTaskIds = [];
 
-// Loop through each postTaskId and check the ProofTask count
-foreach ($postTaskIds as $postTaskId) {
-    // Check the count of ProofTask related to this PostTask ID
-    $proofCount = ProofTask::where('post_task_id', $postTaskId)->count();
-
-    // Only add postTaskId to validPostTaskIds if proofCount is greater than 0
-    if ($proofCount > 0) {
-    return $validPostTaskIds[] = $postTaskId;
-    }
-}
-
-
-
-        $postTaskChargeTotal = PostTask::where('user_id', Auth::id())->whereNot('status', 'Canceled')->sum('total_charge');
-
-        $postTaskRunningIds = PostTask::where('user_id', Auth::id())->whereIn('status', ['Running', 'Paused'])->pluck('id')->toArray();
-        foreach ($postTaskRunningIds as $postTaskRunningId) {
-            $postTaskRunning = PostTask::find($postTaskRunningId);
-
-            if (!$postTaskRunning) {
-                continue; // Skip if no PostTask found
+        foreach ($postTaskIds as $postTask) {
+            $proofCount = ProofTask::where('post_task_id', $postTask->id)->count();
+            if ($postTask->status === 'Canceled') {
+                if ($proofCount > 0) {
+                    $canceledTaskIds[] = $postTask->id;
+                }
+                continue;
             }
-
-            $chargePerTask = $postTaskRunning->charge / $postTaskRunning->worker_needed;
-
-            // Calculate counts and charges
-            $proofCount = ProofTask::where('post_task_id', $postTaskRunningId)->count();
-            $postTaskChargeWaiting += $chargePerTask * ($postTaskRunning->worker_needed - $proofCount) ?? 0;
+            $otherTaskIds[] = $postTask->id;
         }
 
+        $validPostTaskIds = array_merge($canceledTaskIds, $otherTaskIds);
+        $postTaskChargeTotal = PostTask::whereIn('id', $validPostTaskIds)->sum('total_charge');
+        $postTaskChargeWaiting = 0;
         $postTaskChargeCanceled = 0;
         $postTaskChargePending = 0;
         $postTaskChargeWorkerPayment = 0;
@@ -153,17 +130,33 @@ foreach ($postTaskIds as $postTaskId) {
         $postTaskChargeRefund = 0;
         $postTaskChargeHold = 0;
 
-        $postTaskIds = PostTask::where('user_id', Auth::id())->pluck('id')->toArray();
-        foreach ($postTaskIds as $postTaskId) {
-            $postTask = PostTask::find($postTaskId);
-
-            if (!$postTask) {
-                continue; // Skip if no PostTask found
+        foreach ($canceledTaskIds as $canceledTaskId) {
+            $postTaskCanceled = PostTask::find($canceledTaskId);
+            if (!$postTaskCanceled) {
+                continue;
             }
+            $chargePerTask = $postTaskCanceled->charge / $postTaskCanceled->worker_needed;
+            $proofCount = ProofTask::where('post_task_id', $canceledTaskId)->count();
+            $postTaskChargeCanceled += $chargePerTask * ($postTaskCanceled->worker_needed - $proofCount) ?? 0;
+        }
 
+        foreach ($otherTaskIds as $otherTaskId) {
+            $postTaskOther = PostTask::find($otherTaskId);
+            if (!$postTaskOther) {
+                continue;
+            }
+            $chargePerTask = $postTaskOther->charge / $postTaskOther->worker_needed;
+            $proofCount = ProofTask::where('post_task_id', $otherTaskId)->count();
+            $postTaskChargeWaiting += $chargePerTask * ($postTaskOther->worker_needed - $proofCount) ?? 0;
+        }
+
+        $postTaskIds = PostTask::where('user_id', Auth::id())->pluck('id')->toArray();
+        foreach ($validPostTaskIds as $postTaskId) {
+            $postTask = PostTask::find($postTaskId);
+            if (!$postTask) {
+                continue;
+            }
             $chargePerTask = $postTask->charge / $postTask->worker_needed;
-
-            // Calculate counts and charges
             $pendingCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Pending')->count();
             $approvedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Approved')->count();
             $rejectedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Rejected')
@@ -177,11 +170,9 @@ foreach ($postTaskIds as $postTaskId) {
                         ->orWhere('status', 'Rejected')->whereNull('reviewed_at')
                         ->where('rejected_at', '>', now()->subHours(72));
                 })->count();
-
             $postTaskChargePending += $chargePerTask * $pendingCount ?? 0;
             $postTaskChargeWorkerPayment += $postTask->working_charge * $approvedCount ?? 0;
             $postTaskChargeSitePayment += $postTask->site_charge / $postTask->worker_needed * $approvedCount + $postTask->required_proof_photo_charge + $postTask->boosting_time_charge +  $postTask->work_duration_charge ?? 0;
-
             $postTaskChargeRefund += $chargePerTask * $rejectedCount ?? 0;
             $postTaskChargeHold += $chargePerTask * $reviewedCount ?? 0;
         }
