@@ -83,7 +83,7 @@
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
-                { data: 'total_charge', name: 'total_charge' },
+                { data: 'total_cost', name: 'total_cost' },
                 { data: 'charge_status', name: 'charge_status' },
                 { data: 'pausing_reason', name: 'pausing_reason' },
                 { data: 'paused_at', name: 'paused_at' },

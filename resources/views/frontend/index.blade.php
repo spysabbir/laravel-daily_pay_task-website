@@ -169,9 +169,9 @@
                             <div class="job-save">
                                 <span>
                                     <strong class="text-success">
-                                        Working Charge:
+                                        Income Of Each Worker:
                                         <br>
-                                        {{ get_site_settings('site_currency_symbol') }} {{ $postTask->working_charge }}
+                                        {{ get_site_settings('site_currency_symbol') }} {{ $postTask->income_of_each_worker }}
                                     </strong>
                                 </span>
                                 <span>

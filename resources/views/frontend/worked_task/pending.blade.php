@@ -73,7 +73,7 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'title', name: 'title' },
-                { data: 'working_charge', name: 'working_charge' },
+                { data: 'income_of_each_worker', name: 'income_of_each_worker' },
                 { data: 'created_at', name: 'created_at' },
             ]
         });

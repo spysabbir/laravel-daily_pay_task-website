@@ -46,7 +46,7 @@
                                                     <label for="worker_needed" class="form-label">Additional Worker Needed <small class="text-danger">* Required </small></label>
                                                     <input type="number" class="form-control" id="worker_needed" name="worker_needed" value="0" min="0" placeholder="Worker Needed">
                                                     <span class="text-danger error-text update_worker_needed_error"></span>
-                                                    <small class="text-info d-block">* Each working charge {{ get_site_settings('site_currency_symbol') }} <span id="working_charge"></span>.</small>
+                                                    <small class="text-info d-block">* Each income of each worker {{ get_site_settings('site_currency_symbol') }} <span id="income_of_each_worker"></span>.</small>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="site_charge" class="form-label">Additional Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
@@ -166,7 +166,7 @@
                 { data: 'total_boosting_time', name: 'total_boosting_time' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
-                // { data: 'total_charge', name: 'total_charge' },
+                // { data: 'total_cost', name: 'total_cost' },
                 { data: 'charge_status', name: 'charge_status' },
                 { data: 'action', name: 'action' }
             ],
@@ -304,7 +304,7 @@
                     $('#post_task_id').val(response.id);
                     $('#work_duration').val(response.work_duration);
                     $('#old_work_duration').val(response.work_duration);
-                    $('#working_charge').text(response.working_charge);
+                    $('#income_of_each_worker').text(response.income_of_each_worker);
 
                     // Calculate boosting end time
                     let startTime = new Date(response.boosting_start_at);
@@ -432,12 +432,12 @@
             });
         });
 
-        // Working Charge Calculation keyup and change event
+        // Income Of Each Worker Calculation keyup and change event
         $(document).on('change keyup', '#worker_needed, #boosting_time, #work_duration', function () {
             var worker_needed = parseInt($('#worker_needed').val()) || 0;
-            var working_charge = parseFloat($('#working_charge').text()) || 0;
+            var income_of_each_worker = parseFloat($('#income_of_each_worker').text()) || 0;
 
-            var total_worker_needed_charge = working_charge * worker_needed;
+            var total_worker_needed_charge = income_of_each_worker * worker_needed;
             var site_charge = (total_worker_needed_charge * {{ get_default_settings('task_posting_charge_percentage') }}) / 100;
             var task_charge = total_worker_needed_charge + site_charge;
 

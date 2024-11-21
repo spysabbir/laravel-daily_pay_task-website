@@ -106,22 +106,10 @@ class UserController extends Controller
         // PostTask Charges
         $postTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Pending', 'Rejected'])->get();
 
-        $canceledTaskIds = [];
-        $otherTaskIds = [];
-
-        foreach ($postTaskIds as $postTask) {
-            $proofCount = ProofTask::where('post_task_id', $postTask->id)->count();
-            if ($postTask->status === 'Canceled') {
-                if ($proofCount > 0) {
-                    $canceledTaskIds[] = $postTask->id;
-                }
-                continue;
-            }
-            $otherTaskIds[] = $postTask->id;
-        }
-
-        $validPostTaskIds = array_merge($canceledTaskIds, $otherTaskIds);
-        $postTaskChargeTotal = PostTask::whereIn('id', $validPostTaskIds)->sum('total_charge');
+        $canceledTaskIds = PostTask::where('user_id', Auth::id())->where('status', ['Canceled'])->pluck('id')->toArray();
+        $otherTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Canceled'])->pluck('id')->toArray();
+        $validPostTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Pending', 'Rejected'])->pluck('id')->toArray();
+        $postTaskChargeTotal = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Pending', 'Rejected'])->sum('total_cost');
         $postTaskChargeWaiting = 0;
         $postTaskChargeCanceled = 0;
         $postTaskChargePending = 0;
@@ -135,7 +123,7 @@ class UserController extends Controller
             if (!$postTaskCanceled) {
                 continue;
             }
-            $chargePerTask = $postTaskCanceled->charge / $postTaskCanceled->worker_needed;
+            $chargePerTask = ($postTaskCanceled->sub_cost + $postTaskCanceled->site_charge) / $postTaskCanceled->worker_needed;
             $proofCount = ProofTask::where('post_task_id', $canceledTaskId)->count();
             $postTaskChargeCanceled += $chargePerTask * ($postTaskCanceled->worker_needed - $proofCount) ?? 0;
         }
@@ -145,7 +133,7 @@ class UserController extends Controller
             if (!$postTaskOther) {
                 continue;
             }
-            $chargePerTask = $postTaskOther->charge / $postTaskOther->worker_needed;
+            $chargePerTask = ($postTaskOther->sub_cost + $postTaskOther->site_charge) / $postTaskOther->worker_needed;
             $proofCount = ProofTask::where('post_task_id', $otherTaskId)->count();
             $postTaskChargeWaiting += $chargePerTask * ($postTaskOther->worker_needed - $proofCount) ?? 0;
         }
@@ -156,7 +144,7 @@ class UserController extends Controller
             if (!$postTask) {
                 continue;
             }
-            $chargePerTask = $postTask->charge / $postTask->worker_needed;
+            $chargePerTask = ($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed;
             $pendingCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Pending')->count();
             $approvedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Approved')->count();
             $rejectedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Rejected')
@@ -171,7 +159,7 @@ class UserController extends Controller
                         ->where('rejected_at', '>', now()->subHours(72));
                 })->count();
             $postTaskChargePending += $chargePerTask * $pendingCount ?? 0;
-            $postTaskChargeWorkerPayment += $postTask->working_charge * $approvedCount ?? 0;
+            $postTaskChargeWorkerPayment += $postTask->income_of_each_worker * $approvedCount ?? 0;
             $postTaskChargeSitePayment += $postTask->site_charge / $postTask->worker_needed * $approvedCount + $postTask->required_proof_photo_charge + $postTask->boosting_time_charge +  $postTask->work_duration_charge ?? 0;
             $postTaskChargeRefund += $chargePerTask * $rejectedCount ?? 0;
             $postTaskChargeHold += $chargePerTask * $reviewedCount ?? 0;

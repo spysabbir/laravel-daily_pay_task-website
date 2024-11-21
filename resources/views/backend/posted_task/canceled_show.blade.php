@@ -2,7 +2,10 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Post Task Details - Id: {{ $postTask->id }}</h4>
+                <h4 class="card-title">Post Task Details</h4>
+                <div class="text-primary">
+                    Id: {{ $postTask->id }}, Status : {{ $postTask->status }}
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -49,16 +52,16 @@
                                 <td>{{ $postTask->worker_needed }}</td>
                             </tr>
                             <tr>
-                                <td>Working Charge</td>
-                                <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->working_charge }}</td>
+                                <td>Income Of Each Worker</td>
+                                <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->income_of_each_worker }}</td>
+                            </tr>
+                            <tr>
+                                <td>Task Cost</td>
+                                <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->sub_cost }}</td>
                             </tr>
                             <tr>
                                 <td>Site Charge</td>
                                 <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->site_charge }}</td>
-                            </tr>
-                            <tr>
-                                <td>Task Charge</td>
-                                <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }}</td>
                             </tr>
                             <tr>
                                 <td>Boosting Time</td>
@@ -93,8 +96,8 @@
                                 <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->work_duration_charge }}</td>
                             </tr>
                             <tr>
-                                <td>Total Charge</td>
-                                <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->total_charge }}</td>
+                                <td>Total Cost</td>
+                                <td>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->total_cost }}</td>
                             </tr>
                             <tr>
                                 <td>Created At</td>

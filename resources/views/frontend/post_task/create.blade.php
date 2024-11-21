@@ -43,13 +43,13 @@
                                 <strong>5. </strong> Your task will be boosting for the selected time. <br>
                                 <strong>6. </strong> Your task will be running for the selected days. <br>
                                 <strong>7. </strong> You can't change the task category once you submit the task. <br>
-                                <strong>8. </strong> You can only change the task Charge if you want to increase it. <br>
-                                <strong>9. </strong> You can't change the task Charge if you want to decrease it. <br>
+                                <strong>8. </strong> You can only change the task cost if you want to increase it. <br>
+                                <strong>9. </strong> You can't change the task cost if you want to decrease it. <br>
                                 <strong>10. </strong> You can't change the task thumbnail once you submit the task. <br>
                                 <strong>11. </strong> You can only change the task worker needed if you want to increase it. <br>
                                 <strong>12. </strong> You can't change the task worker needed if you want to decrease it. <br>
                                 <strong>13. </strong> Youy task is not aproved if you provide wrong information. <br>
-                                <strong>14. </strong> You task is not submit if your total task Charge is not 100. <br>
+                                <strong>14. </strong> You task is not submit if your total task cost is not 100. <br>
                             </div>
                         </section>
 
@@ -117,6 +117,15 @@
                                 <textarea class="form-control" name="required_proof_answer" id="required_proof_answer" rows="4" placeholder="Please enter the required proof answer." required></textarea>
                                 <small class="text-danger" id="required_proof_answer_error"></small>
                             </div>
+                            <div class="mb-3">
+                                <label for="required_proof_photo" class="form-label">
+                                    Required Proof Photo <small class="text-info">* Optional </small>
+                                </label>
+                                <input type="number" class="form-control" name="required_proof_photo" id="required_proof_photo" placeholder="Please enter how many required proof photo are required." required>
+                                <small class="text-danger" id="required_proof_photo_error"></small>
+                                <small class="text-info d-block">* Additional required proof photo charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }} per required proof photo.</small>
+                                <small class="text-info d-block">* Note: You get 1 required proof photo for free.</small>
+                            </div>
                             <div class="mb-2">
                                 <label for="additional_note" class="form-label">
                                     Additional Note <small class="text-danger">* Required </small>
@@ -127,7 +136,7 @@
                             </div>
                             <div class="mb-2">
                                 <label for="thumbnail" class="form-label">
-                                    Thumbnail (Optional)
+                                    Thumbnail <small class="text-info">* Optional </small>
                                 </label>
                                 <input type="file" class="form-control" name="thumbnail" id="thumbnail" accept=".jpg, .jpeg, .png">
                                 <small id="thumbnailError" class="text-danger"></small>
@@ -144,20 +153,27 @@
                                     <label for="worker_needed" class="form-label">
                                         Worker Needed <small class="text-danger">* Required </small>
                                     </label>
-                                    <input type="number" class="form-control" name="worker_needed" id="worker_needed" min="1" value="1" placeholder="Please enter how many workers are required." required>
+                                    <input type="number" class="form-control" name="worker_needed" id="worker_needed" min="1" placeholder="Please enter how many workers are required." required>
                                     <small class="text-danger" id="worker_needed_error"></small>
                                     <small class="text-info d-block">* Minimum worker needed is 1.</small>
                                 </div>
                                 <div class="col-lg-3 col-12 mb-3">
-                                    <label for="working_charge" class="form-label">
-                                        Working Charge <small class="text-danger">* Required </small>
+                                    <label for="income_of_each_worker" class="form-label">
+                                        Income Of Each Worker <small class="text-danger">* Required </small>
                                     </label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" name="working_charge" id="working_charge" placeholder="Please enter the charges for each worker." required>
+                                        <input type="number" class="form-control" name="income_of_each_worker" id="income_of_each_worker" placeholder="Please enter the charges for each worker." required>
                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                     </div>
-                                    <small class="text-danger" id="working_charge_error"></small>
-                                    <small class="text-info d-block">* Each working charge should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
+                                    <small class="text-danger" id="income_of_each_worker_error"></small>
+                                    <small class="text-info d-block">* Income of each worker should be within the min charge <strong id="min_charge">0</strong> and max charge <strong id="max_charge">0</strong>.</small>
+                                </div>
+                                <div class="col-lg-3 col-12 mb-3">
+                                    <label for="task_cost" class="form-label">Task Cost</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="task_cost" readonly>
+                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                    </div>
                                 </div>
                                 <div class="col-lg-3 col-12 mb-3">
                                     <label for="site_charge" class="form-label">Site Charge</label>
@@ -167,25 +183,9 @@
                                     </div>
                                     <small class="text-info">* Site charge is {{ get_default_settings('task_posting_charge_percentage') }} % under worker needed and worker charge.</small>
                                 </div>
-                                <div class="col-lg-3 col-12 mb-3">
-                                    <label for="task_charge" class="form-label">Task Charge</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" id="task_charge" readonly>
-                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-12 mb-3">
-                                    <label for="required_proof_photo" class="form-label">
-                                        Required Proof Photo <small class="text-danger">* Required </small>
-                                    </label>
-                                    <input type="number" class="form-control" name="required_proof_photo" id="required_proof_photo" min="0" value="0" placeholder="Please enter how many additional required proof photo are required." required>
-                                    <small class="text-danger" id="required_proof_photo_error"></small>
-                                    <small class="text-info d-block">* Additional required proof photo charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }} per required proof photo.</small>
-                                    <small class="text-info d-block">* Note: You get 1 required proof photo for free.</small>
-                                </div>
                                 <div class="col-lg-4 col-12 mb-3">
                                     <label for="boosting_time" class="form-label">
-                                        Boosting Time <small class="text-danger">* Required </small>
+                                        Boosting Time <small class="text-info">* Optional </small>
                                     </label>
                                     <select class="form-select" name="boosting_time" id="boosting_time" required>
                                         <option value="0" selected>No Boost</option>
@@ -206,7 +206,7 @@
                                 </div>
                                 <div class="col-lg-4 col-12 mb-3">
                                     <label for="work_duration" class="form-label">
-                                        Work Duration <small class="text-danger">* Required </small>
+                                        Work Duration <small class="text-info">* Optional </small>
                                     </label>
                                     <select class="form-select" name="work_duration" id="work_duration" required>
                                         <option value="3" selected>3 Days</option>
@@ -222,15 +222,13 @@
                                     <br>
                                     <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-5 offset-7 mb-3">
-                                    <label for="total_task_charge" class="form-label">Total Task Charge</label>
+                                <div class="col-lg-4 col-12 mb-3">
+                                    <label for="total_task_cost" class="form-label">Total Task Cost</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="total_task_charge" readonly>
+                                        <input type="number" class="form-control" id="total_task_cost" readonly>
                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                     </div>
-                                    <small class="text-info">* Total task charge must be {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }}.</small>
+                                    <small class="text-info">* Total task cost must be {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }}.</small>
                                 </div>
                             </div>
 
@@ -303,7 +301,7 @@
         });
 
         // Real-time validation 2nd step
-        $('#taskForm').on('input', '#title, #description, #required_proof_answer, #additional_note', function() {
+        $('#taskForm').on('input', '#title, #description, #required_proof_answer, #required_proof_photo, #additional_note', function() {
             // Validate the title field
             var title = $('#title').val();
             if (!title) {
@@ -327,6 +325,13 @@
             } else {
                 $('#required_proof_answer_error').text('');
             }
+            // Validate the extra required proof photo field
+            var required_proof_photo = parseInt($('#required_proof_photo').val());
+            if (required_proof_photo < 0) {
+                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
+            } else {
+                $('#required_proof_photo_error').text('');
+            }
             // Validate the additional note field
             var additional_note = $('#additional_note').val();
             if (!additional_note) {
@@ -337,7 +342,7 @@
         });
 
         // Real-time validation 3rd step
-        $('#taskForm').on('input', '#worker_needed, #working_charge, #required_proof_photo', function() {
+        $('#taskForm').on('input', '#worker_needed, #income_of_each_worker', function() {
             // Validate the worker needed field
             var worker_needed = parseInt($('#worker_needed').val());
             if (isNaN(worker_needed)) {
@@ -347,27 +352,18 @@
             } else {
                 $('#worker_needed_error').text('');
             }
-            // Validate the working charge field
-            var working_charge = parseFloat($('#working_charge').val());
-            var minCharge = parseFloat($('#working_charge').attr('min'));
-            var maxCharge = parseFloat($('#working_charge').attr('max'));
-            if (isNaN(working_charge)) {
-                $('#working_charge_error').text('Please enter charges for each worker are required.');
-            } else if (working_charge < minCharge) {
-                $('#working_charge_error').text('Working charge should be greater than or equal to {{ get_site_settings("site_currency_symbol") }} ' + minCharge + '.');
-            } else if (working_charge > maxCharge) {
-                $('#working_charge_error').text('Working charge should be less than or equal to {{ get_site_settings("site_currency_symbol") }} ' + maxCharge + '.');
+            // Validate the income of each worker field
+            var income_of_each_worker = parseFloat($('#income_of_each_worker').val());
+            var minCharge = parseFloat($('#income_of_each_worker').attr('min'));
+            var maxCharge = parseFloat($('#income_of_each_worker').attr('max'));
+            if (isNaN(income_of_each_worker)) {
+                $('#income_of_each_worker_error').text('Please enter charges for each worker are required.');
+            } else if (income_of_each_worker < minCharge) {
+                $('#income_of_each_worker_error').text('Income of each worker should be greater than or equal to {{ get_site_settings("site_currency_symbol") }} ' + minCharge + '.');
+            } else if (income_of_each_worker > maxCharge) {
+                $('#income_of_each_worker_error').text('Income of each worker should be less than or equal to {{ get_site_settings("site_currency_symbol") }} ' + maxCharge + '.');
             } else {
-                $('#working_charge_error').text('');
-            }
-            // Validate the extra required proof photo field
-            var required_proof_photo = parseInt($('#required_proof_photo').val());
-            if (isNaN(required_proof_photo)) {
-                $('#required_proof_photo_error').text('Please enter how many additional required proof photo are required.');
-            } else if (required_proof_photo < 0) {
-                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
-            } else {
-                $('#required_proof_photo_error').text('');
+                $('#income_of_each_worker_error').text('');
             }
         });
         $('#taskForm').on('change', '#boosting_time, #work_duration', function() {
@@ -462,6 +458,14 @@
                     } else {
                         $('#required_proof_answer_error').text('');
                     }
+                    // Validate the extra required proof photo field
+                    var required_proof_photo = parseInt($('#required_proof_photo').val());
+                    if (required_proof_photo < 0) {
+                        $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
+                        isValid = false;
+                    } else {
+                        $('#required_proof_photo_error').text('');
+                    }
                     // Validate the additional note field
                     var additional_note = $('#additional_note').val();
                     if (!additional_note) {
@@ -503,32 +507,21 @@
                 } else {
                     $('#worker_needed_error').text('');
                 }
-                // Validate the working charge field
-                var working_charge = parseFloat($('#working_charge').val());
-                var minCharge = parseFloat($('#working_charge').attr('min'));
-                var maxCharge = parseFloat($('#working_charge').attr('max'));
-                if (isNaN(working_charge)) {
-                    $('#working_charge_error').text('Please enter charges for each worker are required.');
+                // Validate the income of each worker field
+                var income_of_each_worker = parseFloat($('#income_of_each_worker').val());
+                var minCharge = parseFloat($('#income_of_each_worker').attr('min'));
+                var maxCharge = parseFloat($('#income_of_each_worker').attr('max'));
+                if (isNaN(income_of_each_worker)) {
+                    $('#income_of_each_worker_error').text('Please enter charges for each worker are required.');
                     isValid = false;
-                } else if (working_charge < minCharge) {
-                    $('#working_charge_error').text('Working charge should be greater than or equal to {{ get_site_settings("site_currency_symbol") }} ' + minCharge + '.');
+                } else if (income_of_each_worker < minCharge) {
+                    $('#income_of_each_worker_error').text('Income of each worker should be greater than or equal to {{ get_site_settings("site_currency_symbol") }} ' + minCharge + '.');
                     isValid = false;
-                } else if (working_charge > maxCharge) {
-                    $('#working_charge_error').text('Working charge should be less than or equal to {{ get_site_settings("site_currency_symbol") }} ' + maxCharge + '.');
-                    isValid = false;
-                } else {
-                    $('#working_charge_error').text('');
-                }
-                // Validate the extra required proof photo field
-                var required_proof_photo = parseInt($('#required_proof_photo').val());
-                if (isNaN(required_proof_photo)) {
-                    $('#required_proof_photo_error').text('Please enter how many additional required proof photo are required.');
-                    isValid = false;
-                } else if (required_proof_photo < 0) {
-                    $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
+                } else if (income_of_each_worker > maxCharge) {
+                    $('#income_of_each_worker_error').text('Income of each worker should be less than or equal to {{ get_site_settings("site_currency_symbol") }} ' + maxCharge + '.');
                     isValid = false;
                 } else {
-                    $('#required_proof_photo_error').text('');
+                    $('#income_of_each_worker_error').text('');
                 }
                 // Validate the boosting time field
                 var boosting_time = parseInt($('#boosting_time').val());
@@ -558,12 +551,12 @@
             onFinished: function(event, currentIndex) {
                 var task_posting_min_budget = {{ get_default_settings('task_posting_min_budget') }};
                 var user_deposit_balance = {{ Auth::user()->deposit_balance }};
-                var total_task_charge = parseFloat($('#total_task_charge').val());
+                var total_task_cost = parseFloat($('#total_task_cost').val());
 
-                if(total_task_charge < task_posting_min_budget) {
-                    toastr.warning('Your total task charge must be ' + ' {{ get_site_settings('site_currency_symbol') }} ' + task_posting_min_budget + '. Please increase the task charge to post a task.');
+                if(total_task_cost < task_posting_min_budget) {
+                    toastr.warning('Your total task cost must be ' + ' {{ get_site_settings('site_currency_symbol') }} ' + task_posting_min_budget + '. Please increase the task cost to post a task.');
                     isValid = false;
-                }else if (total_task_charge > user_deposit_balance) {
+                }else if (total_task_cost > user_deposit_balance) {
                     toastr.warning('Your balance is not enough to post a task. Please deposit now to post a task.');
                     isValid = false;
                 }else{
@@ -672,7 +665,7 @@
             }
         });
 
-        // Add change event for working_charge input field
+        // Add change event for income_of_each_worker input field
         function loadTaskPostCharge(category_id, sub_category_id, child_category_id) {
             $.ajax({
                 url: "{{ route('post_task.get.task.post.charge') }}",
@@ -680,9 +673,9 @@
                 data: { category_id: category_id, sub_category_id: sub_category_id, child_category_id: child_category_id },
                 success: function(response) {
                     if (response.min_charge && response.max_charge) {
-                        $('#working_charge').val(response.min_charge);
-                        $('#working_charge').attr('min', response.min_charge);
-                        $('#working_charge').attr('max', response.max_charge);
+                        $('#income_of_each_worker').val(response.min_charge);
+                        $('#income_of_each_worker').attr('min', response.min_charge);
+                        $('#income_of_each_worker').attr('max', response.max_charge);
                         $('#min_charge').text(' {{ get_site_settings('site_currency_symbol') }} ' + response.min_charge);
                         $('#max_charge').text(' {{ get_site_settings('site_currency_symbol') }} ' + response.max_charge);
                     }
@@ -697,24 +690,24 @@
             calculateTotalTaskCharge();
         });
 
-        // Add keyup event for worker_needed, working_charge, and required_proof_photo fields
-        $('#worker_needed, #working_charge, #required_proof_photo').on('keyup', function() {
+        // Add keyup event for worker_needed, income_of_each_worker, and required_proof_photo fields
+        $('#worker_needed, #income_of_each_worker, #required_proof_photo').on('keyup', function() {
             calculateTotalTaskCharge();
         });
 
-        // Calculate the total task charge based on the input fields
+        // Calculate the total task cost based on the input fields
         function calculateTotalTaskCharge() {
             var task_posting_charge_percentage = {{ get_default_settings('task_posting_charge_percentage') }};
             var task_posting_min_budget = {{ get_default_settings('task_posting_min_budget') }};
 
             var worker_needed = parseInt($('#worker_needed').val()) || 0;
-            var working_charge = parseFloat($('#working_charge').val()) || 0;
+            var income_of_each_worker = parseFloat($('#income_of_each_worker').val()) || 0;
 
-            var site_charge = (((worker_needed * working_charge) * task_posting_charge_percentage) / 100);
+            var task_cost = (worker_needed * income_of_each_worker);
+            $('#task_cost').val(task_cost.toFixed(2));
+
+            var site_charge = ((task_cost * task_posting_charge_percentage) / 100);
             $('#site_charge').val(site_charge.toFixed(2));
-
-            var task_charge = (worker_needed * working_charge) + site_charge;
-            $('#task_charge').val(task_charge.toFixed(2));
 
             var required_proof_photo = parseInt($('#required_proof_photo').val()) || 0;
             var required_proof_photo_charge = {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }};
@@ -729,13 +722,13 @@
             var total_boosting_time_charge = boosting_time_charge * (boosting_time / 15);
             var total_work_duration_charge = work_duration_charge * (work_duration - 3);
 
-            var total_task_charge = (task_charge + total_proof_photo_charge + total_boosting_time_charge + total_work_duration_charge).toFixed(2);
-            $('#total_task_charge').val(total_task_charge);
+            var total_task_cost = (task_cost + site_charge + total_proof_photo_charge + total_boosting_time_charge + total_work_duration_charge).toFixed(2);
+            $('#total_task_cost').val(total_task_cost);
 
             // Calculate the increase charge
-            var increase_charge = (task_posting_min_budget - total_task_charge).toFixed(2);
+            var increase_charge = (task_posting_min_budget - total_task_cost).toFixed(2);
             if (increase_charge > 0) {
-                $('#task_create_message').html('<strong>Posting this task need more  ' + ' {{ get_site_settings('site_currency_symbol') }} ' + increase_charge + ' total task charge. Then you can submit the task.</strong>');
+                $('#task_create_message').html('<strong>Posting this task need more  ' + ' {{ get_site_settings('site_currency_symbol') }} ' + increase_charge + ' total task cost. Then you can submit the task.</strong>');
                 $('#task_create_message').addClass('alert-danger');
                 $('#task_create_message').removeClass('alert-success');
             }else{
@@ -744,15 +737,15 @@
                 $('#task_create_message').addClass('alert-success');
             }
 
-            // Validate the total task charge
-            if (total_task_charge < task_posting_min_budget) {
+            // Validate the total task cost
+            if (total_task_cost < task_posting_min_budget) {
                 $('#wizard').find('.actions a[href="#finish"]').addClass('disabled');
             } else {
                 $('#wizard').find('.actions a[href="#finish"]').removeClass('disabled');
             }
         }
 
-        // Initialize the total task Charge on page load
+        // Initialize the total task cost on page load
         calculateTotalTaskCharge();
     });
 </script>

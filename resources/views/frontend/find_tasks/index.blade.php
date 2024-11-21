@@ -50,7 +50,7 @@
                                 <th>Category</th>
                                 <th>Task Title</th>
                                 <th>Proof Submitted</th>
-                                <th>Working Charge</th>
+                                <th>Income Of Each Worker</th>
                                 <th>Approved At</th>
                                 <th>Action</th>
                             </tr>
@@ -109,7 +109,7 @@
                 { data: 'category_name', name: 'category_name' },
                 { data: 'title', name: 'title' },
                 { data: 'worker_needed', name: 'worker_needed' },
-                { data: 'working_charge', name: 'working_charge' },
+                { data: 'income_of_each_worker', name: 'income_of_each_worker' },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]

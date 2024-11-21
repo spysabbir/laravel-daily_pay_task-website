@@ -43,9 +43,9 @@ class WorkedTaskController extends Controller
                 }
                 if ($request->sort_by) {
                     if ($request->sort_by == 'low_to_high') {
-                        $query->orderBy('working_charge', 'asc');
+                        $query->orderBy('income_of_each_worker', 'asc');
                     } else if ($request->sort_by == 'high_to_low') {
-                        $query->orderBy('working_charge', 'desc');
+                        $query->orderBy('income_of_each_worker', 'desc');
                     } else if ($request->sort_by == 'latest') {
                         $query->orderBy('approved_at', 'desc');
                     } else if ($request->sort_by == 'oldest') {
@@ -86,8 +86,8 @@ class WorkedTaskController extends Controller
                         </div>
                         ';
                     })
-                    ->editColumn('working_charge', function ($row) {
-                        return '<span class="badge bg-success">'.get_site_settings('site_currency_symbol') . ' ' . $row->working_charge.'</span>';
+                    ->editColumn('income_of_each_worker', function ($row) {
+                        return '<span class="badge bg-success">'.get_site_settings('site_currency_symbol') . ' ' . $row->income_of_each_worker.'</span>';
                     })
                     ->editColumn('approved_at', function ($row) {
                         return '<span class="badge bg-dark">'.date('d M Y h:i A', strtotime($row->approved_at)).'</span>';
@@ -100,7 +100,7 @@ class WorkedTaskController extends Controller
                         ';
                         return $action;
                     })
-                    ->rawColumns(['category_name', 'title', 'worker_needed', 'working_charge', 'approved_at', 'action'])
+                    ->rawColumns(['category_name', 'title', 'worker_needed', 'income_of_each_worker', 'approved_at', 'action'])
                     ->make(true);
             }
 
@@ -250,8 +250,8 @@ class WorkedTaskController extends Controller
                             </a>
                         ';
                     })
-                    ->editColumn('working_charge', function ($row) {
-                        return get_site_settings('site_currency_symbol') . ' ' . $row->postTask->working_charge;
+                    ->editColumn('income_of_each_worker', function ($row) {
+                        return get_site_settings('site_currency_symbol') . ' ' . $row->postTask->income_of_each_worker;
                     })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
@@ -294,8 +294,8 @@ class WorkedTaskController extends Controller
                             </a>
                         ';
                     })
-                    ->editColumn('working_charge', function ($row) {
-                        return  get_site_settings('site_currency_symbol') . ' ' . $row->postTask->working_charge;
+                    ->editColumn('income_of_each_worker', function ($row) {
+                        return  get_site_settings('site_currency_symbol') . ' ' . $row->postTask->income_of_each_worker;
                     })
                     ->editColumn('rating', function ($row) {
                         return $row->rating ? $row->rating->rating . ' <i class="fa-solid fa-star text-warning"></i>' : 'Not Rated';

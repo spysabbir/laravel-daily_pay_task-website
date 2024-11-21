@@ -82,7 +82,7 @@
                 { data: 'created_at', name: 'created_at' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },
-                { data: 'total_charge', name: 'total_charge' },
+                { data: 'total_cost', name: 'total_cost' },
                 { data: 'charge_status', name: 'charge_status' },
                 { data: 'cancellation_reason', name: 'cancellation_reason' },
                 { data: 'canceled_at', name: 'canceled_at' },

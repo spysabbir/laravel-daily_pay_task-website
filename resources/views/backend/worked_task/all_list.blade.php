@@ -35,7 +35,7 @@
                 </p>
                 <p class="border p-1 m-1"><strong class="text-info">Additional Note: </strong>{{ $postTask->additional_note }}</p>
                 <p class="border p-1 m-1">
-                    <strong class="text-info">Working Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->working_charge }},
+                    <strong class="text-info">Income Of Each Worker: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->income_of_each_worker }},
                     <strong class="text-info">Site Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->site_charge }},
                     <strong class="text-info">Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->charge }},
                 </p>

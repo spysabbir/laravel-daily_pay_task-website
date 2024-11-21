@@ -79,7 +79,7 @@ Schedule::call(function () {
 
             $postTask = PostTask::find($proofTask->post_task_id);
             if ($postTask) {
-                User::where('id', $proofTask->user_id)->increment('withdraw_balance', $postTask->working_charge);
+                User::where('id', $proofTask->user_id)->increment('withdraw_balance', $postTask->income_of_each_worker);
             }
         }
     }

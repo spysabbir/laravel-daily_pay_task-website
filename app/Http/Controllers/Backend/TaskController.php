@@ -715,7 +715,7 @@ class TaskController extends Controller
 
             if ($request->status == 'Rejected') {
                 $postTaskUser->update([
-                    'deposit_balance' => $postTaskUser->deposit_balance + $postTask->working_charge,
+                    'deposit_balance' => $postTaskUser->deposit_balance + $postTask->income_of_each_worker,
                 ]);
 
                 $rejected_reason_photo_name = null;
@@ -732,7 +732,7 @@ class TaskController extends Controller
                 $proofTask->rejected_by = auth()->user()->id;
             }else{
                 $proofTaskUser->update([
-                    'withdraw_balance' => $proofTaskUser->withdraw_balance + $postTask->working_charge,
+                    'withdraw_balance' => $proofTaskUser->withdraw_balance + $postTask->income_of_each_worker,
                 ]);
 
                 $proofTask->approved_at = now();
