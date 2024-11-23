@@ -8,6 +8,9 @@
         </div>
         <div class="mb-3">
             <h4>Proof Image:</h4>
+            @if (!json_decode($proofTask->proof_photos))
+                <div class="alert alert-warning">This task does not require any proof photo.</div>
+            @else
             <div class="my-2">
                 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
                     <ol class="carousel-indicators">
@@ -38,6 +41,7 @@
                     </a>
                 </div>
             </div>
+            @endif
         </div>
     </div>
     <div class="col-lg-5">

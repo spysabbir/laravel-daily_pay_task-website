@@ -11,7 +11,7 @@
         </div>
         @if (!json_decode($proofTask->proof_photos))
             <div class="alert alert-info" role="alert">
-                <h4 class="alert-heading text-center">Proof Task does not require any photo proof.</h4>
+                <h4 class="alert-heading text-center">This task does not require any proof photo.</h4>
             </div>
         @else
         <div class="mb-3">
@@ -43,7 +43,7 @@
                 <h5>
                     <strong>Rating:</strong>
                     @if (!$proofTask->rating)
-                        <span class="text-danger">Not Rated Yet</span>
+                        <span class="text-danger">Not Rated</span>
                     @else
                     @for ($i = 0; $i < $proofTask->rating->rating; $i++)
                     <i class="fa-solid fa-star text-warning"></i>
@@ -53,14 +53,14 @@
                 <h5>
                     <strong>Bonus:</strong>
                     @if (!$proofTask->bonus)
-                        <span class="text-danger">Not Given Yet</span>
+                        <span class="text-danger">No Bonus</span>
                     @else
                     {{ get_site_settings('site_currency_symbol') }} {{ $proofTask->bonus->amount }}
                     @endif
                 </h5>
                 <hr>
                 <p>Approved At: {{ date('d M, Y h:i A', strtotime($proofTask->approved_at)) }}</p>
-                <p>Approved By: {{ $proofTask->approvedBy->name }}</p>
+                <p>Approved By: {{ $proofTask->approvedBy->user_type == 'Backend' ? 'Admin' : $proofTask->approvedBy->name }}</p>
             </div>
         @elseif ($proofTask->status == 'Rejected')
             <div class="alert alert-danger" role="alert">
@@ -75,7 +75,7 @@
                     </a>
                 @endif
                 <p>Rejected At: {{ date('d M, Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
-                <p>Rejected By: {{ $proofTask->rejectedBy->name }}</p>
+                <p>Rejected By: {{ $proofTask->rejectedBy->user_type == 'Backend' ? 'Admin' : $proofTask->rejectedBy->name }}</p>
             </div>
         @elseif ($proofTask->status == 'Reviewed')
             <div class="alert alert-danger" role="alert">
@@ -90,7 +90,7 @@
                     </a>
                 @endif
                 <p>Rejected At: {{ date('d M, Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
-                <p>Rejected By: {{ $proofTask->rejectedBy->name }}</p>
+                <p>Rejected By: {{ $proofTask->rejectedBy->user_type == 'Backend' ? 'Admin' : $proofTask->rejectedBy->name }}</p>
             </div>
             <div class="alert alert-info" role="alert">
                 <h4 class="alert-heading">Reviewed!</h4>
@@ -205,7 +205,7 @@
 <style>
 .image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Adjust min width as needed */
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 10px;
 }
 

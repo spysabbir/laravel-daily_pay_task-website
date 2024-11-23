@@ -18,6 +18,14 @@ use Yajra\DataTables\Facades\DataTables;
 
 class WorkedTaskController extends Controller
 {
+    // Method to handle find tasks page and filter tasks
+    public function findTasksClearFilters()
+    {
+        // Set session to clear filters on the next request
+        session()->put('clear_filters', true);
+        return redirect()->route('find_tasks');
+    }
+
     public function findTasks(Request $request)
     {
         $user = User::findOrFail(Auth::id());
@@ -55,7 +63,7 @@ class WorkedTaskController extends Controller
 
                 $findTasks = $query->orderByRaw("
                     CASE
-                        WHEN NOW() <= DATE_ADD(post_tasks.approved_at, INTERVAL post_tasks.boosting_time MINUTE)
+                        WHEN NOW() <= DATE_ADD(post_tasks.boosting_start_at, INTERVAL post_tasks.boosting_time MINUTE)
                         THEN 0
                         ELSE 1
                     END
@@ -104,9 +112,17 @@ class WorkedTaskController extends Controller
                     ->make(true);
             }
 
+            // Clear filters if requested
+            if (session()->has('clear_filters')) {
+                session()->forget('clear_filters');
+                $clearFilters = true;
+            } else {
+                $clearFilters = false;
+            }
+
             // Return categories for filter
             $categories = PostTask::where('status', 'Running')->groupBy('category_id')->select('category_id')->with('category')->get();
-            return view('frontend.find_tasks.index', compact('categories'));
+            return view('frontend.find_tasks.index', compact('categories', 'clearFilters'));
         }
     }
 
@@ -135,7 +151,7 @@ class WorkedTaskController extends Controller
             'alert-type' => 'success'
         );
 
-        return redirect()->route('find_tasks')->with($notification);
+        return redirect()->route('find_tasks.clear.filters')->with($notification);
     }
 
     public function findTaskProofSubmitLimitCheck($id)
@@ -217,7 +233,7 @@ class WorkedTaskController extends Controller
             'alert-type' => 'success'
         );
 
-        return redirect()->route('find_tasks')->with($notification);
+        return redirect()->route('find_tasks.clear.filters')->with($notification);
     }
 
     public function workedTaskListPending(Request $request)

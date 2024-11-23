@@ -2,24 +2,23 @@
     <div class="card-header">
         <strong>Type - {{ $report->type }}</strong>
         <br>
-        <strong>Status: {{ $report->status }}</strong>
-        <br>
-        @if ($report->post_task_id)
-        <a href="{{ route('find_task.details', encrypt($report->post_task_id)) }}" target="_blank" title="View Task" class="btn btn-info btn-sm">
-            View Task
-        </a>
-        @endif
-        @if ($report->proof_task_id)
-        <strong class="mb-2">Proof Task:</strong> {{ $report->proof_task_id }}<br>
-        @endif
+        <strong>Status - {{ $report->status }}</strong>
     </div>
     <div class="card-body">
-        <h4 class="card-title">Reported User: {{ $report->reported->name }}</h4>
+        <div>
+            <strong class="mb-2">Reported User:</strong> {{ $report->reported->name }}<br>
+            @if ($report->post_task_id)
+                <strong class="mb-2">Reported Post Task Id:</strong> {{ $report->post_task_id }}<br>
+            @endif
+            @if ($report->proof_task_id)
+                <strong class="mb-2">Reported Proof Task Id:</strong> {{ $report->proof_task_id }}<br>
+            @endif
+        </div>
         <p class="card-text">
             <strong class="mb-2">Reason:</strong> {{ $report->reason }}<br>
-            <strong class="mb-2">Reported At:</strong> {{ $report->created_at->format('d-F-Y h:i A') }}<br>
+            <strong class="mb-2">Reported Date:</strong> {{ $report->created_at->format('d M, Y h:i:s A') }}<br>
             @if ($report->photo)
-            <img src="{{ asset('uploads/report_photo') }}/{{ $report->photo }}" alt="Report" class="img-fluid mt-3">
+                <img src="{{ asset('uploads/report_photo') }}/{{ $report->photo }}" alt="Report" class="img-fluid mt-3">
             @endif
         </p>
         @if ($report->status == 'Resolved')
@@ -30,9 +29,9 @@
             <div class="card-body">
                 <p class="card-text">
                     <strong class="mb-2">Reply:</strong> {{ $report_reply->reply }}<br>
-                    <strong class="mb-2">Resolved At:</strong> {{ date('d-F-Y h:i A', strtotime($report_reply->resolved_at)) }}<br>
+                    <strong class="mb-2">Resolved At:</strong> {{ date('d M, Y h:i:s A', strtotime($report_reply->resolved_at)) }}<br>
                     @if ($report_reply->reply_photo)
-                    <img src="{{ asset('uploads/report_photo') }}/{{ $report_reply->reply_photo }}" alt="Reply Photo" class="img-fluid mt-3">
+                        <img src="{{ asset('uploads/report_photo') }}/{{ $report_reply->reply_photo }}" alt="Reply Photo" class="img-fluid mt-3">
                     @endif
                 </p>
             </div>

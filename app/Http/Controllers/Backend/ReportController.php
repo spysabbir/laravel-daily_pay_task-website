@@ -525,9 +525,9 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN post_tasks.status = "Paused" THEN 1 ELSE 0 END) as paused_count'),
                 DB::raw('SUM(CASE WHEN post_tasks.status = "Completed" THEN 1 ELSE 0 END) as completed_count'),
                 DB::raw('COUNT(post_tasks.id) as total_task_count'),
-                DB::raw('SUM(post_tasks.charge) as posted_charge'),
-                DB::raw('SUM(post_tasks.site_charge) as site_charge'),
-                DB::raw('SUM(post_tasks.total_charge) as total_charge')
+                DB::raw('SUM(post_tasks.sub_cost) as posted_charge'),
+                DB::raw('SUM(post_tasks.site_charge + post_tasks.required_proof_photo_charge + post_tasks.boosting_time_charge + post_tasks.work_duration_charge) as site_charge'),
+                DB::raw('SUM(post_tasks.total_cost) as total_charge')
             );
 
             // Apply filters based on the request input
@@ -559,9 +559,9 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN post_tasks.status = "Paused" THEN 1 ELSE 0 END) as total_paused_count_sum'),
                 DB::raw('SUM(CASE WHEN post_tasks.status = "Completed" THEN 1 ELSE 0 END) as total_completed_count_sum'),
                 DB::raw('COUNT(post_tasks.id) as total_task_count_sum'),
-                DB::raw('SUM(post_tasks.charge) as total_posted_charge_sum'),
-                DB::raw('SUM(post_tasks.site_charge) as total_site_charge_sum'),
-                DB::raw('SUM(post_tasks.total_charge) as total_charge_sum')
+                DB::raw('SUM(post_tasks.sub_cost) as total_posted_charge_sum'),
+                DB::raw('SUM(post_tasks.site_charge + post_tasks.required_proof_photo_charge + post_tasks.boosting_time_charge + post_tasks.work_duration_charge) as total_site_charge_sum'),
+                DB::raw('SUM(post_tasks.total_cost) as total_charge_sum')
             );
 
             // Apply the same filters to the totals query

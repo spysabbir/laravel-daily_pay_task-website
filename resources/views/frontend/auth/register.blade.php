@@ -30,23 +30,25 @@
                     </div>
                     <div class="form-group">
                         <label>Gender <span class="text-danger">*</span></label>
-                        <div class="form-check form-check-inline">
-                            <input type="radio" class="form-check-input" value="Male" name="gender" id="Male" @checked(old('gender') === 'Male') required>
-                            <label class="form-check-label" for="Male">
-                                Male
-                            </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input type="radio" class="form-check-input" value="Female" name="gender" id="Female" @checked(old('gender') === 'Female') required>
-                            <label class="form-check-label" for="Female">
-                                Female
-                            </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input type="radio" class="form-check-input" value="Other" name="gender" id="Other" @checked(old('gender') === 'Other') required>
-                            <label class="form-check-label" for="Other">
-                                Other
-                            </label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" class="form-check-input" value="Male" name="gender" id="Male" @checked(old('gender') === 'Male') required>
+                                <label class="form-check-label" for="Male">
+                                    Male
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" class="form-check-input" value="Female" name="gender" id="Female" @checked(old('gender') === 'Female') required>
+                                <label class="form-check-label" for="Female">
+                                    Female
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" class="form-check-input" value="Other" name="gender" id="Other" @checked(old('gender') === 'Other') required>
+                                <label class="form-check-label" for="Other">
+                                    Other
+                                </label>
+                            </div>
                         </div>
                         @error('gender')
                             <span class="text-danger">{{ $message }}</span>

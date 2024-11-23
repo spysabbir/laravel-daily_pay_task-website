@@ -121,7 +121,7 @@ $(function() {
                 labels: today_task_proof_submit_labels,
                 datasets: [{
                     label: "Population (millions)",
-                    backgroundColor: [colors.primary, colors.success, colors.danger],
+                    backgroundColor: [colors.primary, colors.success, colors.danger, colors.warning],
                     borderColor: colors.cardBg,
                     data: today_task_proof_submit_series,
                 }]

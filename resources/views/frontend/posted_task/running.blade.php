@@ -23,8 +23,8 @@
                                 <th>Total Boosting Time</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
-                                {{-- <th>Total Charge</th> --}}
-                                <th>Charge Status</th>
+                                {{-- <th>Total Cost</th> --}}
+                                <th>Cost Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -56,7 +56,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="task_charge" class="form-label">Additional Task Charge</label>
+                                                    <label for="task_charge" class="form-label">Additional Task Cost</label>
                                                     <div class="input-group">
                                                         <input type="number" class="form-control" id="update_task_charge" value="0" readonly>
                                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
@@ -100,7 +100,7 @@
                                                     <small class="text-info">* When work duration is over the task will be canceled automatically.</small>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="total_task_charge" class="form-label">Additional Total Task Charge</label>
+                                                    <label for="total_task_charge" class="form-label">Additional Total Task Cost</label>
                                                     <div class="input-group">
                                                         <input type="number" class="form-control" id="update_total_task_charge" value="0" readonly>
                                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>

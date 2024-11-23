@@ -249,7 +249,7 @@
                             <h5 class="mt-0">Looking For a Task</h5>
                             <p>Browse our diverse selection of tasks tailored to your skills. Start earning extra income easily and conveniently today!</p>
 
-                            <a href="{{ route('find_tasks') }}">
+                            <a href="{{ route('find_tasks.clear.filters') }}">
                                 Apply Now
                                 <i class='bx bx-chevrons-right'></i>
                             </a>

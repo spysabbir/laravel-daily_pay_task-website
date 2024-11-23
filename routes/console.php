@@ -106,9 +106,9 @@ Schedule::call(function () {
     $postTasks = PostTask::where('status', 'Running')->get();
 
     foreach ($postTasks as $postTask) {
-        $completedTime = Carbon::parse($postTask->approved_at)->addDays($postTask->work_duration);
+        $canceledTime = Carbon::parse($postTask->approved_at)->addDays($postTask->work_duration);
 
-        if (now()->isSameMinute($completedTime)) {
+        if (now()->isSameMinute($canceledTime)) {
             $postTask->update([
                 'status' => 'Canceled',
                 'cancellation_reason' => 'Work duration exceeded',
@@ -119,9 +119,9 @@ Schedule::call(function () {
             $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
 
             if ($proofTasks == 0) {
-                User::where('id', $postTask->user_id)->increment('deposit_balance', $postTask->total_charge);
+                User::where('id', $postTask->user_id)->increment('deposit_balance', $postTask->total_cost);
             } else {
-                $refundAmount = $postTask->total_charge - (($postTask->charge / $postTask->worker_needed) * $proofTasks);
+                $refundAmount = ((($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed) * ($postTask->worker_needed - $proofTasks));
                 User::where('id', $postTask->user_id)->increment('deposit_balance', $refundAmount);
             }
         }
@@ -140,7 +140,7 @@ Schedule::call(function () {
         if ($now->isSameMinute($refundTime)) {
             $postTask = PostTask::find($proofTask->post_task_id);
             if ($postTask) {
-                $refundAmount = ($postTask->charge / $postTask->worker_needed);
+                $refundAmount = (($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed);
                 User::where('id', $postTask->user_id)->increment('deposit_balance', $refundAmount);
             }
         }

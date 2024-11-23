@@ -246,11 +246,12 @@
                                 <th>
                                     <input type="checkbox" class="form-check-input" id="checkAll">
                                 </th>
+                                <th>Proof Id</th>
                                 <th>User Details</th>
                                 <th>Proof Answer</th>
                                 <th>Status</th>
-                                <th>Submited At</th>
-                                <th>Checked At</th>
+                                <th>Submited Date</th>
+                                <th>Checked Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -315,6 +316,8 @@
                                                     <p id="pendingMessage" class="mt-2 text-warning"></p>
                                                     <p id='resolvedMessage' class="mt-2 text-success"></p>
                                                     <hr>
+                                                    <strong>Id:</strong> <span id="reportId"></span>
+                                                    <br>
                                                     <strong>Reason:</strong> <span id="reportReason"></span>
                                                     <br>
                                                     <strong>Date:</strong> <span id="reportDate"></span>
@@ -337,6 +340,20 @@
     </div>
 </div>
 @endsection
+
+<style>
+    .pending-image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    .pending-proof-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+</style>
 
 @section('script')
 <script>
@@ -388,17 +405,17 @@
                                     </div>
                                     <div class="mb-3">
                                         <h4>Proof Image:</h4>
-                                        <div class="my-2">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                ${
-                                                    JSON.parse(proofTask.proof_photos).map(image => `
-                                                        <a href="{{ asset('uploads/task_proof_photo') }}/${image}" target="_blank" class="m-1">
-                                                            <img src="{{ asset('uploads/task_proof_photo') }}/${image}" style="max-height: 180px; max-width: 180px" alt="Proof Image">
-                                                        </a>
-                                                    `).join('')
-                                                }
-                                            </div>
-                                        </div>
+                                        ${JSON.parse(proofTask.proof_photos).length === 0 ?
+                                        '<div class="alert alert-info" role="alert">This task does not require any proof photo.</div>' :
+                                        `<div class="my-2 pending-image-grid">
+                                            ${
+                                                JSON.parse(proofTask.proof_photos).map(image => `
+                                                    <a href="{{ asset('uploads/task_proof_photo') }}/${image}" target="_blank" class="m-1">
+                                                        <img src="{{ asset('uploads/task_proof_photo') }}/${image}" class="pending-proof-image" alt="Proof Image">
+                                                    </a>
+                                                `).join('')
+                                            }
+                                        </div>`}
                                     </div>
                                 </div>
                             `;
@@ -407,16 +424,18 @@
                         // Insert HTML into the modal body
                         $('#checkAllPendingTaskProofData').html(`
                             <div id="proofTaskListPendingCarousel" class="carousel slide" data-bs-ride="carousel">
-                                <ol class="carousel-indicators">${indicators}</ol>
+                                ${response.proofTaskListPending.length > 1 ?
+                                `<ol class="carousel-indicators">${indicators}</ol>` : ''}
                                 <div class="carousel-inner">${items}</div>
-                                <a class="carousel-control-prev" data-bs-target="#proofTaskListPendingCarousel" role="button" data-bs-slide="prev">
+                                ${response.proofTaskListPending.length > 1 ?
+                                `<a class="carousel-control-prev" data-bs-target="#proofTaskListPendingCarousel" role="button" data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Previous</span>
                                 </a>
                                 <a class="carousel-control-next" data-bs-target="#proofTaskListPendingCarousel" role="button" data-bs-slide="next">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Next</span>
-                                </a>
+                                </a>` : ''}
                             </div>
                         `);
 
@@ -578,8 +597,18 @@
             }
         }
 
-        // Restore filters before initializing DataTable
-        restoreFilters();
+        // Clear filters
+        function clearFilters() {
+            localStorage.removeItem('filter_status');
+            $('#filter_status').val('');
+        }
+
+        // Check if filters should be cleared
+        @if ($clearFilters)
+            clearFilters();
+        @else
+            restoreFilters();
+        @endif
 
         // Read Data
         $('#allDataTable').DataTable({
@@ -595,6 +624,7 @@
             },
             columns: [
                 { data: 'checkbox', name: 'checkbox' },
+                { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
                 { data: 'proof_answer', name: 'proof_answer' },
                 { data: 'status', name: 'status' },
@@ -780,6 +810,7 @@
                     if (response.reportStatus) {
                         $('#reportSendProofTaskForm').hide();
                         $('#reportSendProofTaskExitsDiv').show();
+                        $('#reportId').text(response.reportStatus.id);
                         $('#reportReason').text(response.reportStatus.reason);
                         $('#reportDate').text(response.reportStatus.created_at);
                         if (response.reportStatus.photo) {
@@ -851,10 +882,9 @@
             });
         });
 
-        // Optionally, clear filters when needed
+        // Clear filters manually when the clear button is clicked
         $('#clear_filters').on('click', function() {
-            localStorage.removeItem('filter_status');
-            $('#filter_status').val('');
+            clearFilters();
             $('#allDataTable').DataTable().ajax.reload();
         });
     });

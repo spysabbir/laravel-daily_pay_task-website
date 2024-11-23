@@ -21,8 +21,8 @@
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
-                                <th>Total Charge</th>
-                                <th>Charge Status</th>
+                                <th>Total Cost</th>
+                                <th>Cost Status</th>
                                 <th>Approved At</th>
                                 <th>Completed At</th>
                                 <th>Action</th>

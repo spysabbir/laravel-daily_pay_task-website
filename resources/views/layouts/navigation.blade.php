@@ -323,7 +323,7 @@
             @endcan
         @endcan
 
-        {{-- @can('ReportListMenu') --}}
+        @can('ReportListMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#ReportListMenu" role="button" aria-expanded="false" aria-controls="ReportListMenu">
                     <i class="link-icon" data-feather="alert-triangle"></i>
@@ -332,20 +332,20 @@
                 </a>
                 <div class="collapse" id="ReportListMenu">
                     <ul class="nav sub-menu">
-                        {{-- @can('report_list.pending') --}}
+                        @can('report_list.pending')
                         <li class="nav-item">
                             <a href="{{ route('backend.report_list.pending') }}" class="nav-link">Pending</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('report_list.resolved') --}}
+                        @endcan
+                        @can('report_list.resolved')
                         <li class="nav-item">
                             <a href="{{ route('backend.report_list.resolved') }}" class="nav-link">Resolved</a>
                         </li>
-                        {{-- @endcan --}}
+                        @endcan
                     </ul>
                 </div>
             </li>
-        {{-- @endcan --}}
+        @endcan
 
         <li class="nav-item nav-category">Moderator</li>
         @can('VerificationMenu')
@@ -498,7 +498,7 @@
         </li>
         @endif
         <li class="nav-item">
-            <a href="{{ route('find_tasks') }}" class="nav-link">
+            <a href="{{ route('find_tasks.clear.filters') }}" class="nav-link">
                 <i class="link-icon" data-feather="search"></i>
                 <span class="link-title">Find Tasks</span>
             </a>

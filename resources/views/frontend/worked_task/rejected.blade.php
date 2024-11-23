@@ -24,7 +24,7 @@
                         <div class="col-xl-3 col-lg-5 mb-3">
                             <div class="form-group">
                                 <label class="form-label" for="filter_date">Filter By Date</label>
-                                <input type="date" class="form-control filter_data" id="filter_date">
+                                <input type="date" class="form-control filter_data bg-white" id="filter_date">
                             </div>
                         </div>
                     </div>

@@ -37,6 +37,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::put('/re-verification', [UserController::class, 'reVerificationStore'])->name('re-verification.store');
     // Worked Task
     Route::get('/find_tasks', [WorkedTaskController::class, 'findTasks'])->name('find_tasks');
+    Route::get('/find_tasks-clear-filters', [WorkedTaskController::class, 'findTasksClearFilters'])->name('find_tasks.clear.filters');
     Route::get('/find_task-details/{id}', [WorkedTaskController::class, 'findTaskDetails'])->name('find_task.details');
     Route::get('/find_task-not-interested/{id}', [WorkedTaskController::class, 'findTaskNotInterested'])->name('find_task.not.interested');
     Route::get('/find_task-proof-submit-limit-check/{id}', [WorkedTaskController::class, 'findTaskProofSubmitLimitCheck'])->name('find_task.proof.submit.limit.check');
@@ -74,6 +75,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::put('/running-posted_task-update/{id}', [PostedTaskController::class, 'runningPostedTaskUpdate'])->name('running.posted_task.update');
 
     Route::get('/proof_task-list/{id}', [PostedTaskController::class, 'proofTaskList'])->name('proof_task.list');
+    Route::get('/proof_task-list-clear-filters/{id}', [PostedTaskController::class, 'proofTaskListClearFilters'])->name('proof_task.list.clear.filters');
     Route::get('/proof_task-check/{id}', [PostedTaskController::class, 'proofTaskCheck'])->name('proof_task.check');
     Route::get('/proof_task-all-pending-check/{id}', [PostedTaskController::class, 'proofTaskAllPendingCheck'])->name('proof_task.all.pending.check');
     Route::put('/proof_task-check-update/{id}', [PostedTaskController::class, 'proofTaskCheckUpdate'])->name('proof_task.check.update');

@@ -49,8 +49,8 @@
                                 <th>Sl No</th>
                                 <th>Category</th>
                                 <th>Task Title</th>
-                                <th>Proof Submitted</th>
                                 <th>Income Of Each Worker</th>
+                                <th>Proof Submitted</th>
                                 <th>Approved At</th>
                                 <th>Action</th>
                             </tr>
@@ -90,8 +90,20 @@
             }
         }
 
-        // Restore filters before initializing DataTable
-        restoreFilters();
+        // Clear filters
+        function clearFilters() {
+            localStorage.removeItem('filter_category_id');
+            localStorage.removeItem('filter_sort_by');
+            $('#filter_category_id').val('');
+            $('#filter_sort_by').val('');
+        }
+
+        // Check if filters should be cleared
+        @if ($clearFilters)
+            clearFilters();
+        @else
+            restoreFilters();
+        @endif
 
         // Initialize DataTable
         var table = $('#allDataTable').DataTable({
@@ -108,8 +120,8 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'category_name', name: 'category_name' },
                 { data: 'title', name: 'title' },
-                { data: 'worker_needed', name: 'worker_needed' },
                 { data: 'income_of_each_worker', name: 'income_of_each_worker' },
+                { data: 'worker_needed', name: 'worker_needed' },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
@@ -121,12 +133,9 @@
             table.ajax.reload();
         });
 
-        // Optionally, clear filters when needed
+        // Clear filters manually when the clear button is clicked
         $('#clear_filters').on('click', function() {
-            localStorage.removeItem('filter_category_id');
-            localStorage.removeItem('filter_sort_by');
-            $('#filter_category_id').val('');
-            $('#filter_sort_by').val('');
+            clearFilters();
             table.ajax.reload();
         });
     });

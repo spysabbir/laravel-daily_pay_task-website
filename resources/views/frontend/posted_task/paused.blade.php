@@ -24,8 +24,8 @@
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
-                                <th>Total Charge</th>
-                                <th>Charge Status</th>
+                                <th>Total Cost</th>
+                                <th>Cost Status</th>
                                 <th>Pausing Reason</th>
                                 <th>Paused At</th>
                                 <th>Paused By</th>

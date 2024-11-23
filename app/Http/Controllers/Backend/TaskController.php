@@ -471,9 +471,14 @@ class TaskController extends Controller
 
             $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
 
-            $refundAmount = number_format(($postTask->charge / $postTask->worker_needed) * ($postTask->worker_needed - $proofTasks), 2, '.', '');
-            $user->deposit_balance = $user->deposit_balance + $refundAmount;
-            $user->save();
+            if ($proofTasks === 0) {
+                $user->deposit_balance = $user->deposit_balance + $postTask->total_cost;
+                $user->save();
+            }else{
+                $refundAmount = number_format((($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed) * ($postTask->worker_needed - $proofTasks), 2, '.', '');
+                $user->deposit_balance = $user->deposit_balance + $refundAmount;
+                $user->save();
+            }
 
             $postTask->status = 'Canceled';
             $postTask->cancellation_reason = $request->message;
@@ -482,7 +487,6 @@ class TaskController extends Controller
             $postTask->save();
 
             $user->notify(new PostTaskCheckNotification($postTask));
-
 
             return response()->json([
                 'status' => 200,

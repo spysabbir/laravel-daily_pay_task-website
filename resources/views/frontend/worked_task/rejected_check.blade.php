@@ -8,6 +8,9 @@
         </div>
         <div class="mb-3">
             <h4>Proof Image:</h4>
+            @if (!json_decode($proofTask->proof_photos))
+                <div class="alert alert-warning">This task does not require any proof photo.</div>
+            @else
             <div class="my-2">
                 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
                     <ol class="carousel-indicators">
@@ -38,6 +41,7 @@
                     </a>
                 </div>
             </div>
+            @endif
         </div>
     </div>
     <div class="col-lg-5">
@@ -53,7 +57,7 @@
                 </a>
             @endif
             <p><strong>Rejected Date:</strong> {{ date('d M Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
-            <p><strong>Rejected Date:</strong> {{ $proofTask->rejectedBy->user_type =='Backend' ? 'Admin' : $proofTask->rejectedBy->name }}</p>
+            <p><strong>Rejected By:</strong> {{ $proofTask->rejectedBy->user_type =='Backend' ? 'Admin' : $proofTask->rejectedBy->name }}</p>
         </div>
         @if (!$proofTask->reviewed_at)
             @if (Carbon\Carbon::parse($proofTask->rejected_at)->addHours(get_default_settings('task_proof_status_rejected_charge_auto_refund_time')) > now())
