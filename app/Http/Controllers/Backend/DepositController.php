@@ -21,6 +21,10 @@ class DepositController extends Controller
                 $query->where('deposits.method', $request->method);
             }
 
+            if ($request->user_id){
+                $query->where('deposits.user_id', $request->user_id);
+            }
+
             $query->select('deposits.*')->orderBy('created_at', 'desc');
 
             $pendingRequest = $query->get();
@@ -190,6 +194,10 @@ class DepositController extends Controller
 
             if ($request->method){
                 $query->where('deposits.method', $request->method);
+            }
+            
+            if ($request->user_id){
+                $query->where('deposits.user_id', $request->user_id);
             }
 
             $query->select('deposits.*')->orderBy('approved_at', 'desc');

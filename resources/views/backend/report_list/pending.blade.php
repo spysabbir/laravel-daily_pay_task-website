@@ -10,13 +10,38 @@
                 <div class="text">
                     <h3 class="card-title">Report User - Pending</h3>
                 </div>
+                <div class="action-btn">
+                    <a href="{{ route('backend.report_list.resolved') }}" class="btn btn-success">Resolved List</a>
+                </div>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_report_id" class="form-label">Report Id</label>
+                                <input type="number" id="filter_report_id" class="form-control filter_data" placeholder="Search Report Id">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_type" class="form-label">Type</label>
+                                <select class="form-select filter_data" id="filter_type">
+                                    <option value="">-- Select Type --</option>
+                                    <option value="User">User</option>
+                                    <option value="Post Task">Post Task</option>
+                                    <option value="Proof Task">Proof Task</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>ID</th>
                                 <th>Type</th>
                                 <th>Reported User</th>
                                 <th>Reported By</th>
@@ -69,17 +94,28 @@
             ajax: {
                 url: "{{ route('backend.report_list.pending') }}",
                 data: function (e) {
-                    e.status = $('#filter_status').val();
+                    e.report_id = $('#filter_report_id').val();
+                    e.type = $('#filter_type').val();
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'id', name: 'id' },
                 { data: 'type', name: 'type' },
                 { data: 'reported_user', name: 'reported_user' },
                 { data: 'reported_by', name: 'reported_by' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action' }
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#allDataTable').DataTable().ajax.reload();
+        });
+        // Filter Data
+        $('.filter_data').keyup(function() {
+            $('#allDataTable').DataTable().ajax.reload();
         });
 
         // View Data

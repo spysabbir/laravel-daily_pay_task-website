@@ -8,6 +8,9 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Deposit Request (Approved)</h3>
+                <div class="action-btn">
+                    <a href="{{ route('backend.deposit.request') }}" class="btn btn-info">Pending List</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -22,6 +25,12 @@
                                     <option value="Rocket">Rocket</option>
                                     <option value="Withdrawal Balance">Withdrawal Balance</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
                     </div>
@@ -72,6 +81,7 @@
                 url: "{{ route('backend.deposit.request.approved') }}",
                 data: function (e) {
                     e.method = $('#filter_method').val();
+                    e.user_id = $('#filter_user_id').val();
                 }
             },
             columns: [
@@ -91,6 +101,10 @@
 
         // Filter Data
         $('.filter_data').change(function(){
+            $('#approvedDataTable').DataTable().ajax.reload();
+        });
+        // Filter Data
+        $('.filter_data').keyup(function(){
             $('#approvedDataTable').DataTable().ajax.reload();
         });
     });

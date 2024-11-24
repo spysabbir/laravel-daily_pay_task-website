@@ -61,10 +61,15 @@ class BackendController extends Controller
         return view('profile.setting', compact('user'));
     }
 
+    // User List
     public function userActiveList(Request $request)
     {
         if ($request->ajax()) {
             $query = User::where('user_type', 'Frontend')->where('status', 'Active');
+
+            if ($request->user_id) {
+                $query->where('id', $request->user_id);
+            }
 
             $query->select('users.*')->orderBy('created_at', 'desc');
 
@@ -106,6 +111,10 @@ class BackendController extends Controller
         if ($request->ajax()) {
             $query = User::where('user_type', 'Frontend')->where('status', 'Inactive');
 
+            if ($request->user_id) {
+                $query->where('id', $request->user_id);
+            }
+
             $query->select('users.*')->orderBy('created_at', 'desc');
 
             $allUser = $query->get();
@@ -140,6 +149,10 @@ class BackendController extends Controller
     {
         if ($request->ajax()) {
             $query = User::where('user_type', 'Frontend')->where('status', 'Blocked');
+
+            if ($request->user_id) {
+                $query->where('id', $request->user_id);
+            }
 
             $query->select('users.*')->orderBy('created_at', 'desc');
 
@@ -181,6 +194,10 @@ class BackendController extends Controller
         if ($request->ajax()) {
             $query = User::where('user_type', 'Frontend')->where('status', 'Banned');
 
+            if ($request->user_id) {
+                $query->where('id', $request->user_id);
+            }
+            
             $query->select('users.*')->orderBy('created_at', 'desc');
 
             $allUser = $query->get();
@@ -318,7 +335,15 @@ class BackendController extends Controller
         if ($request->ajax()) {
             $reportedUsers = Report::where('status', 'Pending');
 
-            $query = $reportedUsers->select('reports.*');
+            if ($request->report_id) {
+                $reportedUsers->where('id', $request->report_id);
+            }
+
+            if ($request->type) {
+                $reportedUsers->where('type', $request->type);
+            }
+
+            $query = $reportedUsers->select('reports.*')->orderBy('created_at', 'desc');
 
             $reportedList = $query->get();
 
@@ -362,6 +387,14 @@ class BackendController extends Controller
     {
         if ($request->ajax()) {
             $reportedUsers = Report::where('status', 'Resolved');
+
+            if ($request->report_id) {
+                $reportedUsers->where('id', $request->report_id);
+            }
+
+            if ($request->type) {
+                $reportedUsers->where('type', $request->type);
+            }
 
             $query = $reportedUsers->select('reports.*');
 

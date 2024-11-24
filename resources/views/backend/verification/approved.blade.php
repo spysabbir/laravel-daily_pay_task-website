@@ -8,8 +8,21 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Verification Request (Approved)</h3>
+                <div class="action-btn">
+                    <a href="{{ route('backend.verification.request') }}" class="btn btn-info">Pending List</a>
+                </div>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="approvedDataTable" class="table">
                         <thead>
@@ -68,6 +81,10 @@
             searching: true,
             ajax: {
                 url: "{{ route('backend.verification.request.approved') }}",
+                type: 'GET',
+                data: function (d) {
+                    d.user_id = $('#filter_user_id').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -79,6 +96,11 @@
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').keyup(function() {
+            $('#approvedDataTable').DataTable().ajax.reload();
         });
 
         // View Data

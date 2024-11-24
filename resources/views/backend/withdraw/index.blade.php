@@ -9,7 +9,8 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Withdraw Request (Pending)</h3>
                 <div class="action-btn">
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".rejectedData">
+                    <a href="{{ route('backend.withdraw.request.approved') }}" class="btn btn-success">Approved List</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target=".rejectedData">
                         Rejected Request
                     </button>
                     <!-- Withdraw Request (Reject) Modal -->
@@ -76,6 +77,12 @@
                                     <option value="Nagad">Nagad</option>
                                     <option value="Rocket">Rocket</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
                     </div>
@@ -163,6 +170,10 @@
 
         // Filter Data
         $('.filter_data').change(function(){
+            $('#pendingDataTable').DataTable().ajax.reload();
+        });
+        // Filter Data
+        $('.filter_data').keyup(function(){
             $('#pendingDataTable').DataTable().ajax.reload();
         });
 

@@ -6,39 +6,22 @@
                 {{ $proofTask->proof_answer }}
             </div>
         </div>
+        @if (!json_decode($proofTask->proof_photos))
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading text-center">This task does not require any proof photo.</h4>
+            </div>
+        @else
         <div class="mb-3">
             <h4>Proof Image:</h4>
-            <div class="my-2">
-                <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-                    <ol class="carousel-indicators">
-                        @foreach (json_decode($proofTask->proof_photos) as $photo)
-                            <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}"></li>
-                        @endforeach
-                    </ol>
-                    <div class="carousel-inner">
-                        @foreach (json_decode($proofTask->proof_photos) as $photo)
-                            <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                                <a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-lightbox="gallery" data-title="Proof Task Photo {{ $loop->iteration }}">
-                                    <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" style="max-height: 400px;" class="d-block w-100" alt="Proof Task Photo {{ $loop->iteration }}">
-                                </a>
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5 class="mb-2"><strong class="badge bg-dark">Proof Task Photo {{ $loop->iteration }}</strong></h5>
-                                    <strong><a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" target="_blank">View Full Image</a></strong>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <a class="carousel-control-prev" data-bs-target="#carouselExampleCaptions" role="button" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
+            <div class="image-grid">
+                @foreach (json_decode($proofTask->proof_photos) as $photo)
+                    <a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-lightbox="gallery" data-title="Proof Task Photo {{ $loop->iteration }}">
+                        <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" class="proof-image my-3" alt="Proof Task Photo {{ $loop->iteration }}">
                     </a>
-                    <a class="carousel-control-next" data-bs-target="#carouselExampleCaptions" role="button" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </a>
-                </div>
+                @endforeach
             </div>
         </div>
+        @endif
     </div>
     <div class="col-lg-4">
         <div class="mb-3">
@@ -55,28 +38,47 @@
                 <p>This task proof is pending for approval.</p>
             </div>
         @elseif ($proofTask->status == 'Approved')
-            <div class="alert alert-success" role="alert">
-                <h4 class="alert-heading">Approved!</h4>
-                <p>Proof Task has been approved.</p>
-                <hr>
-                <p>Approved At: {{ date('d M, Y h:i A', strtotime($proofTask->approved_at)) }}</p>
-                <p>Approved By: {{ $proofTask->approvedBy->name }}</p>
-            </div>
-        @elseif ($proofTask->status == 'Rejected')
-            <div class="alert alert-danger" role="alert">
-                <h4 class="alert-heading">Rejected!</h4>
-                <p>Proof Task has been rejected.</p>
-                <hr>
-                <p><strong>Rejected Reason:</strong> {{ $proofTask->rejected_reason }}</p>
-                @if ($proofTask->rejected_reason_photo)
-                    <strong>Rejected Reason Photo: </strong>
-                    <a href="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" target="_blank">
-                        <img src="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" class="img-fluid" alt="Rejected Reason Photo">
-                    </a>
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Approved!</h4>
+            <p>Proof Task has been approved.</p>
+            <hr>
+            <h5>
+                <strong>Rating:</strong>
+                @if (!$proofTask->rating)
+                    <span class="text-danger">Not Rated</span>
+                @else
+                @for ($i = 0; $i < $proofTask->rating->rating; $i++)
+                <i class="fa-solid fa-star text-warning"></i>
+                @endfor
                 @endif
-                <p>Rejected At: {{ date('d M, Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
-                <p>Rejected By: {{ $proofTask->rejectedBy->name }}</p>
-            </div>
+                </h5>
+            <h5>
+                <strong>Bonus:</strong>
+                @if (!$proofTask->bonus)
+                    <span class="text-danger">No Bonus</span>
+                @else
+                {{ get_site_settings('site_currency_symbol') }} {{ $proofTask->bonus->amount }}
+                @endif
+            </h5>
+            <hr>
+            <p>Approved At: {{ date('d M, Y h:i A', strtotime($proofTask->approved_at)) }}</p>
+            <p>Approved By: {{ $proofTask->approvedBy->user_type == 'Backend' ? 'Admin' : $proofTask->approvedBy->name }}</p>
+        </div>
+        @elseif ($proofTask->status == 'Rejected')
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Rejected!</h4>
+            <p>Proof Task has been rejected.</p>
+            <hr>
+            <p><strong>Rejected Reason:</strong> {{ $proofTask->rejected_reason }}</p>
+            @if ($proofTask->rejected_reason_photo)
+                <strong>Rejected Reason Photo: </strong>
+                <a href="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" target="_blank">
+                    <img src="{{ asset('uploads/task_proof_rejected_reason_photo') }}/{{ $proofTask->rejected_reason_photo }}" class="img-fluid" alt="Rejected Reason Photo">
+                </a>
+            @endif
+            <p>Rejected At: {{ date('d M, Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
+            <p>Rejected By: {{ $proofTask->rejectedBy->user_type == 'Backend' ? 'Admin' : $proofTask->rejectedBy->name }}</p>
+        </div>
         @elseif ($proofTask->status == 'Reviewed')
         <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading">Rejected!</h4>
@@ -90,19 +92,13 @@
                 </a>
             @endif
             <p>Rejected At: {{ date('d M, Y h:i A', strtotime($proofTask->rejected_at)) }}</p>
-            <p>Rejected By: {{ $proofTask->rejectedBy->name }}</p>
+            <p>Rejected By: {{ $proofTask->rejectedBy->user_type == 'Backend' ? 'Admin' : $proofTask->rejectedBy->name }}</p>
         </div>
         <div class="alert alert-info" role="alert">
             <h4 class="alert-heading">Reviewed!</h4>
             <p>Proof Task has been reviewed.</p>
             <hr>
             <p><strong>Reviewed Reason:</strong> {{ $proofTask->reviewed_reason }}</p>
-            @if ($proofTask->reviewed_reason_photo)
-                <strong>Reviewed Reason Photo: </strong>
-                <a href="{{ asset('uploads/task_proof_reviewed_reason_photo') }}/{{ $proofTask->reviewed_reason_photo }}" target="_blank">
-                    <img src="{{ asset('uploads/task_proof_reviewed_reason_photo') }}/{{ $proofTask->reviewed_reason_photo }}" class="img-fluid" alt="Reviewed Reason Photo">
-                </a>
-            @endif
             <p>Reviewed At: {{ date('d M, Y h:i A', strtotime($proofTask->reviewed_at)) }}</p>
         </div>
         @endif
@@ -149,6 +145,20 @@
         @endif
     </div>
 </div>
+
+<style>
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    .proof-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+    </style>
 
 <script>
     $(document).ready(function() {

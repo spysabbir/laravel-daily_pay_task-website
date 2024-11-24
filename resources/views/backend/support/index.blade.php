@@ -22,20 +22,20 @@
                                         <div>
                                             <h6>{{ Auth::user()->name }}</h6>
                                             <p class="text-muted tx-13">
-                                                Id: {{ Auth::user()->id }}
+                                                Role: {{ Auth::user()->roles->pluck('name')->join(', ') }}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- Search Form -->
-                                {{-- <form class="search-form">
+                                {{-- <div class="search-form" id="searchUserIdForm">
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i data-feather="search" class="cursor-pointer"></i>
                                         </span>
-                                        <input type="text" class="form-control" id="searchForm" placeholder="Search here...">
+                                        <input type="text" class="form-control" id="searchUserId" placeholder="Search user id ...">
                                     </div>
-                                </form> --}}
+                                </div> --}}
                             </div>
 
                             <!-- Support Users Tab -->
@@ -45,7 +45,7 @@
                                         <a class="nav-link active" id="chats-tab" data-bs-toggle="tab" data-bs-target="#chats" role="tab" aria-controls="chats" aria-selected="true">
                                             <div class="d-flex flex-row flex-lg-column flex-xl-row align-items-center justify-content-center">
                                                 <i data-feather="message-square" class="icon-sm me-sm-2 me-lg-0 me-xl-2 mb-md-1 mb-xl-0"></i>
-                                                <p class="d-none d-sm-block">Supports</p>
+                                                <p class="d-none d-sm-block">Support Users</p>
                                             </div>
                                         </a>
                                     </li>
@@ -53,7 +53,7 @@
                                         <a class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts" role="tab" aria-controls="contacts" aria-selected="false">
                                         <div class="d-flex flex-row flex-lg-column flex-xl-row align-items-center justify-content-center">
                                             <i data-feather="users" class="icon-sm me-sm-2 me-lg-0 me-xl-2 mb-md-1 mb-xl-0"></i>
-                                            <p class="d-none d-sm-block">User</p>
+                                            <p class="d-none d-sm-block">All Users</p>
                                         </div>
                                         </a>
                                     </li>
@@ -63,7 +63,7 @@
                                     <div class="tab-pane fade show active" id="chats" role="tabpanel">
                                         <p class="text-muted mb-1 text-center border">Recent Supports</p>
                                         <ul class="list-unstyled chat-list px-1">
-                                            @foreach ($supportUsers as $user)
+                                            @forelse ($supportUsers as $user)
                                                 @php
                                                     $support = App\Models\Support::where('sender_id', $user->id)->latest()->first();
                                                     $supportsCount = App\Models\Support::where('sender_id', $user->id)->where('status', 'Unread')->count();
@@ -76,7 +76,7 @@
                                                         </figure>
                                                         <div class="d-flex justify-content-between flex-grow-1 border-bottom">
                                                             <div>
-                                                                <p class="text-body fw-bolder">Id: {{ $user->id }}, Name: {{ $user->name }}</p>
+                                                                <p class="text-primary fw-bolder">Id: {{ $user->id }}, Name: {{ $user->name }}, Status: {{ $user->status }}</p>
                                                                 <p class="text-muted">{{ $support->message ?? 'No messages yet' }}</p>
                                                             </div>
                                                             <div class="d-flex flex-column align-items-end">
@@ -86,13 +86,19 @@
                                                         </div>
                                                     </a>
                                                 </li>
-                                            @endforeach
+                                            @empty
+                                                <li class="chat-item my-2">
+                                                    <div class="d-flex align-items-center justify-content-center">
+                                                        <p class="text-info">No recent supports found</p>
+                                                    </div>
+                                                </li>
+                                            @endforelse
                                         </ul>
                                     </div>
                                     <div class="tab-pane fade" id="contacts" role="tabpanel" aria-labelledby="contacts-tab">
                                         <p class="text-muted mb-1 text-center border">All User</p>
                                         <ul class="list-unstyled chat-list px-1">
-                                            @foreach ($users as $user)
+                                            @forelse ($users as $user)
                                             <li class="chat-item pe-1">
                                                 <a href="javascript:;" class="d-flex align-items-center select-user" data-id="{{ $user->id }}">
                                                     <figure class="mb-0 me-2">
@@ -101,7 +107,7 @@
                                                     </figure>
                                                     <div class="d-flex align-items-center justify-content-between flex-grow-1 border-bottom">
                                                         <div>
-                                                            <p class="text-body">Id: {{ $user->id }}, Name: {{ $user->name }}</p>
+                                                            <p class="text-primary">Id: {{ $user->id }}, Name: {{ $user->name }}, Status: {{ $user->status }}</p>
                                                             <div class="d-flex align-items-center">
                                                                 <p class="text-muted tx-13">{{  Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}</p>
                                                             </div>
@@ -112,7 +118,13 @@
                                                     </div>
                                                 </a>
                                             </li>
-                                            @endforeach
+                                            @empty
+                                                <li class="chat-item my-2">
+                                                    <div class="d-flex align-items-center justify-content-center">
+                                                        <p class="text-info">No users found</p>
+                                                    </div>
+                                                </li>
+                                            @endforelse
                                         </ul>
                                     </div>
                                 </div>

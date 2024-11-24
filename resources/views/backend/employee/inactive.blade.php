@@ -9,7 +9,8 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Employee List - Inactive</h3>
                 <div class="action-btn">
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
+                    <a href="{{ route('backend.employee.index') }}" class="btn btn-primary"><i data-feather="users"></i> Active Employee List</a>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
                     <!-- Trash Modal -->
                     <div class="modal fade trashModel" tabindex="-1" aria-labelledby="trashModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -25,6 +26,7 @@
                                                 <tr>
                                                     <th>Sl No</th>
                                                     <th>Name</th>
+                                                    <th>Email</th>
                                                     <th>Role</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -48,7 +50,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="role">Role</label>
+                                <label for="role" class="form-label">Role</label>
                                 <select class="form-select filter_data" id="filter_role">
                                     <option value="">-- Select Role --</option>
                                     @foreach ($roles as $role)
@@ -57,6 +59,12 @@
                                         @endif
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
                     </div>
@@ -70,7 +78,6 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Roles</th>
-                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -120,7 +127,7 @@
                 url: "{{ route('backend.employee.inactive') }}",
                 data: function (e) {
                     e.role = $('#filter_role').val();
-                    e.status = $('#filter_status').val();
+                    e.user_id = $('#filter_user_id').val();
                 }
             },
             columns: [
@@ -129,13 +136,17 @@
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },
                 { data: 'roles', name: 'roles' },
-                { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
         // Filter Data
         $('.filter_data').change(function(){
+            $('#allDataTable').DataTable().ajax.reload();
+        });
+
+        // Filter Data
+        $('.filter_data').keyup(function() {
             $('#allDataTable').DataTable().ajax.reload();
         });
 
@@ -192,6 +203,7 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'name', name: 'name' },
+                { data: 'email', name: 'email' },
                 { data: 'roles', name: 'roles' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]

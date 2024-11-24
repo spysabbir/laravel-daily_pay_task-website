@@ -20,6 +20,10 @@ class VerificationController extends Controller
         if ($request->ajax()) {
             $query = Verification::where('status', 'Pending');
 
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+
             $query->select('verifications.*')->orderBy('created_at', 'desc');
 
             $pendingRequest = $query->get();
@@ -174,6 +178,10 @@ class VerificationController extends Controller
     {
         if ($request->ajax()) {
             $query = Verification::where('status', 'Approved');
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
 
             $query->select('verifications.*')->orderBy('created_at', 'desc');
 

@@ -21,6 +21,10 @@ class EmployeeController extends Controller
                 $query->whereHas('roles', fn($q) => $q->where('roles.id', $request->role));
             }
 
+            if ($request->user_id) {
+                $query->where('id',  $request->user_id);
+            }
+
             $allEmployee = $query->orderBy('created_at', 'desc')->get();
 
             return DataTables::of($allEmployee)
@@ -205,6 +209,10 @@ class EmployeeController extends Controller
 
             if ($request->role) {
                 $query->whereHas('roles', fn($q) => $q->where('roles.id', $request->role));
+            }
+
+            if ($request->user_id) {
+                $query->where('id',  $request->user_id);
             }
 
             $allEmployee = $query->orderBy('created_at', 'desc')->get();

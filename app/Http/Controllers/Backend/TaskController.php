@@ -22,6 +22,14 @@ class TaskController extends Controller
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Pending');
 
+            if ($request->posted_task_id) {
+                $query->where('id', $request->posted_task_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
             $pendingRequest = $query->get();
@@ -58,6 +66,14 @@ class TaskController extends Controller
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Rejected');
+
+            if ($request->posted_task_id) {
+                $query->where('id', $request->posted_task_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
@@ -105,6 +121,14 @@ class TaskController extends Controller
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Running');
+
+            if ($request->posted_task_id) {
+                $query->where('id', $request->posted_task_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
@@ -180,6 +204,14 @@ class TaskController extends Controller
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Canceled');
+
+            if ($request->posted_task_id) {
+                $query->where('id', $request->posted_task_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
@@ -258,6 +290,14 @@ class TaskController extends Controller
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Paused');
+
+            if ($request->posted_task_id) {
+                $query->where('id', $request->posted_task_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
 
             $query->select('post_tasks.*')->orderBy('paused_at', 'desc');
 
@@ -355,6 +395,14 @@ class TaskController extends Controller
     {
         if ($request->ajax()) {
             $query = PostTask::where('status', 'Completed');
+
+            if ($request->posted_task_id) {
+                $query->where('id', $request->posted_task_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
@@ -531,6 +579,15 @@ class TaskController extends Controller
         if ($request->ajax()) {
             $taskIds = ProofTask::whereNot('status', 'Reviewed')->pluck('post_task_id')->toArray();
             $query = PostTask::whereIn('id', $taskIds);
+
+            if ($request->posted_task_id) {
+                $query->where('id', $request->posted_task_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
             $taskList = $query->get();
@@ -585,29 +642,80 @@ class TaskController extends Controller
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->whereNot('status', 'Reviewed');
 
+            if ($request->proof_id) {
+                $query->where('id', $request->proof_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+
             $query->select('proof_tasks.*');
 
             $proofTasks = $query->get();
 
             return DataTables::of($proofTasks)
                 ->addIndexColumn()
+                ->editColumn('id', function ($row) {
+                    return '<span class="badge bg-primary">' . $row->id . '</span>';
+                })
                 ->editColumn('user', function ($row) {
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
+                        <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
                         <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
                         <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
                     ';
                     return $user;
                 })
+                ->editColumn('status', function ($row) {
+                    if ($row->status == 'Pending') {
+                        $status = '<span class="badge bg-info">' . $row->status . '</span>';
+                    } else if ($row->status == 'Approved') {
+                        $status = '<span class="badge bg-success">' . $row->status . '</span>';
+                    } else if ($row->status == 'Rejected') {
+                        $status = '<span class="badge bg-danger">' . $row->status . '</span>';
+                    }else {
+                        $status = '<span class="badge bg-warning">' . $row->status . '</span>';
+                    }
+                    return $status;
+                })
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->format('d M Y h:i A');
                 })
+                ->editColumn('checked_at', function ($row) {
+                    if ($row->approved_at) {
+                        $checked_at = date('d M Y h:i A', strtotime($row->approved_at));
+                    } else if ($row->rejected_at) {
+                        $checked_at = date('d M Y h:i A', strtotime($row->rejected_at));
+                    } else if ($row->reviewed_at) {
+                        $checked_at = date('d M Y h:i A', strtotime($row->reviewed_at));
+                    } else {
+                        $checked_at = 'Waiting...';
+                    }
+                    return $checked_at;
+                })
+                ->editColumn('checked_by', function ($row) {
+                    if ($row->approved_by) {
+                        $checked_by = $row->approvedBy->user_type == 'Backend' ? 'Admin' : $row->approvedBy->name;
+                        $checked_by = '<span class="badge bg-success">' . $checked_by . '</span>';
+                    } else if ($row->rejected_by) {
+                        $checked_by = $row->rejectedBy->user_type == 'Backend' ? 'Admin' : $row->rejectedBy->name;
+                        $checked_by = '<span class="badge bg-primary">' . $checked_by . '</span>';
+                    } else if ($row->reviewed_by) {
+                        $checked_by = $row->user->name;
+                        $checked_by = '<span class="badge bg-info">' . $checked_by . '</span>';
+                    } else {
+                        $checked_by = '<span class="badge bg-warning">Waiting...</span>';
+                    }
+                    return $checked_by;
+                })
                 ->addColumn('action', function ($row) {
                     $actionBtn = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>';
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
                     return $actionBtn;
                 })
-                ->rawColumns(['user', 'created_at', 'action'])
+                ->rawColumns(['id', 'user','status', 'created_at', 'checked_at', 'checked_by', 'action'])
                 ->make(true);
         }
 
@@ -620,6 +728,15 @@ class TaskController extends Controller
         if ($request->ajax()) {
             $taskIds = ProofTask::where('status', 'Reviewed')->pluck('post_task_id')->toArray();
             $query = PostTask::whereIn('id', $taskIds);
+
+            if ($request->posted_task_id) {
+                $query->where('id', $request->posted_task_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
             $taskList = $query->get();
@@ -658,12 +775,23 @@ class TaskController extends Controller
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->where('status', 'Reviewed');
 
+            if ($request->proof_id) {
+                $query->where('id', $request->proof_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+
             $query->select('proof_tasks.*');
 
             $proofTasks = $query->get();
 
             return DataTables::of($proofTasks)
                 ->addIndexColumn()
+                ->editColumn('id', function ($row) {
+                    return '<span class="badge bg-primary">' . $row->id . '</span>';
+                })
                 ->editColumn('user', function ($row) {
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
@@ -673,15 +801,23 @@ class TaskController extends Controller
                     ';
                     return $user;
                 })
+                ->editColumn('status', function ($row) {
+                    $status = '<span class="badge bg-warning">' . $row->status . '</span>';
+                    return $status;
+                })
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->format('d M Y h:i A');
                 })
+                ->editColumn('reviewed_at', function ($row) {
+                    $checked_at = date('d M Y h:i A', strtotime($row->reviewed_at));
+                    return $checked_at;
+                })
                 ->addColumn('action', function ($row) {
                     $actionBtn = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>';
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
                     return $actionBtn;
                 })
-                ->rawColumns(['user', 'created_at', 'action'])
+                ->rawColumns(['id', 'user','status', 'created_at', 'reviewed_at', 'action'])
                 ->make(true);
         }
 

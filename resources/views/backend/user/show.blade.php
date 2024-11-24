@@ -23,7 +23,7 @@
             </tr>
             <tr>
                 <td>Date of Birth</td>
-                <td>{{ $user->date_of_birth ?? 'N/A' }}</td>
+                <td>{{ $user->date_of_birth ? date('d M, Y', strtotime($user->date_of_birth)) : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Gender</td>
@@ -61,7 +61,11 @@
             </tr>
             <tr>
                 <td>Referred By</td>
-                <td>{{ $user->referred_by ?? 'N/A' }}</td>
+                <td>{{ $user->referred_by ? $user->referrer->name : 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Email Verified At</td>
+                <td>{{ date('d M, Y  h:i:s A', strtotime($user->email_verified_at)) ?? 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Last Login At</td>
@@ -69,11 +73,11 @@
             </tr>
             <tr>
                 <td>Created At</td>
-                <td>{{ $user->created_at->format('d M, Y h:i A') }}</td>
+                <td>{{ $user->created_at->format('d M, Y h:i:s A') }}</td>
             </tr>
             <tr>
                 <td>Updated At</td>
-                <td>{{ $user->updated_at->format('d M, Y h:i A') }}</td>
+                <td>{{ $user->updated_at->format('d M, Y h:i:s A') }}</td>
             </tr>
         </tbody>
     </table>

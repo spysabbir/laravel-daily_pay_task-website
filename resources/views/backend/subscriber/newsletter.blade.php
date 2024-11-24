@@ -72,7 +72,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="mail_type">Mail Type</label>
+                                <label for="filter_mail_type" class="form-label">Mail Type</label>
                                 <select class="form-select filter_data" id="filter_mail_type">
                                     <option value="">-- Select Mail Type --</option>
                                     <option value="Subscriber">Subscriber</option>
@@ -82,7 +82,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="status">Status</label>
+                                <label for="filter_status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Draft">Draft</option>

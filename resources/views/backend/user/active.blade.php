@@ -9,7 +9,10 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">User List - Active</h3>
                 <div class="action-btn">
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
+                    <a href="{{ route('backend.user.inactive') }}" class="btn btn-info btn-xs"><i data-feather="eye-off"></i> Inactive User List</a>
+                    <a href="{{ route('backend.user.blocked') }}" class="btn btn-primary btn-xs"><i data-feather="lock"></i> Blocked User List</a>
+                    <a href="{{ route('backend.user.banned') }}" class="btn btn-warning btn-xs"><i data-feather="alert-triangle"></i> Banned User List</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
                     <!-- Trash Modal -->
                     <div class="modal fade trashModel" tabindex="-1" aria-labelledby="trashModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -26,6 +29,7 @@
                                                     <th>Sl No</th>
                                                     <th>Id</th>
                                                     <th>Name</th>
+                                                    <th>Email</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -44,6 +48,16 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
@@ -120,6 +134,10 @@
             searching: true,
             ajax: {
                 url: "{{ route('backend.user.active') }}",
+                type: 'GET',
+                data: function (d) {
+                    d.user_id = $('#filter_user_id').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -131,6 +149,11 @@
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').keyup(function() {
+            $('#allDataTable').DataTable().ajax.reload();
         });
 
         // View Data
@@ -237,6 +260,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'name', name: 'name' },
+                { data: 'email', name: 'email' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

@@ -84,7 +84,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="status">Status</label>
+                                <label for="status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Active">Active</option>
@@ -194,7 +194,7 @@
 
             var submitButton = $(this).find("button[type='submit']");
             submitButton.prop("disabled", true).text("Submitting...");
-            
+
             $.ajax({
                 url: "{{ route('backend.sub_category.store') }}",
                 type: 'POST',

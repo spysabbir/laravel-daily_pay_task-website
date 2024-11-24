@@ -2,20 +2,19 @@
     <div class="card-header">
         <h3 class="card-title">Type: {{ $report->type }}</h3>
         <h3 class="card-title">Status - {{ $report->status }}</h3>
-        <br>
-        @if ($report->post_task_id)
-        <strong class="mb-2">Post Task:</strong> {{ $report->post_task_id }}<br>
-        @endif
-        @if ($report->proof_task_id)
-        <strong class="mb-2">Proof Task:</strong> {{ $report->proof_task_id }}<br>
-        @endif    </div>
+    </div>
     <div class="card-body">
         <div class="row">
             <div class="col-lg-6">
+                <h5 class="text-primary">Reported ID: {{ $report->reported->id }}, Reported User Name: {{ $report->reported->name }}</h5>
                 <div class="mb-3">
-                    <h4 class="card-title">Reported ID: {{ $report->reported->id }}</h4>
-                    <h4 class="card-title">Reported User: {{ $report->reported->name }}</h4>
-                    <p class="mb-2">Reason: {{ $report->reason }}</p>
+                    <p class="my-2">Reason: {{ $report->reason }}</p>
+                    @if ($report->post_task_id)
+                        <strong class="mb-2">Post Task Id:</strong> {{ $report->post_task_id }}<br>
+                    @endif
+                    @if ($report->proof_task_id)
+                        <strong class="mb-2">Proof Task Id:</strong> {{ $report->proof_task_id }}<br>
+                    @endif
                     @if ($report->photo)
                     <img src="{{ asset('uploads/report_photo') }}/{{ $report->photo }}" alt="Report Photo" class="img-fluid">
                     @endif

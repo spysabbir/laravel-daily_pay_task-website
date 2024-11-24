@@ -9,6 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Employee List - Active</h3>
                 <div class="action-btn">
+                    <a href="{{ route('backend.employee.inactive') }}" class="btn btn-danger"><i data-feather="eye-off"></i> Inactive Employee List</a>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
                     <!-- Create Modal -->
                     <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
@@ -64,7 +65,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="role">Role</label>
+                                <label for="role" class="form-label">Role</label>
                                 <select class="form-select filter_data" id="filter_role">
                                     <option value="">-- Select Role --</option>
                                     @foreach ($roles as $role)
@@ -73,6 +74,12 @@
                                         @endif
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
                     </div>
@@ -86,7 +93,6 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Roles</th>
-                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -179,7 +185,7 @@
                 url: "{{ route('backend.employee.index') }}",
                 data: function (e) {
                     e.role = $('#filter_role').val();
-                    e.status = $('#filter_status').val();
+                    e.user_id = $('#filter_user_id').val();
                 }
             },
             columns: [
@@ -188,13 +194,17 @@
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },
                 { data: 'roles', name: 'roles' },
-                { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
         // Filter Data
         $('.filter_data').change(function(){
+            $('#allDataTable').DataTable().ajax.reload();
+        });
+
+        // Filter Data
+        $('.filter_data').keyup(function() {
             $('#allDataTable').DataTable().ajax.reload();
         });
 

@@ -27,6 +27,10 @@ class WithdrawController extends Controller
                 $query->where('withdraws.type', $request->type);
             }
 
+            if ($request->user_id){
+                $query->where('withdraws.user_id', $request->user_id);
+            }
+
             $query->select('withdraws.*')->orderBy('type', 'desc')->orderBy('created_at', 'desc');
 
             $pendingRequest = $query->get();
@@ -243,6 +247,10 @@ class WithdrawController extends Controller
 
             if ($request->type){
                 $query->where('withdraws.type', $request->type);
+            }
+
+            if ($request->user_id){
+                $query->where('withdraws.user_id', $request->user_id);
             }
 
             $query->select('withdraws.*')->orderBy('approved_at', 'desc');

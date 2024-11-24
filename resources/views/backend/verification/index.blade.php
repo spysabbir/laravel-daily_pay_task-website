@@ -9,8 +9,9 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Verification Request (Pending)</h3>
                 <div class="action-btn">
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".rejectedData">
-                        Rejected Request
+                    <a href="{{ route('backend.verification.request.approved') }}" class="btn btn-success">Approved List</a>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".rejectedData">
+                        Rejected List
                     </button>
                     <!-- Verification Request (Reject) Modal -->
                     <div class="modal fade rejectedData" tabindex="-1" aria-labelledby="rejectedDataLabel" aria-hidden="true">
@@ -50,6 +51,16 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="pendingDataTable" class="table">
                         <thead>
@@ -115,6 +126,11 @@
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').keyup(function() {
+            $('#pendingDataTable').DataTable().ajax.reload();
         });
 
         // View Data

@@ -30,49 +30,9 @@
                 <p class="border p-1 m-1"><strong class="text-info">Required Proof Answer: </strong>{{ $postTask->required_proof_answer }}</p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Required Proof Photo: </strong>
-                    Free: {{ $postTask->required_proof_photo >= 1 ? 1 : 0 }} & Additional: {{ $postTask->required_proof_photo >= 1 ? $postTask->required_proof_photo - 1 : 0 }} = Total: {{ $postTask->required_proof_photo }} Required Proof Photo{{ $postTask->required_proof_photo > 1 ? 's' : '' }},
-                    <strong class="text-info">Proof Photo Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->required_proof_photo_charge }}
+                    Total: {{ $postTask->required_proof_photo }} Required Proof Photo{{ $postTask->required_proof_photo > 1 ? 's' : '' }}
                 </p>
                 <p class="border p-1 m-1"><strong class="text-info">Additional Note: </strong>{{ $postTask->additional_note }}</p>
-                <p class="border p-1 m-1">
-                    <strong class="text-info">Income Of Each Worker: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->income_of_each_worker }},
-                    <strong class="text-info">Task Cost: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->sub_cost }},
-                    <strong class="text-info">Site Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->site_charge }}
-                </p>
-                <p class="border p-1 m-1">
-                    <strong class="text-info">Boosting Time: </strong>
-                    @if($postTask->boosting_time < 60)
-                        Last: {{ $postTask->boosting_time }} Minute{{ $postTask->boosting_time > 1 ? 's' : '' }} =
-                    @elseif($postTask->boosting_time >= 60)
-                        Last: {{ round($postTask->boosting_time / 60, 1) }} Hour{{ round($postTask->boosting_time / 60, 1) > 1 ? 's' : '' }} =
-                    @endif
-                    @if($postTask->total_boosting_time < 60)
-                        Total: {{ $postTask->total_boosting_time }} Minute{{ $postTask->total_boosting_time > 1 ? 's' : '' }},
-                    @elseif($postTask->total_boosting_time >= 60)
-                        Total: {{ round($postTask->total_boosting_time / 60, 1) }} Hour{{ round($postTask->total_boosting_time / 60, 1) > 1 ? 's' : '' }},
-                    @endif
-                    <strong class="text-info">Boosting Time Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->boosting_time_charge }}
-                </p>
-                <p class="border p-1 m-1">
-                    <strong class="text-info">Work Duration: </strong>
-                    Default: 3 Days & Additional: {{ $postTask->work_duration - 3 }} Days = Total: {{ $postTask->work_duration }} Days,
-                    <strong class="text-info">Work Duration Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->work_duration_charge }}
-                </p>
-                <p class="border p-1 m-1">
-                    <strong class="text-info">Total Cost: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->total_cost }}
-                </p>
-                {{-- <p class="border p-1 m-1">
-                    <strong class="text-info">Charge Status: </strong>
-                    <span class="text-secondary">Waiting: {{ get_site_settings('site_currency_symbol') }} {{ $postTask->status != 'Canceled' ? $proofSubmitted->count() > 0 ? round((($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed) * ($postTask->worker_needed - $proofSubmitted->count()), 2) : $postTask->total_cost : 0 }}</span>,
-                    <span class="text-primary">Pending: {{ get_site_settings('site_currency_symbol') }} {{ round((($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed) * $pendingProof, 2) }}</span>,
-                    <span class="text-success">Worker Payment: {{ get_site_settings('site_currency_symbol') }} {{ round($postTask->income_of_each_worker * $approvedProof, 2) }}</span>,
-                    <span class="text-success">Site Payment: {{ get_site_settings('site_currency_symbol') }} {{ $proofSubmitted->count() > 0 ? round((((($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed) * $approvedProof) - ($postTask->income_of_each_worker * $approvedProof)) + $postTask->required_proof_photo_charge + $postTask->boosting_time_charge +  $postTask->work_duration_charge, 2) : 0 }}</span>,
-                    <span class="text-danger">Rejected Refund: {{ get_site_settings('site_currency_symbol') }} {{ round((($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed) * $refundProof, 2) }}</span>,
-                    @if ($postTask->status == 'Canceled')
-                    <span class="text-danger">Canceled Refund: {{ get_site_settings('site_currency_symbol') }} {{ $postTask->status == 'Canceled' ? $proofSubmitted->count() > 0 ? round((($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed) *  ($postTask->worker_needed - $proofSubmitted->count()), 2) : round($postTask->total_cost, 2) : 0 }}</span>,
-                    @endif
-                    <span class="text-warning">Hold: {{ get_site_settings('site_currency_symbol') }} {{ round((($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed) *  $holdProof, 2) }}</span>
-                </p> --}}
                 <p class="border p-1 m-1">
                     <strong class="text-info">Submited At: </strong>{{ $postTask->created_at->format('d F, Y h:i:s A') }},
                     <strong class="text-info">Approved At: </strong>{{ date('d F, Y h:i:s A', strtotime($postTask->approved_at)) }}
@@ -124,14 +84,34 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_proof_id" class="form-label">Proof Id</label>
+                                <input type="number" id="filter_proof_id" class="form-control filter_data" placeholder="Search Proof Id">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>Proof Id</th>
                                 <th>User Details</th>
-                                <th>Proof Answer</th>
-                                <th>Submited At</th>
+                                {{-- <th>Proof Answer</th> --}}
+                                <th>Status</th>
+                                <th>Submited Date</th>
+                                <th>Checked Date</th>
+                                <th>Checked By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -179,15 +159,28 @@
             searching: true,
             ajax: {
                 url: "{{ route('backend.all.worked_task_view', encrypt($postTask->id)) }}",
-                type: 'GET',
+                type: "GET",
+                data: function (d) {
+                    d.proof_id = $('#filter_proof_id').val();
+                    d.user_id = $('#filter_user_id').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
-                { data: 'proof_answer', name: 'proof_answer' },
+                // { data: 'proof_answer', name: 'proof_answer' },
+                { data: 'status', name: 'status' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'checked_at', name: 'checked_at' },
+                { data: 'checked_by', name: 'checked_by' },
                 { data: 'action', name: 'action' }
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').keyup(function(){
+            $('#allDataTable').DataTable().ajax.reload();
         });
 
         // Check Data

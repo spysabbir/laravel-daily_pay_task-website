@@ -23,7 +23,7 @@
             </tr>
             <tr>
                 <td>Date of Birth</td>
-                <td>{{ $employee->date_of_birth ?? 'N/A' }}</td>
+                <td>{{ $employee->date_of_birth ? date('d M, Y', strtotime($employee->date_of_birth)) : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Gender</td>
@@ -61,23 +61,23 @@
             </tr>
             <tr>
                 <td>Last Login At</td>
-                <td>{{ $employee->last_login_at ?? 'N/A' }}</td>
+                <td>{{ date('d M, Y  h:i:s A', strtotime($employee->last_login_at)) ?? 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Created By</td>
-                <td>{{ $employee->createdBy->name ?? 'N/A' }}</td>
+                <td>{{ $employee->created_by ? $employee->createdBy->name : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Updated By</td>
-                <td>{{ $employee->updatedBy->name ?? 'N/A' }}</td>
+                <td>{{ $employee->updated_by ? $employee->updatedBy->name : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Created At</td>
-                <td>{{ $employee->created_at->format('d M, Y h:i A') }}</td>
+                <td>{{ $employee->created_at->format('d M, Y h:i:s A') }}</td>
             </tr>
             <tr>
                 <td>Updated At</td>
-                <td>{{ $employee->updated_at->format('d M, Y h:i A') }}</td>
+                <td>{{ $employee->updated_at->format('d M, Y h:i:s A') }}</td>
             </tr>
         </tbody>
     </table>
