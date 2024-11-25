@@ -197,7 +197,7 @@ class BackendController extends Controller
             if ($request->user_id) {
                 $query->where('id', $request->user_id);
             }
-            
+
             $query->select('users.*')->orderBy('created_at', 'desc');
 
             $allUser = $query->get();
@@ -491,9 +491,9 @@ class BackendController extends Controller
     public function support()
     {
         $users = User::where('user_type', 'Frontend')->where('status', 'Active')->get();
-        $supportUserIds = Support::select('sender_id')->groupBy('sender_id')->get();
-        $supportUsers = User::whereIn('id', $supportUserIds)->where('user_type', 'Frontend')->where('status', 'Active')->get();
-        return view('backend.support.index', compact('users', 'supportUsers'));
+        $unreadSupportUserIds = Support::select('sender_id')->groupBy('sender_id')->where('receiver_id', 1)->where('status', 'Unread')->get();
+        $unreadSupportUsers = User::whereIn('id', $unreadSupportUserIds)->where('user_type', 'Frontend')->where('status', 'Active')->get();
+        return view('backend.support.index', compact('users', 'unreadSupportUsers'));
     }
 
     public function getSupportUsers($userId)
@@ -511,6 +511,7 @@ class BackendController extends Controller
         $formattedMessages = $messages->map(function ($message) use ($user) {
             return [
                 'message' => $message->message,
+                'photo' => $message->photo,
                 'created_at' => $message->created_at->diffForHumans(),
                 'profile_photo' => asset('uploads/profile_photo/' . $user->profile_photo),
                 'sender_type' => $message->sender_id == auth()->id() ? 'me' : 'friend',
@@ -526,24 +527,104 @@ class BackendController extends Controller
         ]);
     }
 
-    public function supportSendMessageReply(Request $request, $userId){
+    public function getSearchSupportUser(Request $request)
+    {
+        $tab = $request->get('tab'); // Get the active tab
+        $searchUserId = $request->get('searchUserId'); // Get the search input
+        $receiverId = 1; // Replace with the actual logged-in user's ID or dynamic value if applicable
+
+        $supportUsers = []; // Default empty array for response
+
+        if ($tab === 'unread-supports-users-tab') {
+            // Query for unread support users
+            $unreadSupportUserIds = Support::select('sender_id')
+                ->groupBy('sender_id')
+                ->where('receiver_id', $receiverId)
+                ->where('status', 'Unread')
+                ->pluck('sender_id');
+
+            $query = User::whereIn('id', $unreadSupportUserIds)
+                ->where('user_type', 'Frontend')
+                ->where('status', 'Active');
+
+            if (!empty($searchUserId)) {
+                $query->where('id', $searchUserId);
+            }
+
+            $supportUsers = $query->get();
+        } elseif ($tab === 'all-users-tab') {
+            // Query for all users
+            $query = User::where('user_type', 'Frontend')
+                ->where('status', 'Active');
+
+            if (!empty($searchUserId)) {
+                $query->where('id', $searchUserId);
+            }
+
+            $supportUsers = $query->get();
+        } else {
+            return response()->json(['error' => 'Invalid tab selected'], 400);
+        }
+
+        if ($supportUsers->isEmpty()) {
+            return response()->json(['supportUsers' => [], 'message' => 'No users found'], 404);
+        }
+
+        // Process and prepare response
+        $response = $supportUsers->map(function ($user) {
+            $latestSupport = Support::where('sender_id', $user->id)->latest()->first();
+            $message = 'No message';
+            if ($latestSupport) {
+                if ($latestSupport->message) {
+                    $message = strlen($latestSupport->message) > 50
+                        ? substr($latestSupport->message, 0, 50) . '...'
+                        : $latestSupport->message;
+                } elseif ($latestSupport->photo) {
+                    $message = '<strong><i data-feather="image" class="icon-sm text-primary"></i> Image</strong>';
+                }
+            }
+
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'status' => $user->status,
+                'profile_photo' => $user->profile_photo,
+                'active_status' => Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline',
+                'message' => $message,
+                'send_at' => $latestSupport ? $latestSupport->created_at->diffForHumans() : 'No message',
+                'support_count' => Support::where('sender_id', $user->id)->where('status', 'Unread')->count(),
+            ];
+        });
+
+        return response()->json(['supportUsers' => $response, 'tab' => $tab]);
+    }
+
+
+    public function supportSendMessageReply(Request $request, $userId)
+    {
         $validator = Validator::make($request->all(), [
-            'message' => 'required|string|max:5000',
+            'message' => 'nullable|string|max:5000',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        if($validator->fails()){
+        $validator->after(function ($validator) use ($request) {
+            if (!$request->message && !$request->file('photo')) {
+                $validator->errors()->add('validator_alert', 'The message or photo any one field is required.');
+            }
+        });
+
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'error'=> $validator->errors()->toArray()
+                'errors' => $validator->errors()->toArray()
             ]);
-        }else{
+        } else {
             $photo_name = null;
             if ($request->file('photo')) {
                 $manager = new ImageManager(new Driver());
-                $photo_name = Auth::id()."-support_photo_".date('YmdHis').".".$request->file('photo')->getClientOriginalExtension();
+                $photo_name = Auth::id() . "-support_photo_" . date('YmdHis') . "." . $request->file('photo')->getClientOriginalExtension();
                 $image = $manager->read($request->file('photo'));
-                $image->toJpeg(80)->save(base_path("public/uploads/support_photo/").$photo_name);
+                $image->toJpeg(80)->save(base_path("public/uploads/support_photo/") . $photo_name);
             }
 
             $support = Support::create([
@@ -570,19 +651,6 @@ class BackendController extends Controller
                 ],
             ]);
         }
-    }
-
-    public function getLatestSupportUsers()
-    {
-        $supportUserIds = Support::select('sender_id')->groupBy('sender_id')->get();
-        $supportUsers = User::whereIn('id', $supportUserIds)->where('user_type', 'Frontend')->where('status', 'Active')->get();// Get users who have support messages
-        foreach ($supportUsers as $user) {
-            $user->message = Support::where('sender_id', $user->id)->latest()->first()->message;
-            $user->send_at = Support::where('sender_id', $user->id)->latest()->first()->created_at->diffForHumans();
-            $user->active_status = Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline';
-            $user->support_count = Support::where('sender_id', $user->id)->where('status', 'Unread')->count();
-        }
-        return response()->json(['supportUsers' => $supportUsers]);
     }
 
     // Contact

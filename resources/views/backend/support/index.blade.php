@@ -28,103 +28,48 @@
                                     </div>
                                 </div>
                                 <!-- Search Form -->
-                                {{-- <div class="search-form" id="searchUserIdForm">
+                                <div class="search-form" id="searchUserIdForm">
                                     <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i data-feather="search" class="cursor-pointer"></i>
-                                        </span>
                                         <input type="text" class="form-control" id="searchUserId" placeholder="Search user id ...">
+                                        <button type="button" class="input-group-text">
+                                            <i data-feather="search" class="cursor-pointer"></i>
+                                        </button>
                                     </div>
-                                </div> --}}
+                                </div>
                             </div>
 
                             <!-- Support Users Tab -->
                             <div class="aside-body">
                                 <ul class="nav nav-tabs nav-fill mt-3" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="chats-tab" data-bs-toggle="tab" data-bs-target="#chats" role="tab" aria-controls="chats" aria-selected="true">
+                                        <a class="nav-link active" id="unread-supports-users-tab" data-bs-toggle="tab" data-bs-target="#unread-supports-users" role="tab" aria-controls="unread-supports-users" aria-selected="true">
                                             <div class="d-flex flex-row flex-lg-column flex-xl-row align-items-center justify-content-center">
                                                 <i data-feather="message-square" class="icon-sm me-sm-2 me-lg-0 me-xl-2 mb-md-1 mb-xl-0"></i>
-                                                <p class="d-none d-sm-block">Support Users</p>
+                                                <p class="d-none d-sm-block">Unread Supports Users</p>
                                             </div>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts" role="tab" aria-controls="contacts" aria-selected="false">
-                                        <div class="d-flex flex-row flex-lg-column flex-xl-row align-items-center justify-content-center">
-                                            <i data-feather="users" class="icon-sm me-sm-2 me-lg-0 me-xl-2 mb-md-1 mb-xl-0"></i>
-                                            <p class="d-none d-sm-block">All Users</p>
-                                        </div>
+                                        <a class="nav-link" id="all-users-tab" data-bs-toggle="tab" data-bs-target="#all-users" role="tab" aria-controls="all-users" aria-selected="false">
+                                            <div class="d-flex flex-row flex-lg-column flex-xl-row align-items-center justify-content-center">
+                                                <i data-feather="users" class="icon-sm me-sm-2 me-lg-0 me-xl-2 mb-md-1 mb-xl-0"></i>
+                                                <p class="d-none d-sm-block">All Users</p>
+                                            </div>
                                         </a>
                                     </li>
                                 </ul>
 
                                 <div class="tab-content mt-3">
-                                    <div class="tab-pane fade show active" id="chats" role="tabpanel">
-                                        <p class="text-muted mb-1 text-center border">Recent Supports</p>
+                                    <div class="tab-pane fade show active" id="unread-supports-users" role="tabpanel">
+                                        <p class="text-muted mb-1 text-center border">Unread Supports Users</p>
                                         <ul class="list-unstyled chat-list px-1">
-                                            @forelse ($supportUsers as $user)
-                                                @php
-                                                    $support = App\Models\Support::where('sender_id', $user->id)->latest()->first();
-                                                    $supportsCount = App\Models\Support::where('sender_id', $user->id)->where('status', 'Unread')->count();
-                                                @endphp
-                                                <li class="chat-item">
-                                                    <a href="javascript:;" class="d-flex align-items-center select-user" data-id="{{ $user->id }}">
-                                                        <figure class="mb-0 me-2">
-                                                            <img src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" class="img-xs rounded-circle" alt="user">
-                                                            <div class="status {{ \Carbon\Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline' }}"></div>
-                                                        </figure>
-                                                        <div class="d-flex justify-content-between flex-grow-1 border-bottom">
-                                                            <div>
-                                                                <p class="text-primary fw-bolder">Id: {{ $user->id }}, Name: {{ $user->name }}, Status: {{ $user->status }}</p>
-                                                                <p class="text-muted">{{ $support->message ?? 'No messages yet' }}</p>
-                                                            </div>
-                                                            <div class="d-flex flex-column align-items-end">
-                                                                <p class="text-muted tx-13 mb-1">{{ $support->created_at->diffForHumans() }}</p>
-                                                                <div class="badge rounded-pill bg-primary ms-auto">{{ $supportsCount }}</div>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                            @empty
-                                                <li class="chat-item my-2">
-                                                    <div class="d-flex align-items-center justify-content-center">
-                                                        <p class="text-info">No recent supports found</p>
-                                                    </div>
-                                                </li>
-                                            @endforelse
+                                            <!-- Users will load here -->
                                         </ul>
                                     </div>
-                                    <div class="tab-pane fade" id="contacts" role="tabpanel" aria-labelledby="contacts-tab">
-                                        <p class="text-muted mb-1 text-center border">All User</p>
+                                    <div class="tab-pane fade" id="all-users" role="tabpanel" aria-labelledby="all-users-tab">
+                                        <p class="text-muted mb-1 text-center border">All Users</p>
                                         <ul class="list-unstyled chat-list px-1">
-                                            @forelse ($users as $user)
-                                            <li class="chat-item pe-1">
-                                                <a href="javascript:;" class="d-flex align-items-center select-user" data-id="{{ $user->id }}">
-                                                    <figure class="mb-0 me-2">
-                                                        <img src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" class="img-xs rounded-circle" alt="user">
-                                                        <div class="status {{ \Carbon\Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline' }}"></div>
-                                                    </figure>
-                                                    <div class="d-flex align-items-center justify-content-between flex-grow-1 border-bottom">
-                                                        <div>
-                                                            <p class="text-primary">Id: {{ $user->id }}, Name: {{ $user->name }}, Status: {{ $user->status }}</p>
-                                                            <div class="d-flex align-items-center">
-                                                                <p class="text-muted tx-13">{{  Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="d-flex align-items-end text-body">
-                                                            <i data-feather="message-square" class="icon-md text-primary me-2"></i>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            @empty
-                                                <li class="chat-item my-2">
-                                                    <div class="d-flex align-items-center justify-content-center">
-                                                        <p class="text-info">No users found</p>
-                                                    </div>
-                                                </li>
-                                            @endforelse
+                                            <!-- Users will load here -->
                                         </ul>
                                     </div>
                                 </div>
@@ -173,7 +118,7 @@
                                         <img id="imagePreview" src="" alt="Image Preview" style="max-width: 100px; max-height: 100px;">
                                     </div>
                                     <div class="mx-1 input-group">
-                                        <textarea name="message" class="form-control" placeholder="Type a message"></textarea>
+                                        <textarea name="message" class="form-control" placeholder="Type a message" rows="1"></textarea>
                                     </div>
                                     <div class="mx-1 py-3">
                                         <button type="submit" class="btn btn-primary btn-icon rounded-circle">
@@ -181,9 +126,8 @@
                                         </button>
                                     </div>
                                 </div>
-                                <span class="text-danger error-text message_error"></span>
-                                <br>
                                 <span class="text-danger error-text photo_error"></span>
+                                <span class="d-block text-danger error-text validator_alert_error"></span>
                             </form>
                         </div>
                     </div>
@@ -206,42 +150,54 @@
         document.getElementById('fileInput').click();
     });
 
-    // Display the selected image in the preview area
-    document.getElementById('fileInput').addEventListener('change', function() {
+    $('textarea[name="message"]').on('input', function () {
+        validateInputs();
+    });
+
+    // Monitor file selection for the photo input
+    $('#fileInput').on('change', function () {
         const file = this.files[0];
         const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
         const maxSize = 2 * 1024 * 1024; // 2MB
 
-        if (file && allowedTypes.includes(file.type)) {
-            if (file.size > maxSize) {
+        if (file) {
+            if (!allowedTypes.includes(file.type)) {
+                $('span.photo_error').text('Invalid file type. Only jpeg, jpg, and png are allowed.');
+                this.value = ''; // Clear file input
+            } else if (file.size > maxSize) {
                 $('span.photo_error').text('File size is too large. Max size is 2MB.');
                 this.value = ''; // Clear file input
             } else {
-                $('span.photo_error').text('');
+                $('span.photo_error').text(''); // Clear errors if valid
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').src = e.target.result;
-                    document.getElementById('imagePreviewContainer').style.display = 'block';
-                }
+                reader.onload = function (e) {
+                    $('#imagePreview').attr('src', e.target.result);
+                    $('#imagePreviewContainer').show();
+                };
                 reader.readAsDataURL(file);
             }
         } else {
-            $('span.photo_error').text('Please select a valid image file (jpeg, jpg, png).');
-            this.value = ''; // Clear file input
+            $('#imagePreviewContainer').hide();
+            $('#imagePreview').attr('src', '');
+            $('span.photo_error').text('');
         }
+
+        validateInputs();
     });
 
-    // Real-time validation for message input
-    $('textarea[name="message"]').on('input', function() {
-        var message = $(this).val().trim();
-        if (message.length > 0) {
-            $('span.message_error').text(''); // Remove error message when input is valid
-        }else{
-            $('span.message_error').text('Message is required!');
-        }
-    });
+    // Function to validate both inputs in real-time
+    function validateInputs() {
+        const message = $('textarea[name="message"]').val().trim();
+        const photo = $('#fileInput')[0].files.length > 0;
 
-    // Use event delegation to handle click on dynamically loaded .select-user
+        if (!message && !photo) {
+            $('span.validator_alert_error').text('Either a message or a photo is required.');
+        } else {
+            $('span.validator_alert_error').text('');
+        }
+    }
+
+    // AJAX: Load chat messages
     $(document).on('click', '.select-user', function() {
         const userId = $(this).data('id');
         $('#userId').val(userId);
@@ -269,40 +225,48 @@
                 // Load messages
                 const messageList = $('.messages');
                 messageList.empty();
-                response.messages.forEach(function(message) {
-                    const messageItem = `
-                        <li class="message-item ${message.sender_type}">
-                            <img src="${message.profile_photo}" class="img-xs rounded-circle" alt="avatar">
-                            <div class="content">
-                                <div class="message">
-                                    <div class="bubble">
-                                        <p>${message.message}</p>
+
+                if (response.messages.length > 0) {
+                    response.messages.forEach(function(message) {
+                        const messageItem = `
+                            <li class="message-item ${message.sender_type}">
+                                <img src="${message.profile_photo}" class="img-xs rounded-circle" alt="avatar">
+                                <div class="content">
+                                    <div class="message">
+                                        <div class="bubble">
+                                            <p>${message.message ? message.message : ''}</p>
+                                            ${message.photo ? `<a href="{{ asset('uploads/support_photo') }}/${message.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${message.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
+                                        </div>
+                                        <span>${message.created_at}</span>
                                     </div>
-                                    <span>${message.created_at}</span>
                                 </div>
-                            </div>
-                        </li>`;
-                    messageList.append(messageItem);
+                            </li>`;
+                        messageList.append(messageItem);
+                    });
 
-                });
-
-                // Scroll to bottom
-                // $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 1000);
-
-                // Show last message
-                $('.chat-body').scrollTop($('.chat-body')[0].scrollHeight);
-
+                    // Scroll to last message
+                    $('.chat-body').scrollTop($('.chat-body')[0].scrollHeight);
+                } else {
+                    // Display "No messages yet" when chat is empty
+                    messageList.append(`
+                        <div class="alert alert-primary text-center" id="noMessage">
+                            <strong>No message found!</strong>
+                        </div>
+                    `);
+                }
 
                 // Refresh recent support list
-                loadRecentSupports();
+                fetchSupportUsers('unread-supports-users-tab'); // Fetch unread users for unreadTab
+                fetchSupportUsers('all-users-tab'); // Fetch all users for allUsersTab
 
                 // Clear form
                 $('textarea[name="message"]').val('');
                 $('#fileInput').val('');
                 $('#imagePreviewContainer').hide();
-            }
+            },
         });
     });
+
 
     // AJAX: Send message
     $('#sendMessageReplyForm').submit(function(e) {
@@ -334,8 +298,8 @@
                             <div class="content">
                                 <div class="message">
                                     <div class="bubble">
-                                        <p>${response.support.message}</p>
-                                        ${response.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${response.support.photo}" style="max-width: 100px;">` : ''}
+                                        <p>${response.support.message ? response.support.message : ''}</p>
+                                        ${response.support.photo ? `<a href="{{ asset('uploads/support_photo') }}/${response.support.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${response.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
                                     </div>
                                     <span>${created_at}</span>
                                 </div>
@@ -350,11 +314,14 @@
                     $('#imagePreviewContainer').hide();
                     $('#imagePreview').attr('src', '');
 
+                    $('#noMessage').remove();
+
                     // Scroll to bottom
-                    $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 1000);
+                    $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 2000);
 
                     // Refresh recent support list
-                    loadRecentSupports();
+                    fetchSupportUsers('unread-supports-users-tab'); // Fetch unread users for unreadTab
+                    fetchSupportUsers('all-users-tab'); // Fetch all users for allUsersTab
                 }
             }
         });
@@ -371,8 +338,8 @@
                         <div class="content">
                             <div class="message">
                                 <div class="bubble">
-                                    <p class='mb-2'>${data.support.message}</p>
-                                    ${data.support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : ''}
+                                    <p class='mb-2'>${data.support.message ? data.support.message : ''}</p>
+                                    ${data.support.photo ? `<a href="{{ asset('uploads/support_photo') }}/${data.support.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
                                 </div>
                                 <span>${data.support.created_at}</span>
                             </div>
@@ -381,48 +348,113 @@
                 `);
 
                 // Scroll to bottom
-                $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 1000);
+                $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 2000);
 
                 // Refresh recent support list
-                loadRecentSupports();
+                fetchSupportUsers('unread-supports-users-tab'); // Fetch unread users for unreadTab
+                fetchSupportUsers('all-users-tab'); // Fetch all users for allUsersTab
             }
         });
     };
 
-    // Function to load recent supports
-    function loadRecentSupports() {
-        $.ajax({
-            url: "{{ route('backend.get.latest.support.users') }}",
-            method: 'GET',
-            success: function(response) {
-                const supportList = $('#chats .chat-list');
-                supportList.empty(); // Clear existing list
-                response.supportUsers.forEach(function(user) {
-                    console.log(user);
+    // Function to fetch and render users for a given tab
+    function fetchSupportUsers(tab, searchUserId = '') {
+        const url = "{{ route('backend.get.search.support.user') }}";
 
-                    const supportItem = `
-                        <li class="chat-item">
-                            <a href="javascript:;" class="d-flex align-items-center select-user" data-id="${user.id}">
-                                <figure class="mb-0 me-2">
-                                    <img src="{{ asset('uploads/profile_photo') }}/${user.profile_photo}" class="img-xs rounded-circle" alt="user">
-                                    <div class="status ${user.active_status}"></div>
-                                </figure>
-                                <div class="d-flex justify-content-between flex-grow-1 border-bottom">
-                                    <div>
-                                        <p class="text-body fw-bolder">Id: ${user.id}, Name: ${user.name}</p>
-                                        <p class="text-muted">${user.message}</p>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-end">
-                                        <p class="text-muted tx-13 mb-1">${user.send_at}</p>
-                                        <div class="badge rounded-pill bg-primary ms-auto">${user.support_count}</div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>`;
-                    supportList.append(supportItem);
-                });
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: { tab: tab, searchUserId: searchUserId },
+            success: function (response) {
+                const unreadTab = $('#unread-supports-users .chat-list');
+                const allUsersTab = $('#all-users .chat-list');
+
+                // Clear the relevant tab's list
+                if (response.tab === 'unread-supports-users-tab') {
+                    unreadTab.empty();
+                } else if (response.tab === 'all-users-tab') {
+                    allUsersTab.empty();
+                }
+
+                // Append users to the respective tab
+                if (response.supportUsers && response.supportUsers.length > 0) {
+                    response.supportUsers.forEach(user => {
+                        const targetTab = response.tab === 'unread-supports-users-tab' ? unreadTab : allUsersTab;
+                        appendUser(user, targetTab);
+                    });
+                } else {
+                    const targetTab = response.tab === 'unread-supports-users-tab' ? unreadTab : allUsersTab;
+                    handleNoUserFound(targetTab);
+                }
+            },
+            error: function () {
+                const unreadTab = $('#unread-supports-users .chat-list');
+                const allUsersTab = $('#all-users .chat-list');
+
+                if (tab === 'unread-supports-users-tab') {
+                    handleNoUserFound(unreadTab);
+                } else {
+                    handleNoUserFound(allUsersTab);
+                }
             }
         });
     }
+
+    // Append user to the list
+    function appendUser(user, targetList) {
+        const userItem = `
+            <li class="chat-item">
+                <a href="javascript:;" class="d-flex align-items-center select-user" data-id="${user.id}">
+                    <figure class="mb-0 me-2">
+                        <img src="{{ asset('uploads/profile_photo') }}/${user.profile_photo}" class="img-xs rounded-circle" alt="user">
+                        <div class="status ${user.active_status}"></div>
+                    </figure>
+                    <div class="d-flex justify-content-between flex-grow-1 border-bottom">
+                        <div>
+                            <p class="text-body fw-bolder">Id: ${user.id}, Name: ${user.name}, Status: ${user.status}</p>
+                            <p class="text-muted">${user.message}</p>
+                        </div>
+                        <div class="d-flex flex-column align-items-end">
+                            <p class="text-muted tx-13 mb-1">${user.send_at}</p>
+                            <div class="badge rounded-pill bg-primary ms-auto">${user.support_count}</div>
+                        </div>
+                    </div>
+                </a>
+            </li>`;
+        targetList.append(userItem);
+    }
+
+    // Handle "No users found" message
+    function handleNoUserFound(targetList) {
+        targetList.empty();
+        const noUserMessage = `
+            <li class="chat-item my-2">
+                <div class="d-flex align-items-center justify-content-center">
+                    <p class="text-info">No users found</p>
+                </div>
+            </li>`;
+        targetList.append(noUserMessage);
+    }
+
+    // Fetch initial data for both tabs
+    fetchSupportUsers('unread-supports-users-tab'); // Fetch unread users for unreadTab
+    fetchSupportUsers('all-users-tab'); // Fetch all users for allUsersTab
+
+    // Handle search input
+    $('#searchUserId').on('input', function () {
+        const searchUserId = $(this).val(); // Get search input
+        const activeTab = $('.nav-tabs .active').attr('id'); // Get active tab ID
+        fetchSupportUsers(activeTab, searchUserId);
+    });
+
+    // Handle tab change
+    $('.nav-tabs a').on('click', function (e) {
+        e.preventDefault();
+
+        const searchUserId = $('#searchUserId').val();
+        const activeTab = $(this).attr('id');
+
+        fetchSupportUsers(activeTab, searchUserId);
+    });
 </script>
 @endsection
