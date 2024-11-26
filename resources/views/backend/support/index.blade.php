@@ -1,4 +1,3 @@
-@vite('resources/js/app.js')
 @extends('layouts.template_master')
 
 @section('title', 'Support')
@@ -197,20 +196,13 @@
         }
     }
 
-    // AJAX: Load chat messages
-    $(document).on('click', '.select-user', function() {
-        const userId = $(this).data('id');
-        $('#userId').val(userId);
+    // Function to scroll chat box to the bottom
+    function scrollToBottom() {
+        $('.chat-body').animate({ scrollTop: $('.chat-body')[0].scrollHeight }, 1000);
+    }
 
-        if (userId) {
-            $('.chat-content').removeClass('d-none');
-            $('.empty-chat').addClass('d-none');
-        } else {
-            $('.chat-content').addClass('d-none');
-            $('.empty-chat').removeClass('d-none');
-        }
-
-        const url = "{{ route('backend.get.support.users', ':id') }}".replace(':id', userId);
+    function fetchMessages(userId) {
+        const url = "{{ route('backend.get.user.supports', ':id') }}".replace(':id', userId);
 
         $.ajax({
             url: url,
@@ -237,7 +229,7 @@
                                             <p>${message.message ? message.message : ''}</p>
                                             ${message.photo ? `<a href="{{ asset('uploads/support_photo') }}/${message.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${message.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
                                         </div>
-                                        <span>${message.created_at}</span>
+                                        <span>${message.status == 'Read' ? '<i class="fas fa-check-double text-success"></i>' : '<i class="fas fa-check"></i>'} ${message.created_at}</span>
                                     </div>
                                 </div>
                             </li>`;
@@ -245,8 +237,10 @@
                     });
 
                     // Scroll to last message
-                    $('.chat-body').scrollTop($('.chat-body')[0].scrollHeight);
+                    scrollToBottom();
                 } else {
+                    // Scroll to top
+                    $('.chat-body').animate({ scrollTop: 0 }, 1000);
                     // Display "No messages yet" when chat is empty
                     messageList.append(`
                         <div class="alert alert-primary text-center" id="noMessage">
@@ -262,18 +256,44 @@
                 // Clear form
                 $('textarea[name="message"]').val('');
                 $('#fileInput').val('');
+                $('#imagePreview').attr('src', '');
                 $('#imagePreviewContainer').hide();
             },
         });
+    }
+
+    // AJAX: Load chat messages
+    $(document).on('click', '.select-user', function() {
+        const userId = $(this).data('id');
+        $('#userId').val(userId);
+
+        if (userId) {
+            $('.chat-content').removeClass('d-none');
+            $('.empty-chat').addClass('d-none');
+        } else {
+            $('.chat-content').addClass('d-none');
+            $('.empty-chat').removeClass('d-none');
+        }
+
+        fetchMessages(userId);
     });
+
+    setInterval(function () {
+        const userId = $('#userId').val() || 1;
+        fetchMessages(userId);
+    }, 100000)
 
 
     // AJAX: Send message
     $('#sendMessageReplyForm').submit(function(e) {
         e.preventDefault();
+
         let formData = new FormData(this);
         let userId = $('#userId').val();
         let url = "{{ route('backend.support.send-message.reply', ':id') }}".replace(':id', userId);
+
+        var submitButton = $(this).find("button[type='submit']");
+        submitButton.prop("disabled", true).html('<i class="spinner-border spinner-border-sm"></i>');
 
         $.ajax({
             url: url,
@@ -290,39 +310,21 @@
                         $('span.' + prefix + '_error').text(val[0]);
                     });
                 } else {
-                    var profile_photo = "{{ Auth::user()->profile_photo }}";
-                    var created_at = response.support.created_at;
-                    const messageHtml = `
-                        <li class="message-item me">
-                            <img src="{{ asset('uploads/profile_photo') }}/${profile_photo}" class="img-xs rounded-circle" alt="avatar">
-                            <div class="content">
-                                <div class="message">
-                                    <div class="bubble">
-                                        <p>${response.support.message ? response.support.message : ''}</p>
-                                        ${response.support.photo ? `<a href="{{ asset('uploads/support_photo') }}/${response.support.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${response.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
-                                    </div>
-                                    <span>${created_at}</span>
-                                </div>
-                            </div>
-                        </li>`;
+                    fetchMessages(userId);
 
-                    $('.messages').append(messageHtml);
-
-                    // Clear form
                     $('textarea[name="message"]').val('');
                     $('#fileInput').val('');
-                    $('#imagePreviewContainer').hide();
                     $('#imagePreview').attr('src', '');
+                    $('#imagePreviewContainer').hide();
 
-                    $('#noMessage').remove();
-
-                    // Scroll to bottom
-                    $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 2000);
 
                     // Refresh recent support list
                     fetchSupportUsers('unread-supports-users-tab'); // Fetch unread users for unreadTab
                     fetchSupportUsers('all-users-tab'); // Fetch all users for allUsersTab
                 }
+            },
+            complete: function() {
+                submitButton.prop("disabled", false).html('<i class="fas fa-paper-plane"></i>');
             }
         });
     });
@@ -338,17 +340,17 @@
                         <div class="content">
                             <div class="message">
                                 <div class="bubble">
-                                    <p class='mb-2'>${data.support.message ? data.support.message : ''}</p>
+                                    <p>${data.support.message ? data.support.message : ''}</p>
                                     ${data.support.photo ? `<a href="{{ asset('uploads/support_photo') }}/${data.support.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
                                 </div>
-                                <span>${data.support.created_at}</span>
+                                <span>${data.support.status == 'Read' ? '<i class="fas fa-check-double text-success"></i>' : '<i class="fas fa-check"></i>'} ${data.support.created_at}</span>
                             </div>
                         </div>
                     </li>
                 `);
 
                 // Scroll to bottom
-                $('.chat-body').animate({ scrollTop: $('.chat-body').prop('scrollHeight') }, 2000);
+                scrollToBottom();
 
                 // Refresh recent support list
                 fetchSupportUsers('unread-supports-users-tab'); // Fetch unread users for unreadTab
@@ -361,10 +363,16 @@
     function fetchSupportUsers(tab, searchUserId = '') {
         const url = "{{ route('backend.get.search.support.user') }}";
 
+        // Prepare data object dynamically
+        const data = { tab: tab };
+        if (searchUserId.trim() !== '') {
+            data.searchUserId = searchUserId;
+        }
+
         $.ajax({
             url: url,
             method: 'GET',
-            data: { tab: tab, searchUserId: searchUserId },
+            data: data,
             success: function (response) {
                 const unreadTab = $('#unread-supports-users .chat-list');
                 const allUsersTab = $('#all-users .chat-list');

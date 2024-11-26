@@ -174,7 +174,7 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::post('report-reply', [BackendController::class, 'reportReply'])->name('report.reply');
     // Support
     Route::get('support', [BackendController::class, 'support'])->name('support');
-    Route::get('/get/support/users/{userId}', [BackendController::class, 'getSupportUsers'])->name('get.support.users');
+    Route::get('/get/user/supports/{userId}', [BackendController::class, 'getUserSupports'])->name('get.user.supports');
     Route::get('/get/search/support/user', [BackendController::class, 'getSearchSupportUser'])->name('get.search.support.user');
     Route::post('/support-send-message-reply/{userId}', [BackendController::class, 'supportSendMessageReply'])->name('support.send-message.reply');
     // Contact

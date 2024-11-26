@@ -496,7 +496,7 @@ class BackendController extends Controller
         return view('backend.support.index', compact('users', 'unreadSupportUsers'));
     }
 
-    public function getSupportUsers($userId)
+    public function getUserSupports($userId)
     {
         $user = User::find($userId);
         $messages = Support::where('sender_id', $userId)->orWhere('receiver_id', $userId)->orderBy('created_at', 'asc')->get();
@@ -512,6 +512,7 @@ class BackendController extends Controller
             return [
                 'message' => $message->message,
                 'photo' => $message->photo,
+                'status' => $message->status,
                 'created_at' => $message->created_at->diffForHumans(),
                 'profile_photo' => asset('uploads/profile_photo/' . $user->profile_photo),
                 'sender_type' => $message->sender_id == auth()->id() ? 'me' : 'friend',
@@ -530,7 +531,7 @@ class BackendController extends Controller
     public function getSearchSupportUser(Request $request)
     {
         $tab = $request->get('tab'); // Get the active tab
-        $searchUserId = $request->get('searchUserId'); // Get the search input
+        $searchUserId = $request->input('searchUserId', null);
         $receiverId = 1; // Replace with the actual logged-in user's ID or dynamic value if applicable
 
         $supportUsers = []; // Default empty array for response
@@ -564,10 +565,6 @@ class BackendController extends Controller
             $supportUsers = $query->get();
         } else {
             return response()->json(['error' => 'Invalid tab selected'], 400);
-        }
-
-        if ($supportUsers->isEmpty()) {
-            return response()->json(['supportUsers' => [], 'message' => 'No users found'], 404);
         }
 
         // Process and prepare response
@@ -609,7 +606,7 @@ class BackendController extends Controller
 
         $validator->after(function ($validator) use ($request) {
             if (!$request->message && !$request->file('photo')) {
-                $validator->errors()->add('validator_alert', 'The message or photo any one field is required.');
+                $validator->errors()->add('validator_alert', 'Either a message or a photo is required.');
             }
         });
 

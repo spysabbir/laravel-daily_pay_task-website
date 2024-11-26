@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('receiver_id')->constrained('users')->onDelete('cascade');
-            $table->text('message');
+            $table->text('message')->nullable();
             $table->string('photo')->nullable();
             $table->enum('status', ['Read', 'Unread'])->default('Unread');
             $table->timestamps();

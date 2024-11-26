@@ -1106,13 +1106,14 @@ class UserController extends Controller
         $customSupports = $supports->map(function ($support) {
             return [
                 'id' => $support->id,
-                'message' => $support->message,
-                'created_at' => $support->created_at->diffForHumans(), // Relative time like "2 minutes ago"
                 'sender_id' => $support->sender_id,
                 'receiver_id' => $support->receiver_id,
                 'sender_photo' => $support->sender->profile_photo, // Assuming 'profile_photo' exists for sender
                 'receiver_photo' => $support->receiver->profile_photo, // Assuming 'profile_photo' exists for receiver
+                'message' => $support->message,
                 'photo' => $support->photo,
+                'status' => $support->status,
+                'created_at' => $support->created_at->diffForHumans(), // Relative time like "2 minutes ago"
             ];
         });
 
@@ -1124,9 +1125,15 @@ class UserController extends Controller
 
     public function supportSendMessage(Request $request){
         $validator = Validator::make($request->all(), [
-            'message' => 'required|string|max:5000',
+            'message' => 'nullable|string|max:5000',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            if (!$request->message && !$request->file('photo')) {
+                $validator->errors()->add('validator_alert', 'Either a message or a photo is required.');
+            }
+        });
 
         if($validator->fails()){
             return response()->json([
@@ -1137,9 +1144,9 @@ class UserController extends Controller
             $photo_name = null;
             if ($request->file('photo')) {
                 $manager = new ImageManager(new Driver());
-                $photo_name = Auth::id()."-support_photo_".date('YmdHis').".".$request->file('photo')->getClientOriginalExtension();
+                $photo_name = Auth::id() . "-support_photo_" . date('YmdHis') . "." . $request->file('photo')->getClientOriginalExtension();
                 $image = $manager->read($request->file('photo'));
-                $image->toJpeg(80)->save(base_path("public/uploads/support_photo/").$photo_name);
+                $image->toJpeg(80)->save(base_path("public/uploads/support_photo/") . $photo_name);
             }
 
             $support = Support::create([
