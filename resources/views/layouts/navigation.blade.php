@@ -77,6 +77,30 @@
             </li>
         @endcan
 
+        {{-- @can('AccountsStatementMenu') --}}
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#accountsStatement" role="button" aria-expanded="false" aria-controls="accountsStatement">
+                    <i class="link-icon" data-feather="file-text"></i>
+                    <span class="link-title">Accounts Statement</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="accountsStatement">
+                    <ul class="nav sub-menu">
+                        {{-- @can('earnings.statement') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.earnings.statement') }}" class="nav-link">Earnings Amount</a>
+                        </li>
+                        {{-- @endcan --}}
+                        {{-- @can('expenses.statement') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('backend.expenses.statement') }}" class="nav-link">Expenses Amount</a>
+                        </li>
+                        {{-- @endcan --}}
+                    </ul>
+                </div>
+            </li>
+        {{-- @endcan --}}
+
         @can('ReportMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#report" role="button" aria-expanded="false" aria-controls="report">
@@ -88,32 +112,22 @@
                     <ul class="nav sub-menu">
                         @can('deposit.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.deposit.report') }}" class="nav-link">Deposit</a>
+                            <a href="{{ route('backend.deposit.report') }}" class="nav-link">Deposit Amount</a>
                         </li>
                         @endcan
                         @can('withdraw.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.withdraw.report') }}" class="nav-link">Withdraw</a>
-                        </li>
-                        @endcan
-                        @can('bonus.report')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.bonus.report') }}" class="nav-link">Bonus</a>
-                        </li>
-                        @endcan
-                        @can('expense.report')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.expense.report') }}" class="nav-link">Expense</a>
+                            <a href="{{ route('backend.withdraw.report') }}" class="nav-link">Withdraw Amount</a>
                         </li>
                         @endcan
                         @can('posted_task.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.posted_task.report') }}" class="nav-link">Posted Task</a>
+                            <a href="{{ route('backend.posted_task.report') }}" class="nav-link">Posted Task Count</a>
                         </li>
                         @endcan
                         @can('worked_task.report')
                         <li class="nav-item">
-                            <a href="{{ route('backend.worked_task.report') }}" class="nav-link">Worked Task</a>
+                            <a href="{{ route('backend.worked_task.report') }}" class="nav-link">Worked Task Count</a>
                         </li>
                         @endcan
                     </ul>

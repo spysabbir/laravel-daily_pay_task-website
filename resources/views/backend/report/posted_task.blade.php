@@ -52,9 +52,6 @@
                                 <th>Paused Count</th>
                                 <th>Completed Count</th>
                                 <th>Total Count</th>
-                                <th>Posted Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
-                                <th>Site Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
-                                <th>Total Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,9 +68,6 @@
                                 <th id="total_paused_count_sum"></th>
                                 <th id="total_completed_count_sum"></th>
                                 <th id="total_task_count_sum"></th>
-                                <th id="total_posted_charge_sum"></th>
-                                <th id="total_site_charge_sum"></th>
-                                <th id="total_charge_sum"></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -122,9 +116,6 @@
                 { data: 'paused_count', name: 'paused_count' },
                 { data: 'completed_count', name: 'completed_count' },
                 { data: 'total_task_count', name: 'total_task_count' },
-                { data: 'posted_charge', name: 'posted_charge' },
-                { data: 'site_charge', name: 'site_charge' },
-                { data: 'total_charge', name: 'total_charge' },
             ],
             drawCallback: function(settings) {
                 var response = settings.json;
@@ -136,9 +127,6 @@
                 $('#total_paused_count_sum').html(response.total_paused_count_sum);
                 $('#total_completed_count_sum').html(response.total_completed_count_sum);
                 $('#total_task_count_sum').html(response.total_task_count_sum);
-                $('#total_posted_charge_sum').html(response.total_posted_charge_sum);
-                $('#total_site_charge_sum').html(response.total_site_charge_sum);
-                $('#total_charge_sum').html(response.total_charge_sum);
             },
             initComplete: function() {
                 // Update messageTop every time filters change

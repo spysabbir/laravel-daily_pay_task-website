@@ -3,17 +3,13 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Bonus;
 use Illuminate\Http\Request;
 use App\Models\Deposit;
-use App\Models\Expense;
-use App\Models\ExpenseCategory;
 use App\Models\PostTask;
 use App\Models\ProofTask;
 use App\Models\Withdraw;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class ReportController extends Controller
 {
@@ -30,8 +26,6 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN deposits.status = "Pending" THEN deposits.amount ELSE 0 END) as pending_amount'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Approved" THEN deposits.amount ELSE 0 END) as approved_amount'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Rejected" THEN deposits.amount ELSE 0 END) as rejected_amount'),
-                DB::raw('SUM(deposits.payable_amount) as total_payable_amount'),
-                DB::raw('(SUM(deposits.amount) - SUM(deposits.payable_amount)) as deposit_charge'),
                 DB::raw('SUM(deposits.amount) as total_amount'),
             );
 
@@ -71,8 +65,6 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN deposits.status = "Pending" THEN deposits.amount ELSE 0 END) as total_pending_amount_sum'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Approved" THEN deposits.amount ELSE 0 END) as total_approved_amount_sum'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Rejected" THEN deposits.amount ELSE 0 END) as total_rejected_amount_sum'),
-                DB::raw('SUM(deposits.payable_amount) as total_payable_amount_sum'),
-                DB::raw('(SUM(deposits.amount) - SUM(deposits.payable_amount)) as deposit_charge_sum'),
                 DB::raw('SUM(deposits.amount) as total_amount_sum'),
             );
 
@@ -124,12 +116,6 @@ class ReportController extends Controller
                 ->editColumn('rejected_amount', function ($row) {
                     return '<span class="badge bg-danger">' . $row->rejected_amount . '</span>';
                 })
-                ->editColumn('total_payable_amount', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->total_payable_amount . '</span>';
-                })
-                ->editColumn('deposit_charge', function ($row) {
-                    return '<span class="badge bg-info">' . $row->deposit_charge . '</span>';
-                })
                 ->editColumn('total_amount', function ($row) {
                     return '<span class="badge bg-primary">' . $row->total_amount . '</span>';
                 })
@@ -141,11 +127,9 @@ class ReportController extends Controller
                     'total_pending_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_pending_amount_sum,
                     'total_approved_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_approved_amount_sum,
                     'total_rejected_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_rejected_amount_sum,
-                    'total_payable_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_payable_amount_sum,
-                    'deposit_charge_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->deposit_charge_sum,
                     'total_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_amount_sum,
                 ])
-                ->rawColumns(['deposit_date', 'bkash_amount', 'nagad_amount', 'rocket_amount', 'withdrawal_balance_amount', 'pending_amount', 'approved_amount', 'rejected_amount', 'total_payable_amount', 'deposit_charge', 'total_amount'])
+                ->rawColumns(['deposit_date', 'bkash_amount', 'nagad_amount', 'rocket_amount', 'withdrawal_balance_amount', 'pending_amount', 'approved_amount', 'rejected_amount', 'total_amount'])
                 ->make(true);
         }
 
@@ -166,22 +150,20 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN withdraws.status = "Rejected" THEN withdraws.amount ELSE 0 END) as rejected_amount'),
                 DB::raw('SUM(CASE WHEN withdraws.type = "Ragular" THEN withdraws.amount ELSE 0 END) as ragular_amount'),
                 DB::raw('SUM(CASE WHEN withdraws.type = "Instant" THEN withdraws.amount ELSE 0 END) as instant_amount'),
-                DB::raw('SUM(withdraws.payable_amount) as total_payable_amount'),
-                DB::raw('(SUM(withdraws.amount) - SUM(withdraws.payable_amount)) as withdraw_charge'),
                 DB::raw('SUM(withdraws.amount) as total_amount'),
             );
 
             // Apply filters based on the request input
-            if ($request->type) {
-                $query->where('withdraws.type', $request->type);
-            }
-
             if ($request->method) {
                 $query->where('withdraws.method', $request->method);
             }
 
             if ($request->status) {
                 $query->where('withdraws.status', $request->status);
+            }
+
+            if ($request->type) {
+                $query->where('withdraws.type', $request->type);
             }
 
             // Date filter: handle cases where either start_date or end_date is provided
@@ -212,22 +194,20 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN withdraws.status = "Rejected" THEN withdraws.amount ELSE 0 END) as total_rejected_amount_sum'),
                 DB::raw('SUM(CASE WHEN withdraws.type = "Ragular" THEN withdraws.amount ELSE 0 END) as total_ragular_amount_sum'),
                 DB::raw('SUM(CASE WHEN withdraws.type = "Instant" THEN withdraws.amount ELSE 0 END) as total_instant_amount_sum'),
-                DB::raw('SUM(withdraws.payable_amount) as total_payable_amount_sum'),
-                DB::raw('(SUM(withdraws.amount) - SUM(withdraws.payable_amount)) as withdraw_charge_sum'),
                 DB::raw('SUM(withdraws.amount) as total_amount_sum'),
             );
 
             // Apply the same filters to the totals query
-            if ($request->type) {
-                $totalsQuery->where('withdraws.type', $request->type);
-            }
-
             if ($request->method) {
                 $totalsQuery->where('withdraws.method', $request->method);
             }
 
             if ($request->status) {
                 $totalsQuery->where('withdraws.status', $request->status);
+            }
+
+            if ($request->type) {
+                $totalsQuery->where('withdraws.type', $request->type);
             }
 
             // Date filter for totals query
@@ -272,12 +252,6 @@ class ReportController extends Controller
                 ->editColumn('instant_amount', function ($row) {
                     return '<span class="badge bg-primary">' . $row->instant_amount . '</span>';
                 })
-                ->editColumn('total_payable_amount', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->total_payable_amount . '</span>';
-                })
-                ->editColumn('withdraw_charge', function ($row) {
-                    return '<span class="badge bg-info">' . $row->withdraw_charge . '</span>';
-                })
                 ->editColumn('total_amount', function ($row) {
                     return '<span class="badge bg-primary">' . $row->total_amount . '</span>';
                 })
@@ -290,226 +264,13 @@ class ReportController extends Controller
                     'total_rejected_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_rejected_amount_sum,
                     'total_ragular_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_ragular_amount_sum,
                     'total_instant_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_instant_amount_sum,
-                    'total_payable_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_payable_amount_sum,
-                    'withdraw_charge_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->withdraw_charge_sum,
                     'total_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_amount_sum,
                 ])
-                ->rawColumns(['withdraw_date', 'bkash_amount', 'nagad_amount', 'rocket_amount', 'pending_amount', 'approved_amount', 'rejected_amount', 'ragular_amount', 'instant_amount', 'total_payable_amount', 'withdraw_charge', 'total_amount'])
+                ->rawColumns(['withdraw_date', 'bkash_amount', 'nagad_amount', 'rocket_amount', 'pending_amount', 'approved_amount', 'rejected_amount', 'ragular_amount', 'instant_amount', 'total_amount'])
                 ->make(true);
         }
 
         return view('backend.report.withdraw');
-    }
-
-    public function bonusReport(Request $request)
-    {
-        if ($request->ajax()) {
-            // Query to get individual row data
-            $query = Bonus::select(
-                DB::raw('DATE(bonuses.created_at) as bonus_date'),
-                DB::raw('SUM(CASE WHEN bonuses.type = "Referral Registration Bonus" THEN bonuses.amount ELSE 0 END) as referral_registration_bonus_amount'),
-                DB::raw('SUM(CASE WHEN bonuses.type = "Referral Withdrawal Bonus" THEN bonuses.amount ELSE 0 END) as referral_withdrawal_bonus_amount'),
-                DB::raw('SUM(CASE WHEN bonuses.type = "Proof Task Approved Bonus" THEN bonuses.amount ELSE 0 END) as proof_task_approved_bonus_amount'),
-                DB::raw('SUM(CASE WHEN bonuses.type != "Proof Task Approved Bonus" THEN bonuses.amount ELSE 0 END) as site_bonus_amount'),
-                DB::raw('SUM(CASE WHEN bonuses.type = "Proof Task Approved Bonus" THEN bonuses.amount ELSE 0 END) as user_bonus_amount'),
-                DB::raw('SUM(bonuses.amount) as total_amount'),
-            );
-
-            // Apply filters based on the request input
-            if ($request->type) {
-                $query->where('bonuses.type', $request->type);
-            }
-
-            // Date filter: handle cases where either start_date or end_date is provided
-            if ($request->start_date && !$request->end_date) {
-                $query->whereDate('bonuses.created_at', '>=', $request->start_date);
-            } elseif (!$request->start_date && $request->end_date) {
-                $query->whereDate('bonuses.created_at', '<=', $request->end_date);
-            } elseif ($request->start_date && $request->end_date) {
-                $query->whereBetween(DB::raw('DATE(bonuses.created_at)'), [$request->start_date, $request->end_date]);
-            }
-
-            $query->groupBy(DB::raw('DATE(bonuses.created_at)'));
-            $query->orderBy('bonus_date', 'desc');
-
-            // Retrieve the row-level data
-            $pendingRequest = $query->get();
-
-            // Query to calculate the totals across all rows
-            $totalsQuery = Bonus::select(
-                DB::raw('SUM(CASE WHEN bonuses.type = "Referral Registration Bonus" THEN bonuses.amount ELSE 0 END) as total_referral_registration_bonus_amount_sum'),
-                DB::raw('SUM(CASE WHEN bonuses.type = "Referral Withdrawal Bonus" THEN bonuses.amount ELSE 0 END) as total_referral_withdrawal_bonus_amount_sum'),
-                DB::raw('SUM(CASE WHEN bonuses.type = "Proof Task Approved Bonus" THEN bonuses.amount ELSE 0 END) as total_proof_task_approved_bonus_amount_sum'),
-                DB::raw('SUM(CASE WHEN bonuses.type != "Proof Task Approved Bonus" THEN bonuses.amount ELSE 0 END) as total_site_bonus_amount_sum'),
-                DB::raw('SUM(CASE WHEN bonuses.type = "Proof Task Approved Bonus" THEN bonuses.amount ELSE 0 END) as total_user_bonus_amount_sum'),
-                DB::raw('SUM(bonuses.amount) as total_amount_sum'),
-            );
-
-            // Apply the same filters to the totals query
-            if ($request->type) {
-                $totalsQuery->where('bonuses.type', $request->type);
-            }
-
-            // Date filter for totals query
-            if ($request->start_date && !$request->end_date) {
-                $totalsQuery->whereDate('bonuses.created_at', '>=', $request->start_date);
-            } elseif (!$request->start_date && $request->end_date) {
-                $totalsQuery->whereDate('bonuses.created_at', '<=', $request->end_date);
-            } elseif ($request->start_date && $request->end_date) {
-                $totalsQuery->whereBetween(DB::raw('DATE(bonuses.created_at)'), [$request->start_date, $request->end_date]);
-            }
-
-            // Get the total values
-            $totals = $totalsQuery->first();
-
-            // Return the DataTables response with totals
-            return DataTables::of($pendingRequest)
-                ->addIndexColumn()
-                ->editColumn('bonus_date', function ($row) {
-                    return '<span class="badge bg-primary">' . date('l j-F, Y', strtotime($row->bonus_date)) . '</span>';
-                })
-                ->editColumn('referral_registration_bonus_amount', function ($row) {
-                    return '<span class="badge bg-dark">' . $row->referral_registration_bonus_amount . '</span>';
-                })
-                ->editColumn('referral_withdrawal_bonus_amount', function ($row) {
-                    return '<span class="badge bg-dark">' . $row->referral_withdrawal_bonus_amount . '</span>';
-                })
-                ->editColumn('proof_task_approved_bonus_amount', function ($row) {
-                    return '<span class="badge bg-dark">' . $row->proof_task_approved_bonus_amount . '</span>';
-                })
-                ->editColumn('site_bonus_amount', function ($row) {
-                    return '<span class="badge bg-success">' . $row->site_bonus_amount . '</span>';
-                })
-                ->editColumn('user_bonus_amount', function ($row) {
-                    return '<span class="badge bg-info">' . $row->user_bonus_amount . '</span>';
-                })
-                ->editColumn('total_amount', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->total_amount . '</span>';
-                })
-                ->with([
-                    'total_referral_registration_bonus_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_referral_registration_bonus_amount_sum,
-                    'total_referral_withdrawal_bonus_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_referral_withdrawal_bonus_amount_sum,
-                    'total_proof_task_approved_bonus_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_proof_task_approved_bonus_amount_sum,
-                    'total_site_bonus_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_site_bonus_amount_sum,
-                    'total_user_bonus_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_user_bonus_amount_sum,
-                    'total_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_amount_sum,
-                ])
-                ->rawColumns(['bonus_date', 'referral_registration_bonus_amount', 'referral_withdrawal_bonus_amount', 'proof_task_approved_bonus_amount', 'site_bonus_amount', 'user_bonus_amount', 'total_amount'])
-                ->make(true);
-        }
-
-        return view('backend.report.bonus');
-    }
-
-    public function expenseReport(Request $request)
-    {
-        if ($request->ajax()) {
-            $categories = ExpenseCategory::where('status', 'Active')->get();
-            // Query to get individual row data
-            $query = Expense::select(
-                DB::raw('DATE(expenses.expense_date) as expense_date'),
-                DB::raw('SUM(CASE WHEN expenses.status = "Active" THEN expenses.amount ELSE 0 END) as active_amount'),
-                DB::raw('SUM(CASE WHEN expenses.status = "Inactive" THEN expenses.amount ELSE 0 END) as inactive_amount'),
-                DB::raw('SUM(expenses.amount) as total_amount'),
-            );
-
-            foreach ($categories as $category) {
-                $query->addSelect(DB::raw(
-                    'SUM(CASE WHEN expenses.expense_category_id = ' . $category->id . ' THEN expenses.amount ELSE 0 END) as ' . Str::slug($category->name, '_') . '_amount'
-                ));
-            }
-
-            // Apply filters based on the request input
-            if ($request->expense_category_id) {
-                $query->where('expenses.expense_category_id', $request->expense_category_id);
-            }
-
-            if ($request->status) {
-                $query->where('expenses.status', $request->status);
-            }
-
-            // Date filter: handle cases where either start_date or end_date is provided
-            if ($request->start_date && !$request->end_date) {
-                $query->whereDate('expenses.expense_date', '>=', $request->start_date);
-            } elseif (!$request->start_date && $request->end_date) {
-                $query->whereDate('expenses.expense_date', '<=', $request->end_date);
-            } elseif ($request->start_date && $request->end_date) {
-                $query->whereBetween(DB::raw('DATE(expenses.expense_date)'), [$request->start_date, $request->end_date]);
-            }
-
-            $query->groupBy(DB::raw('DATE(expenses.expense_date)'));
-            $query->orderBy('expense_date', 'desc');
-
-            // Retrieve the row-level data
-            $pendingRequest = $query->get();
-
-            // Query to calculate the totals across all rows
-            $totalsQuery = Expense::select(
-                DB::raw('SUM(CASE WHEN expenses.status = "Active" THEN expenses.amount ELSE 0 END) as total_active_amount_sum'),
-                DB::raw('SUM(CASE WHEN expenses.status = "Inactive" THEN expenses.amount ELSE 0 END) as total_inactive_amount_sum'),
-                DB::raw('SUM(expenses.amount) as total_amount_sum'),
-            );
-
-            foreach ($categories as $category) {
-                $totalsQuery->addSelect(DB::raw(
-                    'SUM(CASE WHEN expenses.expense_category_id = ' . $category->id . ' THEN expenses.amount ELSE 0 END) as total_' . Str::slug($category->name, '_') . '_amount_sum'
-                ));
-            }
-
-            // Apply the same filters to the totals query
-            if ($request->expense_category_id) {
-                $totalsQuery->where('expenses.expense_category_id', $request->expense_category_id);
-            }
-
-            if ($request->status) {
-                $totalsQuery->where('expenses.status', $request->status);
-            }
-
-            // Date filter for totals query
-            if ($request->start_date && !$request->end_date) {
-                $totalsQuery->whereDate('expenses.expense_date', '>=', $request->start_date);
-            } elseif (!$request->start_date && $request->end_date) {
-                $totalsQuery->whereDate('expenses.expense_date', '<=', $request->end_date);
-            } elseif ($request->start_date && $request->end_date) {
-                $totalsQuery->whereBetween(DB::raw('DATE(expenses.expense_date)'), [$request->start_date, $request->end_date]);
-            }
-
-            // Get the total values
-            $totals = $totalsQuery->first();
-
-            // Return the DataTables response with totals
-            return DataTables::of($pendingRequest)
-                ->addIndexColumn()
-                ->editColumn('expense_date', function ($row) {
-                    return '<span class="badge bg-primary">' . date('l j-F, Y', strtotime($row->expense_date)) . '</span>';
-                })
-                ->editColumn('active_amount', function ($row) {
-                    return '<span class="badge bg-success">' . $row->active_amount . '</span>';
-                })
-                ->editColumn('inactive_amount', function ($row) {
-                    return '<span class="badge bg-danger">' . $row->inactive_amount . '</span>';
-                })
-                ->editColumn('total_amount', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->total_amount . '</span>';
-                })
-                ->with([
-                    'category_totals' => $categories->map(function ($category) use ($totals) {
-                    $categoryKey = 'total_' . Str::slug($category->name, '_') . '_amount_sum';
-                        return [
-                            'category' => $category->name,
-                            'total' => get_site_settings('site_currency_symbol') . ' ' . $totals->{$categoryKey},
-                        ];
-                    }),
-                    'total_active_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_active_amount_sum,
-                    'total_inactive_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_inactive_amount_sum,
-                    'total_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_amount_sum,
-                ])
-                ->rawColumns(['expense_date', 'active_amount', 'inactive_amount', 'total_amount'])
-                ->make(true);
-        }
-
-        $expenseCategories = ExpenseCategory::where('status', 'Active')->get();
-        return view('backend.report.expense', compact('expenseCategories'));
     }
 
     public function postedTaskReport(Request $request)
@@ -525,9 +286,6 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN post_tasks.status = "Paused" THEN 1 ELSE 0 END) as paused_count'),
                 DB::raw('SUM(CASE WHEN post_tasks.status = "Completed" THEN 1 ELSE 0 END) as completed_count'),
                 DB::raw('COUNT(post_tasks.id) as total_task_count'),
-                DB::raw('SUM(post_tasks.sub_cost) as posted_charge'),
-                DB::raw('SUM(post_tasks.site_charge + post_tasks.required_proof_photo_charge + post_tasks.boosting_time_charge + post_tasks.work_duration_charge) as site_charge'),
-                DB::raw('SUM(post_tasks.total_cost) as total_charge')
             );
 
             // Apply filters based on the request input
@@ -559,9 +317,6 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN post_tasks.status = "Paused" THEN 1 ELSE 0 END) as total_paused_count_sum'),
                 DB::raw('SUM(CASE WHEN post_tasks.status = "Completed" THEN 1 ELSE 0 END) as total_completed_count_sum'),
                 DB::raw('COUNT(post_tasks.id) as total_task_count_sum'),
-                DB::raw('SUM(post_tasks.sub_cost) as total_posted_charge_sum'),
-                DB::raw('SUM(post_tasks.site_charge + post_tasks.required_proof_photo_charge + post_tasks.boosting_time_charge + post_tasks.work_duration_charge) as total_site_charge_sum'),
-                DB::raw('SUM(post_tasks.total_cost) as total_charge_sum')
             );
 
             // Apply the same filters to the totals query
@@ -606,16 +361,7 @@ class ReportController extends Controller
                     return '<span class="badge bg-success">' . $row->completed_count . '</span>';
                 })
                 ->editColumn('total_task_count', function ($row) {
-                    return '<span class="badge bg-success">' . $row->total_task_count . '</span>';
-                })
-                ->editColumn('posted_charge', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->posted_charge . '</span>';
-                })
-                ->editColumn('site_charge', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->site_charge . '</span>';
-                })
-                ->editColumn('total_charge', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->total_charge . '</span>';
+                    return '<span class="badge bg-primary">' . $row->total_task_count . '</span>';
                 })
                 ->with([
                     'total_pending_count_sum' => $totals->total_pending_count_sum,
@@ -625,11 +371,8 @@ class ReportController extends Controller
                     'total_paused_count_sum' => $totals->total_paused_count_sum,
                     'total_completed_count_sum' => $totals->total_completed_count_sum,
                     'total_task_count_sum' => $totals->total_task_count_sum,
-                    'total_posted_charge_sum' => get_site_settings('site_currency_symbol') . ' ' . number_format($totals->total_posted_charge_sum, 2),
-                    'total_site_charge_sum' => get_site_settings('site_currency_symbol') . ' ' . number_format($totals->total_site_charge_sum, 2),
-                    'total_charge_sum' => get_site_settings('site_currency_symbol') . ' ' . number_format($totals->total_charge_sum, 2),
                 ])
-                ->rawColumns(['posted_date', 'pending_count', 'rejected_count', 'running_count', 'canceled_count', 'paused_count', 'completed_count', 'total_task_count', 'posted_charge', 'site_charge', 'total_charge'])
+                ->rawColumns(['posted_date', 'pending_count', 'rejected_count', 'running_count', 'canceled_count', 'paused_count', 'completed_count', 'total_task_count'])
                 ->make(true);
         }
 

@@ -13,16 +13,6 @@
                 <div class="row mb-3">
                     <div class="col-xl-2 col-lg-6 mb-3">
                         <div class="form-group">
-                            <label for="filter_type" class="form-label">Type</label>
-                            <select class="form-select filter_data" id="filter_type">
-                                <option value="">-- Select Type --</option>
-                                <option value="Ragular">Ragular</option>
-                                <option value="Instant">Instant</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-xl-2 col-lg-6 mb-3">
-                        <div class="form-group">
                             <label for="filter_method" class="form-label">Method</label>
                             <select class="form-select filter_data" id="filter_method">
                                 <option value="">-- Select Method --</option>
@@ -40,6 +30,16 @@
                                 <option value="Pending">Pending</option>
                                 <option value="Approved">Approved</option>
                                 <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-6 mb-3">
+                        <div class="form-group">
+                            <label for="filter_type" class="form-label">Type</label>
+                            <select class="form-select filter_data" id="filter_type">
+                                <option value="">-- Select Type --</option>
+                                <option value="Ragular">Ragular</option>
+                                <option value="Instant">Instant</option>
                             </select>
                         </div>
                     </div>
@@ -70,8 +70,6 @@
                                 <th>Rejected Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Ragular Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Instant Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
-                                <th>Total Payable Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
-                                <th>Withdraw Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Total Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                             </tr>
                         </thead>
@@ -90,8 +88,6 @@
                                 <th id="rejected_total"></th>
                                 <th id="ragular_total"></th>
                                 <th id="instant_total"></th>
-                                <th id="total_payable_amount_sum"></th>
-                                <th id="withdraw_charge_sum"></th>
                                 <th id="total_amount_sum"></th>
                             </tr>
                         </tfoot>
@@ -128,11 +124,11 @@
             ajax: {
                 url: "{{ route('backend.withdraw.report') }}",
                 data: function (e) {
-                    e.type = $('#filter_type').val();
                     e.method = $('#filter_method').val();
+                    e.status = $('#filter_status').val();
+                    e.type = $('#filter_type').val();
                     e.start_date = $('#filter_start_date').val();
                     e.end_date = $('#filter_end_date').val();
-                    e.status = $('#filter_status').val();
                 }
             },
             columns: [
@@ -146,8 +142,6 @@
                 { data: 'rejected_amount', name: 'rejected_amount' },
                 { data: 'ragular_amount', name: 'ragular_amount' },
                 { data: 'instant_amount', name: 'instant_amount' },
-                { data: 'total_payable_amount', name: 'total_payable_amount' },
-                { data: 'withdraw_charge', name: 'withdraw_charge' },
                 { data: 'total_amount', name: 'total_amount' },
             ],
             drawCallback: function(settings) {
@@ -161,8 +155,6 @@
                 $('#rejected_total').html(response.total_rejected_amount_sum);
                 $('#ragular_total').html(response.total_ragular_amount_sum);
                 $('#instant_total').html(response.total_instant_amount_sum);
-                $('#total_payable_amount_sum').html(response.total_payable_amount_sum);
-                $('#withdraw_charge_sum').html(response.withdraw_charge_sum);
                 $('#total_amount_sum').html(response.total_amount_sum);
             },
             initComplete: function() {

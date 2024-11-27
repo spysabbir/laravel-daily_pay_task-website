@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SettingController;
+use App\Http\Controllers\Backend\StatementController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\SubscriberController;
 use App\Http\Controllers\Backend\TaskPostChargeController;
@@ -55,13 +56,14 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('expense/restore/{id}', [ExpenseController::class, 'restore'])->name('expense.restore');
     Route::get('expense/delete/{id}', [ExpenseController::class, 'delete'])->name('expense.delete');
     Route::get('expense/status/{id}', [ExpenseController::class, 'status'])->name('expense.status');
+    // Accounts Statement
+    Route::get('statement/earnings', [StatementController::class, 'earningsStatement'])->name('earnings.statement');
+    Route::get('statement/expenses', [StatementController::class, 'expensesStatement'])->name('expenses.statement');
     // Report
-    Route::get('report-deposit', [ReportController::class, 'depositReport'])->name('deposit.report');
-    Route::get('report-withdraw', [ReportController::class, 'withdrawReport'])->name('withdraw.report');
-    Route::get('report-bonus', [ReportController::class, 'bonusReport'])->name('bonus.report');
-    Route::get('report-expense', [ReportController::class, 'expenseReport'])->name('expense.report');
-    Route::get('report-posted-task', [ReportController::class, 'postedTaskReport'])->name('posted_task.report');
-    Route::get('report-worked-task', [ReportController::class, 'workedTaskReport'])->name('worked_task.report');
+    Route::get('report/deposit', [ReportController::class, 'depositReport'])->name('deposit.report');
+    Route::get('report/withdraw', [ReportController::class, 'withdrawReport'])->name('withdraw.report');
+    Route::get('report/posted-task', [ReportController::class, 'postedTaskReport'])->name('posted_task.report');
+    Route::get('report/worked-task', [ReportController::class, 'workedTaskReport'])->name('worked_task.report');
     // Employee
     Route::resource('employee', EmployeeController::class);
     Route::get('employee-inactive', [EmployeeController::class, 'inactive'])->name('employee.inactive');

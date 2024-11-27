@@ -60,8 +60,6 @@
                                 <th>Pending Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Approved Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Rejected Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
-                                <th>Total Payable Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
-                                <th>Deposit Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Total Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                             </tr>
                         </thead>
@@ -79,8 +77,6 @@
                                 <th id="pending_total"></th>
                                 <th id="approved_total"></th>
                                 <th id="rejected_total"></th>
-                                <th id="total_payable_amount_sum"></th>
-                                <th id="deposit_charge_sum"></th>
                                 <th id="total_amount_sum"></th>
                             </tr>
                         </tfoot>
@@ -132,8 +128,6 @@
                 { data: 'pending_amount', name: 'pending_amount' },
                 { data: 'approved_amount', name: 'approved_amount' },
                 { data: 'rejected_amount', name: 'rejected_amount' },
-                { data: 'total_payable_amount', name: 'total_payable_amount' },
-                { data: 'deposit_charge', name: 'deposit_charge' },
                 { data: 'total_amount', name: 'total_amount' },
             ],
             drawCallback: function(settings) {
@@ -146,8 +140,6 @@
                 $('#pending_total').html(response.total_pending_amount_sum);
                 $('#approved_total').html(response.total_approved_amount_sum);
                 $('#rejected_total').html(response.total_rejected_amount_sum);
-                $('#total_payable_amount_sum').html(response.total_payable_amount_sum);
-                $('#deposit_charge_sum').html(response.deposit_charge_sum);
                 $('#total_amount_sum').html(response.total_amount_sum);
             },
             initComplete: function() {
