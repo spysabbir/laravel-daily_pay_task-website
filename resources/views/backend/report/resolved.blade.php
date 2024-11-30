@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Report User - Pending')
+@section('title', 'Report - Resolved')
 
 @section('content')
 <div class="row">
@@ -8,10 +8,10 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Report User - Pending</h3>
+                    <h3 class="card-title">Report List - Resolved</h3>
                 </div>
                 <div class="action-btn">
-                    <a href="{{ route('backend.report_list.resolved') }}" class="btn btn-success">Resolved List</a>
+                    <a href="{{ route('backend.report.pending') }}" class="btn btn-primary">Pending List</a>
                 </div>
             </div>
             <div class="card-body">
@@ -92,7 +92,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.report_list.pending') }}",
+                url: "{{ route('backend.report.resolved') }}",
                 data: function (e) {
                     e.report_id = $('#filter_report_id').val();
                     e.type = $('#filter_type').val();
@@ -131,54 +131,6 @@
                 },
             });
         });
-
-        // Report Reply Photo Preview
-        $(document).on('change', '#photo', function() {
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                $('#photoPreview').attr('src', e.target.result).show();
-            }
-            reader.readAsDataURL(this.files[0]);
-        });
-
-        // Reply Form
-        $("body").on("submit", "#replyForm", function(e){
-            e.preventDefault();
-
-            var url = "{{ route('backend.report.reply') }}";
-
-            var form = $(this);
-            var formData = new FormData(form[0]);
-
-            var submitButton = $(this).find("button[type='submit']");
-            submitButton.prop("disabled", true).text("Submitting...");
-
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: 'json',
-                beforeSend:function(){
-                    $(document).find('span.error-text').text('');
-                },
-                success: function (response) {
-                    if (response.status == 400) {
-                        $.each(response.error, function(prefix, val){
-                            $('span.'+prefix+'_error').text(val[0]);
-                        })
-                    }else{
-                        $('#allDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
-                        toastr.success('Reply Submitted Successfully');
-                    }
-                },
-                complete: function () {
-                    submitButton.prop("disabled", false).text("Submit");
-                }
-            });
-        })
     });
 </script>
 @endsection

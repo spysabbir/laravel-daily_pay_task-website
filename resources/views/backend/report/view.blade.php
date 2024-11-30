@@ -10,17 +10,24 @@
                 <div class="mb-3">
                     <p class="my-2">Reason: {{ $report->reason }}</p>
                     @if ($report->post_task_id)
-                        <strong class="mb-2">Post Task Id:</strong> {{ $report->post_task_id }}<br>
+                        <div class="border p-2">
+                            <strong class="mb-2">Post Task Id:</strong> {{ $report->post_task_id }}<br>
+                            <strong class="mb-2">Post Task Status:</strong> {{ $report->postTask->status }}<br>
+                        </div>
                     @endif
                     @if ($report->proof_task_id)
-                        <strong class="mb-2">Proof Task Id:</strong> {{ $report->proof_task_id }}<br>
+                        <div class="border p-2">
+                            <strong class="mb-2">Proof Task Id:</strong> {{ $report->proof_task_id }}<br>
+                            <strong class="mb-2">Proof Task Status:</strong> {{ $report->proofTask->status }}<br>
+                        </div>
                     @endif
                     @if ($report->photo)
                     <img src="{{ asset('uploads/report_photo') }}/{{ $report->photo }}" alt="Report Photo" class="img-fluid">
                     @endif
                 </div>
                 <div>
-                    <strong>Reported By: {{ $report->reportedBy->name }}</strong><br>
+                    <strong>Reported By Id: {{ $report->reportedBy->id }}</strong><br>
+                    <strong>Reported By Name: {{ $report->reportedBy->name }}</strong><br>
                     <strong>Reported At: {{ $report->created_at->format('d M, Y h:i A') }}</strong>
                 </div>
             </div>

@@ -77,7 +77,7 @@
             </li>
         @endcan
 
-        {{-- @can('AccountsStatementMenu') --}}
+        @can('AccountsStatementMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#accountsStatement" role="button" aria-expanded="false" aria-controls="accountsStatement">
                     <i class="link-icon" data-feather="file-text"></i>
@@ -86,29 +86,29 @@
                 </a>
                 <div class="collapse" id="accountsStatement">
                     <ul class="nav sub-menu">
-                        {{-- @can('earnings.statement') --}}
+                        @can('earnings.statement')
                         <li class="nav-item">
                             <a href="{{ route('backend.earnings.statement') }}" class="nav-link">Earnings Amount</a>
                         </li>
-                        {{-- @endcan --}}
-                        {{-- @can('expenses.statement') --}}
+                        @endcan
+                        @can('expenses.statement')
                         <li class="nav-item">
                             <a href="{{ route('backend.expenses.statement') }}" class="nav-link">Expenses Amount</a>
                         </li>
-                        {{-- @endcan --}}
+                        @endcan
                     </ul>
                 </div>
             </li>
-        {{-- @endcan --}}
+        @endcan
 
-        @can('ReportMenu')
+        @can('ReportListMenu')
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#report" role="button" aria-expanded="false" aria-controls="report">
+                <a class="nav-link" data-bs-toggle="collapse" href="#reportList" role="button" aria-expanded="false" aria-controls="reportList">
                     <i class="link-icon" data-feather="file-text"></i>
-                    <span class="link-title">Report</span>
+                    <span class="link-title">Report List</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse" id="report">
+                <div class="collapse" id="reportList">
                     <ul class="nav sub-menu">
                         @can('deposit.report')
                         <li class="nav-item">
@@ -135,7 +135,7 @@
             </li>
         @endcan
 
-        {{-- @can('TopListMenu') --}}
+        @can('TopListMenu')
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#topList" role="button" aria-expanded="false" aria-controls="topList">
                 <i class="link-icon" data-feather="award"></i>
@@ -144,35 +144,35 @@
             </a>
             <div class="collapse" id="topList">
                 <ul class="nav sub-menu">
-                    {{-- @can('top.deposit.user') --}}
+                    @can('top.deposit.user')
                     <li class="nav-item">
                         <a href="{{ route('backend.top.deposit.user') }}" class="nav-link">Top Deposit User</a>
                     </li>
-                    {{-- @endcan --}}
-                    {{-- @can('top.withdraw.user') --}}
+                    @endcan
+                    @can('top.withdraw.user')
                     <li class="nav-item">
                         <a href="{{ route('backend.top.withdraw.user') }}" class="nav-link">Top Withdraw User</a>
                     </li>
-                    {{-- @endcan --}}
-                    {{-- @can('top.buyer') --}}
+                    @endcan
+                    @can('top.posted_task.user')
                     <li class="nav-item">
                         <a href="{{ route('backend.top.posted_task.user') }}" class="nav-link">Top Posted Task User</a>
                     </li>
-                    {{-- @endcan --}}
-                    {{-- @can('top.worker') --}}
+                    @endcan
+                    @can('top.worked_task.user')
                     <li class="nav-item">
                         <a href="{{ route('backend.top.worked_task.user') }}" class="nav-link">Top Worked Task User</a>
                     </li>
-                    {{-- @endcan --}}
-                    {{-- @can('top.referral') --}}
+                    @endcan
+                    @can('top.referred.user')
                     <li class="nav-item">
                         <a href="{{ route('backend.top.referred.user') }}" class="nav-link">Top Referred User</a>
                     </li>
-                    {{-- @endcan --}}
+                    @endcan
                 </ul>
             </div>
         </li>
-        {{-- @endcan --}}
+        @endcan
 
         <li class="nav-item nav-category">Admin</li>
         @can('RolePermissionMenu')
@@ -376,23 +376,23 @@
             @endcan
         @endcan
 
-        @can('ReportListMenu')
+        @can('ReportMenu')
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#ReportListMenu" role="button" aria-expanded="false" aria-controls="ReportListMenu">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ReportMenu" role="button" aria-expanded="false" aria-controls="ReportMenu">
                     <i class="link-icon" data-feather="alert-triangle"></i>
-                    <span class="link-title">Report User</span>
+                    <span class="link-title">Report</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse" id="ReportListMenu">
+                <div class="collapse" id="ReportMenu">
                     <ul class="nav sub-menu">
-                        @can('report_list.pending')
+                        @can('report.pending')
                         <li class="nav-item">
-                            <a href="{{ route('backend.report_list.pending') }}" class="nav-link">Pending</a>
+                            <a href="{{ route('backend.report.pending') }}" class="nav-link">Pending</a>
                         </li>
                         @endcan
-                        @can('report_list.resolved')
+                        @can('report.resolved')
                         <li class="nav-item">
-                            <a href="{{ route('backend.report_list.resolved') }}" class="nav-link">Resolved</a>
+                            <a href="{{ route('backend.report.resolved') }}" class="nav-link">Resolved</a>
                         </li>
                         @endcan
                     </ul>

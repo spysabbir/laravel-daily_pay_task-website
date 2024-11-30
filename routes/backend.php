@@ -61,10 +61,10 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('statement/earnings', [StatementController::class, 'earningsStatement'])->name('earnings.statement');
     Route::get('statement/expenses', [StatementController::class, 'expensesStatement'])->name('expenses.statement');
     // Report
-    Route::get('report/deposit', [ReportController::class, 'depositReport'])->name('deposit.report');
-    Route::get('report/withdraw', [ReportController::class, 'withdrawReport'])->name('withdraw.report');
-    Route::get('report/posted-task', [ReportController::class, 'postedTaskReport'])->name('posted_task.report');
-    Route::get('report/worked-task', [ReportController::class, 'workedTaskReport'])->name('worked_task.report');
+    Route::get('report-list/deposit', [ReportController::class, 'depositReport'])->name('deposit.report');
+    Route::get('report-list/withdraw', [ReportController::class, 'withdrawReport'])->name('withdraw.report');
+    Route::get('report-list/posted-task', [ReportController::class, 'postedTaskReport'])->name('posted_task.report');
+    Route::get('report-list/worked-task', [ReportController::class, 'workedTaskReport'])->name('worked_task.report');
     // Top List
     Route::get('top/deposit-user', [TopListController::class, 'topDepositUser'])->name('top.deposit.user');
     Route::get('top/withdraw-user', [TopListController::class, 'topWithdrawUser'])->name('top.withdraw.user');
@@ -177,8 +177,8 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('worked_task_check/{id}', [TaskController::class, 'workedTaskCheck'])->name('worked_task_check');
     Route::put('worked_task_check_update/{id}', [TaskController::class, 'workedTaskCheckUpdate'])->name('worked_task_check_update');
     // Report User
-    Route::get('report_list-pending', [BackendController::class, 'reportListPending'])->name('report_list.pending');
-    Route::get('report_list-resolved', [BackendController::class, 'reportListResolved'])->name('report_list.resolved');
+    Route::get('report-pending', [BackendController::class, 'reportPending'])->name('report.pending');
+    Route::get('report-resolved', [BackendController::class, 'reportResolved'])->name('report.resolved');
     Route::get('report-view/{id}', [BackendController::class, 'reportView'])->name('report.view');
     Route::post('report-reply', [BackendController::class, 'reportReply'])->name('report.reply');
     // Support

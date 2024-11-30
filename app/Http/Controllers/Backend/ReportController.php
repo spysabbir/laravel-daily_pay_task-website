@@ -133,7 +133,7 @@ class ReportController extends Controller
                 ->make(true);
         }
 
-        return view('backend.report.deposit');
+        return view('backend.report_list.deposit');
     }
 
     public function withdrawReport(Request $request)
@@ -270,7 +270,7 @@ class ReportController extends Controller
                 ->make(true);
         }
 
-        return view('backend.report.withdraw');
+        return view('backend.report_list.withdraw');
     }
 
     public function postedTaskReport(Request $request)
@@ -376,7 +376,7 @@ class ReportController extends Controller
                 ->make(true);
         }
 
-        return view('backend.report.posted_task');
+        return view('backend.report_list.posted_task');
     }
 
     public function workedTaskReport(Request $request)
@@ -470,6 +470,6 @@ class ReportController extends Controller
                 ->make(true);
         }
 
-        return view('backend.report.worked_task');
+        return view('backend.report_list.worked_task');
     }
 }

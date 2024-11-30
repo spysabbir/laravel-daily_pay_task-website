@@ -31,4 +31,13 @@ class Report extends Model
         return $this->belongsTo(User::class, 'reported_by');
     }
 
+    public function postTask()
+    {
+        return $this->belongsTo(PostTask::class);
+    }
+
+    public function proofTask()
+    {
+        return $this->belongsTo(ProofTask::class);
+    }
 }

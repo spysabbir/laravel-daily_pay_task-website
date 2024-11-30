@@ -330,7 +330,7 @@ class BackendController extends Controller
     }
 
     // Report List
-    public function reportListPending(Request $request)
+    public function reportPending(Request $request)
     {
         if ($request->ajax()) {
             $reportedUsers = Report::where('status', 'Pending');
@@ -380,10 +380,10 @@ class BackendController extends Controller
                 ->rawColumns(['type', 'reported_user', 'reported_by', 'status', 'action'])
                 ->make(true);
         }
-        return view('backend.report_list.pending');
+        return view('backend.report.pending');
     }
 
-    public function reportListResolved(Request $request)
+    public function reportResolved(Request $request)
     {
         if ($request->ajax()) {
             $reportedUsers = Report::where('status', 'Resolved');
@@ -433,14 +433,14 @@ class BackendController extends Controller
                 ->rawColumns(['type', 'reported_user', 'reported_by', 'status', 'action'])
                 ->make(true);
         }
-        return view('backend.report_list.resolved');
+        return view('backend.report.resolved');
     }
 
     public function reportView(string $id)
     {
         $report = Report::where('id', $id)->first();
         $report_reply = ReportReply::where('report_id', $id)->first();
-        return view('backend.report_list.view', compact('report', 'report_reply'));
+        return view('backend.report.view', compact('report', 'report_reply'));
     }
 
     public function reportReply(Request $request)
