@@ -19,6 +19,7 @@ use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\SubscriberController;
 use App\Http\Controllers\Backend\TaskPostChargeController;
 use App\Http\Controllers\Backend\TestimonialController;
+use App\Http\Controllers\Backend\TopListController;
 use App\Http\Controllers\Backend\VerificationController;
 use App\Http\Controllers\Backend\WithdrawController;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +65,12 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('report/withdraw', [ReportController::class, 'withdrawReport'])->name('withdraw.report');
     Route::get('report/posted-task', [ReportController::class, 'postedTaskReport'])->name('posted_task.report');
     Route::get('report/worked-task', [ReportController::class, 'workedTaskReport'])->name('worked_task.report');
+    // Top List
+    Route::get('top/deposit-user', [TopListController::class, 'topDepositUser'])->name('top.deposit.user');
+    Route::get('top/withdraw-user', [TopListController::class, 'topWithdrawUser'])->name('top.withdraw.user');
+    Route::get('top/posted_task-user', [TopListController::class, 'topPostedTaskUser'])->name('top.posted_task.user');
+    Route::get('top/worked_task-user', [TopListController::class, 'topWorkedTaskUser'])->name('top.worked_task.user');
+    Route::get('top/referred-user', [TopListController::class, 'topReferredUser'])->name('top.referred.user');
     // Employee
     Route::resource('employee', EmployeeController::class);
     Route::get('employee-inactive', [EmployeeController::class, 'inactive'])->name('employee.inactive');

@@ -135,6 +135,45 @@
             </li>
         @endcan
 
+        {{-- @can('TopListMenu') --}}
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#topList" role="button" aria-expanded="false" aria-controls="topList">
+                <i class="link-icon" data-feather="award"></i>
+                <span class="link-title">Top List</span>
+                <i class="link-arrow" data-feather="chevron-down"></i>
+            </a>
+            <div class="collapse" id="topList">
+                <ul class="nav sub-menu">
+                    {{-- @can('top.deposit.user') --}}
+                    <li class="nav-item">
+                        <a href="{{ route('backend.top.deposit.user') }}" class="nav-link">Top Deposit User</a>
+                    </li>
+                    {{-- @endcan --}}
+                    {{-- @can('top.withdraw.user') --}}
+                    <li class="nav-item">
+                        <a href="{{ route('backend.top.withdraw.user') }}" class="nav-link">Top Withdraw User</a>
+                    </li>
+                    {{-- @endcan --}}
+                    {{-- @can('top.buyer') --}}
+                    <li class="nav-item">
+                        <a href="{{ route('backend.top.posted_task.user') }}" class="nav-link">Top Posted Task User</a>
+                    </li>
+                    {{-- @endcan --}}
+                    {{-- @can('top.worker') --}}
+                    <li class="nav-item">
+                        <a href="{{ route('backend.top.worked_task.user') }}" class="nav-link">Top Worked Task User</a>
+                    </li>
+                    {{-- @endcan --}}
+                    {{-- @can('top.referral') --}}
+                    <li class="nav-item">
+                        <a href="{{ route('backend.top.referred.user') }}" class="nav-link">Top Referred User</a>
+                    </li>
+                    {{-- @endcan --}}
+                </ul>
+            </div>
+        </li>
+        {{-- @endcan --}}
+
         <li class="nav-item nav-category">Admin</li>
         @can('RolePermissionMenu')
             <li class="nav-item">
