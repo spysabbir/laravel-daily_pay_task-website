@@ -26,7 +26,7 @@
                 <p class="border p-1 m-1"><strong class="text-info">Title: </strong>{{ $postTask->title }}</p>
                 <p class="border p-1 m-1"><strong class="text-info">Description: </strong>{{ $postTask->description }}</p>
                 <p class="border p-1 m-1"><strong class="text-info">Required Proof Answer: </strong>{{ $postTask->required_proof_answer }}</p>
-                <p class="border p-1 m-1">
+                {{-- <p class="border p-1 m-1">
                     <strong class="text-info">Required Proof Photo: </strong>
                     Free: {{ $postTask->required_proof_photo >= 1 ? 1 : 0 }} & Additional: {{ $postTask->required_proof_photo >= 1 ? $postTask->required_proof_photo - 1 : 0 }} = Total: {{ $postTask->required_proof_photo }} Required Proof Photo{{ $postTask->required_proof_photo > 1 ? 's' : '' }},
                     <strong class="text-info">Proof Photo Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->required_proof_photo_charge }}
@@ -74,7 +74,7 @@
                 <p class="border p-1 m-1">
                     <strong class="text-info">Submited At: </strong>{{ $postTask->created_at->format('d F, Y h:i:s A') }},
                     <strong class="text-info">Approved At: </strong>{{ date('d F, Y h:i:s A', strtotime($postTask->approved_at)) }}
-                </p>
+                </p> --}}
                 <div class="my-3">
                     @php
                         $proofSubmittedCount = $proofSubmitted->count();
@@ -790,6 +790,9 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+
+                    // View Modal
+                    $('.viewModal').modal('show');
                 },
             });
         });
@@ -828,6 +831,9 @@
                         $('#reportSendProofTaskExitsDiv').hide();
                         $('#reportSendProofTaskForm').show();
                     }
+
+                    // Report Proof Task Modal
+                    $('.reportProofTaskModal').modal('show');
                 },
             });
         });

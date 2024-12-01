@@ -315,7 +315,7 @@
                                         </div>
                                         <div class="flex-grow-1 me-2">
                                             <p>
-                                                <strong>Report User Request</strong>
+                                                <strong>Report Request</strong>
                                             </p>
                                             <p class="tx-12 text-muted">{{ $report }} Pending</p>
                                         </div>
@@ -484,6 +484,8 @@
     </script>
     <!-- End Toastr -->
 
+    <!-- Vite -->
     @vite('resources/js/app.js')
+    <!-- End Vite -->
 </body>
 </html>

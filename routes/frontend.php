@@ -29,7 +29,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/block-list', [UserController::class, 'blockList'])->name('block_list');
 
     Route::post('/report-send/{id}', [UserController::class, 'reportSend'])->name('report.send');
-    Route::get('/report-list', [UserController::class, 'reportList'])->name('report_list');
+    Route::get('/report', [UserController::class, 'report'])->name('report');
     Route::get('/report-view/{id}', [UserController::class, 'reportView'])->name('report_view');
 
     Route::get('/verification', [UserController::class, 'verification'])->name('verification');

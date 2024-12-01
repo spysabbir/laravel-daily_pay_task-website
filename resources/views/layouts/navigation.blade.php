@@ -645,9 +645,9 @@
         </li>
 
         <li class="nav-item">
-            <a href="{{ route('report_list') }}" class="nav-link">
+            <a href="{{ route('report') }}" class="nav-link">
                 <i class="link-icon" data-feather="file-text"></i>
-                <span class="link-title">Report List</span>
+                <span class="link-title">Report</span>
             </a>
         </li>
 

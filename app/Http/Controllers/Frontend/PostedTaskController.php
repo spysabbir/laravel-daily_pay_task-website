@@ -263,7 +263,7 @@ class PostedTaskController extends Controller
                     })
                     ->addColumn('action', function ($row) {
                         $actionBtn = '
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
                         ';
                         return $actionBtn;
@@ -517,11 +517,11 @@ class PostedTaskController extends Controller
                     })
                     ->editColumn('action', function ($row) {
                         $btn = '
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Update</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn">Update</button>
                             <a href="' . route('proof_task.list.clear.filters', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                         ';
                         return $btn;
                     })
@@ -666,12 +666,12 @@ class PostedTaskController extends Controller
                     $btnName = $row->status == 'Pending' ? 'Check' : 'View';
                     if ($row->status == 'Rejected') {
                         $actionBtn = '
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">' . $btnName . '</button>
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs reportProofTaskBtn" data-bs-toggle="modal" data-bs-target=".reportProofTaskModal">Report</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">' . $btnName . '</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs reportProofTaskBtn">Report</button>
                             ';
                     } else {
                         $actionBtn = '
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">' . $btnName . '</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">' . $btnName . '</button>
                             ';
                     }
                     return $actionBtn;
@@ -1039,7 +1039,7 @@ class PostedTaskController extends Controller
                     ->editColumn('action', function ($row) {
                         $btn = '
                             <a href="' . route('proof_task.list.clear.filters', encrypt($row->id)) . '" class="btn btn-success btn-xs">Check</a>
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                         ';
                         return $btn;
                     })
@@ -1172,7 +1172,7 @@ class PostedTaskController extends Controller
                         $btn .= '
                             <a href="' . route('proof_task.list.clear.filters', encrypt($row->id)) . '" class="btn btn-success btn-xs">Check</a>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                         ';
 
                         return $btn;
@@ -1288,7 +1288,7 @@ class PostedTaskController extends Controller
                     ->addColumn('action', function ($row) {
                         $status = '
                             <a href="' . route('proof_task.list.clear.filters', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                         ';
                         return $status;
                     })

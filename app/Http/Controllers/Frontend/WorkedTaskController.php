@@ -334,7 +334,7 @@ class WorkedTaskController extends Controller
                     })
                     ->addColumn('action', function ($row) {
                         $action = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                         ';
                         return $action;
                     })
@@ -401,7 +401,7 @@ class WorkedTaskController extends Controller
                     })
                     ->addColumn('action', function ($row) {
                         $action = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>
                         ';
                         return $action;
                     })
@@ -512,7 +512,7 @@ class WorkedTaskController extends Controller
                     })
                     ->addColumn('action', function ($row) {
                         $action = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>
                         ';
                         return $action;
                     })

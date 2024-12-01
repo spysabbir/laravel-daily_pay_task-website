@@ -23,7 +23,7 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request)
     {
-        $referrer = User::where('referral_code', $request->referral_code)->first();
+        $referrer = User::where('referral_code', $request->referral_code)->where('user_type', 'Frontend')->first();
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],

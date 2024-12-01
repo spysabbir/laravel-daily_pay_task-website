@@ -102,6 +102,9 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+
+                    // Show Modal
+                    $('.viewModal').modal('show');
                 },
             });
         });

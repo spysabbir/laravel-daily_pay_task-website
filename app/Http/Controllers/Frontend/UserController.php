@@ -969,7 +969,7 @@ class UserController extends Controller
 
     // Report.............................................................................................................
 
-    public function reportList(Request $request)
+    public function report(Request $request)
     {
         $user = User::findOrFail(Auth::id());
         $hasVerification = $user->hasVerification('Approved');
@@ -1031,14 +1031,14 @@ class UserController extends Controller
                     })
                     ->addColumn('action', function ($row) {
                         $action = '
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                         ';
                         return $action;
                     })
                     ->rawColumns(['type', 'user', 'status', 'action'])
                     ->make(true);
             }
-            return view('frontend.report_list.index');
+            return view('frontend.report.index');
         }
     }
 
@@ -1046,7 +1046,7 @@ class UserController extends Controller
     {
         $report = Report::findOrFail($id);
         $report_reply = ReportReply::where('report_id', $id)->first();
-        return view('frontend.report_list.view', compact('report', 'report_reply'));
+        return view('frontend.report.view', compact('report', 'report_reply'));
     }
 
     public function reportSend(Request $request, $id)

@@ -21,7 +21,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Type</th>
+                                {{-- <th>Type</th> --}}
                                 <th>Title</th>
                                 <th>Message</th>
                                 <th>Time</th>
@@ -58,7 +58,7 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'type', name: 'type' },
+                // { data: 'type', name: 'type' },
                 { data: 'title', name: 'title' },
                 { data: 'message', name: 'message' },
                 { data: 'created_at', name: 'created_at'},

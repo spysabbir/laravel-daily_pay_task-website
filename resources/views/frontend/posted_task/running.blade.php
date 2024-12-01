@@ -334,6 +334,9 @@
 
                     // Disable lower options based on old_work_duration
                     disableLowerOptions(response.work_duration);
+
+                    // Update the modal with the task details
+                    $('.editModal').modal('show');
                 },
             });
         });
@@ -468,6 +471,9 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+
+                    // Show Modal
+                    $('.viewModal').modal('show');
                 },
             });
         });

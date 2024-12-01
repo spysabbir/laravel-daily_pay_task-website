@@ -82,7 +82,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('report_list') }}",
+                url: "{{ route('report') }}",
                 data: function (e) {
                     e.status = $('#filter_status').val();
                 }
@@ -113,6 +113,9 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+
+                    // Show Modal
+                    $('.viewModal').modal('show');
                 },
             });
         });
