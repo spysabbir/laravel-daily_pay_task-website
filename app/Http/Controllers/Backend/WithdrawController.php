@@ -11,9 +11,22 @@ use App\Notifications\WithdrawNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use App\Notifications\BonusNotification;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class WithdrawController extends Controller
+class WithdrawController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request') , only:['withdrawRequest']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.check') , only:['withdrawRequestShow', 'withdrawRequestStatusChange']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.rejected'), only:['withdrawRequestRejected']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.approved') , only:['withdrawRequestApproved']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.delete') , only:['withdrawRequestDelete']),
+        ];
+    }
+
     public function withdrawRequest(Request $request)
     {
         if ($request->ajax()) {
@@ -156,7 +169,6 @@ class WithdrawController extends Controller
             'status' => 200,
         ]);
     }
-
 
     public function withdrawRequestRejected(Request $request)
     {

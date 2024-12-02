@@ -8,9 +8,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\ExpenseCategory;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ExpenseController extends Controller
+class ExpenseController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense.index') , only:['index', 'show']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense.create') , only:['store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense.edit') , only:['edit', 'update']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense.destroy'), only:['destroy']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense.trash') , only:['trash']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense.restore') , only:['restore']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense.delete') , only:['delete']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense.status') , only:['status']),
+        ];
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -150,7 +166,7 @@ class ExpenseController extends Controller
         $expense = Expense::findOrFail($id);
         $expense->deleted_by = auth()->user()->id;
         $expense->save();
-        
+
         $expense->delete();
     }
 

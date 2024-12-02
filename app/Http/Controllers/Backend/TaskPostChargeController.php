@@ -10,9 +10,25 @@ use App\Models\ChildCategory;
 use App\Models\TaskPostCharge;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TaskPostChargeController extends Controller
+class TaskPostChargeController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('task_post_charge.index') , only:['index']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('task_post_charge.create') , only:['store', 'getSubCategories', 'getChildCategories']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('task_post_charge.edit') , only:['edit', 'update']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('task_post_charge.destroy'), only:['destroy']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('task_post_charge.trash') , only:['trash']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('task_post_charge.restore') , only:['restore']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('task_post_charge.delete') , only:['delete']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('task_post_charge.status') , only:['status']),
+        ];
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

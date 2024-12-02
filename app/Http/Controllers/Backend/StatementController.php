@@ -8,16 +8,22 @@ use App\Models\Deposit;
 use App\Models\Withdraw;
 use App\Models\Bonus;
 use App\Models\Expense;
-use App\Models\PostTask;
 use App\Models\ProofTask;
-use App\Models\ExpenseCategory;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-
-class StatementController extends Controller
+class StatementController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('earnings.statement') , only:['earningsStatement']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expenses.statement') , only:['expensesStatement']),
+        ];
+    }
+
     public function earningsStatement(Request $request)
     {
         if ($request->ajax()) {
@@ -224,5 +230,4 @@ class StatementController extends Controller
 
         return view('backend.statement.expenses');
     }
-
 }

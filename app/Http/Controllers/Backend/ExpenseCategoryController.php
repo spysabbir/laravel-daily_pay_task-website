@@ -7,9 +7,25 @@ use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ExpenseCategoryController extends Controller
+class ExpenseCategoryController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense_category.index') , only:['index']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense_category.create') , only:['store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense_category.edit') , only:['edit', 'update']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense_category.destroy'), only:['destroy']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense_category.trash') , only:['trash']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense_category.restore') , only:['restore']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense_category.delete') , only:['delete']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('expense_category.status') , only:['status']),
+        ];
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

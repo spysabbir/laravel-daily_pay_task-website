@@ -7,9 +7,25 @@ use App\Models\Faq;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class FaqController extends Controller
+class FaqController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('faq.index') , only:['index', 'show']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('faq.create') , only:['store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('faq.edit') , only:['edit', 'update']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('faq.destroy'), only:['destroy']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('faq.trash') , only:['trash']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('faq.restore') , only:['restore']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('faq.delete') , only:['delete']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('faq.status') , only:['status']),
+        ];
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

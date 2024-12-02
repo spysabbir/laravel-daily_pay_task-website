@@ -7,9 +7,21 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PermissionController extends Controller
+class PermissionController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('permission.index') , only:['index']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('permission.create') , only:['store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('permission.edit') , only:['edit', 'update']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('permission.destroy'), only:['destroy']),
+        ];
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Backend\BackendController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ChildCategoryController;
+use App\Http\Controllers\Backend\ContactController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmployeeController;
 use App\Http\Controllers\Backend\ExpenseCategoryController;
@@ -11,15 +12,18 @@ use App\Http\Controllers\Backend\FaqController;
 use App\Http\Controllers\Backend\TaskController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\ReportController;
+use App\Http\Controllers\Backend\ReportListController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\RolePermissionController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\StatementController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\SubscriberController;
+use App\Http\Controllers\Backend\SupportController;
 use App\Http\Controllers\Backend\TaskPostChargeController;
 use App\Http\Controllers\Backend\TestimonialController;
 use App\Http\Controllers\Backend\TopListController;
+use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\VerificationController;
 use App\Http\Controllers\Backend\WithdrawController;
 use Illuminate\Support\Facades\Route;
@@ -61,10 +65,10 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('statement/earnings', [StatementController::class, 'earningsStatement'])->name('earnings.statement');
     Route::get('statement/expenses', [StatementController::class, 'expensesStatement'])->name('expenses.statement');
     // Report
-    Route::get('report-list/deposit', [ReportController::class, 'depositReport'])->name('deposit.report');
-    Route::get('report-list/withdraw', [ReportController::class, 'withdrawReport'])->name('withdraw.report');
-    Route::get('report-list/posted-task', [ReportController::class, 'postedTaskReport'])->name('posted_task.report');
-    Route::get('report-list/worked-task', [ReportController::class, 'workedTaskReport'])->name('worked_task.report');
+    Route::get('report-list/deposit', [ReportListController::class, 'depositReport'])->name('deposit.report');
+    Route::get('report-list/withdraw', [ReportListController::class, 'withdrawReport'])->name('withdraw.report');
+    Route::get('report-list/posted-task', [ReportListController::class, 'postedTaskReport'])->name('posted_task.report');
+    Route::get('report-list/worked-task', [ReportListController::class, 'workedTaskReport'])->name('worked_task.report');
     // Top List
     Route::get('top/deposit-user', [TopListController::class, 'topDepositUser'])->name('top.deposit.user');
     Route::get('top/withdraw-user', [TopListController::class, 'topWithdrawUser'])->name('top.withdraw.user');
@@ -79,17 +83,17 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('employee/delete/{id}', [EmployeeController::class, 'delete'])->name('employee.delete');
     Route::get('employee/status/{id}', [EmployeeController::class, 'status'])->name('employee.status');
     // User
-    Route::get('user/active', [BackendController::class, 'userActiveList'])->name('user.active');
-    Route::get('user/show/{id}', [BackendController::class, 'userView'])->name('user.show');
-    Route::get('user/status/{id}', [BackendController::class, 'userStatus'])->name('user.status');
-    Route::post('user/status/update/{id}', [BackendController::class, 'userStatusUpdate'])->name('user.status.update');
-    Route::delete('user/destroy/{id}', [BackendController::class, 'userDestroy'])->name('user.destroy');
-    Route::get('user/trash', [BackendController::class, 'userTrash'])->name('user.trash');
-    Route::get('user/restore/{id}', [BackendController::class, 'userRestore'])->name('user.restore');
-    Route::get('user/delete/{id}', [BackendController::class, 'userDelete'])->name('user.delete');
-    Route::get('user/inactive', [BackendController::class, 'userInactiveList'])->name('user.inactive');
-    Route::get('user/blocked', [BackendController::class, 'userBlockedList'])->name('user.blocked');
-    Route::get('user/banned', [BackendController::class, 'userBannedList'])->name('user.banned');
+    Route::get('user/active', [UserController::class, 'userActiveList'])->name('user.active');
+    Route::get('user/show/{id}', [UserController::class, 'userView'])->name('user.show');
+    Route::get('user/status/{id}', [UserController::class, 'userStatus'])->name('user.status');
+    Route::post('user/status/update/{id}', [UserController::class, 'userStatusUpdate'])->name('user.status.update');
+    Route::delete('user/destroy/{id}', [UserController::class, 'userDestroy'])->name('user.destroy');
+    Route::get('user/trash', [UserController::class, 'userTrash'])->name('user.trash');
+    Route::get('user/restore/{id}', [UserController::class, 'userRestore'])->name('user.restore');
+    Route::get('user/delete/{id}', [UserController::class, 'userDelete'])->name('user.delete');
+    Route::get('user/inactive', [UserController::class, 'userInactiveList'])->name('user.inactive');
+    Route::get('user/blocked', [UserController::class, 'userBlockedList'])->name('user.blocked');
+    Route::get('user/banned', [UserController::class, 'userBannedList'])->name('user.banned');
     // Category
     Route::resource('category', CategoryController::class);
     Route::get('category-trash', [CategoryController::class, 'trash'])->name('category.trash');
@@ -177,19 +181,19 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('worked_task_check/{id}', [TaskController::class, 'workedTaskCheck'])->name('worked_task_check');
     Route::put('worked_task_check_update/{id}', [TaskController::class, 'workedTaskCheckUpdate'])->name('worked_task_check_update');
     // Report User
-    Route::get('report-pending', [BackendController::class, 'reportPending'])->name('report.pending');
-    Route::get('report-resolved', [BackendController::class, 'reportResolved'])->name('report.resolved');
-    Route::get('report-view/{id}', [BackendController::class, 'reportView'])->name('report.view');
-    Route::post('report-reply', [BackendController::class, 'reportReply'])->name('report.reply');
+    Route::get('report-pending', [ReportController::class, 'reportPending'])->name('report.pending');
+    Route::get('report-resolved', [ReportController::class, 'reportResolved'])->name('report.resolved');
+    Route::get('report-view/{id}', [ReportController::class, 'reportView'])->name('report.view');
+    Route::post('report-reply', [ReportController::class, 'reportReply'])->name('report.reply');
     // Support
-    Route::get('support', [BackendController::class, 'support'])->name('support');
-    Route::get('/get/user/supports/{userId}', [BackendController::class, 'getUserSupports'])->name('get.user.supports');
-    Route::get('/get/search/support/user', [BackendController::class, 'getSearchSupportUser'])->name('get.search.support.user');
-    Route::post('/support-send-message-reply/{userId}', [BackendController::class, 'supportSendMessageReply'])->name('support.send-message.reply');
+    Route::get('support', [SupportController::class, 'support'])->name('support');
+    Route::get('/get/user/supports/{userId}', [SupportController::class, 'getUserSupports'])->name('get.user.supports');
+    Route::get('/get/search/support/user', [SupportController::class, 'getSearchSupportUser'])->name('get.search.support.user');
+    Route::post('/support-send-message-reply/{userId}', [SupportController::class, 'supportSendMessageReply'])->name('support.send-message.reply');
     // Contact
-    Route::get('contact', [BackendController::class, 'contact'])->name('contact');
-    Route::get('contact-view/{id}', [BackendController::class, 'contactView'])->name('contact.view');
-    Route::get('contact-delete/{id}', [BackendController::class, 'contactDelete'])->name('contact.delete');
+    Route::get('contact', [ContactController::class, 'contact'])->name('contact');
+    Route::get('contact-view/{id}', [ContactController::class, 'contactView'])->name('contact.view');
+    Route::get('contact-delete/{id}', [ContactController::class, 'contactDelete'])->name('contact.delete');
     // Subscriber
     Route::get('subscriber', [SubscriberController::class, 'subscriber'])->name('subscriber.index');
     Route::get('subscriber-delete/{id}', [SubscriberController::class, 'subscriberDelete'])->name('subscriber.delete');

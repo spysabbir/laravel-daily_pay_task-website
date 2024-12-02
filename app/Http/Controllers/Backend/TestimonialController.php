@@ -10,9 +10,25 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TestimonialController extends Controller
+class TestimonialController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('testimonial.index') , only:['index', 'show']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('testimonial.create') , only:['store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('testimonial.edit') , only:['edit', 'update']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('testimonial.destroy'), only:['destroy']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('testimonial.trash') , only:['trash']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('testimonial.restore') , only:['restore']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('testimonial.delete') , only:['delete']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('testimonial.status') , only:['status']),
+        ];
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

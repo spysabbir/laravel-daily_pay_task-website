@@ -12,10 +12,24 @@ use App\Models\SmsSetting;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class SettingController extends Controller
+class SettingController extends Controller implements HasMiddleware
 {
-     // Change Env Function
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('default.setting') , only:['defaultSetting', 'defaultSettingUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('site.setting') , only:['siteSetting', 'siteSettingUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('seo.setting') , only:['seoSetting', 'seoSettingUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('mail.setting'), only:['mailSetting', 'mailSettingUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('sms.setting'), only:['smsSetting', 'smsSettingUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('captcha.setting'), only:['captchaSetting', 'captchaSettingUpdate']),
+        ];
+    }
+
+    // Change Env Function
     public function changeEnv($envKey, $envValue)
     {
         $envFilePath = app()->environmentFilePath();

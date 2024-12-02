@@ -11,9 +11,22 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class SubscriberController extends Controller
+class SubscriberController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('subscriber.index') , only:['subscriber']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('subscriber.delete') , only:['subscriberDelete']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('subscriber.newsletter'), only:['subscriberNewsletter', 'subscriberNewsletterView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('subscriber.newsletter.send') , only:['subscriberNewsletterSend']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('subscriber.newsletter.delete') , only:['subscriberNewsletterDelete']),
+        ];
+    }
+
     public function subscriber(Request $request)
     {
         if ($request->ajax()) {

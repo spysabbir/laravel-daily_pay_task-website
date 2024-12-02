@@ -8,7 +8,6 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Assigning Roles List</h3>
-                <a href="{{ route('backend.role-permission.create') }}" class="btn btn-info"><i data-feather="plus-circle"></i></a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -77,7 +76,7 @@
                         method: 'DELETE',
                         success: function(response) {
                             $('#allDataTable').DataTable().ajax.reload();
-                            toastr.warning('Role in permission delete successfully.');
+                            toastr.warning('This role all permission has been removed.');
                         }
                     });
                 }

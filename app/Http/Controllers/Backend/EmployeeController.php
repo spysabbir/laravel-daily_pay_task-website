@@ -9,9 +9,26 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class EmployeeController extends Controller
+class EmployeeController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('employee.index') , only:['index', 'show']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('employee.inactive') , only:['inactive', 'show']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('employee.create') , only:['store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('employee.edit') , only:['edit', 'update']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('employee.destroy'), only:['destroy']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('employee.trash') , only:['trash']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('employee.restore') , only:['restore']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('employee.delete') , only:['delete']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('employee.status') , only:['status']),
+        ];
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -93,12 +110,9 @@ class EmployeeController extends Controller
     public function edit(string $id)
     {
         $employee = User::where('id', $id)->first();
-        foreach($employee->roles as $role) {
-            $employee_role = $role;
-        }
         return response()->json([
             'employee' => $employee,
-            'role' => $employee_role,
+            'role' => $employee->roles->pluck('id')->toArray()
         ]);
     }
 

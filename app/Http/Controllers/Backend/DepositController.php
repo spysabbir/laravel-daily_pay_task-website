@@ -9,9 +9,22 @@ use App\Models\User;
 use App\Notifications\DepositNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class DepositController extends Controller
+class DepositController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request') , only:['depositRequest']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.check') , only:['depositRequestShow', 'depositRequestStatusChange']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.rejected'), only:['depositRequestRejected']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.approved') , only:['depositRequestApproved']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.delete') , only:['depositRequestDelete']),
+        ];
+    }
+
     public function depositRequest(Request $request)
     {
         if ($request->ajax()) {
@@ -195,7 +208,7 @@ class DepositController extends Controller
             if ($request->method){
                 $query->where('deposits.method', $request->method);
             }
-            
+
             if ($request->user_id){
                 $query->where('deposits.user_id', $request->user_id);
             }

@@ -11,9 +11,22 @@ use App\Models\User;
 use App\Models\Withdraw;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TopListController extends Controller
+class TopListController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('top.deposit.user') , only:['topDepositUser']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('top.withdraw.user') , only:['topWithdrawUser']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('top.posted_task.user') , only:['topPostedTaskUser']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('top.worked_task.user') , only:['topWorkedTaskUser']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('top.referred.user') , only:['topReferredUser']),
+        ];
+    }
+
     public function topDepositUser(Request $request)
     {
         if ($request->ajax()) {

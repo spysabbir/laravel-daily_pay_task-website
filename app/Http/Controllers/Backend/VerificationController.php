@@ -12,9 +12,22 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\Bonus;
 use App\Notifications\BonusNotification;
 use App\Notifications\ReferralRegistrationNotification;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class VerificationController extends Controller
+class VerificationController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('verification.request') , only:['verificationRequest']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('verification.request.check') , only:['verificationRequestShow', 'verificationRequestStatusChange']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('verification.request.rejected'), only:['verificationRequestRejected']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('verification.request.approved') , only:['verificationRequestApproved']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('verification.request.delete') , only:['verificationRequestDelete']),
+        ];
+    }
+
     public function verificationRequest(Request $request)
     {
         if ($request->ajax()) {
@@ -164,16 +177,6 @@ class VerificationController extends Controller
         return view('backend.verification.index');
     }
 
-    public function verificationRequestDelete(string $id)
-    {
-        $verification = Verification::findOrFail($id);
-
-        unlink(base_path("public/uploads/verification_photo/").$verification->id_front_image);
-        unlink(base_path("public/uploads/verification_photo/").$verification->id_with_face_image);
-
-        $verification->delete();
-    }
-
     public function verificationRequestApproved(Request $request)
     {
         if ($request->ajax()) {
@@ -225,5 +228,15 @@ class VerificationController extends Controller
         }
 
         return view('backend.verification.approved');
+    }
+
+    public function verificationRequestDelete(string $id)
+    {
+        $verification = Verification::findOrFail($id);
+
+        unlink(base_path("public/uploads/verification_photo/").$verification->id_front_image);
+        unlink(base_path("public/uploads/verification_photo/").$verification->id_with_face_image);
+
+        $verification->delete();
     }
 }

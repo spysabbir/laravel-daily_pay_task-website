@@ -1,14 +1,14 @@
 @extends('layouts.template_master')
 
-@section('title', 'Assigning Roles')
+@section('title', 'Assigning Roles - Edit')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Assigning Roles</h3>
-                <a href="{{ route('backend.role-permission.index') }}" class="btn btn-info"><i data-feather="list"></i></a>
+                <h3 class="card-title">Assigning Roles - Edit</h3>
+                <a href="{{ route('backend.role-permission.index') }}" class="btn btn-info">Back to List</a>
             </div>
             <div class="card-body">
                 <form id="editForm">
@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="mb-3">
-                                <h4>Role: {{ $role->name }}</h4>
+                                <h4>Role: <strong class="text-primary">{{ $role->name }}</strong></h4>
                                 <input type="hidden" id="role_id" value="{{ $role->id }}">
                             </div>
                         </div><!-- Col -->
@@ -46,7 +46,7 @@
                             </div>
                         </div>
                         <div class="col-sm-12">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between flex-wrap">
                                 @foreach ($permissions as $permission)
                                 <div class="form-check mb-2">
                                     <input type="checkbox" class="form-check-input group-permission" data-group="{{ $group->group_name }}" name="permission_id[]" value="{{ $permission->id }}" id="permission_id{{ $permission->id }}" {{ $role->hasPermissionTo($permission->name) ? 'checked' : '' }}>
@@ -64,7 +64,7 @@
 
                     <span class="text-danger error-text update_permission_id_error"></span>
                     <div class="row mt-3">
-                        <button type="submit" class="btn btn-primary">Edit</button>
+                        <button type="submit" class="btn btn-primary">Assigning</button>
                     </div>
                 </form>
             </div>
@@ -154,12 +154,15 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('#allDataTable').DataTable().ajax.reload();
                         toastr.success('Role in permission update successfully.');
+
+                        setTimeout(function () {
+                            window.location.href = "{{ route('backend.role-permission.index') }}";
+                        }, 1000);
                     }
                 },
                 complete: function () {
-                    submitButton.prop("disabled", false).text("Submit");
+                    submitButton.prop("disabled", false).text("Assigning");
                 }
             });
         });

@@ -14,9 +14,31 @@ use App\Models\UserDetail;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Notifications\ReviewedTaskProofCheckNotification;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TaskController extends Controller
+class TaskController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task_list.pending') , only:['postedTaskListPending', 'pendingPostedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task_list.rejected') , only:['postedTaskListRejected', 'rejectedPostedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task_list.running') , only:['postedTaskListRunning', 'runningPostedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task_list.canceled') , only:['postedTaskListCanceled', 'canceledPostedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task_list.paused'), only:['postedTaskListPaused', 'pausedPostedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task_list.completed'), only:['postedTaskListCompleted', 'completedPostedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task.status.update') , only:['postedTaskStatusUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task.canceled') , only:['runningPostedTaskCanceled']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task.paused.resume') , only:['runningPostedTaskPaused', 'runningPostedTaskPausedResume']),
+
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task_list.all') , only:['workedTaskListAll', 'allWorkedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task_list.reviewed') , only:['workedTaskListReviewed', 'reviewedWorkedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task.check') , only:['workedTaskCheck', 'workedTaskCheckUpdate']),
+        ];
+    }
+
+    // Posted Task .............................................................................................
     public function postedTaskListPending(Request $request)
     {
         if ($request->ajax()) {
@@ -379,18 +401,6 @@ class TaskController extends Controller
         return view('backend.posted_task.paused_show', compact('postTask'));
     }
 
-    public function runningPostedTaskPausedResume($id)
-    {
-        $postTask = PostTask::findOrFail($id);
-        $postTask->status = 'Running';
-        $postTask->save();
-
-        $user = User::findOrFail($postTask->user_id);
-        $user->notify(new PostTaskCheckNotification($postTask));
-
-        return response()->json(['success' => 'Status updated successfully.']);
-    }
-
     public function postedTaskListCompleted(Request $request)
     {
         if ($request->ajax()) {
@@ -571,6 +581,18 @@ class TaskController extends Controller
                 'success' => 'Task paused successfully.'
             ]);
         }
+    }
+
+    public function runningPostedTaskPausedResume($id)
+    {
+        $postTask = PostTask::findOrFail($id);
+        $postTask->status = 'Running';
+        $postTask->save();
+
+        $user = User::findOrFail($postTask->user_id);
+        $user->notify(new PostTaskCheckNotification($postTask));
+
+        return response()->json(['success' => 'Status updated successfully.']);
     }
 
     // Worked Task .............................................................................................

@@ -7,16 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class RoleController extends Controller
+class RoleController extends Controller implements HasMiddleware
 {
-
-    function __construct()
+    public static function middleware()
     {
-        // $this->middleware('permission:role.list|role.create|role.edit|role.delete', ['only' => ['index','show']]);
-        // $this->middleware('permission:role.create', ['only' => ['create','store']]);
-        // $this->middleware('permission:role.edit', ['only' => ['edit','update', 'status']]);
-        // $this->middleware('permission:role.delete', ['only' => ['destroy']]);
+        return [
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('role.index') , only:['index']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('role.create') , only:['store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('role.edit') , only:['edit', 'update']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('role.destroy'), only:['destroy']),
+        ];
     }
 
     public function index(Request $request)
@@ -32,13 +35,7 @@ class RoleController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     if ($row->name == 'Super Admin') {
-                        if (auth()->user()->hasRole('Super Admin')) {
-                            $btn = '
-                                <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
-                            ';
-                        } else {
-                            $btn = '<span class="badge bg-dark">N/A</span>';
-                        }
+                        $btn = '<span class="badge bg-dark">N/A</span>';
                     } else {
                         $btn = '
                             <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
