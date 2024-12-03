@@ -9,7 +9,9 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Newsletter List</h3>
                 <div class="action-btn">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
+                    @can('subscriber.newsletter.send')
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
+                    @endcan
                     <!-- Create Modal -->
                     <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">

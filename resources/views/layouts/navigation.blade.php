@@ -355,7 +355,7 @@
 
         <li class="nav-item nav-category">Service Agent</li>
         @can('SupportMenu')
-            @can('support')
+            @can('support.index')
             <li class="nav-item">
                 <a href="{{ route('backend.support') }}" class="nav-link">
                     <i class="link-icon" data-feather="message-circle"></i>
@@ -366,7 +366,7 @@
         @endcan
 
         @can('ContactMenu')
-            @can('contact')
+            @can('contact.index')
             <li class="nav-item">
                 <a href="{{ route('backend.contact') }}" class="nav-link">
                     <i class="link-icon" data-feather="phone"></i>

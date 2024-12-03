@@ -34,14 +34,22 @@ class RoleController extends Controller implements HasMiddleware
             return DataTables::of($roles)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    if ($row->name == 'Super Admin') {
-                        $btn = '<span class="badge bg-dark">N/A</span>';
-                    } else {
-                        $btn = '
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                        ';
+                    $btn = '<span class="badge bg-dark">N/A</span>';
+
+                    if ($row->name !== 'Super Admin') {
+                        $editPermission = auth()->user()->can('role.edit');
+                        $deletePermission = auth()->user()->can('role.destroy');
+
+                        $editBtn = $editPermission
+                            ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                            : '';
+                        $deleteBtn = $deletePermission
+                            ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                            : '';
+
+                        $btn = $editBtn . ' ' . $deleteBtn;
                     }
+
                     return $btn;
                 })
                 ->rawColumns(['action'])

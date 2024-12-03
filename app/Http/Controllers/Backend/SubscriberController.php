@@ -47,7 +47,15 @@ class SubscriberController extends Controller implements HasMiddleware
                 ->editColumn('status', fn($row) => $row->status == 'Active'
                     ? '<span class="badge bg-success text-white">Active</span>'
                     : '<span class="badge bg-danger text-white">Inactive</span>')
-                ->addColumn('action', fn($row) => '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>')
+                ->addColumn('action', function ($row) {
+                    $deletePermission = auth()->user()->can('subscriber.delete');
+
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+
+                    return $deleteBtn;
+                })
                 ->rawColumns(['created_at', 'status', 'action'])
                 ->make(true);
         }
@@ -86,9 +94,14 @@ class SubscriberController extends Controller implements HasMiddleware
                     : '<span class="badge bg-warning text-white">Draft</span>')
                 ->addColumn('action', function ($row) {
                     $action = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
+
                     if ($row->status == 'Draft') {
-                        $action .= ' <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>';
+                        $deletePermission = auth()->user()->can('subscriber.newsletter.delete');
+                        if ($deletePermission) {
+                            $action .= ' <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>';
+                        }
                     }
+
                     return $action;
                 })
                 ->rawColumns(['mail_type', 'created_at', 'status', 'action'])

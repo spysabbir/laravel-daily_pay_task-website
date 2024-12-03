@@ -47,11 +47,14 @@ class ContactController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    ';
-                return $btn;
+                    $action = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
+
+                        $deletePermission = auth()->user()->can('contact.delete');
+                        if ($deletePermission) {
+                            $action .= ' <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>';
+                        }
+
+                    return $action;
                 })
                 ->rawColumns(['status', 'created_at', 'action'])
                 ->make(true);

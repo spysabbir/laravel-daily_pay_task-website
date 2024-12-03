@@ -28,7 +28,7 @@ class TaskController extends Controller implements HasMiddleware
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task_list.canceled') , only:['postedTaskListCanceled', 'canceledPostedTaskView']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task_list.paused'), only:['postedTaskListPaused', 'pausedPostedTaskView']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task_list.completed'), only:['postedTaskListCompleted', 'completedPostedTaskView']),
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task.status.update') , only:['postedTaskStatusUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task.update') , only:['postedTaskStatusUpdate']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task.canceled') , only:['runningPostedTaskCanceled']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task.paused.resume') , only:['runningPostedTaskPaused', 'runningPostedTaskPausedResume']),
 
@@ -67,10 +67,13 @@ class TaskController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
-                    ';
-                return $btn;
+                    $canUpdate = auth()->user()->can('posted_task.update');
+
+                    $viewBtn = $canUpdate
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>'
+                        : '';
+
+                    return $viewBtn;
                 })
                 ->rawColumns(['user', 'created_at', 'action'])
                 ->make(true);
@@ -203,12 +206,21 @@ class TaskController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>
-                    ';
-                return $btn;
+                    $canUpdate = auth()->user()->can('posted_task.update');
+                    $canCanceled = auth()->user()->can('posted_task.canceled');
+                    $canPaused = auth()->user()->can('posted_task.paused.resume');
+
+                    $viewBtn = $canUpdate
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
+                        : '';
+                    $canceledBtn = $canCanceled
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>'
+                        : '';
+                    $pausedBtn = $canPaused
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>'
+                        : '';
+
+                    return $viewBtn . ' ' . $canceledBtn . ' ' . $pausedBtn;
                 })
                 ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'approved_at', 'action'])
                 ->make(true);
@@ -377,17 +389,18 @@ class TaskController extends Controller implements HasMiddleware
                         ';
                 })
                 ->editColumn('action', function ($row) {
-                    $btn = '';
+                    $canResume = auth()->user()->can('posted_task.paused.resume');
 
-                    if ($row->pausedBy->user_type == 'Backend') {
-                        $btn .= '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs resumeBtn">Resume</button>';
+                    $pausedBtn = '';
+                    $viewBtn = '';
+
+                    if ($row->pausedBy->user_type === 'Backend' && $canResume) {
+                        $pausedBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>';
                     }
 
-                    $btn .= '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    ';
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
 
-                    return $btn;
+                    return $viewBtn . ' ' . $pausedBtn;
                 })
                 ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'paused_at', 'paused_by', 'action'])
                 ->make(true);
@@ -733,9 +746,13 @@ class TaskController extends Controller implements HasMiddleware
                     return $checked_by;
                 })
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
-                    return $actionBtn;
+                    $viewPermission = auth()->user()->can('worked_task.check');
+
+                    $viewBtn = $viewPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
+                        : '';
+
+                    return $viewBtn;
                 })
                 ->rawColumns(['id', 'user','status', 'created_at', 'checked_at', 'checked_by', 'action'])
                 ->make(true);
@@ -835,9 +852,13 @@ class TaskController extends Controller implements HasMiddleware
                     return $checked_at;
                 })
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
-                    return $actionBtn;
+                    $viewPermission = auth()->user()->can('worked_task.check');
+
+                    $viewBtn = $viewPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
+                        : '';
+
+                    return $viewBtn;
                 })
                 ->rawColumns(['id', 'user','status', 'created_at', 'reviewed_at', 'action'])
                 ->make(true);

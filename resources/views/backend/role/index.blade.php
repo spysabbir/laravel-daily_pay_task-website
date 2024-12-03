@@ -8,7 +8,9 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Role List</h3>
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
+                @can('role.create')
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
+                @endcan
                 <!-- Create Modal -->
                 <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
                     <div class="modal-dialog modal-sm">

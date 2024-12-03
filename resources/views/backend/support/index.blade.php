@@ -103,6 +103,7 @@
                             </ul>
                         </div>
                         <!-- Message Form -->
+                        @can('support.reply')
                         <div class="chat-footer">
                             <form enctype="multipart/form-data" id="sendMessageReplyForm">
                                 @csrf
@@ -129,6 +130,7 @@
                                 <span class="d-block text-danger error-text validator_alert_error"></span>
                             </form>
                         </div>
+                        @endcan
                     </div>
                     <div class="col-lg-8 empty-chat">
                         <div class="alert alert-info text-center" role="alert">

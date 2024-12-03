@@ -42,24 +42,35 @@ class ExpenseCategoryController extends Controller implements HasMiddleware
             return DataTables::of($expense_categories)
                 ->addIndexColumn()
                 ->editColumn('status', function ($row) {
-                    if ($row->status == 'Active') {
-                        $status = '
-                        <span class="badge bg-success">' . $row->status . '</span>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs statusBtn">Deactive</button>
-                        ';
-                    } else {
-                        $status = '
-                        <span class="badge text-white bg-warning">' . $row->status . '</span>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-success btn-xs statusBtn">Active</button>
-                        ';
+                    $canChangeStatus = auth()->user()->can('expense_category.status');
+
+                    $badgeClass = $row->status == 'Active' ? 'bg-success' : 'bg-warning text-white';
+                    $badgeText = $row->status == 'Active' ? 'Active' : 'Deactive';
+
+                    $button = '';
+                    if ($canChangeStatus) {
+                        $button = $row->status == 'Active'
+                            ? '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs statusBtn">Deactive</button>'
+                            : '<button type="button" data-id="' . $row->id . '" class="btn btn-success btn-xs statusBtn">Active</button>';
                     }
-                    return $status;
+
+                    return '
+                        <span class="badge ' . $badgeClass . '">' . $badgeText . '</span>
+                        ' . $button . '
+                    ';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                        ';
+                    $editPermission = auth()->user()->can('expense_category.edit');
+                    $deletePermission = auth()->user()->can('expense_category.destroy');
+
+                    $editBtn = $editPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                        : '';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+
+                    $btn = $editBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
                 ->rawColumns(['status', 'action'])
@@ -137,10 +148,17 @@ class ExpenseCategoryController extends Controller implements HasMiddleware
             return DataTables::of($trashExpenseCategories)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                        <button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>
-                        <button type="button" data-id="'.$row->id.'" class="btn bg-danger btn-xs forceDeleteBtn">Delete</button>
-                    ';
+                    $restorePermission = auth()->user()->can('expense_category.restore');
+                    $deletePermission = auth()->user()->can('expense_category.delete');
+
+                    $restoreBtn = $restorePermission
+                        ? '<button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>'
+                        : '';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="'.$row->id.'" class="btn bg-danger btn-xs forceDeleteBtn">Delete</button>'
+                        : '';
+
+                    $btn = $restoreBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
                 ->rawColumns(['action'])

@@ -9,7 +9,9 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Testimonial List</h3>
                 <div class="action-btn">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
+                    @can('testimonial.create')
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
+                    @endcan
                     <!-- Create Modal -->
                     <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">
@@ -51,7 +53,9 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
+                    @can('testimonial.trash')
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
+                    @endcan
                     <!-- Trash Modal -->
                     <div class="modal fade trashModel" tabindex="-1" aria-labelledby="trashModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -345,6 +349,7 @@
         })
 
         // Trash Data
+        @can('testimonial.trash')
         $('#trashDataTable').DataTable({
             processing: true,
             serverSide: true,
@@ -359,6 +364,7 @@
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
+        @endcan
 
         // Restore Data
         $(document).on('click', '.restoreBtn', function () {

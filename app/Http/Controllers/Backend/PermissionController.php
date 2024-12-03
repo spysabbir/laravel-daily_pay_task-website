@@ -34,10 +34,17 @@ class PermissionController extends Controller implements HasMiddleware
             return DataTables::of($permissions)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                        ';
+                    $editPermission = auth()->user()->can('permission.edit');
+                    $deletePermission = auth()->user()->can('permission.destroy');
+
+                    $editBtn = $editPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                        : '';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+
+                    $btn = $editBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
                 ->rawColumns(['action'])

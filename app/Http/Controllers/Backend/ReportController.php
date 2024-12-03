@@ -68,10 +68,13 @@ class ReportController extends Controller implements HasMiddleware
                     return date('d M Y h:i A', strtotime($row->created_at));
                 })
                 ->addColumn('action', function ($row) {
-                    $action = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    ';
-                    return $action;
+                    $viewPermission = auth()->user()->can('report.check');
+
+                    $viewBtn = $viewPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
+                        : '';
+
+                    return $viewBtn;
                 })
                 ->rawColumns(['type', 'reported_user', 'reported_by', 'status', 'action'])
                 ->make(true);
@@ -172,10 +175,13 @@ class ReportController extends Controller implements HasMiddleware
                     return date('d M Y h:i A', strtotime($row->created_at));
                 })
                 ->addColumn('action', function ($row) {
-                    $action = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    ';
-                    return $action;
+                    $viewPermission = auth()->user()->can('report.check');
+
+                    $viewBtn = $viewPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
+                        : '';
+
+                    return $viewBtn;
                 })
                 ->rawColumns(['type', 'reported_user', 'reported_by', 'status', 'action'])
                 ->make(true);
