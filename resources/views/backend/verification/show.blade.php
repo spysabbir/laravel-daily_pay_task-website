@@ -103,6 +103,7 @@
                 </div>
             @endif
         </div>
+        @can('verification.request.check')
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
@@ -131,6 +132,7 @@
                 </form>
             </div>
         </div>
+        @endcan
         @endif
     </div>
 </div>

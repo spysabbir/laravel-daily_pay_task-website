@@ -10,9 +10,11 @@
                 <h3 class="card-title">Deposit Request (Pending)</h3>
                 <div class="action-btn">
                     <a href="{{ route('backend.deposit.request.approved') }}" class="btn btn-success">Approved List</a>
+                    @can('deposit.request.rejected')
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".rejectedData">
                         Rejected Request
                     </button>
+                    @endcan
                     <!-- Deposit Request (Reject) Modal -->
                     <div class="modal fade rejectedData" tabindex="-1" aria-labelledby="rejectedDataLabel" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
@@ -218,6 +220,7 @@
         })
 
         // Rejected Data
+        @can('deposit.request.rejected')
         $('#rejectedDataTable').DataTable({
             processing: true,
             serverSide: true,
@@ -241,6 +244,7 @@
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
+        @endcan
 
         // Delete Data
         $(document).on('click', '.deleteBtn', function(){

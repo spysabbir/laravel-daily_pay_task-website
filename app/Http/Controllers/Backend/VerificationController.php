@@ -165,10 +165,13 @@ class VerificationController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    ';
-                return $btn;
+                    $deletePermission = auth()->user()->can('verification.request.delete');
+
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+
+                    return $deleteBtn;
                 })
                 ->rawColumns(['user_email', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);

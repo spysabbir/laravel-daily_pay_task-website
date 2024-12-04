@@ -65,11 +65,11 @@
             </tr>
             <tr>
                 <td>Email Verified At</td>
-                <td>{{ date('d M, Y  h:i:s A', strtotime($user->email_verified_at)) ?? 'N/A' }}</td>
+                <td>{{ $user->email_verified_at ? date('d M, Y  h:i:s A', strtotime($user->email_verified_at)) : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Last Login At</td>
-                <td>{{ date('d M, Y  h:i:s A', strtotime($user->last_login_at)) ?? 'N/A' }}</td>
+                <td>{{ $user->last_login_at ? date('d M, Y  h:i:s A', strtotime($user->last_login_at)) : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Created At</td>

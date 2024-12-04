@@ -12,7 +12,9 @@
                     <a href="{{ route('backend.user.inactive') }}" class="btn btn-info btn-xs"><i data-feather="eye-off"></i> Inactive User List</a>
                     <a href="{{ route('backend.user.blocked') }}" class="btn btn-primary btn-xs"><i data-feather="lock"></i> Blocked User List</a>
                     <a href="{{ route('backend.user.banned') }}" class="btn btn-warning btn-xs"><i data-feather="alert-triangle"></i> Banned User List</a>
+                    @can('user.trash')
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
+                    @endcan
                     <!-- Trash Modal -->
                     <div class="modal fade trashModel" tabindex="-1" aria-labelledby="trashModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -68,7 +70,6 @@
                                 <th>Email</th>
                                 <th>Last Login</th>
                                 <th>Created At</th>
-                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -146,7 +147,6 @@
                 { data: 'email', name: 'email' },
                 { data: 'last_login', name: 'last_login' },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
@@ -249,6 +249,7 @@
         })
 
         // Trash Data
+        @can('user.trash')
         $('#trashDataTable').DataTable({
             processing: true,
             serverSide: true,
@@ -264,6 +265,7 @@
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
+        @endcan
 
         // Restore Data
         $(document).on('click', '.restoreBtn', function () {

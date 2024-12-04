@@ -156,21 +156,23 @@
                         <label for="task_additional_note" class="form-label">Task Additional Note <span class="text-danger">* Required</span></label>
                         <textarea class="form-control" id="task_additional_note" name="additional_note" rows="4">{{ $postTask->additional_note }}</textarea>
                     </div>
-                    <div class="mb-3 ">
-                        <label for="task_post_status" class="form-label">Post Task Status <span class="text-danger">* Required</span></label>
-                        <select class="form-select" id="task_post_status" name="status">
-                            <option value="">-- Select Status --</option>
-                            <option value="Running">Approved</option>
-                            <option value="Rejected">Rejected</option>
-                        </select>
-                        <span class="text-danger error-text update_status_error"></span>
-                    </div>
-                    <div class="mb-3 d-none" id="rejection_reason_div">
-                        <label for="rejection_reason" class="form-label">Rejection Reason <span class="text-danger">* Required</span></label>
-                        <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="4" placeholder="Write the reason for rejection"></textarea>
-                        <span class="text-danger error-text update_rejection_reason_error"></span>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
+                    @can('posted_task.update')
+                        <div class="mb-3 ">
+                            <label for="task_post_status" class="form-label">Post Task Status <span class="text-danger">* Required</span></label>
+                            <select class="form-select" id="task_post_status" name="status">
+                                <option value="">-- Select Status --</option>
+                                <option value="Running">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                            <span class="text-danger error-text update_status_error"></span>
+                        </div>
+                        <div class="mb-3 d-none" id="rejection_reason_div">
+                            <label for="rejection_reason" class="form-label">Rejection Reason <span class="text-danger">* Required</span></label>
+                            <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="4" placeholder="Write the reason for rejection"></textarea>
+                            <span class="text-danger error-text update_rejection_reason_error"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    @endcan
                 </form>
             </div>
         </div>

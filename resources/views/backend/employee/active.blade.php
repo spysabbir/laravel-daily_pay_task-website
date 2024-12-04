@@ -10,7 +10,9 @@
                 <h3 class="card-title">Employee List - Active</h3>
                 <div class="action-btn">
                     <a href="{{ route('backend.employee.inactive') }}" class="btn btn-danger"><i data-feather="eye-off"></i> Inactive Employee List</a>
+                    @can('employee.create')
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
+                    @endcan
                     <!-- Create Modal -->
                     <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">

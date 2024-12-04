@@ -47,20 +47,26 @@ class EmployeeController extends Controller implements HasMiddleware
             return DataTables::of($allEmployee)
                 ->addIndexColumn()
                 ->addColumn('roles', fn($row) => $row->roles->map(fn($role) => '<span class="badge bg-primary">' . $role->name . '</span>')->implode(' '))
-                ->editColumn('status', function ($row) {
-                    return '
-                        <span class="mx-2 badge bg-' . ($row->status == 'Active' ? 'success' : 'warning') . '">' . $row->status . '</span>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-' . ($row->status == 'Active' ? 'warning' : 'success') . ' btn-xs statusBtn">' . ($row->status == 'Active' ? 'Deactivate' : 'Activate') . '</button>
-                    ';
-                })
                 ->addColumn('action', function ($row) {
-                    return '
-                        <button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>
-                        <button type="button" data-id="' . $row->id . '" data-bs-toggle="modal" data-bs-target=".editModal" class="btn btn-info btn-xs editBtn">Edit</button>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    ';
+                    $canChangeStatus = auth()->user()->can('employee.status');
+                    $editPermission = auth()->user()->can('employee.edit');
+                    $deletePermission = auth()->user()->can('employee.destroy');
+
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $statusBtn = $canChangeStatus
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs statusBtn">Deactive</button>'
+                        : '';
+                    $editBtn = $editPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                        : '';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+
+                    $btn = $viewBtn . ' ' . $statusBtn . ' ' . $editBtn . ' ' . $deleteBtn;
+                    return $btn;
                 })
-                ->rawColumns(['roles', 'status', 'action'])
+                ->rawColumns(['roles', 'action'])
                 ->make(true);
         }
 
@@ -93,7 +99,6 @@ class EmployeeController extends Controller implements HasMiddleware
             ]);
 
             $user->roles()->sync($request->role);
-
 
             return response()->json([
                 'status' => 200,
@@ -174,10 +179,17 @@ class EmployeeController extends Controller implements HasMiddleware
                     return $badgeTags;
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                        <button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>
-                        <button type="button" data-id="'.$row->id.'" class="btn bg-danger btn-xs forceDeleteBtn">Delete</button>
-                    ';
+                    $restorePermission = auth()->user()->can('employee.restore');
+                    $deletePermission = auth()->user()->can('employee.delete');
+
+                    $restoreBtn = $restorePermission
+                        ? '<button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>'
+                        : '';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="'.$row->id.'" class="btn bg-danger btn-xs forceDeleteBtn">Delete</button>'
+                        : '';
+
+                    $btn = $restoreBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
                 ->rawColumns(['roles', 'action'])
@@ -234,19 +246,26 @@ class EmployeeController extends Controller implements HasMiddleware
             return DataTables::of($allEmployee)
                 ->addIndexColumn()
                 ->addColumn('roles', fn($row) => $row->roles->map(fn($role) => '<span class="badge bg-primary">' . $role->name . '</span>')->implode(' '))
-                ->editColumn('status', function ($row) {
-                    return '
-                        <span class="mx-2 badge bg-' . ($row->status == 'Active' ? 'success' : 'warning') . '">' . $row->status . '</span>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-' . ($row->status == 'Active' ? 'warning' : 'success') . ' btn-xs statusBtn">' . ($row->status == 'Active' ? 'Deactivate' : 'Activate') . '</button>
-                    ';
-                })
                 ->addColumn('action', function ($row) {
-                    return  '
-                        <button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    ';
+                    $canChangeStatus = auth()->user()->can('employee.status');
+                    $editPermission = auth()->user()->can('employee.edit');
+                    $deletePermission = auth()->user()->can('employee.destroy');
+
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $statusBtn = $canChangeStatus
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-success btn-xs statusBtn">Active</button>'
+                        : '';
+                    $editBtn = $editPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                        : '';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+
+                    $btn = $viewBtn . ' ' . $statusBtn . ' ' . $editBtn . ' ' . $deleteBtn;
+                    return $btn;
                 })
-                ->rawColumns(['roles', 'status', 'action'])
+                ->rawColumns(['roles', 'action'])
                 ->make(true);
         }
 

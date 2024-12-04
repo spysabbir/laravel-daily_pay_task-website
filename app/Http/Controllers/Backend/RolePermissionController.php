@@ -46,22 +46,22 @@ class RolePermissionController extends Controller implements HasMiddleware
                     $isSuperAdmin = $row->name == 'Super Admin';
                     $hasSuperAdminPermission = auth()->user()->hasRole('Super Admin');
 
-                    if ($is. ' ' . $viewBtn . ' ' . $deleteBtn;SuperAdmin && !$hasSuperAdminPermission) {
+                    if ($isSuperAdmin && !$hasSuperAdminPermission) {
                         return '<span class="badge bg-dark">N/A</span>';
                     }
 
                     $canAssign = auth()->user()->can('role-permission.edit');
                     $canDelete = auth()->user()->can('role-permission.destroy');
 
+                    $viewBtn = '<a href="' . route('backend.role-permission.show', encrypt($row->id)) . '" class="btn btn-info btn-xs">View</a>';
                     $assigningBtn = $canAssign
                         ? '<a href="' . route('backend.role-permission.edit', encrypt($row->id)) . '" class="btn btn-success btn-xs">Assigning</a>'
                         : '';
-                    $viewBtn = '<a href="' . route('backend.role-permission.show', encrypt($row->id)) . '" class="btn btn-info btn-xs">View</a>';
                     $deleteBtn = $canDelete
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Remove All</button>'
                         : '';
 
-                    return $assigningBtn
+                    return $viewBtn . ' ' . $assigningBtn . ' ' . $deleteBtn;
                 })
                 ->rawColumns(['permissions', 'action'])
                 ->make(true);

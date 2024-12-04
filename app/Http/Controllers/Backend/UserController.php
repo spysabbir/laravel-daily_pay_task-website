@@ -46,8 +46,9 @@ class UserController extends Controller implements HasMiddleware
             return DataTables::of($allUser)
                 ->addIndexColumn()
                 ->editColumn('last_login', function ($row) {
+                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
                     return '
-                        <span class="badge text-white bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
+                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
                         ';
                 })
                 ->editColumn('created_at', function ($row) {
@@ -55,19 +56,22 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
-                ->editColumn('status', function ($row) {
-                    return '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>
-                        ';
-                })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    ';
-                return $btn;
+                    $deletePermission = auth()->user()->can('user.destroy');
+                    $statusPermission = auth()->user()->can('user.status');
+
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+                    $statusBtn = $statusPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>'
+                        : '';
+
+                    $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
+                    return $btn;
                 })
-                ->rawColumns(['last_login', 'created_at', 'status', 'action'])
+                ->rawColumns(['last_login', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -90,8 +94,9 @@ class UserController extends Controller implements HasMiddleware
             return DataTables::of($allUser)
                 ->addIndexColumn()
                 ->editColumn('last_login', function ($row) {
+                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
                     return '
-                        <span class="badge text-white bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
+                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
                         ';
                 })
                 ->editColumn('created_at', function ($row) {
@@ -100,11 +105,15 @@ class UserController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    ';
-                return $btn;
+                    $deletePermission = auth()->user()->can('user.destroy');
+
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+
+                    $btn = $viewBtn . ' ' . $deleteBtn;
+                    return $btn;
                 })
                 ->rawColumns(['last_login', 'created_at', 'action'])
                 ->make(true);
@@ -129,8 +138,9 @@ class UserController extends Controller implements HasMiddleware
             return DataTables::of($allUser)
                 ->addIndexColumn()
                 ->editColumn('last_login', function ($row) {
+                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
                     return '
-                        <span class="badge text-white bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
+                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
                         ';
                 })
                 ->editColumn('created_at', function ($row) {
@@ -138,19 +148,22 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
-                ->editColumn('status', function ($row) {
-                    return '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>
-                        ';
-                })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    ';
-                return $btn;
+                    $deletePermission = auth()->user()->can('user.destroy');
+                    $statusPermission = auth()->user()->can('user.status');
+
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+                    $statusBtn = $statusPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>'
+                        : '';
+
+                    $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
+                    return $btn;
                 })
-                ->rawColumns(['last_login', 'created_at', 'status', 'action'])
+                ->rawColumns(['last_login', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -173,8 +186,9 @@ class UserController extends Controller implements HasMiddleware
             return DataTables::of($allUser)
                 ->addIndexColumn()
                 ->editColumn('last_login', function ($row) {
+                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
                     return '
-                        <span class="badge text-white bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->last_login_at)) ?? 'N/A' . '</span>
+                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
                         ';
                 })
                 ->editColumn('created_at', function ($row) {
@@ -182,19 +196,22 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
-                ->editColumn('status', function ($row) {
-                    return '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>
-                        ';
-                })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>
-                    ';
-                return $btn;
+                    $deletePermission = auth()->user()->can('user.destroy');
+                    $statusPermission = auth()->user()->can('user.status');
+
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                        : '';
+                    $statusBtn = $statusPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>'
+                        : '';
+
+                    $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
+                    return $btn;
                 })
-                ->rawColumns(['last_login', 'created_at', 'status', 'action'])
+                ->rawColumns(['last_login', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -269,10 +286,17 @@ class UserController extends Controller implements HasMiddleware
             return DataTables::of($trashUser)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                        <button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>
-                        <button type="button" data-id="'.$row->id.'" class="btn bg-danger btn-xs forceDeleteBtn">Delete</button>
-                    ';
+                    $restorePermission = auth()->user()->can('user.restore');
+                    $deletePermission = auth()->user()->can('user.delete');
+
+                    $restoreBtn = $restorePermission
+                        ? '<button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>'
+                        : '';
+                    $deleteBtn = $deletePermission
+                        ? '<button type="button" data-id="'.$row->id.'" class="btn bg-danger btn-xs forceDeleteBtn">Delete</button>'
+                        : '';
+
+                    $btn = $restoreBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
                 ->rawColumns(['action'])

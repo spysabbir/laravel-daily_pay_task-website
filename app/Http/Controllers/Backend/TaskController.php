@@ -67,11 +67,7 @@ class TaskController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $canUpdate = auth()->user()->can('posted_task.update');
-
-                    $viewBtn = $canUpdate
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>'
-                        : '';
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>';
 
                     return $viewBtn;
                 })
@@ -206,13 +202,10 @@ class TaskController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $canUpdate = auth()->user()->can('posted_task.update');
                     $canCanceled = auth()->user()->can('posted_task.canceled');
                     $canPaused = auth()->user()->can('posted_task.paused.resume');
 
-                    $viewBtn = $canUpdate
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
-                        : '';
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
                     $canceledBtn = $canCanceled
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>'
                         : '';

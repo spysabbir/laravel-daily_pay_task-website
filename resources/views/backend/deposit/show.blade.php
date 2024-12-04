@@ -55,6 +55,7 @@
         </div>
     </div>
     <div class="col-lg-4">
+        @can('deposit.request.check')
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
@@ -83,6 +84,7 @@
                 </form>
             </div>
         </div>
+        @endcan
     </div>
 </div>
 

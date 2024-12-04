@@ -155,7 +155,9 @@
                         <input type="hidden" value="Running" name="status">
                         <span class="text-danger error-text update_status_error"></span>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
+                    @can('posted_task.update')
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    @endcan
                 </form>
             </div>
         </div>

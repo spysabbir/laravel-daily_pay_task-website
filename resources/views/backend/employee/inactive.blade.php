@@ -10,7 +10,9 @@
                 <h3 class="card-title">Employee List - Inactive</h3>
                 <div class="action-btn">
                     <a href="{{ route('backend.employee.index') }}" class="btn btn-primary"><i data-feather="users"></i> Active Employee List</a>
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
+                    @can('employee.trash')
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
+                    @endcan
                     <!-- Trash Modal -->
                     <div class="modal fade trashModel" tabindex="-1" aria-labelledby="trashModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -193,6 +195,7 @@
         })
 
         // Trash Data
+        @can('employee.trash')
         $('#trashDataTable').DataTable({
             processing: true,
             serverSide: true,
@@ -208,6 +211,7 @@
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
+        @endcan
 
         // Restore Data
         $(document).on('click', '.restoreBtn', function () {

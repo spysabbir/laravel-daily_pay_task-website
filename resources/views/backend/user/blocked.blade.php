@@ -35,7 +35,6 @@
                                 <th>Email</th>
                                 <th>Last Login</th>
                                 <th>Created At</th>
-                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -113,7 +112,6 @@
                 { data: 'email', name: 'email' },
                 { data: 'last_login', name: 'last_login' },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
