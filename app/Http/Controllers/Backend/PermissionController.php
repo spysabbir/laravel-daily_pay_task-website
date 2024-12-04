@@ -29,29 +29,40 @@ class PermissionController extends Controller implements HasMiddleware
 
             $query->orderBy('created_at', 'desc');
 
+            if ($request->group_name) {
+                $query->where('group_name', $request->group_name);
+            }
+
             $permissions = $query->get();
 
             return DataTables::of($permissions)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $editPermission = auth()->user()->can('permission.edit');
-                    $deletePermission = auth()->user()->can('permission.destroy');
+                    if ($row->created_at != null) {
+                        $editPermission = auth()->user()->can('permission.edit');
+                        $deletePermission = auth()->user()->can('permission.destroy');
 
-                    $editBtn = $editPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
-                        : '';
-                    $deleteBtn = $deletePermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
-                        : '';
+                        $editBtn = $editPermission
+                            ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                            : '';
+                        $deleteBtn = $deletePermission
+                            ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
+                            : '';
 
-                    $btn = $editBtn . ' ' . $deleteBtn;
+                        $btn = $editBtn . ' ' . $deleteBtn;
+                    } else {
+                        $btn = '<span class="badge bg-danger">N/A</span>';
+                    }
+                    
                     return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
 
-        return view('backend.permission.index');
+        // Need to return only group_name
+        $permissions = Permission::select('group_name')->groupBy('group_name')->get();
+        return view('backend.permission.index', compact('permissions'));
     }
 
     public function store(Request $request)

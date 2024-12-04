@@ -13,7 +13,7 @@
                 @endcan
                 <!-- Create Modal -->
                 <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm">
+                    <div class="modal-dialog modal-md">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="createModelLabel">Create</h5>
@@ -24,7 +24,9 @@
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <label for="group_name" class="form-label">Permission Group Name</label>
-                                        <input type="text" class="form-control" id="group_name" name="group_name" placeholder="Permission Group Name">
+										<div id="bloodhound">
+                                            <input type="text" class="form-control typeahead" id="group_name" name="group_name" placeholder="Permission Group Name" size="100%">
+                                        </div>
                                         <span class="text-danger error-text group_name_error"></span>
                                     </div>
                                     <div class="mb-3">
@@ -43,6 +45,21 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_group_name" class="form-label">Group Name</label>
+                                <select class="form-select filter_data" id="filter_group_name">
+                                    <option value="">-- Select Group Name --</option>
+                                    @foreach ($permissions as $permission)
+                                    <option value="{{ $permission->group_name }}">{{ $permission->group_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
@@ -57,7 +74,7 @@
 
                             <!-- Edit Modal -->
                             <div class="modal fade editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-sm">
+                                <div class="modal-dialog modal-md">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="editModalLabel">Edit</h5>
@@ -69,7 +86,9 @@
                                                 <input type="hidden" id="permission_id">
                                                 <div class="mb-3">
                                                     <label for="permission_group_name" class="form-label">Permission Group Name</label>
-                                                    <input type="text" class="form-control" id="permission_group_name" name="group_name" placeholder="Permission Group Name">
+                                                    <div id="bloodhound">
+                                                        <input type="text" class="form-control typeahead" id="permission_group_name" name="group_name" placeholder="Permission Group Name" size="100%">
+                                                    </div>
                                                     <span class="text-danger error-text update_group_name_error"></span>
                                                 </div>
                                                 <div class="mb-3">
@@ -104,6 +123,26 @@
             }
         });
 
+        // Typeahead
+        var permissions = {!! json_encode($permissions) !!};
+        var permission_group_name = $.map(permissions, function(item) {
+            return item.group_name;
+        });
+        var bloodhound = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: permission_group_name
+        });
+        $('#bloodhound .typeahead').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1,
+        },
+        {
+            name: 'bloodhound',
+            source: bloodhound
+        });
+
         // Read Data
         $('#allDataTable').DataTable({
             processing: true,
@@ -111,6 +150,10 @@
             searching: true,
             ajax: {
                 url: "{{ route('backend.permission.index') }}",
+                type: 'GET',
+                data: function (d) {
+                    d.group_name = $('#filter_group_name').val();
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -118,6 +161,11 @@
                 { data: 'name', name: 'name' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#allDataTable').DataTable().ajax.reload();
         });
 
         // Store Data

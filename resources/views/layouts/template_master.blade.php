@@ -427,6 +427,8 @@
     <script src="{{ asset('template') }}/vendors/datatable/js/buttons.html5.min.js"></script>
     <script src="{{ asset('template') }}/vendors/datatable/js/buttons.print.min.js"></script>
 
+    <script src="{{ asset('template') }}/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+
 	<script src="{{ asset('template') }}/vendors/select2/select2.min.js"></script>
     <script src="{{ asset('template') }}/vendors/sweetalert2/sweetalert2.min.js"></script>
     <script src="{{ asset('template') }}/vendors/toastr/toastr.min.js"></script>

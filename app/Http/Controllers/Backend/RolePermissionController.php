@@ -43,13 +43,6 @@ class RolePermissionController extends Controller implements HasMiddleware
                     return $badgeTags;
                 })
                 ->addColumn('action', function ($row) {
-                    $isSuperAdmin = $row->name == 'Super Admin';
-                    $hasSuperAdminPermission = auth()->user()->hasRole('Super Admin');
-
-                    if ($isSuperAdmin && !$hasSuperAdminPermission) {
-                        return '<span class="badge bg-dark">N/A</span>';
-                    }
-
                     $canAssign = auth()->user()->can('role-permission.edit');
                     $canDelete = auth()->user()->can('role-permission.destroy');
 
@@ -57,9 +50,14 @@ class RolePermissionController extends Controller implements HasMiddleware
                     $assigningBtn = $canAssign
                         ? '<a href="' . route('backend.role-permission.edit', encrypt($row->id)) . '" class="btn btn-success btn-xs">Assigning</a>'
                         : '';
-                    $deleteBtn = $canDelete
+                    if ($row->name !== 'Super Admin') {
+                        $deleteBtn = $canDelete
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Remove All</button>'
                         : '';
+                    }else{
+                        $deleteBtn = '';
+                    }
+                    
 
                     return $viewBtn . ' ' . $assigningBtn . ' ' . $deleteBtn;
                 })

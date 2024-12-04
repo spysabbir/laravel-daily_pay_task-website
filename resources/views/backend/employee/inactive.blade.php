@@ -79,6 +79,8 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
+                                <th>Last Login</th>
+                                <th>Created At</th>
                                 <th>Roles</th>
                                 <th>Action</th>
                             </tr>
@@ -137,6 +139,8 @@
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },
+                { data: 'last_login', name: 'last_login' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'roles', name: 'roles' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]

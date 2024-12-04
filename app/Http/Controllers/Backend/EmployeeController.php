@@ -46,6 +46,20 @@ class EmployeeController extends Controller implements HasMiddleware
 
             return DataTables::of($allEmployee)
                 ->addIndexColumn()
+                ->editColumn('phone', function ($row) {
+                    return $row->phone ?? 'N/A';
+                })
+                ->editColumn('last_login', function ($row) {
+                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
+                    return '
+                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
+                        ';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
                 ->addColumn('roles', fn($row) => $row->roles->map(fn($role) => '<span class="badge bg-primary">' . $role->name . '</span>')->implode(' '))
                 ->addColumn('action', function ($row) {
                     $canChangeStatus = auth()->user()->can('employee.status');
@@ -66,7 +80,7 @@ class EmployeeController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $statusBtn . ' ' . $editBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
-                ->rawColumns(['roles', 'action'])
+                ->rawColumns(['phone', 'last_login', 'created_at', 'roles', 'action'])
                 ->make(true);
         }
 
@@ -245,27 +259,37 @@ class EmployeeController extends Controller implements HasMiddleware
 
             return DataTables::of($allEmployee)
                 ->addIndexColumn()
+                ->editColumn('phone', function ($row) {
+                    return $row->phone ?? 'N/A';
+                })
+                ->editColumn('last_login', function ($row) {
+                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
+                    return '
+                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
+                        ';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
                 ->addColumn('roles', fn($row) => $row->roles->map(fn($role) => '<span class="badge bg-primary">' . $role->name . '</span>')->implode(' '))
                 ->addColumn('action', function ($row) {
                     $canChangeStatus = auth()->user()->can('employee.status');
-                    $editPermission = auth()->user()->can('employee.edit');
                     $deletePermission = auth()->user()->can('employee.destroy');
 
                     $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
                     $statusBtn = $canChangeStatus
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-success btn-xs statusBtn">Active</button>'
                         : '';
-                    $editBtn = $editPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
-                        : '';
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';
 
-                    $btn = $viewBtn . ' ' . $statusBtn . ' ' . $editBtn . ' ' . $deleteBtn;
+                    $btn = $viewBtn . ' ' . $statusBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
-                ->rawColumns(['roles', 'action'])
+                ->rawColumns(['phone', 'last_login', 'created_at', 'roles', 'action'])
                 ->make(true);
         }
 

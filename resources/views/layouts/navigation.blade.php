@@ -174,7 +174,6 @@
         </li>
         @endcan
 
-        <li class="nav-item nav-category">Admin</li>
         @can('RolePermissionMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#rolePermission" role="button" aria-expanded="false" aria-controls="rolePermission">
@@ -204,6 +203,7 @@
             </li>
         @endcan
 
+        <li class="nav-item nav-category">Admin</li>
         @can('EmployeeMenu')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#EmployeeMenu" role="button" aria-expanded="false" aria-controls="EmployeeMenu">

@@ -61,7 +61,7 @@
             </tr>
             <tr>
                 <td>Last Login At</td>
-                <td>{{ date('d M, Y  h:i:s A', strtotime($employee->last_login_at)) ?? 'N/A' }}</td>
+                <td>{{ $employee->last_login_at ? date('d M, Y  h:i:s A', strtotime($employee->last_login_at)) : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Created By</td>
