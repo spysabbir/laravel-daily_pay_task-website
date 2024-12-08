@@ -131,8 +131,8 @@
                             <button type="button" class="btn btn-sm btn-success" id="approvedAll">All Pending Item Approved</button>
                             <button type="button" class="btn btn-sm btn-info" id="selectedItemApproved">Selected Item Approved</button>
                             <button type="button" class="btn btn-sm btn-warning" id="selectedItemRejected">Selected Item Rejected</button>
-                            <button type="button" data-id="" class="btn btn-primary btn-xs checkAllPendingTaskProofBtn" data-bs-toggle="modal" data-bs-target=".checkAllPendingTaskProofModal">Check All Pending Task Proof</button>
-                            <!-- View Modal -->
+                            <button type="button" class="btn btn-primary btn-xs checkAllPendingTaskProofBtn">Check All Pending Task Proof</button>
+                            <!-- checkAllPendingTaskProofModal -->
                             <div class="modal fade checkAllPendingTaskProofModal" tabindex="-1" aria-labelledby="checkAllPendingTaskProofModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content">
@@ -148,7 +148,7 @@
                                                 <div class="col-lg-4 d-none" id="checkAllPendingTaskProofAction">
                                                     <div>
                                                         <h4>Update Proof Task Status:</h4>
-                                                        <form class="forms-sample border mt-2 p-2" id="checkAllPendingTaskProofEditForm"  enctype="multipart/form-data">
+                                                        <form class="forms-sample border mt-2 p-2" id="checkAllPendingTaskProofEditForm" enctype="multipart/form-data">
                                                             @csrf
                                                             <input type="hidden" id="set_proof_task_id" value="">
                                                             <div class="mb-3">
@@ -258,7 +258,7 @@
                         <tbody>
 
                             <!-- View Modal -->
-                            <div class="modal fade viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                            <div class="modal fade viewSingleTaskProofModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -291,6 +291,9 @@
                                                 <input type="hidden" name="proof_task_id" id="report_proof_task_id">
                                                 <input type="hidden" name="type" value="Proof Task">
                                                 <div class="modal-body">
+                                                    <div class="alert alert-warning mb-3">
+                                                        <strong>Notice: Report only if the proof task is wrong or fake. If you report wrong or fake, your account will be suspended.</strong>
+                                                    </div>
                                                     <div class="mb-3">
                                                         <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
                                                         <textarea class="form-control" id="reason" name="reason" placeholder="Reason"></textarea>
@@ -341,20 +344,6 @@
 </div>
 @endsection
 
-<style>
-    .pending-image-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 10px;
-    }
-
-    .pending-proof-image {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-    }
-</style>
-
 @section('script')
 <script>
     $(document).ready(function() {
@@ -369,7 +358,7 @@
             $.ajax({
                 url: "{{ route('proof_task.all.pending.check', $postTask->id) }}",
                 type: "GET",
-                success: function(response) {
+                success: function (response) {
                     if (response.proofTaskListPending.length === 0) {
                         $('#checkAllPendingTaskProofModalBodyDiv').html(`
                             <div class="alert alert-info" role="alert">
@@ -392,6 +381,13 @@
                             items += `
                                 <div class="carousel-item ${index === 0 ? 'active' : ''}" data-proof-id="${proofTask.id}">
                                     <div class="mb-3">
+                                        <h4>Proof Task Information:</h4>
+                                        <div class="mb-2 border p-2">
+                                            <strong>Proof Id:</strong> ${proofTask.id},
+                                            <strong>Submited Date:</strong>${proofTask.formatted_created_at},
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
                                         <h4>User Information:</h4>
                                         <div class="mb-2 border p-2">
                                             <strong>User Id:</strong> ${proofTask.user_id},
@@ -407,14 +403,16 @@
                                         <h4>Proof Image:</h4>
                                         ${JSON.parse(proofTask.proof_photos).length === 0 ?
                                         '<div class="alert alert-info" role="alert">This task does not require any proof photo.</div>' :
-                                        `<div class="my-2 pending-image-grid">
-                                            ${
-                                                JSON.parse(proofTask.proof_photos).map(image => `
-                                                    <a href="{{ asset('uploads/task_proof_photo') }}/${image}" target="_blank" class="m-1">
-                                                        <img src="{{ asset('uploads/task_proof_photo') }}/${image}" class="pending-proof-image" alt="Proof Image">
-                                                    </a>
-                                                `).join('')
-                                            }
+                                        `<div class="lightgallery-item pending-image-grid" id="lightgallery-${proofTask.id}">
+                                            ${JSON.parse(proofTask.proof_photos).map((photo, index) => {
+                                                return `<a href="{{ asset('uploads/task_proof_photo') }}/${photo}"
+                                                        data-src="{{ asset('uploads/task_proof_photo') }}/${photo}"
+                                                        data-sub-html="<h4>Proof Image ${index + 1}</h4>">
+                                                            <img class="pending-proof-image my-3"
+                                                                src="{{ asset('uploads/task_proof_photo') }}/${photo}"
+                                                                alt="Proof Image ${index + 1}">
+                                                        </a>`;
+                                            }).join('')}
                                         </div>`}
                                     </div>
                                 </div>
@@ -438,6 +436,35 @@
                                 </a>` : ''}
                             </div>
                         `);
+
+                        // Function to initialize LightGallery for the active carousel item
+                        function initializeLightGalleryForActiveItem() {
+                            const activeItem = document.querySelector('.carousel-item.active');
+                            if (!activeItem) return;
+
+                            const lightGalleryElement = activeItem.querySelector('.lightgallery-item');
+
+                            // Destroy any existing LightGallery instance
+                            if ($(lightGalleryElement).data('lightGallery')) {
+                                $(lightGalleryElement).data('lightGallery').destroy(true);
+                            }
+
+                            // Reinitialize LightGallery for the active item
+                            $(lightGalleryElement).lightGallery({
+                                share: false,
+                                showThumbByDefault: false,
+                                hash: false,
+                                mousewheel: false,
+                            });
+                        }
+
+                        // Initialize LightGallery for the first active item
+                        initializeLightGalleryForActiveItem();
+
+                        // Update LightGallery for the active item whenever the carousel slides
+                        document.getElementById('proofTaskListPendingCarousel').addEventListener('slid.bs.carousel', function () {
+                            initializeLightGalleryForActiveItem();
+                        });
 
                         // Get references to the carousel and hidden input
                         const carouselElement = document.getElementById('proofTaskListPendingCarousel');
@@ -467,7 +494,7 @@
                         // Attach the slid.bs.carousel event to update the input value
                         carouselElement.addEventListener('slid.bs.carousel', updateProofTaskId);
 
-                        // carousel auto slide off
+                        // Disable carousel auto-slide
                         $('#proofTaskListPendingCarousel').carousel({
                             interval: false
                         });
@@ -479,6 +506,9 @@
         // Check All Pending Task Proof
         $(document).on('click', '.checkAllPendingTaskProofBtn', function() {
             getCheckAllPendingTaskProof();
+
+            // Show the modal
+            $('.checkAllPendingTaskProofModal').modal('show');
         });
 
         // Rating stars
@@ -529,6 +559,7 @@
             reader.readAsDataURL(this.files[0]);
         });
 
+        // Check All Pending Task Proof Edit Form
         $("body").on("submit", "#checkAllPendingTaskProofEditForm", function(e) {
             e.preventDefault();
 
@@ -784,17 +815,37 @@
         $(document).on('click', '.viewBtn', function () {
             var id = $(this).data('id');
             var url = "{{ route('proof_task.check', ":id") }}";
-            url = url.replace(':id', id)
+            url = url.replace(':id', id);
+
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
 
+                    // Destroy the existing LightGallery instance if it exists
+                    var lightGalleryInstance = $('#single-lightgallery').data('lightGallery');
+                    if (lightGalleryInstance) {
+                        lightGalleryInstance.destroy(true); // Pass `true` to completely remove DOM bindings
+                    }
+
+                    // Reinitialize LightGallery
+                    $('#single-lightgallery').lightGallery({
+                        share: false,
+                        showThumbByDefault: false,
+                        hash: false,
+                        mousewheel: false,
+                    });
+
                     // View Modal
-                    $('.viewModal').modal('show');
+                    $('.viewSingleTaskProofModal').modal('show');
                 },
             });
+        });
+        $(document).on('onCloseAfter.lg', '#single-lightgallery', function () {
+            // Remove hash fragment from the URL
+            const url = window.location.href.split('#')[0];
+            window.history.replaceState(null, null, url);
         });
 
         // Report Proof Task

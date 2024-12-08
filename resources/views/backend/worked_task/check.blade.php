@@ -146,20 +146,6 @@
     </div>
 </div>
 
-<style>
-    .image-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 10px;
-    }
-
-    .proof-image {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-    }
-    </style>
-
 <script>
     $(document).ready(function() {
         // Hide rejected reason div initially

@@ -64,8 +64,12 @@
 	<link rel="stylesheet" href="{{ asset('template') }}/vendors/select2/select2.min.css">
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/sweetalert2/sweetalert2.min.css">
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.css">
+
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/lightbox2/css/lightbox.min.css"  />
-	<!-- End plugin css for this page -->
+
+    <link href="{{ asset('template') }}/vendors/lightGallery/dist/css/lightgallery.min.css" rel="stylesheet">
+
+    <!-- End plugin css for this page -->
 
 	<!-- inject:css -->
 	<link rel="stylesheet" href="{{ asset('template') }}/fonts/feather-font/css/iconfont.css">
@@ -436,7 +440,11 @@
     <script src="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.min.js"></script>
 
     <script src="{{ asset('template') }}/vendors/lightbox2/js/lightbox.min.js"></script>
-	<!-- End plugin js for all pages -->
+
+    <script src="https://cdn.jsdelivr.net/picturefill/2.3.1/picturefill.min.js"></script>
+    <script src="{{ asset('template') }}/vendors/lightGallery/dist/js/lightgallery-all.min.js"></script>
+    <script src="{{ asset('template') }}/vendors/lightGallery/lib/jquery.mousewheel.min.js"></script>
+    <!-- End plugin js for all pages -->
 
 	<!-- inject:js -->
 	<script src="{{ asset('template') }}/vendors/feather-icons/feather.min.js"></script>

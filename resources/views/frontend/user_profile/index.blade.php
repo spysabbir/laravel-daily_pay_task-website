@@ -44,6 +44,12 @@
                                     @csrf
                                     <input type="hidden" name="type" value="User">
                                     <div class="modal-body">
+                                        <div class="alert alert-warning mb-3">
+                                            <strong>Notice: Report only if the user violates the community guidelines. False reporting may your account suspended.</strong>
+                                            <strong class="d-block mt-2 text-info">
+                                                Note: You already reported this user <span class="text-danger">{{ $reportUserCount }}</span> times.
+                                            </strong>
+                                        </div>
                                         <div class="mb-3">
                                             <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
                                             <textarea class="form-control" id="reason" name="reason" placeholder="Reason"></textarea>

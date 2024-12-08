@@ -290,7 +290,9 @@ class UserController extends Controller
         $nowReviewedWorkedTask = ProofTask::where('user_id', $user->id)->where('status', 'Reviewed')->count();
         $totalReviewedWorkedTask = ProofTask::where('user_id', $user->id)->where('reviewed_at', '!=', null)->count();
 
-        return view('frontend.user_profile.index', compact('user', 'blocked', 'nowPostTaskRunningCount', 'totalPostTaskApprovedCount', 'totalPastedTaskProofCount', 'totalPendingTasksProofCount', 'totalApprovedTasksProofCount', 'totalRejectedTasksProofCount', 'nowReviewedTasksProofCount', 'totalReviewedTasksProofCount', 'totalWorkedTask', 'totalPendingWorkedTask', 'totalApprovedWorkedTask', 'totalRejectedWorkedTask', 'nowReviewedWorkedTask', 'totalReviewedWorkedTask'));
+        $reportUserCount = Report::where('user_id', $user->id)->where('reported_by', Auth::id())->where('type', 'User')->count();
+
+        return view('frontend.user_profile.index', compact('user', 'blocked', 'nowPostTaskRunningCount', 'totalPostTaskApprovedCount', 'totalPastedTaskProofCount', 'totalPendingTasksProofCount', 'totalApprovedTasksProofCount', 'totalRejectedTasksProofCount', 'nowReviewedTasksProofCount', 'totalReviewedTasksProofCount', 'totalWorkedTask', 'totalPendingWorkedTask', 'totalApprovedWorkedTask', 'totalRejectedWorkedTask', 'nowReviewedWorkedTask', 'totalReviewedWorkedTask', 'reportUserCount'));
     }
 
     // Verification.............................................................................................................

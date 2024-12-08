@@ -92,7 +92,7 @@
                     <div class="alert alert-info" role="alert">
                         <h4 class="alert-heading text-center">
                             <i class="link-icon" data-feather="credit-card"></i>
-                            Total Withdraw: {{ get_site_settings('site_currency_symbol') }} {{ $total_withdraw }}
+                            Total Approved Withdraw: {{ get_site_settings('site_currency_symbol') }} {{ $total_withdraw }}
                         </h4>
                     </div>
                 </div>

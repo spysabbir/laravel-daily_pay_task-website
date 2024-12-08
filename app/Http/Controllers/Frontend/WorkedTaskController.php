@@ -134,7 +134,8 @@ class WorkedTaskController extends Controller
         $proofCount = ProofTask::where('post_task_id', $id)->count();
         $blocked = Block::where('user_id', $taskDetails->user_id)->where('blocked_by', Auth::id())->exists();
         $reportPostTask = Report::where('post_task_id', $id)->where('reported_by', Auth::id())->first();
-        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'proofCount', 'blocked', 'reportPostTask'));
+        $reportUserCount = Report::where('user_id', $taskDetails->user_id)->where('reported_by', Auth::id())->where('type', 'User')->count();
+        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount'));
     }
 
     public function findTaskNotInterested($id)
@@ -233,7 +234,7 @@ class WorkedTaskController extends Controller
             'alert-type' => 'success'
         );
 
-        return redirect()->route('find_tasks.clear.filters')->with($notification);
+        return redirect()->route('find_tasks')->with($notification);
     }
 
     public function workedTaskListPending(Request $request)

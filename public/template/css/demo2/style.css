@@ -25731,3 +25731,51 @@ div.tox .tox-dialog__body {
     opacity: 1 !important;
     visibility: visible !important;
 }
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.proof-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+.pending-image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+#checkAllPendingTaskProofData .carousel-indicators {
+    margin-bottom: -4rem !important;
+}
+
+#checkAllPendingTaskProofData .carousel-control-prev,
+#checkAllPendingTaskProofData .carousel-control-next {
+    margin-bottom: -42rem !important;
+}
+
+.pending-proof-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.checkAllPendingTaskProofModal {
+    z-index: 1051 !important;
+}
+
+.viewSingleTaskProofModal {
+    z-index: 1051 !important;
+}
+
+.lg-backdrop {
+    z-index: 1052 !important;
+}
+
+.lg-outer {
+    z-index: 1053 !important;
+}

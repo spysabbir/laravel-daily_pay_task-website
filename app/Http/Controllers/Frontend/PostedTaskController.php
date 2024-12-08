@@ -811,9 +811,14 @@ class PostedTaskController extends Controller
     {
         $proofTaskListPending = ProofTask::where('post_task_id', $id)->where('status', 'Pending')->with('user', 'user_detail')->get();
 
+        $responseData = $proofTaskListPending->map(function ($task) {
+            $task->formatted_created_at = Carbon::parse($task->created_at)->format('d M, Y h:i A');
+            return $task;
+        });
+
         return response()->json([
             'status' => 200,
-            'proofTaskListPending' => $proofTaskListPending,
+            'proofTaskListPending' => $responseData,
         ]);
     }
 

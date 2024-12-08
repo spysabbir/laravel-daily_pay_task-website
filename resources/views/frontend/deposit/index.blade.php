@@ -129,7 +129,7 @@
                     <div class="alert alert-info" role="alert" id="total_deposit_div">
                         <h4 class="alert-heading text-center">
                             <i class="link-icon" data-feather="credit-card"></i>
-                            Total Deposit: <strong>{{ get_site_settings('site_currency_symbol') }} {{ $total_deposit }}</strong>
+                            Total Approved Deposit: <strong>{{ get_site_settings('site_currency_symbol') }} {{ $total_deposit }}</strong>
                         </h4>
                     </div>
                 </div>

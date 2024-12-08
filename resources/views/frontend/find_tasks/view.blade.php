@@ -61,7 +61,7 @@
                                         <div class="modal-body">
                                             @if ($reportPostTask->status == 'Pending')
                                             <div class="alert alert-warning">
-                                                <strong>Post Task already reported! Please wait for the admin's response.</strong>
+                                                <strong>Post Task already reported! Please wait for the admin response.</strong>
                                             </div>
                                             @else
                                             <div class="alert alert-success">
@@ -89,6 +89,9 @@
                                             <input type="hidden" name="post_task_id" value="{{ $taskDetails->id }}">
                                             <input type="hidden" name="type" value="Post Task">
                                             <div class="modal-body">
+                                                <div class="alert alert-warning mb-3">
+                                                    <strong>Notice: Report only if the post task violates the community guidelines. False reporting may your account suspended.</strong>
+                                                </div>
                                                 <div class="mb-3">
                                                     <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
                                                     <textarea class="form-control" id="reason" name="reason" placeholder="Reason"></textarea>
@@ -128,8 +131,8 @@
                 @if ($proofCount < $taskDetails->worker_needed)
                 <div class="my-2 border p-3 rounded bg-dark">
                     @if ($taskProofExists)
-                    <div class="alert alert-warning">
-                        <strong>Proof already submitted!</strong>
+                    <div class="alert alert-success">
+                        <strong>Proof already submitted! Please wait for the buyer response.</strong>
                     </div>
                     @else
                     @if ($errors->any())
@@ -179,7 +182,7 @@
                 </div>
                 @else
                 <div class="alert alert-warning">
-                    <strong>Sorry! This task has been completed.</strong>
+                    <strong>Sorry! This task has been completed. Please try another task.</strong>
                 </div>
                 @endif
             </div>
@@ -216,6 +219,12 @@
                                     @csrf
                                     <input type="hidden" name="type" value="User">
                                     <div class="modal-body">
+                                        <div class="alert alert-warning mb-3">
+                                            <strong>Notice: Report only if the user violates the community guidelines. False reporting may your account suspended.</strong>
+                                            <strong class="d-block mt-2 text-info">
+                                                Note: You already reported this user <span class="text-danger">{{ $reportUserCount }}</span> times.
+                                            </strong>
+                                        </div>
                                         <div class="mb-3">
                                             <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
                                             <textarea class="form-control" id="reason" name="reason" placeholder="Reason"></textarea>
@@ -306,9 +315,6 @@
                         toastr.error('Sorry! This task has been completed.');
                     }
                 },
-                complete: function() {
-                    submitButton.prop("disabled", false).text("Submit");
-                }
             });
         });
 
