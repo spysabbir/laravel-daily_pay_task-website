@@ -22,7 +22,7 @@
                 @csrf
                 <div class="mb-3">
                     <label for="userEmail" class="form-label">Email address <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="userEmail" name="email" value="superadmin@gmail.com" placeholder="Email">
+                    <input type="email" class="form-control" id="userEmail" name="email" value="superadmin@spysabbir.com" placeholder="Email">
                     @error('email')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror

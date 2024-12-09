@@ -20,7 +20,7 @@ class UserTableSeeder extends Seeder
     {
         $superAdmin = User::create([
             'name' => 'Super Admin',
-            'email' => 'superadmin@gmail.com',
+            'email' => 'superadmin@spysabbir.com',
             'password' => Hash::make('Ss@12345678'),
             'user_type' => 'Backend',
             'status' => 'Active',
@@ -35,8 +35,8 @@ class UserTableSeeder extends Seeder
         $superAdmin->assignRole([$role->id]);
 
         $user = User::create([
-            'name' => 'User',
-            'email' => 'user@gmail.com',
+            'name' => 'Spy Sabbir',
+            'email' => 'user@spysabbir.com',
             'date_of_birth' => '2024-01-01',
             'gender' => 'Male',
             'deposit_balance' => 10000,

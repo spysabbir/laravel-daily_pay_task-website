@@ -14,8 +14,9 @@
                     </p>
                 </div>
                 <div>
-                    <a href="{{ route('worked_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending</a>
-                    <a href="{{ route('worked_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected</a>
+                    <a href="{{ route('worked_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
+                    <a href="{{ route('worked_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
+                    <a href="{{ route('worked_task.list.reviewed') }}" class="btn btn-warning btn-xs m-1">Reviewed List</a>
                 </div>
             </div>
             <div class="card-body">

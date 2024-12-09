@@ -17,7 +17,7 @@
                     @csrf
                     <div class="form-group">
                         <label>Enter Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" placeholder="Enter Your Email" name="email" value="user@gmail.com" required>
+                        <input type="email" class="form-control" placeholder="Enter Your Email" name="email" value="user@spysabbir.com" required>
                         @error('email')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

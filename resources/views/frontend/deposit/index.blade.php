@@ -24,6 +24,13 @@
                                 <form class="forms-sample" id="withdrawalBalanceDepositForm">
                                     @csrf
                                     <div class="modal-body">
+                                        @php
+                                            $chargePercentage = get_default_settings('withdrawal_balance_deposit_charge_percentage');
+                                            $minDepositAmount = get_default_settings('min_deposit_amount');
+                                            $maxDepositAmount = get_default_settings('max_deposit_amount');
+                                            $adjustedMinDeposit = number_format($minDepositAmount / (1 - ($chargePercentage / 100)), 2, '.', '');
+                                            $adjustedMaxDeposit = number_format($maxDepositAmount - (($maxDepositAmount * $chargePercentage) / 100), 2, '.', '');
+                                        @endphp
                                         <div class="mb-3">
                                             <label for="withdraw_balance" class="form-label">Withdraw Balance</label>
                                             <div class="input-group">
@@ -34,10 +41,10 @@
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" min="{{ get_default_settings('min_deposit_amount') }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount" required>
+                                                <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" min="{{ $adjustedMinDeposit }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount" required>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
-                                            <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
+                                            <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ $adjustedMinDeposit }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
                                             <span class="text-danger error-text deposit_amount_error"></span>
                                         </div>
                                         <div class="mb-3">
@@ -50,9 +57,10 @@
                                         <div class="mb-3">
                                             <label for="payable_deposit_amount" class="form-label">Payable Deposit Amount</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="payable_deposit_amount" placeholder="Payable Deposit Amount" disabled>
+                                                <input type="number" class="form-control" id="payable_deposit_amount" value="0" placeholder="Payable Deposit Amount" disabled>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
+                                            <small class="text-info d-block">Note: Minimum payable deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum payable deposit amount is {{ $adjustedMaxDeposit }}</small>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -94,15 +102,6 @@
                                             <small class="text-warning">Note: Please cash out money to this account number. Please do not send money to this account number.</small>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_deposit_amount') }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount" required>
-                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                            </div>
-                                            <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
-                                            <span class="text-danger error-text amount_error"></span>
-                                        </div>
-                                        <div class="mb-3">
                                             <label for="number" class="form-label">Deposit Number <span class="text-danger">*</span></label>
                                             <input type="number" class="form-control" id="number" name="number" placeholder="Deposit Number" required>
                                             <small class="text-info d-block">Note: The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small>
@@ -112,6 +111,15 @@
                                             <label for="transaction_id" class="form-label">Transaction Id <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="transaction_id" name="transaction_id" placeholder="Transaction Id" required>
                                             <span class="text-danger error-text transaction_id_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_deposit_amount') }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount" required>
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
+                                            <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
+                                            <span class="text-danger error-text amount_error"></span>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -297,12 +305,18 @@
         });
 
         // Withdrawal Balance Deposit
-        $('#deposit_amount').on('keyup change', function(){
-            var deposit_amount = $(this).val();
-            var withdrawal_balance_deposit_charge_percentage = $('#withdrawal_balance_deposit_charge_percentage').val();
-            var amount = (deposit_amount * withdrawal_balance_deposit_charge_percentage) / 100;
-            $('#amount').val(amount);
-            $('#payable_deposit_amount').val(deposit_amount - amount);
+        $('#deposit_amount').on('input', function () {
+            var depositAmount = parseFloat($(this).val()) || 0;
+            var chargePercentage = parseFloat($('#withdrawal_balance_deposit_charge_percentage').val()) || 0;
+
+            if (depositAmount > 0 && chargePercentage >= 0) {
+                var chargeAmount = (depositAmount * chargePercentage) / 100;
+                var payableAmount = depositAmount - chargeAmount;
+
+                $('#payable_deposit_amount').val(payableAmount.toFixed(2));
+            } else {
+                $('#payable_deposit_amount').val('0');
+            }
         });
 
         // Store Withdrawal Balance Deposit

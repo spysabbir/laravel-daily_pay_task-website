@@ -546,9 +546,12 @@ class UserController extends Controller
         $minDepositAmount = get_default_settings('min_deposit_amount');
         $maxDepositAmount = get_default_settings('max_deposit_amount');
         $currencySymbol = get_site_settings('site_currency_symbol');
+        $chargePercentage = get_default_settings('withdrawal_balance_deposit_charge_percentage');
+
+        $adjustedMinDeposit = number_format($minDepositAmount / (1 - ($chargePercentage / 100)), 2, '.', '');
 
         $validator = Validator::make($request->all(), [
-            'deposit_amount' => "required|numeric|min:$minDepositAmount|max:$maxDepositAmount",
+            'deposit_amount' => "required|numeric|min:$adjustedMinDeposit|max:$maxDepositAmount",
         ]);
 
         if($validator->fails()){
@@ -564,18 +567,18 @@ class UserController extends Controller
                             '. Your current balance is ' . $currencySymbol .' '. $request->user()->withdraw_balance
                 ]);
             }else {
-                $deposit_amount = $request->deposit_amount - ($request->deposit_amount * get_default_settings('withdrawal_balance_deposit_charge_percentage') / 100);
+                $payable_amount = $request->deposit_amount - ($request->deposit_amount * $chargePercentage / 100);
 
                 Deposit::create([
                     'user_id' => $request->user()->id,
                     'method' => 'Withdrawal Balance',
                     'amount' => $request->deposit_amount,
-                    'payable_amount' => $deposit_amount,
+                    'payable_amount' => $payable_amount,
                     'approved_at' => now(),
                     'status' => 'Approved',
                 ]);
 
-                $request->user()->increment('deposit_balance', $deposit_amount);
+                $request->user()->increment('deposit_balance', $payable_amount);
                 $request->user()->decrement('withdraw_balance', $request->deposit_amount);
                 $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
 
@@ -985,6 +988,10 @@ class UserController extends Controller
                 $reportedUsers = Report::where('reported_by', Auth::id());
 
                 $query = $reportedUsers->select('reports.*');
+
+                if ($request->type) {
+                    $query->where('reports.type', $request->type);
+                }
 
                 if ($request->status) {
                     $query->where('reports.status', $request->status);
