@@ -72,7 +72,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Payable Withdraw Amount</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="payable_withdraw_amount" placeholder="Payable Withdraw Amount" disabled>
+                                                <input type="number" class="form-control" id="payable_withdraw_amount" value="0" placeholder="Payable Withdraw Amount" disabled>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                         </div>

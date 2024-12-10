@@ -150,11 +150,7 @@
                                 <input type="file" class="form-control" name="thumbnail" id="thumbnailEdit" accept=".jpg, .jpeg, .png">
                                 <small id="thumbnailError" class="text-danger"></small>
                                 <small class="text-info"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
-                                @if ($postTask->thumbnail)
-                                <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $postTask->thumbnail }}" alt="Thumbnail" class="img-fluid mt-2 d-block" style="display:none;" alt="Thumbnail">
-                                @else
-                                <img src="" alt="" id="thumbnailPreviewEdit" class="img-fluid mt-2 d-block" style="display:none;" alt="Thumbnail">
-                                @endif
+                                <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $postTask->thumbnail }}" id="thumbnailPreviewEdit" class="img-fluid my-2 d-block" style="max-height: 320px; display:none;" alt="Thumbnail">
                             </div>
                         </section>
 

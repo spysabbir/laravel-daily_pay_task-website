@@ -38,11 +38,12 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Task Id</th>
                                 <th>User Id</th>
+                                <th>Task Id</th>
                                 <th>Title</th>
                                 <th>Worker Needed</th>
                                 <th>Created At</th>
+                                <th>Completed At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -98,11 +99,12 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'id', name: 'id' },
                 { data: 'user_id', name: 'user_id' },
+                { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'worker_needed', name: 'worker_needed' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'completed_at', name: 'completed_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
@@ -122,6 +124,7 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+                    $('.viewModal').modal('show');
                 },
             });
         });

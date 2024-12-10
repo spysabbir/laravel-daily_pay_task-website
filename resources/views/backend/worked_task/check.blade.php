@@ -13,17 +13,31 @@
         @else
         <div class="mb-3">
             <h4>Proof Image:</h4>
-            <div class="image-grid">
+            {{-- <div class="image-grid">
                 @foreach (json_decode($proofTask->proof_photos) as $photo)
                     <a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-lightbox="gallery" data-title="Proof Task Photo {{ $loop->iteration }}">
                         <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" class="proof-image my-3" alt="Proof Task Photo {{ $loop->iteration }}">
                     </a>
+                @endforeach
+            </div> --}}
+            <div id="backend-single-lightgallery" class="image-grid">
+                @foreach (json_decode($proofTask->proof_photos) as $photo)
+                <a href="" class="" data-src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-sub-html="<h4>Proof Task Photo {{ $loop->iteration }}</h4>">
+                    <img class="proof-image my-3" src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" alt="Proof Task Photo {{ $loop->iteration }}">
+                </a>
                 @endforeach
             </div>
         </div>
         @endif
     </div>
     <div class="col-lg-4">
+        <div class="mb-3">
+            <h4>Proof Task Information:</h4>
+            <div class="mb-2 border p-2">
+                <p><strong>Proof Id:</strong> {{ $proofTask->id }}</p>
+                <p><strong>Submited Date:</strong>{{ $proofTask->created_at->format('d M, Y h:i A') }}</p>
+            </div>
+        </div>
         <div class="mb-3">
             <h4>User Information:</h4>
             <div class="mt-2 border p-2">
@@ -35,7 +49,7 @@
         @if ($proofTask->status == 'Pending')
             <div class="alert alert-warning" role="alert">
                 <h4 class="alert-heading">Pending</h4>
-                <p>This task proof is pending for approval.</p>
+                <p>This task proof is pending for approval or rejection.</p>
             </div>
         @elseif ($proofTask->status == 'Approved')
         <div class="alert alert-success" role="alert">

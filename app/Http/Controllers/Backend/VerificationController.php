@@ -60,7 +60,7 @@ class VerificationController extends Controller implements HasMiddleware
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>
                     ';
                 return $btn;
                 })
@@ -222,7 +222,7 @@ class VerificationController extends Controller implements HasMiddleware
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                     ';
                 return $btn;
                 })

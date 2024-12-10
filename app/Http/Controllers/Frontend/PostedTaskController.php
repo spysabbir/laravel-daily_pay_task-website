@@ -106,7 +106,7 @@ class PostedTaskController extends Controller
 
         if($request->hasFile('thumbnail')){
             $manager = new ImageManager(new Driver());
-            $thumbnail_photo_name = $request->user()->id."-thumbnail-photo". date('YmdHis') . "." . $request->file('thumbnail')->getClientOriginalExtension();
+            $thumbnail_photo_name = $request->user()->id."-thumbnail-photo-". date('YmdhisA') . "." . $request->file('thumbnail')->getClientOriginalExtension();
             $image = $manager->read($request->file('thumbnail'));
             $image->toJpeg(80)->save(base_path("public/uploads/task_thumbnail_photo/").$thumbnail_photo_name);
         }else{
@@ -187,6 +187,12 @@ class PostedTaskController extends Controller
         $postTask = PostTask::findOrFail($id);
 
         if($request->hasFile('thumbnail')){
+            // Delete old thumbnail photo
+            if ($postTask->thumbnail) {
+                if (file_exists(base_path("public/uploads/task_thumbnail_photo/").$postTask->thumbnail)) {
+                    unlink(base_path("public/uploads/task_thumbnail_photo/").$postTask->thumbnail);
+                }
+            }
             $manager = new ImageManager(new Driver());
             $thumbnail_photo_name = $request->user()->id."-thumbnail-photo". date('YmdHis') . "." . $request->file('thumbnail')->getClientOriginalExtension();
             $image = $manager->read($request->file('thumbnail'));

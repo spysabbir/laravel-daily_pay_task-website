@@ -130,19 +130,24 @@
                     <span>Rejection Reason: {{ $postTask->rejection_reason }}</span> <br>
                 </div>
                 @endif
-                <form class="forms-sample" id="editForm">
+                <form class="forms-sample" id="editForm" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                     <input type="hidden" id="post_task_id" value="{{ $postTask->id }}">
-                    @if ($postTask->thumbnail)
+                    <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $postTask->thumbnail }}" id="task_thumbnailPreview" class="img-fluid my-2 d-block" style="max-height: 320px; display:none;" alt="Thumbnail">
                     <div class="mb-3">
-                        <label for="task_thumbnail" class="form-label">Task Thumbnail <span class="text-danger">* Required</span></label>
-                        <img src="{{ asset('uploads/task_thumbnail_photo') }}/{{ $postTask->thumbnail }}" alt="Task Thumbnail" class="img-fluid">
+                        <label for="task_thumbnail" class="form-label">Task Thumbnail <span class="text-info">* Optional </span></label>
+                        <input type="file" class="form-control" id="task_thumbnail" name="thumbnail" accept=".jpg, .jpeg, .png">
+                        <span class="text-danger error-text update_thumbnail_error"></span>
+                        <small class="text-danger d-block" id="thumbnailError"></small>
+                        <small class="text-info d-block"> * Image format should be jpg, jpeg, png. * Image size should be less than 2MB.</small>
                     </div>
-                    @endif
                     <div class="mb-3">
                         <label for="task_title" class="form-label">Task Title <span class="text-danger">* Required</span></label>
-                        <input type="text" class="form-control" id="task_title" value="{{ $postTask->title }}" name="title">
+                        <textarea class="form-control" id="task_title" rows="2" name="title">{{ $postTask->title }}</textarea>
                         <span class="text-danger error-text update_title_error"></span>
+                        <small class="text-danger d-block" id="title_error"></small>
+                        <small class="text-info d-block">*Note: Only 255 characters are allowed.</small>
                     </div>
                     <div class="mb-3">
                         <label for="task_description" class="form-label">Task Description <span class="text-danger">* Required</span></label>
@@ -155,6 +160,7 @@
                     <div class="mb-3">
                         <label for="task_additional_note" class="form-label">Task Additional Note <span class="text-danger">* Required</span></label>
                         <textarea class="form-control" id="task_additional_note" name="additional_note" rows="4">{{ $postTask->additional_note }}</textarea>
+                        <small class="text-info d-block">*Note: Please must be add answers to your questions in the additional note field for proof checking purposes. After submitting the task only you and the admin can see the additional note field.</small>
                     </div>
                     @can('posted_task.update')
                         <div class="mb-3 ">
@@ -178,3 +184,46 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function() {
+        // Validate the title field
+        $('#editForm').on('input', '#task_title', function() {
+            var title = $('#task_title').val();
+            if (title.length > 255) {
+                $('#title_error').text('Title length should be less than 255 characters. You have entered ' + title.length + ' characters.');
+            } else {
+                $('#title_error').text('');
+            }
+        });
+
+        // thumbnail preview and validation
+        document.getElementById('task_thumbnail').addEventListener('change', function() {
+            const file = this.files[0];
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            const maxSize = 2 * 1024 * 1024; // 2MB
+
+            if (file && allowedTypes.includes(file.type)) {
+                if (file.size > maxSize) {
+                    $('#thumbnailError').text('File size is too large. Max size is 2MB.');
+                    this.value = ''; // Clear file input
+                    // Hide preview image
+                    $('#task_thumbnailPreview').hide();
+                } else {
+                    $('#thumbnailError').text('');
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#task_thumbnailPreview').attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            } else {
+                $('#thumbnailError').text('Please select a valid image file (jpeg, jpg, png).');
+                this.value = ''; // Clear file input
+                // Hide preview image
+                $('#task_thumbnailPreview').hide();
+            }
+        });
+    });
+</script>

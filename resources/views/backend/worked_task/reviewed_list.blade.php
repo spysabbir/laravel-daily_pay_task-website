@@ -117,7 +117,7 @@
                         <tbody>
 
                             <!-- View Modal -->
-                            <div class="modal fade viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                            <div class="modal fade viewModal viewSingleTaskProofModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -191,8 +191,29 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+
+                    // Destroy the existing LightGallery instance if it exists
+                    var lightGalleryInstance = $('#backend-single-lightgallery').data('lightGallery');
+                    if (lightGalleryInstance) {
+                        lightGalleryInstance.destroy(true); // Pass `true` to completely remove DOM bindings
+                    }
+
+                    // Reinitialize LightGallery
+                    $('#backend-single-lightgallery').lightGallery({
+                        share: false,
+                        showThumbByDefault: false,
+                        hash: false,
+                        mousewheel: false,
+                    });
+
+                    $('.viewModal').modal('show');
                 },
             });
+        });
+        $(document).on('onCloseAfter.lg', '#single-lightgallery', function () {
+            // Remove hash fragment from the URL
+            const url = window.location.href.split('#')[0];
+            window.history.replaceState(null, null, url);
         });
     });
 </script>

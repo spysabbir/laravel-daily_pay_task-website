@@ -38,11 +38,11 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Task Id</th>
                                 <th>User Id</th>
+                                <th>Task Id</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
-                                <th>Proof Status</th>
+                                {{-- <th>Proof Status</th> --}}
                                 <th>Submited At</th>
                                 <th>Canceled At</th>
                                 <th>Canceled By</th>
@@ -101,11 +101,11 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'id', name: 'id' },
                 { data: 'user_id', name: 'user_id' },
+                { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'proof_status', name: 'proof_status' },
+                // { data: 'proof_status', name: 'proof_status' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'canceled_at', name: 'canceled_at' },
                 { data: 'canceled_by', name: 'canceled_by' },
@@ -128,6 +128,7 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+                    $('.viewModal').modal('show');
                 },
             });
         });

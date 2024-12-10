@@ -41,7 +41,7 @@
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" min="{{ $adjustedMinDeposit }}" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount" required>
+                                                <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" min="{{ $adjustedMinDeposit }}" step="0.01" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount" required>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                             <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ $adjustedMinDeposit }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>

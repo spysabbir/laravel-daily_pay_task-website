@@ -28,6 +28,13 @@
     </div>
     <div class="col-lg-4">
         <div class="mb-3">
+            <h4>Proof Task Information:</h4>
+            <div class="mb-2 border p-2">
+                <p><strong>Proof Id:</strong> {{ $proofTask->id }}</p>
+                <p><strong>Submited Date:</strong>{{ $proofTask->created_at->format('d M, Y h:i A') }}</p>
+            </div>
+        </div>
+        <div class="mb-3">
             <h4>User Information:</h4>
             <div class="mt-2 border p-2">
                 <p><strong>User Id:</strong> {{ $proofTask->user->id }}</p>
@@ -254,7 +261,7 @@
                         $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
                         toastr.success('Proof Task has been updated successfully.');
                         $('#allDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
+                        $(".viewSingleTaskProofModal").modal('hide');
                     }
                 },
                 complete: function() {

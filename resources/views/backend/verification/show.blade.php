@@ -38,7 +38,7 @@
                             </tr>
                             <tr>
                                 <td>Submitted Date</td>
-                                <td>{{ $verification->created_at->format('d M Y h:i A') }}</td>
+                                <td>{{ $verification->created_at->format('d M, Y h:i A') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -70,11 +70,11 @@
                             </div>
                         </div>
                         <a class="carousel-control-prev" data-bs-target="#carouselExampleCaptions" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="carousel-control-prev-icon bg-primary" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
                         </a>
                         <a class="carousel-control-next" data-bs-target="#carouselExampleCaptions" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="carousel-control-next-icon bg-primary" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </a>
                     </div>

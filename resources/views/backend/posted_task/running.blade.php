@@ -38,11 +38,11 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Task Id</th>
                                 <th>User Id</th>
+                                <th>Task Id</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
-                                <th>Proof Status</th>
+                                {{-- <th>Proof Status</th> --}}
                                 <th>Submited At</th>
                                 <th>Approved At</th>
                                 <th>Action</th>
@@ -100,11 +100,11 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'id', name: 'id' },
                 { data: 'user_id', name: 'user_id' },
+                { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'proof_status', name: 'proof_status' },
+                // { data: 'proof_status', name: 'proof_status' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
@@ -126,25 +126,32 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+                    $(".viewModal").modal('show');
                 },
             });
         });
 
-        // Update Data
-        $("body").on("submit", "#editForm", function(e){
+        // Edit Data
+        $("body").on("submit", "#editForm", function (e) {
             e.preventDefault();
 
             var id = $('#post_task_id').val();
-            var url = "{{ route('backend.posted_task_status_update', ":id") }}";
-            url = url.replace(':id', id)
+            var url = "{{ route('backend.posted_task_status_update', ':id') }}";
+            url = url.replace(':id', id);
 
-            var submitButton = $(this).find("button[type='submit']");
+            var form = $(this);
+            var formData = new FormData(this);
+
+            var submitButton = form.find("button[type='submit']");
             submitButton.prop("disabled", true).text("Submitting...");
 
             $.ajax({
                 url: url,
-                type: "PUT",
-                data: $(this).serialize(),
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
                 beforeSend:function(){
                     $(document).find('span.error-text').text('');
                 },
@@ -163,7 +170,7 @@
                     submitButton.prop("disabled", false).text("Submit");
                 }
             });
-        })
+        });
 
         // Canceled Data
         $(document).on('click', '.canceledBtn', function(){

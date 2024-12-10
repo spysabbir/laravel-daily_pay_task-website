@@ -113,6 +113,7 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+                    $('.viewModal').modal('show');
                 },
             });
         });

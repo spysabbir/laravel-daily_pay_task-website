@@ -67,7 +67,7 @@ class TaskController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>';
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>';
 
                     return $viewBtn;
                 })
@@ -122,7 +122,7 @@ class TaskController extends Controller implements HasMiddleware
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                     ';
                 return $btn;
                 })
@@ -205,7 +205,7 @@ class TaskController extends Controller implements HasMiddleware
                     $canCanceled = auth()->user()->can('posted_task.canceled');
                     $canPaused = auth()->user()->can('posted_task.paused.resume');
 
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>';
                     $canceledBtn = $canCanceled
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>'
                         : '';
@@ -291,13 +291,14 @@ class TaskController extends Controller implements HasMiddleware
                         ';
                 })
                 ->editColumn('canceled_by', function ($row) {
+                    $bgColor = $row->canceledBy->user_type === 'Backend' ? 'bg-primary' : 'bg-info';
                     return '
-                        <span class="badge bg-info text-dark">' . $row->canceledBy->name . '</span>
+                        <span class="badge ' . $bgColor . '">' . $row->canceledBy->name . '</span>
                         ';
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                     ';
                 return $btn;
                 })
@@ -377,8 +378,9 @@ class TaskController extends Controller implements HasMiddleware
                         ';
                 })
                 ->editColumn('paused_by', function ($row) {
+                    $bgColor = $row->pausedBy->user_type === 'Backend' ? 'bg-primary' : 'bg-info';
                     return '
-                        <span class="badge bg-info text-dark">' . $row->pausedBy->name . '</span>
+                        <span class="badge ' . $bgColor . '">' . $row->pausedBy->name . '</span>
                         ';
                 })
                 ->editColumn('action', function ($row) {
@@ -388,10 +390,10 @@ class TaskController extends Controller implements HasMiddleware
                     $viewBtn = '';
 
                     if ($row->pausedBy->user_type === 'Backend' && $canResume) {
-                        $pausedBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs pausedBtn">Paused</button>';
+                        $pausedBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs resumeBtn">Resume</button>';
                     }
 
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>';
 
                     return $viewBtn . ' ' . $pausedBtn;
                 })
@@ -445,13 +447,18 @@ class TaskController extends Controller implements HasMiddleware
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
+                ->editColumn('completed_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->completed_at)) . '</span>
+                        ';
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user', 'worker_needed', 'created_at', 'action'])
+                ->rawColumns(['user', 'worker_needed', 'created_at', 'completed_at', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.completed');
@@ -466,6 +473,7 @@ class TaskController extends Controller implements HasMiddleware
     public function postedTaskStatusUpdate(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'required_proof_answer' => 'required|string',
@@ -493,11 +501,27 @@ class TaskController extends Controller implements HasMiddleware
             ]);
         }
 
+        if($request->hasFile('thumbnail')){
+            // Delete old thumbnail photo
+            if ($postTask->thumbnail) {
+                if (file_exists(base_path("public/uploads/task_thumbnail_photo/").$postTask->thumbnail)) {
+                    unlink(base_path("public/uploads/task_thumbnail_photo/").$postTask->thumbnail);
+                }
+            }
+            $manager = new ImageManager(new Driver());
+            $thumbnail_photo_name = $request->user()->id."-thumbnail-photo-". date('YmdhisA') . "." . $request->file('thumbnail')->getClientOriginalExtension();
+            $image = $manager->read($request->file('thumbnail'));
+            $image->toJpeg(80)->save(base_path("public/uploads/task_thumbnail_photo/").$thumbnail_photo_name);
+        }else{
+            $thumbnail_photo_name = $postTask->thumbnail;
+        }
+
         $postTask->update([
             'title' => $request->title,
             'description' => $request->description,
             'required_proof_answer' => $request->required_proof_answer,
             'additional_note' => $request->additional_note,
+            'thumbnail' => $thumbnail_photo_name,
             'status' => $request->status,
             'rejection_reason' => $request->status == 'Rejected' ? $request->rejection_reason : NULL,
             'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
@@ -742,7 +766,7 @@ class TaskController extends Controller implements HasMiddleware
                     $viewPermission = auth()->user()->can('worked_task.check');
 
                     $viewBtn = $viewPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>'
                         : '';
 
                     return $viewBtn;
@@ -848,7 +872,7 @@ class TaskController extends Controller implements HasMiddleware
                     $viewPermission = auth()->user()->can('worked_task.check');
 
                     $viewBtn = $viewPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>'
                         : '';
 
                     return $viewBtn;

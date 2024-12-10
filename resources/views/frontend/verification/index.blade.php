@@ -109,7 +109,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="id_type" class="form-label">Id Type <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="id_type" name="id_type" required>
+                                    <select class="form-select" id="id_type" name="id_type">
                                         <option value="">Select Id Type</option>
                                         <option value="NID" {{ old('id_type', $verification->id_type ?? '') === 'NID' ? 'selected' : '' }}>NID</option>
                                         <option value="Passport" {{ old('id_type', $verification->id_type ?? '') === 'Passport' ? 'selected' : '' }}>Passport</option>
@@ -123,7 +123,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="id_number" class="form-label">Id Number <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="id_number" name="id_number" value="{{ old('id_number', $verification->id_number ?? '') }}" placeholder="Enter Id Number" required>
+                                    <input type="text" class="form-control" id="id_number" name="id_number" value="{{ old('id_number', $verification->id_number ?? '') }}" placeholder="Enter Id Number">
                                 </div>
                                 @error('id_number')
                                     <span class="text-danger">{{ $message }}</span>
