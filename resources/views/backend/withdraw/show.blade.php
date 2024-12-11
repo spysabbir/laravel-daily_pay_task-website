@@ -56,6 +56,9 @@
     </div>
     <div class="col-lg-4">
         @can('withdraw.request.check')
+        <div class="alert alert-warning mb-3">
+            <strong>Warning!</strong> Till now {{ $reportsPending }} reports are pending this user.
+        </div>
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">

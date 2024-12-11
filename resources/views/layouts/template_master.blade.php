@@ -58,17 +58,13 @@
 	<!-- endinject -->
 
 	<!-- Plugin css for this page -->
-	<link rel="stylesheet" href="{{ asset('template') }}/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/datatable/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/datatable/css/buttons.dataTables.min.css">
 	<link rel="stylesheet" href="{{ asset('template') }}/vendors/select2/select2.min.css">
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/sweetalert2/sweetalert2.min.css">
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.css">
-
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/lightbox2/css/lightbox.min.css"  />
-
-    <link href="{{ asset('template') }}/vendors/lightGallery/dist/css/lightgallery.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="{{ asset('template') }}/vendors/lightGallery/dist/css/lightgallery.min.css" >
     <!-- End plugin css for this page -->
 
 	<!-- inject:css -->
@@ -159,7 +155,7 @@
                                                     </div>
                                                     <div class="d-flex justify-content-between flex-grow-1">
                                                         <div class="me-4">
-                                                            <p>{{ $support->message }}</p>
+                                                            <p>{{ $support->message ? Str::limit($support->message, 20) : '' }}</p>
                                                             <p class="tx-12 text-info">{{ $support->photo ? 'Attachment' : '' }}</p>
                                                         </div>
                                                         <p class="tx-12 text-muted">{{ $support->created_at->diffForHumans() }}</p>
@@ -420,7 +416,6 @@
     <script src="{{ asset('template') }}/vendors/chartjs/Chart.min.js"></script>
     <script src="{{ asset('template') }}/vendors/jquery.flot/jquery.flot.js"></script>
     <script src="{{ asset('template') }}/vendors/jquery.flot/jquery.flot.resize.js"></script>
-    <script src="{{ asset('template') }}/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="{{ asset('template') }}/vendors/apexcharts/apexcharts.min.js"></script>
 
     <script src="{{ asset('template') }}/vendors/datatable/js/jquery.dataTables.js"></script>
@@ -430,18 +425,12 @@
     <script src="{{ asset('template') }}/vendors/datatable/js/jszip.min.js"></script>
     <script src="{{ asset('template') }}/vendors/datatable/js/buttons.html5.min.js"></script>
     <script src="{{ asset('template') }}/vendors/datatable/js/buttons.print.min.js"></script>
-
     <script src="{{ asset('template') }}/vendors/typeahead.js/typeahead.bundle.min.js"></script>
-
 	<script src="{{ asset('template') }}/vendors/select2/select2.min.js"></script>
     <script src="{{ asset('template') }}/vendors/sweetalert2/sweetalert2.min.js"></script>
     <script src="{{ asset('template') }}/vendors/toastr/toastr.min.js"></script>
-
     <script src="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.min.js"></script>
-
     <script src="{{ asset('template') }}/vendors/lightbox2/js/lightbox.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/picturefill/2.3.1/picturefill.min.js"></script>
     <script src="{{ asset('template') }}/vendors/lightGallery/dist/js/lightgallery-all.min.js"></script>
     <script src="{{ asset('template') }}/vendors/lightGallery/lib/jquery.mousewheel.min.js"></script>
     <!-- End plugin js for all pages -->
@@ -453,17 +442,13 @@
 
 	<!-- Custom js for all pages -->
     <script src="{{ asset('template') }}/js/dashboard-dark.js"></script>
-    <script src="{{ asset('template') }}/js/datepicker.js"></script>
+    <script src="{{ asset('template') }}/js/chat.js"></script>
+    <script src="{{ asset('template') }}/js/chartjs-dark.js"></script>
+    <script src="{{ asset('template') }}/js/apexcharts-dark.js"></script>
 
     <script src="{{ asset('template') }}/js/data-table.js"></script>
 	<script src="{{ asset('template') }}/js/select2.js"></script>
-
     <script src="{{ asset('template') }}/js/lightbox.js"></script>
-
-    <script src="{{ asset('template') }}/js/chat.js"></script>
-
-    <script src="{{ asset('template') }}/js/chartjs-dark.js"></script>
-    <script src="{{ asset('template') }}/js/apexcharts-dark.js"></script>
 	<!-- End custom js for all page -->
 
     <!-- Page wise script -->

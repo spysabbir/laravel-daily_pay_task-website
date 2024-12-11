@@ -10,6 +10,13 @@
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Canceled</h3>
                 </div>
+                <div>
+                    <a href="{{ route('posted_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
+                    <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
+                    <a href="{{ route('posted_task.list.running') }}" class="btn btn-info btn-xs m-1">Running List</a>
+                    <a href="{{ route('posted_task.list.paused') }}" class="btn btn-secondary btn-xs m-1">Paused List</a>
+                    <a href="{{ route('posted_task.list.completed') }}" class="btn btn-success btn-xs m-1">Completed List</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -21,10 +28,10 @@
                                 <th>Title</th>
                                 <th>Submited At</th>
                                 <th>Proof Submitted</th>
-                                <th>Proof Status</th>
-                                <th>Total Cost</th>
-                                <th>Cost Status</th>
-                                <th>Cancellation Reason</th>
+                                {{-- <th>Proof Status</th> --}}
+                                {{-- <th>Total Cost</th> --}}
+                                {{-- <th>Cost Status</th> --}}
+                                {{-- <th>Cancellation Reason</th> --}}
                                 <th>Canceled At</th>
                                 <th>Canceled By</th>
                                 <th>Action</th>
@@ -81,10 +88,10 @@
                 { data: 'title', name: 'title' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'proof_status', name: 'proof_status' },
-                { data: 'total_cost', name: 'total_cost' },
-                { data: 'charge_status', name: 'charge_status' },
-                { data: 'cancellation_reason', name: 'cancellation_reason' },
+                // { data: 'proof_status', name: 'proof_status' },
+                // { data: 'total_cost', name: 'total_cost' },
+                // { data: 'charge_status', name: 'charge_status' },
+                // { data: 'cancellation_reason', name: 'cancellation_reason' },
                 { data: 'canceled_at', name: 'canceled_at' },
                 { data: 'canceled_by', name: 'canceled_by' },
                 { data: 'action', name: 'action' },

@@ -336,6 +336,9 @@ class TaskController extends Controller implements HasMiddleware
                 ->editColumn('user', function ($row) {
                     return $row->user->name;
                 })
+                ->editColumn('approved_at', function ($row) {
+                    return date('d M, Y h:i A', strtotime($row->approved_at));
+                })
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                     $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
@@ -367,11 +370,6 @@ class TaskController extends Controller implements HasMiddleware
                     }
                     return $proofStatus;
                 })
-                ->editColumn('created_at', function ($row) {
-                    return '
-                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
-                        ';
-                })
                 ->editColumn('paused_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->paused_at)) . '</span>
@@ -397,7 +395,7 @@ class TaskController extends Controller implements HasMiddleware
 
                     return $viewBtn . ' ' . $pausedBtn;
                 })
-                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'paused_at', 'paused_by', 'action'])
+                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'approved_at', 'paused_at', 'paused_by', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.paused');
@@ -442,10 +440,8 @@ class TaskController extends Controller implements HasMiddleware
                     </div>
                     ';
                 })
-                ->editColumn('created_at', function ($row) {
-                    return '
-                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
-                        ';
+                ->editColumn('approved_at', function ($row) {
+                    return date('d M, Y h:i A', strtotime($row->approved_at));
                 })
                 ->editColumn('completed_at', function ($row) {
                     return '
@@ -458,7 +454,7 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                 return $btn;
                 })
-                ->rawColumns(['user', 'worker_needed', 'created_at', 'completed_at', 'action'])
+                ->rawColumns(['user', 'worker_needed', 'approved_at', 'completed_at', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.completed');

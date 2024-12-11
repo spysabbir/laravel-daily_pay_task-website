@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 @endif
-                <h4 class="mx-2">Income Of Each Worker: <strong class="badge bg-primary">{{ get_site_settings('site_currency_symbol') }} {{ $taskDetails->income_of_each_worker }}</strong></h4>
+                <h4 class="mx-2">Worker Earn: <strong class="badge bg-primary">{{ get_site_settings('site_currency_symbol') }} {{ $taskDetails->income_of_each_worker }}</strong></h4>
             </div>
             <div class="card-body">
                 @if ($taskDetails->thumbnail)

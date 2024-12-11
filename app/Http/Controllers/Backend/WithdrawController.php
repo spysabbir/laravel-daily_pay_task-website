@@ -7,6 +7,8 @@ use App\Models\Bonus;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Withdraw;
+use App\Models\Report;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\WithdrawNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -110,7 +112,8 @@ class WithdrawController extends Controller implements HasMiddleware
     public function withdrawRequestShow(string $id)
     {
         $withdraw = Withdraw::where('id', $id)->first();
-        return view('backend.withdraw.show', compact('withdraw'));
+        $reportsPending = Report::where('user_id', Auth::id())->where('status', 'Pending')->count();
+        return view('backend.withdraw.show', compact('withdraw', 'reportsPending'));
     }
 
     public function withdrawRequestStatusChange(Request $request, string $id)

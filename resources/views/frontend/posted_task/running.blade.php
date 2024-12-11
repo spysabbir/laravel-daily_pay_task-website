@@ -10,6 +10,13 @@
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Running</h3>
                 </div>
+                <div>
+                    <a href="{{ route('posted_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
+                    <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
+                    <a href="{{ route('posted_task.list.canceled') }}" class="btn btn-warning btn-xs m-1">Canceled List</a>
+                    <a href="{{ route('posted_task.list.paused') }}" class="btn btn-secondary btn-xs m-1">Paused List</a>
+                    <a href="{{ route('posted_task.list.completed') }}" class="btn btn-success btn-xs m-1">Completed List</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -22,9 +29,9 @@
                                 <th>Approved At</th>
                                 <th>Total Boosting Time</th>
                                 <th>Proof Submitted</th>
-                                <th>Proof Status</th>
+                                {{-- <th>Proof Status</th> --}}
                                 {{-- <th>Total Cost</th> --}}
-                                <th>Cost Status</th>
+                                {{-- <th>Cost Status</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -44,21 +51,21 @@
                                                 <input type="hidden" id="post_task_id">
                                                 <div class="mb-3">
                                                     <label for="worker_needed" class="form-label">Additional Worker Needed <small class="text-danger">* Required </small></label>
-                                                    <input type="number" class="form-control" id="worker_needed" name="worker_needed" value="0" min="0" placeholder="Worker Needed">
+                                                    <input type="number" class="form-control" id="worker_needed" name="worker_needed" placeholder="Worker Needed">
                                                     <span class="text-danger error-text update_worker_needed_error"></span>
                                                     <small class="text-info d-block">* Each income of each worker {{ get_site_settings('site_currency_symbol') }} <span id="income_of_each_worker"></span>.</small>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="site_charge" class="form-label">Additional Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="update_site_charge" value="0" readonly>
-                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                    </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="task_charge" class="form-label">Additional Task Cost</label>
                                                     <div class="input-group">
                                                         <input type="number" class="form-control" id="update_task_charge" value="0" readonly>
+                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="site_charge" class="form-label">Additional Site Charge <strong class="text-info">( {{ get_default_settings('task_posting_charge_percentage') }} % )</strong></label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="update_site_charge" value="0" readonly>
                                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                                     </div>
                                                 </div>
@@ -165,9 +172,9 @@
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'total_boosting_time', name: 'total_boosting_time' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'proof_status', name: 'proof_status' },
+                // { data: 'proof_status', name: 'proof_status' },
                 // { data: 'total_cost', name: 'total_cost' },
-                { data: 'charge_status', name: 'charge_status' },
+                // { data: 'charge_status', name: 'charge_status' },
                 { data: 'action', name: 'action' }
             ],
             drawCallback: function(settings) {
@@ -322,6 +329,7 @@
                             <p>Boosting Start At: ${formatDate(new Date(response.boosting_start_at))}</p>
                             <p>Boosting End At: ${formatDate(startTime)}</p>
                             <p class="text-primary" id="countdown-${response.id}" data-end-time="${startTime.toISOString()}"></p>
+                            <p class="text-info">You can again boost after the current boosting time ends.</p>
                         `).show();
 
                         // Pass the unique element ID to startCountdown
@@ -364,7 +372,7 @@
             }, 1000); // Update every second
         }
 
-        // Function to format date as 18 Nov, 2024 05:15:30 PM
+        // Function to format date
         function formatDate(date) {
             const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             let day = date.getDate();
@@ -440,9 +448,24 @@
             var worker_needed = parseInt($('#worker_needed').val()) || 0;
             var income_of_each_worker = parseFloat($('#income_of_each_worker').text()) || 0;
 
-            var total_worker_needed_charge = income_of_each_worker * worker_needed;
-            var site_charge = (total_worker_needed_charge * {{ get_default_settings('task_posting_charge_percentage') }}) / 100;
-            var task_charge = total_worker_needed_charge + site_charge;
+            if (worker_needed < 0) {
+                $('.update_worker_needed_error').text('Worker needed should be greater than or equal to 0.');
+
+                // Disable submit button
+                $('#updateBtn').prop("disabled", true);
+            } else {
+                $('.update_worker_needed_error').text('');
+
+                // Enable submit button
+                $('#updateBtn').prop("disabled", false);
+
+            }
+
+            var task_charge = income_of_each_worker * worker_needed;
+            $('#update_task_charge').val(task_charge.toFixed(2));
+
+            var site_charge = (task_charge * {{ get_default_settings('task_posting_charge_percentage') }}) / 100;
+            $('#update_site_charge').val(site_charge.toFixed(2));
 
             var boosting_time = parseInt($('#boosting_time').val()) || 0;
             var boosting_time_charge = {{ get_default_settings('task_posting_boosting_time_charge') }};
@@ -454,10 +477,8 @@
             var total_boosting_time_charge = boosting_time_charge * (boosting_time / 15);
             var total_work_duration_charge = work_duration_charge * (work_duration - old_work_duration);
 
-            var total_task_charge = task_charge + total_boosting_time_charge + total_work_duration_charge;
+            var total_task_charge = task_charge + site_charge + total_boosting_time_charge + total_work_duration_charge;
 
-            $('#update_task_charge').val(task_charge.toFixed(2));
-            $('#update_site_charge').val(site_charge.toFixed(2));
             $('#update_total_task_charge').val(total_task_charge.toFixed(2));
         });
 

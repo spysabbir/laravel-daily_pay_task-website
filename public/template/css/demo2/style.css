@@ -25736,10 +25736,12 @@ div.tox .tox-dialog__body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 10px;
+    justify-items: center;
 }
 
 .proof-image {
     width: 100%;
+    max-width: 350px;
     height: auto;
     object-fit: cover;
 }

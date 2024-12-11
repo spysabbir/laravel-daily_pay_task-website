@@ -549,7 +549,7 @@ class PostedTaskController extends Controller
         $postTask = PostTask::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'worker_needed' => 'nullable|numeric|min:0',
+            'worker_needed' => 'nullable|numeric',
             'boosting_time' => 'nullable|numeric|min:0',
             'work_duration' => 'nullable|numeric|min:3',
         ]);
@@ -1080,6 +1080,9 @@ class PostedTaskController extends Controller
 
                 return DataTables::of($taskListPaused)
                     ->addIndexColumn()
+                    ->editColumn('approved_at', function ($row) {
+                        return date('d M, Y h:i A', strtotime($row->approved_at));
+                    })
                     ->editColumn('proof_submitted', function ($row) {
                         $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                         $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
@@ -1188,7 +1191,7 @@ class PostedTaskController extends Controller
 
                         return $btn;
                     })
-                    ->rawColumns(['proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'pausing_reason', 'paused_by', 'action'])
+                    ->rawColumns(['approved_at', 'proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'pausing_reason', 'paused_by', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.paused');

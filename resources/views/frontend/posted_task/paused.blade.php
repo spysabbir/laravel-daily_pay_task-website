@@ -13,6 +13,13 @@
                         Note: If your task paused by admin, you can see the reason here. If you want to resume the task, you can contact with admin.
                     </p>
                 </div>
+                <div>
+                    <a href="{{ route('posted_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
+                    <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
+                    <a href="{{ route('posted_task.list.running') }}" class="btn btn-info btn-xs m-1">Running List</a>
+                    <a href="{{ route('posted_task.list.canceled') }}" class="btn btn-warning btn-xs m-1">Canceled List</a>
+                    <a href="{{ route('posted_task.list.completed') }}" class="btn btn-success btn-xs m-1">Completed List</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -22,11 +29,12 @@
                                 <th>Sl No</th>
                                 <th>Task ID</th>
                                 <th>Title</th>
+                                <th>Approved At</th>
                                 <th>Proof Submitted</th>
-                                <th>Proof Status</th>
-                                <th>Total Cost</th>
-                                <th>Cost Status</th>
-                                <th>Pausing Reason</th>
+                                {{-- <th>Proof Status</th> --}}
+                                {{-- <th>Total Cost</th> --}}
+                                {{-- <th>Cost Status</th> --}}
+                                {{-- <th>Pausing Reason</th> --}}
                                 <th>Paused At</th>
                                 <th>Paused By</th>
                                 <th>Action</th>
@@ -81,11 +89,12 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
+                { data: 'approved_at', name: 'approved_at' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'proof_status', name: 'proof_status' },
-                { data: 'total_cost', name: 'total_cost' },
-                { data: 'charge_status', name: 'charge_status' },
-                { data: 'pausing_reason', name: 'pausing_reason' },
+                // { data: 'proof_status', name: 'proof_status' },
+                // { data: 'total_cost', name: 'total_cost' },
+                // { data: 'charge_status', name: 'charge_status' },
+                // { data: 'pausing_reason', name: 'pausing_reason' },
                 { data: 'paused_at', name: 'paused_at' },
                 { data: 'paused_by', name: 'paused_by' },
                 { data: 'action', name: 'action' },

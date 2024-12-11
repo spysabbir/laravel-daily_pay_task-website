@@ -10,6 +10,13 @@
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Pending</h3>
                 </div>
+                <div>
+                    <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
+                    <a href="{{ route('posted_task.list.running') }}" class="btn btn-info btn-xs m-1">Running List</a>
+                    <a href="{{ route('posted_task.list.canceled') }}" class="btn btn-warning btn-xs m-1">Canceled List</a>
+                    <a href="{{ route('posted_task.list.paused') }}" class="btn btn-secondary btn-xs m-1">Paused List</a>
+                    <a href="{{ route('posted_task.list.completed') }}" class="btn btn-success btn-xs m-1">Completed List</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

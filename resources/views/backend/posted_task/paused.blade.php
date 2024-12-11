@@ -41,9 +41,9 @@
                                 <th>User Id</th>
                                 <th>Task Id</th>
                                 <th>Title</th>
+                                <th>Approved At</th>
                                 <th>Proof Submitted</th>
                                 {{-- <th>Proof Status</th> --}}
-                                <th>Submited At</th>
                                 <th>Paused At</th>
                                 <th>Paused By</th>
                                 <th>Action</th>
@@ -104,9 +104,9 @@
                 { data: 'user_id', name: 'user_id' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
+                { data: 'approved_at', name: 'approved_at' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 // { data: 'proof_status', name: 'proof_status' },
-                { data: 'created_at', name: 'created_at' },
                 { data: 'paused_at', name: 'paused_at' },
                 { data: 'paused_by', name: 'paused_by' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
