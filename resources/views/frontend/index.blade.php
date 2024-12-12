@@ -178,7 +178,7 @@
                                     <strong>
                                         Work Duration:
                                         <br>
-                                        {{ $postTask->total_work_duration }} Days
+                                        {{ $postTask->work_duration }} Days
                                     </strong>
                                 </span>
                             </div>

@@ -36,7 +36,7 @@
                         <div>
                             <p><strong class="text-primary">Approved Date:</strong> {{ date('d F, Y  h:i:s A', strtotime($taskDetails->approved_at)) }}</p>
                             <p><strong class="text-primary">Worker Needed:</strong> {{ $taskDetails->worker_needed }}</p>
-                            <p><strong class="text-primary">Work Duration:</strong> {{ $taskDetails->total_work_duration }} Days</p>
+                            <p><strong class="text-primary">Work Duration:</strong> {{ $taskDetails->work_duration }} Days</p>
                         </div>
                         @if (!$taskProofExists)
                         <div>

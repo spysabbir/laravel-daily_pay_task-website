@@ -50,7 +50,7 @@
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Work Duration: </strong>
-                    Default: 3 Days & Additional: {{ $postTask->total_work_duration - 3 }} Days = Total: {{ $postTask->total_work_duration }} Days,
+                    Default: 3 Days & Additional: {{ $postTask->work_duration - 3 }} Days = Total: {{ $postTask->work_duration }} Days,
                     <strong class="text-info">Work Duration Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->work_duration_charge }}
                 </p>
                 <p class="border p-1 m-1">

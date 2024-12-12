@@ -81,8 +81,8 @@
                                 <td>Work Duration</td>
                                 <td>
                                     Default: 3 Days <br>
-                                    Additional: {{ $postTask->total_work_duration - 3 }} Days <br>
-                                    Total: {{ $postTask->total_work_duration }} Days
+                                    Additional: {{ $postTask->work_duration - 3 }} Days <br>
+                                    Total: {{ $postTask->work_duration }} Days
                                 </td>
                             </tr>
                             <tr>
