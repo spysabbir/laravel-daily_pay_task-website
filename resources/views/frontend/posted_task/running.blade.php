@@ -349,7 +349,8 @@
 
                 if (timeRemaining <= 0) {
                     clearInterval(interval);
-                    $(elementSelector).text("Boosting time has ended!");
+                    $('#boosting_time_countdown_div').hide();
+                    $('#boosting_time_input_div').show();
                     return;
                 }
 

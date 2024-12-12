@@ -924,9 +924,21 @@ class PostedTaskController extends Controller
     {
         $postTask = PostTask::findOrFail($id);
 
+        $boosting_start_at_diff_in_minutes = Carbon::parse($postTask->boosting_start_at)->diffInMinutes(Carbon::now());
+        $boosting_start_at_diff_rounded = $postTask->boosting_time - round($boosting_start_at_diff_in_minutes);
+
         if ($postTask->status == 'Paused') {
+            if ($boosting_start_at_diff_rounded > 0) {
+                $postTask->boosting_start_at = now();
+            }
+
             $postTask->status = 'Running';
         } else if ($postTask->status == 'Running') {
+            if ($boosting_start_at_diff_rounded > 0) {
+                $postTask->boosting_start_at = null;
+                $postTask->boosting_time = $boosting_start_at_diff_rounded;
+            }
+
             $postTask->paused_at = now();
             $postTask->paused_by = auth()->user()->id;
             $postTask->status = 'Paused';
