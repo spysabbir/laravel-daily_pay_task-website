@@ -145,6 +145,7 @@ class PostedTaskController extends Controller
             'total_boosting_time' => $request->boosting_time,
             'boosting_time_charge' => $total_boosting_time_charge,
             'work_duration' => $request->work_duration,
+            'total_work_duration' => $request->work_duration,
             'work_duration_charge' => $total_work_duration_charge,
             'total_cost' => $total_task_cost,
             'status' => 'Pending',
@@ -232,6 +233,7 @@ class PostedTaskController extends Controller
             'total_boosting_time' => $request->boosting_time,
             'boosting_time_charge' => $total_boosting_time_charge,
             'work_duration' => $request->work_duration,
+            'total_work_duration' => $request->work_duration,
             'work_duration_charge' => $total_work_duration_charge,
             'total_cost' => $total_task_cost,
             'status' => 'Pending',
@@ -549,9 +551,9 @@ class PostedTaskController extends Controller
         $postTask = PostTask::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'worker_needed' => 'nullable|numeric',
+            'worker_needed' => 'nullable|numeric|min:0',
             'boosting_time' => 'nullable|numeric|min:0',
-            'work_duration' => 'nullable|numeric|min:3',
+            'work_duration' => 'nullable|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -566,9 +568,9 @@ class PostedTaskController extends Controller
 
             $boosting_time_charge = number_format(get_default_settings('task_posting_boosting_time_charge') * ($request->boosting_time / 15), 2, '.', '');
 
-            $work_duration_charge = number_format((($request->work_duration > $postTask->work_duration ? $request->work_duration - $postTask->work_duration : 0) * get_default_settings('task_posting_additional_work_duration_charge')), 2, '.', '');
+            $work_duration_charge = number_format(($request->work_duration * get_default_settings('task_posting_additional_work_duration_charge')), 2, '.', '');
 
-            $total_cost = number_format( $task_cost + $site_charge + $boosting_time_charge + $work_duration_charge, 2, '.', '');
+            $total_cost = number_format($task_cost + $site_charge + $boosting_time_charge + $work_duration_charge, 2, '.', '');
 
             if ($request->user()->deposit_balance < $total_cost) {
                 return response()->json([
@@ -588,7 +590,9 @@ class PostedTaskController extends Controller
                     'total_boosting_time' => $postTask->total_boosting_time + $request->boosting_time,
                     'boosting_time_charge' => $postTask->boosting_time_charge + $boosting_time_charge,
                     'boosting_start_at' => $request->boosting_time > 0 ? now() : $postTask->boosting_start_at,
-                    'work_duration' => $request->work_duration,
+                    'work_duration' => $request->work_duration > 0 ? $request->work_duration : $postTask->work_duration,
+                    'total_work_duration' => $postTask->total_work_duration + $request->work_duration,
+                    'work_duration_charge' => $postTask->work_duration_charge + $work_duration_charge,
                     'total_cost' => $postTask->total_cost + $total_cost,
                 ]);
 

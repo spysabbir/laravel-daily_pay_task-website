@@ -106,7 +106,7 @@ Schedule::call(function () {
     $postTasks = PostTask::where('status', 'Running')->get();
 
     foreach ($postTasks as $postTask) {
-        $canceledTime = Carbon::parse($postTask->approved_at)->addDays($postTask->work_duration);
+        $canceledTime = Carbon::parse($postTask->approved_at)->addDays($postTask->total_work_duration);
 
         if (now()->isSameMinute($canceledTime)) {
             $postTask->update([

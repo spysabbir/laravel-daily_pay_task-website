@@ -33,6 +33,7 @@ return new class extends Migration
             $table->timestamp('boosting_start_at')->nullable();
             $table->decimal('boosting_time_charge', 8, 2)->default(0);
             $table->integer('work_duration');
+            $table->integer('total_work_duration');
             $table->decimal('work_duration_charge', 8, 2)->default(0);
             $table->decimal('total_cost', 8, 2)->default(0);
             $table->enum('status', ['Pending', 'Running', 'Rejected', 'Canceled', 'Paused', 'Completed'])->default('Pending');

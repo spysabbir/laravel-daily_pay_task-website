@@ -50,7 +50,7 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="post_task_id">
                                                 <div class="mb-3">
-                                                    <label for="worker_needed" class="form-label">Additional Worker Needed <small class="text-danger">* Required </small></label>
+                                                    <label for="worker_needed" class="form-label">Additional Worker Needed <small class="text-info">* Optional </small></label>
                                                     <input type="number" class="form-control" id="worker_needed" name="worker_needed" placeholder="Worker Needed">
                                                     <span class="text-danger error-text update_worker_needed_error"></span>
                                                     <small class="text-info d-block">* Each income of each worker {{ get_site_settings('site_currency_symbol') }} <span id="income_of_each_worker"></span>.</small>
@@ -71,9 +71,9 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <div id="boosting_time_input_div">
-                                                        <label for="boosting_time" class="form-label">Additional Boosting Time <small class="text-danger">* Required </small></label>
+                                                        <label for="boosting_time" class="form-label">Additional Boosting Time <small class="text-info">* Optional </small></label>
                                                         <select class="form-select" name="boosting_time" id="boosting_time">
-                                                            <option value="0">No Boost</option>
+                                                            <option value="0">No Additional Boosting Time</option>
                                                             <option value="15">15 Minutes</option>
                                                             <option value="30">30 Minutes</option>
                                                             <option value="45">45 Minutes</option>
@@ -92,9 +92,11 @@
                                                     <div class="border text-center py-3" id="boosting_time_countdown_div"></div>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <input type="hidden" id="old_work_duration">
-                                                    <label for="work_duration" class="form-label">Additional Work Duration <small class="text-danger">* Required </small></label>
+                                                    <label for="work_duration" class="form-label">Additional Work Duration <small class="text-info">* Optional </small></label>
                                                     <select class="form-select" name="work_duration" id="work_duration">
+                                                        <option value="0">No Additional Work Duration</option>
+                                                        <option value="1">1 Days</option>
+                                                        <option value="2">2 Days</option>
                                                         <option value="3">3 Days</option>
                                                         <option value="4">4 Days</option>
                                                         <option value="5">5 Days</option>
@@ -309,17 +311,12 @@
                 type: "GET",
                 success: function (response) {
                     $('#post_task_id').val(response.id);
-                    $('#work_duration').val(response.work_duration);
-                    $('#old_work_duration').val(response.work_duration);
                     $('#income_of_each_worker').text(response.income_of_each_worker);
 
                     // Calculate boosting end time
                     let startTime = new Date(response.boosting_start_at);
                     startTime.setMinutes(startTime.getMinutes() + response.boosting_time);
-
-                    let currentTime = new Date(); // Get the current time
-
-                    // Check if boosting time is still active
+                    let currentTime = new Date();
                     if (currentTime < startTime) {
                         // Boosting is active
                         $('#boosting_time_input_div').hide();
@@ -335,13 +332,9 @@
                         // Pass the unique element ID to startCountdown
                         startCountdown(startTime, `#countdown-${response.id}`);
                     } else {
-                        // Boosting has ended
                         $('#boosting_time_countdown_div').hide();
                         $('#boosting_time_input_div').show();
                     }
-
-                    // Disable lower options based on old_work_duration
-                    disableLowerOptions(response.work_duration);
 
                     // Update the modal with the task details
                     $('.editModal').modal('show');
@@ -387,19 +380,6 @@
             hours = hours % 12 || 12; // Convert 0 to 12 for midnight
 
             return `${day} ${month}, ${year} ${hours}:${minutes}:${seconds} ${period}`;
-        }
-
-        // Disable lower options based on oldWorkDuration
-        function disableLowerOptions(oldWorkDuration) {
-            // Enable all options first
-            $('#work_duration option').prop('disabled', false);
-
-            // Disable options with value less than oldWorkDuration
-            $('#work_duration option').each(function () {
-                if (parseInt($(this).val()) < oldWorkDuration) {
-                    $(this).prop('disabled', true);
-                }
-            });
         }
 
         // Update Data
@@ -470,12 +450,11 @@
             var boosting_time = parseInt($('#boosting_time').val()) || 0;
             var boosting_time_charge = {{ get_default_settings('task_posting_boosting_time_charge') }};
 
-            var old_work_duration = parseInt($('#old_work_duration').val()) || 0;
             var work_duration = parseInt($('#work_duration').val()) || 0;
             var work_duration_charge = {{ get_default_settings('task_posting_additional_work_duration_charge') }};
 
             var total_boosting_time_charge = boosting_time_charge * (boosting_time / 15);
-            var total_work_duration_charge = work_duration_charge * (work_duration - old_work_duration);
+            var total_work_duration_charge = work_duration_charge * work_duration;
 
             var total_task_charge = task_charge + site_charge + total_boosting_time_charge + total_work_duration_charge;
 

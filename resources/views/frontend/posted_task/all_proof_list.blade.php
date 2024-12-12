@@ -41,11 +41,6 @@
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Boosting Time: </strong>
-                    @if($postTask->boosting_time < 60)
-                        Last: {{ $postTask->boosting_time }} Minute{{ $postTask->boosting_time > 1 ? 's' : '' }} =
-                    @elseif($postTask->boosting_time >= 60)
-                        Last: {{ round($postTask->boosting_time / 60, 1) }} Hour{{ round($postTask->boosting_time / 60, 1) > 1 ? 's' : '' }} =
-                    @endif
                     @if($postTask->total_boosting_time < 60)
                         Total: {{ $postTask->total_boosting_time }} Minute{{ $postTask->total_boosting_time > 1 ? 's' : '' }},
                     @elseif($postTask->total_boosting_time >= 60)
@@ -55,7 +50,7 @@
                 </p>
                 <p class="border p-1 m-1">
                     <strong class="text-info">Work Duration: </strong>
-                    Default: 3 Days & Additional: {{ $postTask->work_duration - 3 }} Days = Total: {{ $postTask->work_duration }} Days,
+                    Default: 3 Days & Additional: {{ $postTask->total_work_duration - 3 }} Days = Total: {{ $postTask->total_work_duration }} Days,
                     <strong class="text-info">Work Duration Charge: </strong>{{ get_site_settings('site_currency_symbol') }} {{ $postTask->work_duration_charge }}
                 </p>
                 <p class="border p-1 m-1">

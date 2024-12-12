@@ -54,12 +54,6 @@
                             <tr>
                                 <td>Boosting Time</td>
                                 <td>
-                                    @if($postTask->boosting_time < 60)
-                                        Last: {{ $postTask->boosting_time }} Minute{{ $postTask->boosting_time > 1 ? 's' : '' }}
-                                    @elseif($postTask->boosting_time >= 60)
-                                        Last: {{ round($postTask->boosting_time / 60, 1) }} Hour{{ round($postTask->boosting_time / 60, 1) > 1 ? 's' : '' }}
-                                    @endif
-                                    <br>
                                     @if($postTask->total_boosting_time < 60)
                                         Total: {{ $postTask->total_boosting_time }} Minute{{ $postTask->total_boosting_time > 1 ? 's' : '' }}
                                     @elseif($postTask->total_boosting_time >= 60)
@@ -75,8 +69,8 @@
                                 <td>Work Duration</td>
                                 <td>
                                     Default: 3 Days <br>
-                                    Additional: {{ $postTask->work_duration - 3 }} Days <br>
-                                    Total: {{ $postTask->work_duration }} Days
+                                    Additional: {{ $postTask->total_work_duration - 3 }} Days <br>
+                                    Total: {{ $postTask->total_work_duration }} Days
                                 </td>
                             </tr>
                             <tr>
