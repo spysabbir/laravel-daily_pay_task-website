@@ -13,7 +13,7 @@
                 </div>
                 <div class="action-btn d-flex">
                     <!-- Withdrawal Balance Deposit Modal -->
-                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target=".withdrawalBalanceDepositModel">Withdrawal Balance Deposit</button>
+                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target=".withdrawalBalanceDepositModel">Withdrawal Balance To Deposit</button>
                     <div class="modal fade withdrawalBalanceDepositModel" tabindex="-1" aria-labelledby="withdrawalBalanceDepositModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">

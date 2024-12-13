@@ -248,16 +248,16 @@ class UserController extends Controller
         $verification = Verification::where('user_id', $user->id)->first();
         $ratingGiven = Rating::where('rated_by', $user->id)->get();
         $ratingReceived  = Rating::where('user_id', $user->id)->get();
-        $userDetails = UserDetail::where('user_id', $user->id)->latest()->take(5)->get();
         $reportUserCount = Report::where('user_id', $user->id)->where('type', 'User')->count();
         $reportPostTaskCount = Report::where('user_id', $user->id)->where('type', 'Post Task')->count();
         $reportProofTaskCount = Report::where('user_id', $user->id)->where('type', 'Proof Task')->count();
-        return view('profile.edit', compact('user', 'verification', 'userDetails', 'ratingGiven', 'ratingReceived', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
+        return view('profile.edit', compact('user', 'verification', 'ratingGiven', 'ratingReceived', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
     }
 
     public function profileSetting(Request $request)
     {
         $user = $request->user();
+        $userDetails = UserDetail::where('user_id', $user->id)->latest()->take(5)->get();
         $verification = Verification::where('user_id', $user->id)->first();
         $ratingGiven = Rating::where('rated_by', $user->id)->get();
         $ratingReceived  = Rating::where('user_id', $user->id)->get();
@@ -265,7 +265,7 @@ class UserController extends Controller
         $reportUserCount = Report::where('user_id', $user->id)->where('type', 'User')->count();
         $reportPostTaskCount = Report::where('user_id', $user->id)->where('type', 'Post Task')->count();
         $reportProofTaskCount = Report::where('user_id', $user->id)->where('type', 'Proof Task')->count();
-        return view('profile.setting', compact('user', 'verification', 'ratingGiven', 'ratingReceived', 'blockedStatuses', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
+        return view('profile.setting', compact('user', 'userDetails', 'verification', 'ratingGiven', 'ratingReceived', 'blockedStatuses', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
     }
 
     public function userProfile($id)
@@ -800,16 +800,24 @@ class UserController extends Controller
                     ->editColumn('bonus_by', function ($row) {
                         if ($row->type == 'Proof Task Approved Bonus') {
                             $bonus_by = '
-                            <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
-                                '.$row->bonusBy->name.'
-                            </a>
+                                <a href="'.route('user.profile', encrypt($row->user_id)).'" title="'.$row->user->name.'" class="text-info">
+                                    '.$row->user->name.'
+                                </a>
                             ';
                         } else {
                             $bonus_by = '
-                            <span class="badge bg-primary">'.get_site_settings('site_name').'</span>
+                                <span class="badge bg-primary">'.get_site_settings('site_name').'</span>
                             ';
                         }
                         return $bonus_by;
+                    })
+                    ->editColumn('bonus_user', function ($row) {
+                        $bonus_user = '
+                        <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
+                            '.$row->bonusBy->name.'
+                        </a>
+                        ';
+                        return $bonus_user;
                     })
                     ->editColumn('amount', function ($row) {
                         return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
@@ -817,7 +825,7 @@ class UserController extends Controller
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
-                    ->rawColumns(['type', 'bonus_by', 'amount', 'created_at'])
+                    ->rawColumns(['type', 'bonus_user', 'bonus_by', 'amount', 'created_at'])
                     ->make(true);
             }
 

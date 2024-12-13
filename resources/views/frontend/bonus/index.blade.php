@@ -40,8 +40,9 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Bonus Type</th>
-                                <th>Bonus By</th>
+                                <th>Type</th>
+                                <th>By</th>
+                                <th>User</th>
                                 <th>Amount</th>
                                 <th>Date</th>
                             </tr>
@@ -81,6 +82,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'type', name: 'type' },
                 { data: 'bonus_by', name: 'bonus_by' },
+                { data: 'bonus_user', name: 'bonus_type' },
                 { data: 'amount', name: 'amount' },
                 { data: 'created_at', name: 'created_at' },
             ]

@@ -10,15 +10,17 @@
                 <figure class="overflow-hidden mb-0 d-flex justify-content-center">
                     <img src="{{ asset('template/images/others/profile_cover.jpg') }}" class="rounded-top" alt="profile cover">
                 </figure>
-                <div class="d-flex justify-content-between align-items-center position-absolute top-90 w-100 px-2 px-md-4 mt-n4">
-                    <div class="d-flex">
-                        <img class="wd-70 rounded-circle" src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="profile">
+                <div class="row  w-100 px-2 px-md-4 mt-n4">
+                    <div class="col-xl-5 col-lg-12 my-2 d-flex">
+                        <img class="wd-70 rounded-circle" id="userProfilePhotoPreview" src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="profile">
                         <div>
-                            <h4 class="ms-3">{{ $user->name }}</h4>
-                            <h6 class="ms-3">{{ $user->email }}</h6>
+                            <h4 class="ms-3 text-info">Name: {{ $user->name }}</h4>
+                            <h5 class="ms-3 text-info">Email: {{ $user->email }}</h5>
+                            <h5 class="ms-3 text-info">Joined: {{ $user->created_at->format('j F, Y  h:i:s A') }}</h5>
+                            <h5 class="ms-3 text-info">Last Active: {{ date('j F, Y  h:i:s A', strtotime($user->last_login_at)) }}</h5>
                         </div>
                     </div>
-                    <div class="d-none d-md-block">
+                    <div class="col-xl-7 col-lg-12 my-2 d-flex justify-content-between align-items-center">
                         @php
                             $statusClasses = [
                                 'Active' => 'btn-primary',
@@ -28,22 +30,21 @@
                             $status = $user->status;
                             $buttonClass = $statusClasses[$status] ?? 'btn-danger';
                         @endphp
-                        <button class="btn {{ $buttonClass }} btn-icon-text">
+                        <button class="btn {{ $buttonClass }} btn-xs mx-2 btn-icon-text">
                             Account Status: {{ $status }}
                         </button>
-
                         @if (Auth::user()->isFrontendUser())
-                            <button class="btn btn-info btn-icon-text">
+                            <button class="btn btn-info btn-xs mx-2 btn-icon-text">
                                 Verification Status: {{ $verification->status ?? 'Not Submitted' }}
                             </button>
                             @if ($user->hasVerification('Approved'))
-                                <button class="btn btn-success btn-icon-text">
+                                <button class="btn btn-success btn-xs mx-2 btn-icon-text">
                                     Rating Given: {{ $ratingGiven->count() }} Task | {{ round($ratingGiven->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
                                 </button>
-                                <button class="btn btn-success btn-icon-text">
+                                <button class="btn btn-success btn-xs mx-2 btn-icon-text">
                                     Rating Received: {{ $ratingReceived->count() }} Task | {{ round($ratingReceived->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
                                 </button>
-                                <button class="btn btn-warning btn-icon-text">
+                                <button class="btn btn-warning btn-xs mx-2 btn-icon-text">
                                     Report Received: {{ $reportUserCount }} Profile | {{ $reportPostTaskCount }} Post Task | {{ $reportProofTaskCount }} Proof Task
                                 </button>
                             @endif
@@ -55,8 +56,8 @@
                 <ul class="d-flex align-items-center m-0 p-0">
                     <li class="d-flex align-items-center active">
                         <i class="me-1 icon-md text-primary" data-feather="columns"></i>
-                        <span class="pt-1px d-none d-md-block text-primary">
-                            Update your account's profile information.
+                        <span class="pt-1px  text-primary">
+                            Check your profile details.
                         </span>
                     </li>
                 </ul>
@@ -65,47 +66,39 @@
     </div>
 </div>
 
-<div class="row profile-body">
-    <div class="col-xl-6 col-lg-12 grid-margin">
-        <div class="card rounded">
+<div class="row profile-body justify-content-center">
+    <div class="col-xl-9 col-lg-12 grid-margin">
+        <div class="card rounded mb-3">
             <div class="card-header">
-                <h4 class="card-title">Update Password</h4>
-                <p class="text-info">Note: The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.</p>
+                <h6 class="card-title mb-0">Ip Address</h6>
+                <small class="text-muted">Note: latest 5 IP addresses are shown here.</small>
             </div>
             <div class="card-body">
-                <form method="post" action="{{ route('password.update') }}" class="forms-sample">
-                    @csrf
-                    @method('put')
-                    <div class="mb-3">
-                        <label for="update_current_password" class="form-label">Current Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="update_current_password" name="current_password" placeholder="Current Password" required>
-                        @error('current_password')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_new_password" class="form-label">New Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="update_new_password" name="password" placeholder="New Password" required>
-                        @error('password')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="update_password_confirmation" name="password_confirmation" placeholder="Confirm Password" required>
-                        @error('password_confirmation')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-primary text-white me-2 mb-2 mb-md-0">Change Password</button>
-                    </div>
-                </form>
+                <div class="table-responsive">
+                    <table class="table align-middle text-center">
+                        <thead>
+                            <tr>
+                                <th>Ip</th>
+                                <th>Device</th>
+                                <th>Updated Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($userDetails as $userDetail)
+                            <tr>
+                                <td>{{ $userDetail->ip }}</td>
+                                <td>{{ $userDetail->device }}</td>
+                                <td>{{ date('j M, Y  h:i:s A', strtotime($userDetail->updated_at)) }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
     @if (Auth::user()->isFrontendUser())
-    <div class="col-xl-6 col-lg-12 grid-margin">
+    <div class="col-xl-9 col-lg-12 grid-margin">
         <div class="card rounded mb-3">
             <div class="card-header">
                 <h6 class="card-title">Blocked Statuses</h6>
@@ -116,7 +109,7 @@
             <div class="card-body">
                 <h3 class="text-danger text-center mb-2">Total Blocked: {{ $blockedStatuses->count() }}</h3>
                 <div class="table-responsive">
-                    <table class="table align-middle">
+                    <table class="table align-middle text-center">
                         <thead>
                             <tr>
                                 <th>Reason</th>
@@ -143,6 +136,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="col-xl-8 col-lg-12 grid-margin">
         <div class="card rounded mb-3">
             <div class="card-header">
                 <h6 class="card-title">Delete Account</h6>
