@@ -131,9 +131,23 @@
                 @if ($proofCount < $taskDetails->worker_needed)
                 <div class="my-2 border p-3 rounded bg-dark">
                     @if ($taskProofExists)
-                    <div class="alert alert-success">
-                        <strong>Proof already submitted! Please wait for the buyer response.</strong>
-                    </div>
+                        @if ($taskProof->status == 'Pending')
+                        <div class="alert alert-info">
+                            <strong>Proof already submitted! Please wait for the buyer response.</strong>
+                        </div>
+                        @elseif ($taskProof->status == 'Approved')
+                        <div class="alert alert-success">
+                            <strong>The proof has been approved! You have earned {{ get_site_settings('site_currency_symbol') }} {{ $taskDetails->income_of_each_worker }}.</strong>
+                        </div>
+                        @elseif ($taskProof->status == 'Rejected')
+                        <div class="alert alert-danger">
+                            <strong>The proof has been rejected! If you think this is a mistake, please submit a review request.</strong>
+                        </div>
+                        @elseif ($taskProof->status == 'Reviewed')
+                        <div class="alert alert-warning">
+                            <strong>The proof has been reviewed! Please wait for the admin response.</strong>
+                        </div>
+                        @endif
                     @else
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -196,10 +210,19 @@
             <div class="card-body">
                 <div class="border p-3 text-center mb-3">
                     <img src="{{ asset('uploads/profile_photo') }}/{{ $taskDetails->user->profile_photo }}" alt="Profile photo for {{ $taskDetails->user->name }}" class="mb-3 rounded-circle" width="150px" height="150px">
+                    <p>
+                        <strong>Reviews: {{ $reviewDetails->count() }} | Ratings: </strong>
+                        @if ($reviewDetails->count() == 0)
+                            <span class="text-danger">Not Rated</span>
+                        @else
+                            @for ($i = 0; $i < $reviewDetails->avg('rating'); $i++)
+                                <i class="fa-solid fa-star text-warning"></i>
+                            @endfor
+                        @endif
+                    <h5>
                     <p>Name: <a href="{{ route('user.profile', encrypt($taskDetails->user->id)) }}" class="text-info">{{ $taskDetails->user->name }}</a></p>
                     <p>Last Active: <span class="text-info">{{ Carbon\Carbon::parse($taskDetails->user->last_login_at)->diffForHumans() }}</span></p>
                     <p>Join Date: <span class="text-info">{{ $taskDetails->user->created_at->format('d M, Y') }}</span></p>
-                    <p>Bio: {{ $taskDetails->user->bio ?? 'N/A' }}</p>
                 </div>
                 <div class="d-flex align-items-center justify-content-between border p-3">
                     <!-- Report User Button -->

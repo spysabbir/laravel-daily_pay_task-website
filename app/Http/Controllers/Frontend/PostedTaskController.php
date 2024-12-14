@@ -424,9 +424,9 @@ class PostedTaskController extends Controller
                     ->addIndexColumn()
                     ->editColumn('total_boosting_time', function ($row) {
                         $boosting_start_at = Carbon::parse($row->boosting_start_at);
-                        $boostingEndTime = $boosting_start_at->addMinutes($row->boosting_time);
+                        $boostingEndTime = $boosting_start_at->addMinutes((int) $row->boosting_time);
 
-                        if ($row->total_boosting_time == null) {
+                        if ($row->total_boosting_time == 0) {
                             return '<span class="badge bg-secondary">Not boosting</span>';
                         } else if ($boostingEndTime->isFuture()) {
                             return '<span class="countdown badge bg-success" data-end-time="' . $boostingEndTime->toIso8601String() .'"></span>';
@@ -442,6 +442,11 @@ class PostedTaskController extends Controller
                                 ';
                             }
                         }
+                    })
+                    ->editColumn('work_duration', function ($row) {
+                        $approvedDate = Carbon::parse($row->approved_at);
+                        $endDate = $approvedDate->addDays((int) $row->work_duration);
+                        return '<span class="badge bg-primary">' . $endDate->format('d M, Y h:i:s A') . '</span>';
                     })
                     ->editColumn('proof_submitted', function ($row) {
                         $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
@@ -531,7 +536,7 @@ class PostedTaskController extends Controller
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['total_boosting_time', 'proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'approved_at', 'action'])
+                    ->rawColumns(['total_boosting_time', 'work_duration', 'proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'approved_at', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.running');
@@ -811,7 +816,9 @@ class PostedTaskController extends Controller
     public function proofTaskCheck($id)
     {
         $proofTask = ProofTask::findOrFail($id);
-        return view('frontend.posted_task.proof_check', compact('proofTask'));
+        $rating = Rating::where('user_id', $proofTask->user_id)->where('post_task_id', $proofTask->post_task_id)->first();
+        $bonus = Bonus::where('user_id', $proofTask->user_id)->where('post_task_id', $proofTask->post_task_id)->first();
+        return view('frontend.posted_task.proof_check', compact('proofTask', 'rating', 'bonus'));
     }
 
     public function proofTaskAllPendingCheck($id)
@@ -1107,6 +1114,11 @@ class PostedTaskController extends Controller
                             </div>
                         ';
                     })
+                    ->editColumn('work_duration', function ($row) {
+                        $approvedDate = Carbon::parse($row->approved_at);
+                        $endDate = $approvedDate->addDays($row->work_duration);
+                        return '<span class="badge bg-primary">' . $endDate->format('d M, Y h:i:s A') . '</span>';
+                    })
                     ->editColumn('proof_status', function ($row) {
                         $statuses = [
                             'Pending' => 'bg-warning',
@@ -1204,7 +1216,7 @@ class PostedTaskController extends Controller
 
                         return $btn;
                     })
-                    ->rawColumns(['approved_at', 'proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'pausing_reason', 'paused_by', 'action'])
+                    ->rawColumns(['approved_at', 'proof_submitted', 'work_duration', 'proof_status', 'total_cost', 'charge_status', 'pausing_reason', 'paused_by', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.paused');

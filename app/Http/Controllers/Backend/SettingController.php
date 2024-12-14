@@ -159,8 +159,8 @@ class SettingController extends Controller implements HasMiddleware
 
         $siteSetting->update([
             'site_name' => $request->site_name,
-            // 'site_tagline' => $request->site_tagline,
-            // 'site_description' => $request->site_description,
+            'site_tagline' => $request->site_tagline,
+            'site_description' => $request->site_description,
             'site_url' => $request->site_url,
             'site_timezone' => $request->site_timezone,
             'site_currency' => $request->site_currency,

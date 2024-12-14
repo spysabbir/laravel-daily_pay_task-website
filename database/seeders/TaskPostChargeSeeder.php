@@ -74,12 +74,6 @@ class TaskPostChargeSeeder extends Seeder
             [
                 'category_id' => 2,
                 'sub_category_id' => 7,
-                'min_charge' => 8,
-                'max_charge' => 11,
-            ],
-            [
-                'category_id' => 2,
-                'sub_category_id' => 7,
                 'min_charge' => 9,
                 'max_charge' => 12,
             ],

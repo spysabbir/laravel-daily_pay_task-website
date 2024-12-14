@@ -31,6 +31,7 @@
                                 <th>Title</th>
                                 <th>Approved At</th>
                                 <th>Proof Submitted</th>
+                                <th>Work Duration Expire</th>
                                 {{-- <th>Proof Status</th> --}}
                                 {{-- <th>Total Cost</th> --}}
                                 {{-- <th>Cost Status</th> --}}
@@ -91,6 +92,7 @@
                 { data: 'title', name: 'title' },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
+                { data: 'work_duration', name: 'work_duration' },
                 // { data: 'proof_status', name: 'proof_status' },
                 // { data: 'total_cost', name: 'total_cost' },
                 // { data: 'charge_status', name: 'charge_status' },

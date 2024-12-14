@@ -13,13 +13,6 @@
         @else
         <div class="mb-3">
             <h4>Proof Image:</h4>
-            {{-- <div class="image-grid">
-                @foreach (json_decode($proofTask->proof_photos) as $photo)
-                    <a href="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-lightbox="gallery" data-title="Proof Task Photo {{ $loop->iteration }}">
-                        <img src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" class="proof-image my-3" alt="Proof Task Photo {{ $loop->iteration }}">
-                    </a>
-                @endforeach
-            </div> --}}
             <div id="backend-single-lightgallery" class="image-grid">
                 @foreach (json_decode($proofTask->proof_photos) as $photo)
                 <a href="" class="" data-src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-sub-html="<h4>Proof Task Photo {{ $loop->iteration }}</h4>">

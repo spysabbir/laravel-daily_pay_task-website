@@ -9,7 +9,7 @@
         <div class="d-table-cell">
             <div class="container">
                 <div class="banner-text">
-                    <span>Wellcome to {{ get_site_settings('site_name') }}</span>
+                    <span>Welcome to {{ get_site_settings('site_name') }}</span>
                     <h1>{{ get_site_settings('site_tagline') }}</h1>
                     <p>{{ get_site_settings('site_description') }}</p>
                     <div class="theme-btn">

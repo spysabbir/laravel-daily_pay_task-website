@@ -308,7 +308,7 @@ class UserController extends Controller
     {
         $request->validate([
             'id_type' => 'required|in:NID,Passport,Driving License',
-            'id_number' => 'required|string|min:10|unique:verifications,id_number,'.$request->user()->id.',user_id',
+            'id_number' => 'required|string|unique:verifications,id_number,'.$request->user()->id.',user_id',
             'id_front_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'id_with_face_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -343,7 +343,7 @@ class UserController extends Controller
     {
         $request->validate([
             'id_type' => 'required|in:NID,Passport,Driving License',
-            'id_number' => 'required|string|max:255|unique:verifications,id_number,'.$request->user()->id.',user_id',
+            'id_number' => 'required|string|unique:verifications,id_number,'.$request->user()->id.',user_id',
             'id_front_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_with_face_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);

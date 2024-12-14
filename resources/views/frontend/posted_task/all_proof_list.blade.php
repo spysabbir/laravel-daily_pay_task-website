@@ -124,11 +124,11 @@
                         <div class="mb-3">
                             <strong class="text-danger">Warning: if you Reject the proof, the worker can request for review within 72 hours. The admin will check the proof and if it is correct then the worker will be paid or if the proof is wrong then the worker will not be paid. Because of this, only Rejected money will be on hold for 72 hours because you Proof Rejected. If the worker does not request for review within 72 hours, your money will be automatically add your deposit balance. If the worker request for review within 72 hours, the admin will review the proof within 72 hours. Both you and the worker will receive a notification with the results. Please be careful and work well with integrity and don't intentionally reject someone's work.</strong>
                         </div>
-                        <div class="col-md-7">
-                            <button type="button" class="btn btn-sm btn-success" id="approvedAll">All Pending Item Approved</button>
-                            <button type="button" class="btn btn-sm btn-info" id="selectedItemApproved">Selected Item Approved</button>
-                            <button type="button" class="btn btn-sm btn-warning" id="selectedItemRejected">Selected Item Rejected</button>
-                            <button type="button" class="btn btn-primary btn-xs checkAllPendingTaskProofBtn">Check All Pending Task Proof</button>
+                        <div class="col-xl-7 col-lg-12">
+                            <button type="button" class="btn btn-sm btn-success btn-xs m-1 " id="approvedAll">All Pending Item Approved</button>
+                            <button type="button" class="btn btn-sm btn-info btn-xs m-1 " id="selectedItemApproved">Selected Item Approved</button>
+                            <button type="button" class="btn btn-sm btn-warning btn-xs m-1 " id="selectedItemRejected">Selected Item Rejected</button>
+                            <button type="button" class="btn btn-primary btn-xs m-1 checkAllPendingTaskProofBtn">Check All Pending Task Proof</button>
                             <!-- checkAllPendingTaskProofModal -->
                             <div class="modal fade checkAllPendingTaskProofModal" tabindex="-1" aria-labelledby="checkAllPendingTaskProofModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
@@ -218,8 +218,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
+                        <div class="col-xl-3 col-lg-6 col-md-6">
+                            <div class="form-group m-1">
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Pending">Pending</option>
@@ -229,8 +229,8 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
+                        <div class="col-xl-2 col-lg-6 col-md-6">
+                            <div class="form-group m-1">
                                 <button class="btn btn-danger btn-block" id="clear_filters">Clear Filters</button>
                             </div>
                         </div>
@@ -668,19 +668,19 @@
             $('#allDataTable').DataTable().ajax.reload();
         });
 
-        // Check All
-        $('#checkAll').change(function(){
-            if(this.checked){
-                $('#allDataTable').DataTable().rows().nodes().to$().find('.checkbox').each(function(){
-                    if($(this).closest('tr').find('td:eq(3)').text() == 'Pending'){
-                        this.checked = true;
-                    }
-                });
-            }else{
-                $('#allDataTable').DataTable().rows().nodes().to$().find('.checkbox').each(function(){
-                    this.checked = false;
-                });
-            }
+        $('#checkAll').change(function() {
+            let table = $('#allDataTable').DataTable();
+            let isChecked = this.checked;
+
+            table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                let row = this.node();
+                let checkbox = $(row).find('.checkbox'); // Find the checkbox in the row
+                let status = $(row).find('td:eq(4)').text().trim(); // Get the status in the 5th column (0-indexed)
+
+                if (status === 'Pending') {
+                    checkbox.prop('checked', isChecked); // Check or uncheck based on #checkAll
+                }
+            });
         });
 
         // Approved All

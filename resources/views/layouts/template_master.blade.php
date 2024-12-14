@@ -188,7 +188,7 @@
                                 $deposit = App\Models\Deposit::where('status', 'Pending')->count();
                                 $withdraw = App\Models\Withdraw::where('status', 'Pending')->count();
                                 $postTask = App\Models\PostTask::where('status', 'Pending')->count();
-                                $proofTask = App\Models\ProofTask::where('status', 'Review')->count();
+                                $proofTask = App\Models\ProofTask::where('status', 'Reviewed')->count();
                                 $report = App\Models\Report::where('status', 'Pending')->count();
                                 $backend_notification = $verification + $deposit + $withdraw + $postTask + $proofTask + $report;
                             @endphp

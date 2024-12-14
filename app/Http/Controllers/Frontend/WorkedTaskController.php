@@ -10,6 +10,7 @@ use App\Models\ProofTask;
 use App\Models\Block;
 use App\Models\Report;
 use App\Models\NotInterestedTask;
+use App\Models\Rating;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManager;
@@ -131,11 +132,13 @@ class WorkedTaskController extends Controller
         $id = decrypt($id);
         $taskDetails = PostTask::findOrFail($id);
         $taskProofExists = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->exists();
+        $taskProof = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->first();
         $proofCount = ProofTask::where('post_task_id', $id)->count();
         $blocked = Block::where('user_id', $taskDetails->user_id)->where('blocked_by', Auth::id())->exists();
         $reportPostTask = Report::where('post_task_id', $id)->where('reported_by', Auth::id())->first();
         $reportUserCount = Report::where('user_id', $taskDetails->user_id)->where('reported_by', Auth::id())->where('type', 'User')->count();
-        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount'));
+        $reviewDetails = Rating::where('user_id', $taskDetails->user_id)->get();
+        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'taskProof', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount', 'reviewDetails'));
     }
 
     public function findTaskNotInterested($id)
@@ -315,10 +318,12 @@ class WorkedTaskController extends Controller
                         return  get_site_settings('site_currency_symbol') . ' ' . $row->postTask->income_of_each_worker;
                     })
                     ->editColumn('rating', function ($row) {
-                        return $row->rating ? $row->rating->rating . ' <i class="fa-solid fa-star text-warning"></i>' : 'Not Rated';
+                        $rating = Rating::where('user_id', Auth::id())->where('post_task_id', $row->post_task_id)->first();
+                        return $rating ? $row->rating->rating . ' <i class="fa-solid fa-star text-warning"></i>' : 'Not Rated';
                     })
                     ->editColumn('bonus', function ($row) {
-                        return $row->bonus ? $row->bonus->amount . ' ' . get_site_settings('site_currency_symbol') : 'No Bonus';
+                        $bonus = Rating::where('user_id', Auth::id())->where('post_task_id', $row->post_task_id)->first();
+                        return $bonus ? get_site_settings('site_currency_symbol') . ' ' . $row->bonus->amount : 'No Bonus';
                     })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');

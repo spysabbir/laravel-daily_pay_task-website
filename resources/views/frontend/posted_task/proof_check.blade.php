@@ -49,20 +49,20 @@
                 <hr>
                 <h5>
                     <strong>Rating:</strong>
-                    @if (!$proofTask->rating)
+                    @if (!$rating)
                         <span class="text-danger">Not Rated</span>
                     @else
-                    @for ($i = 0; $i < $proofTask->rating->rating; $i++)
-                    <i class="fa-solid fa-star text-warning"></i>
-                    @endfor
+                        @for ($i = 0; $i < $rating->rating; $i++)
+                            <i class="fa-solid fa-star text-warning"></i>
+                        @endfor
                     @endif
-                    </h5>
+                </h5>
                 <h5>
                     <strong>Bonus:</strong>
-                    @if (!$proofTask->bonus)
+                    @if (!$bonus)
                         <span class="text-danger">No Bonus</span>
                     @else
-                    {{ get_site_settings('site_currency_symbol') }} {{ $proofTask->bonus->amount }}
+                    {{ get_site_settings('site_currency_symbol') }} {{ $bonus->amount }}
                     @endif
                 </h5>
                 <hr>

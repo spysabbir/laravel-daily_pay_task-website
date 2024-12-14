@@ -439,7 +439,7 @@
             if (result.isConfirmed) {
                 $.ajax({
                     url: url,
-                    type: 'DELETE',
+                    type: 'GET',
                     success: function(response) {
                         $(".trashModel").modal('hide');
                         $('#trashDataTable').DataTable().ajax.reload();

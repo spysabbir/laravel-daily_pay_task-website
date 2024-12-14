@@ -60,7 +60,7 @@
             <p><strong>Rejected By:</strong> {{ $proofTask->rejectedBy->user_type =='Backend' ? 'Admin' : $proofTask->rejectedBy->name }}</p>
         </div>
         @if (!$proofTask->reviewed_at)
-            @if (Carbon\Carbon::parse($proofTask->rejected_at)->addHours(get_default_settings('task_proof_status_rejected_charge_auto_refund_time')) > now())
+            @if (Carbon\Carbon::parse($proofTask->rejected_at)->addHours((int) get_default_settings('task_proof_status_rejected_charge_auto_refund_time')) > now())
             <h4 class="mb-3">Reviewed Task</h4>
             <div class="alert alert-info" role="alert">
                 <h4 class="alert-heading">Reviewed Time Limit!</h4>

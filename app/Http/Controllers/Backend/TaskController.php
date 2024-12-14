@@ -485,6 +485,7 @@ class TaskController extends Controller implements HasMiddleware
             ]);
         }
 
+        // Retrieve the PostTask model
         $postTask = PostTask::findOrFail($id);
 
         // Store the previous status
@@ -497,21 +498,18 @@ class TaskController extends Controller implements HasMiddleware
             ]);
         }
 
-        if($request->hasFile('thumbnail')){
-            // Delete old thumbnail photo
-            if ($postTask->thumbnail) {
-                if (file_exists(base_path("public/uploads/task_thumbnail_photo/").$postTask->thumbnail)) {
-                    unlink(base_path("public/uploads/task_thumbnail_photo/").$postTask->thumbnail);
-                }
+        // Handle thumbnail upload
+        if ($request->hasFile('thumbnail')) {
+            if ($postTask->thumbnail && file_exists(public_path("uploads/task_thumbnail_photo/" . $postTask->thumbnail))) {
+                unlink(public_path("uploads/task_thumbnail_photo/" . $postTask->thumbnail));
             }
-            $manager = new ImageManager(new Driver());
-            $thumbnail_photo_name = $request->user()->id."-thumbnail-photo-". date('YmdhisA') . "." . $request->file('thumbnail')->getClientOriginalExtension();
-            $image = $manager->read($request->file('thumbnail'));
-            $image->toJpeg(80)->save(base_path("public/uploads/task_thumbnail_photo/").$thumbnail_photo_name);
-        }else{
+            $thumbnail_photo_name = $request->user()->id . "-thumbnail-photo-" . now()->format('Ymdhis') . "." . $request->file('thumbnail')->getClientOriginalExtension();
+            $request->file('thumbnail')->move(public_path("uploads/task_thumbnail_photo"), $thumbnail_photo_name);
+        } else {
             $thumbnail_photo_name = $postTask->thumbnail;
         }
 
+        // Update the PostTask
         $postTask->update([
             'title' => $request->title,
             'description' => $request->description,
@@ -519,16 +517,17 @@ class TaskController extends Controller implements HasMiddleware
             'additional_note' => $request->additional_note,
             'thumbnail' => $thumbnail_photo_name,
             'status' => $request->status,
-            'rejection_reason' => $request->status == 'Rejected' ? $request->rejection_reason : NULL,
-            'rejected_by' => $request->status == 'Rejected' ? auth()->user()->id : NULL,
-            'rejected_at' => $request->status == 'Rejected' ? now() : NULL,
-            'approved_by' => $request->status == 'Running' ? auth()->user()->id : NULL,
-            'approved_at' => $request->status == 'Running' ? now() : NULL,
+            'rejection_reason' => $request->status == 'Rejected' ? $request->rejection_reason : null,
+            'rejected_by' => $request->status == 'Rejected' ? auth()->id() : null,
+            'rejected_at' => $request->status == 'Rejected' ? now() : null,
+            'approved_by' => $request->status == 'Running' ? auth()->id() : null,
+            'approved_at' => $request->status == 'Running' ? now() : null,
         ]);
 
+        // Handle boosting time and notification
         if ($previousStatus === 'Pending') {
             $postTask->update([
-                'boosting_start_at' => $request->status == 'Running' && $postTask->boosting_time != NULL ? now() : NULL,
+                'boosting_start_at' => $request->status == 'Running' && $postTask->boosting_time != 0 ? now() : null,
             ]);
             $user->notify(new PostTaskCheckNotification($postTask));
         }
@@ -537,6 +536,7 @@ class TaskController extends Controller implements HasMiddleware
             'status' => 200,
         ]);
     }
+
 
     public function runningPostedTaskCanceled(Request $request, string $id)
     {

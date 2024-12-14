@@ -28,6 +28,7 @@
                                 <th>Title</th>
                                 <th>Approved At</th>
                                 <th>Total Boosting Time</th>
+                                <th>Work Duration Expire</th>
                                 <th>Proof Submitted</th>
                                 {{-- <th>Proof Status</th> --}}
                                 {{-- <th>Total Cost</th> --}}
@@ -173,6 +174,7 @@
                 { data: 'title', name: 'title' },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'total_boosting_time', name: 'total_boosting_time' },
+                { data: 'work_duration', name: 'work_duration' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 // { data: 'proof_status', name: 'proof_status' },
                 // { data: 'total_cost', name: 'total_cost' },
@@ -314,23 +316,23 @@
                     $('#income_of_each_worker').text(response.income_of_each_worker);
 
                     // Calculate boosting end time
-                    let startTime = new Date(response.boosting_start_at);
-                    startTime.setMinutes(startTime.getMinutes() + response.boosting_time);
+                    let endTime = new Date(response.boosting_start_at);
+                    endTime.setMinutes(endTime.getMinutes() + response.boosting_time);
                     let currentTime = new Date();
-                    if (currentTime < startTime) {
+                    if (currentTime < endTime) {
                         // Boosting is active
                         $('#boosting_time_input_div').hide();
                         $('#boosting_time_countdown_div').html(`
                             <h4 class="text-info mb-2">Boosting Time</h4>
                             <p>Boosting Time: ${response.boosting_time} Minutes</p>
                             <p>Boosting Start At: ${formatDate(new Date(response.boosting_start_at))}</p>
-                            <p>Boosting End At: ${formatDate(startTime)}</p>
-                            <p class="text-primary" id="countdown-${response.id}" data-end-time="${startTime.toISOString()}"></p>
+                            <p>Boosting End At: ${formatDate(endTime)}</p>
+                            <p class="text-primary" id="countdown-${response.id}" data-end-time="${endTime.toISOString()}"></p>
                             <p class="text-info">You can again boost after the current boosting time ends.</p>
                         `).show();
 
                         // Pass the unique element ID to startCountdown
-                        startCountdown(startTime, `#countdown-${response.id}`);
+                        startCountdown(endTime, `#countdown-${response.id}`);
                     } else {
                         $('#boosting_time_countdown_div').hide();
                         $('#boosting_time_input_div').show();
