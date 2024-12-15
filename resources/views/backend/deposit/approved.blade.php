@@ -23,7 +23,7 @@
                                     <option value="Bkash">Bkash</option>
                                     <option value="Nagad">Nagad</option>
                                     <option value="Rocket">Rocket</option>
-                                    <option value="Withdrawal Balance">Withdrawal Balance</option>
+                                    <option value="Withdraw Balance">Withdraw Balance</option>
                                 </select>
                             </div>
                         </div>

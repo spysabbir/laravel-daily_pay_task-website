@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\ChildCategory;
 use App\Models\SubCategory;
+use App\Models\TaskPostCharge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -36,6 +37,12 @@ class ChildCategoryController extends Controller implements HasMiddleware
 
             $query->orderBy('created_at', 'desc');
 
+            if ($request->category_id) {
+                $query->where('category_id', $request->category_id);
+            }
+            if ($request->sub_category_id) {
+                $query->where('sub_category_id', $request->sub_category_id);
+            }
             if ($request->status) {
                 $query->where('status', $request->status);
             }
@@ -165,6 +172,13 @@ class ChildCategoryController extends Controller implements HasMiddleware
 
     public function destroy(string $id)
     {
+        $taskPostChargeExist = TaskPostCharge::where('child_category_id', $id)->exists();
+        if ($taskPostChargeExist) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'This child category has task post charge. Please delete task post charge first.',
+            ]);
+        }
         $child_category = ChildCategory::findOrFail($id);
         $child_category->delete();
     }

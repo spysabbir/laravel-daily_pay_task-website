@@ -26,13 +26,14 @@
                                 <th>Sl No</th>
                                 <th>Task ID</th>
                                 <th>Title</th>
-                                <th>Approved At</th>
+                                <th>Task Rate</th>
+                                <th>Proof Submitted</th>
                                 <th>Total Boosting Time</th>
                                 <th>Work Duration Expire</th>
-                                <th>Proof Submitted</th>
+                                <th>Total Cost</th>
                                 {{-- <th>Proof Status</th> --}}
-                                {{-- <th>Total Cost</th> --}}
                                 {{-- <th>Cost Status</th> --}}
+                                <th>Approved At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -172,12 +173,13 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
-                { data: 'approved_at', name: 'approved_at' },
+                { data: 'income_of_each_worker', name: 'income_of_each_worker' },
+                { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'total_boosting_time', name: 'total_boosting_time' },
                 { data: 'work_duration', name: 'work_duration' },
-                { data: 'proof_submitted', name: 'proof_submitted' },
+                { data: 'total_cost', name: 'total_cost' },
+                { data: 'approved_at', name: 'approved_at' },
                 // { data: 'proof_status', name: 'proof_status' },
-                // { data: 'total_cost', name: 'total_cost' },
                 // { data: 'charge_status', name: 'charge_status' },
                 { data: 'action', name: 'action' }
             ],

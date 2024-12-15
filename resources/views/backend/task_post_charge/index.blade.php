@@ -116,7 +116,40 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="status" class="form-label">Status</label>
+                                <label for="filter_category_id" class="form-label">Category</label>
+                                <select class="form-select filter_data" id="filter_category_id">
+                                    <option value="">-- Select Category --</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_sub_category_id" class="form-label">Sub Category</label>
+                                <select class="form-select filter_data" id="filter_sub_category_id">
+                                    <option value="">-- Select Sub Category --</option>
+                                    @foreach ($sub_categories as $sub_category)
+                                        <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_child_category_id" class="form-label">Child Category</label>
+                                <select class="form-select filter_data" id="filter_child_category_id">
+                                    <option value="">-- Select Child Category --</option>
+                                    @foreach ($child_categories as $child_category)
+                                        <option value="{{ $child_category->id }}">{{ $child_category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Active">Active</option>
@@ -228,6 +261,9 @@
         ajax: {
             url: "{{ route('backend.task_post_charge.index') }}",
             data: function(d) {
+                d.category_id = $('#filter_category_id').val();
+                d.sub_category_id = $('#filter_sub_category_id').val();
+                d.child_category_id = $('#filter_child_category_id').val();
                 d.status = $('#filter_status').val();
             }
         },
@@ -377,9 +413,13 @@
                     url: url,
                     type: 'DELETE',
                     success: function(response) {
-                        table.ajax.reload();
-                        $('#trashDataTable').DataTable().ajax.reload();
-                        toastr.warning('Task Post Charge soft deleted successfully.');
+                        if (response.status == 400) {
+                            toastr.error(response.error);
+                        }else{
+                            table.ajax.reload();
+                            $('#trashDataTable').DataTable().ajax.reload();
+                            toastr.warning('Task Post Charge soft deleted successfully.');
+                        }
                     }
                 });
             }

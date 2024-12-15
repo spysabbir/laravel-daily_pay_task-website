@@ -26,9 +26,9 @@ class FrontendController extends Controller
         $totalPostTask = PostTask::count();
         $runningPostTasks = PostTask::where('status', 'Running')->count();
         $totalUser = User::where('user_type', 'Frontend')->count();
-        $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
+        $totalWithdraw = Withdraw::where('status', 'Approved')->sum('amount');
 
-        return view('frontend/index', compact('latestPostTasks', 'testimonials', 'topCategories', 'topBuyers', 'totalPostTask', 'runningPostTasks', 'totalUser', 'totalWithdrawal'));
+        return view('frontend/index', compact('latestPostTasks', 'testimonials', 'topCategories', 'topBuyers', 'totalPostTask', 'runningPostTasks', 'totalUser', 'totalWithdraw'));
     }
 
     public function aboutUs()
@@ -37,9 +37,9 @@ class FrontendController extends Controller
         $totalPostTask = PostTask::count();
         $runningPostTask = PostTask::where('status', 'Running')->count();
         $totalUser = User::where('user_type', 'Frontend')->count();
-        $totalWithdrawal = Withdraw::where('status', 'Approved')->sum('amount');
+        $totalWithdraw = Withdraw::where('status', 'Approved')->sum('amount');
 
-        return view('frontend/about-us', compact('testimonials', 'totalPostTask', 'runningPostTask', 'totalUser', 'totalWithdrawal'));
+        return view('frontend/about-us', compact('testimonials', 'totalPostTask', 'runningPostTask', 'totalUser', 'totalWithdraw'));
     }
 
     public function contactUs()

@@ -222,13 +222,14 @@
 
                 if (response.messages.length > 0) {
                     response.messages.forEach(function(message) {
+                        var sanitizedMessage = message.message.replace(/\n/g, '<br>');
                         const messageItem = `
                             <li class="message-item ${message.sender_type}">
                                 <img src="${message.profile_photo}" class="img-xs rounded-circle" alt="avatar">
                                 <div class="content">
                                     <div class="message">
                                         <div class="bubble">
-                                            <p>${message.message ? message.message : ''}</p>
+                                            <p>${message.message ? sanitizedMessage : ''}</p>
                                             ${message.photo ? `<a href="{{ asset('uploads/support_photo') }}/${message.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${message.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
                                         </div>
                                         <span>${message.status == 'Read' ? '<i class="fas fa-check-double text-success"></i>' : '<i class="fas fa-check"></i>'} ${message.created_at}</span>
@@ -335,6 +336,7 @@
     window.onload = () => {
         window.Echo.channel('support')
         .listen('SupportEvent', function(data) {
+            var sanitizedMessage = data.support.message.replace(/\n/g, '<br>');
             if (data.support.receiver_id === {{ Auth::user()->id }}) {
                 $('.messages').append(`
                     <li class="message-item friend">
@@ -342,7 +344,7 @@
                         <div class="content">
                             <div class="message">
                                 <div class="bubble">
-                                    <p>${data.support.message ? data.support.message : ''}</p>
+                                    <p>${data.support.message ? sanitizedMessage : ''}</p>
                                     ${data.support.photo ? `<a href="{{ asset('uploads/support_photo') }}/${data.support.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
                                 </div>
                                 <span>${data.support.status == 'Read' ? '<i class="fas fa-check-double text-success"></i>' : '<i class="fas fa-check"></i>'} ${data.support.created_at}</span>

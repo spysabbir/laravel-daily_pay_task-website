@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -134,6 +135,13 @@ class ExpenseCategoryController extends Controller implements HasMiddleware
 
     public function destroy(string $id)
     {
+        $expenseExist = Expense::where('expense_category_id', $id)->exists();
+        if ($expenseExist) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'This category is already used in expense. So, it can not be deleted.'
+            ]);
+        }
         $expense_category = ExpenseCategory::findOrFail($id);
         $expense_category->delete();
     }

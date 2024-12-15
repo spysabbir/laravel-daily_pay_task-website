@@ -157,7 +157,7 @@
         <div class="card rounded">
             <div class="card-header">
                 <h4 class="card-title">Update Password</h4>
-                <p class="text-info">Note: The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.</p>
+                <p class="text-info">Note: The password must be at least 8 characters long and contain upper- and lower-case letters, numbers, and symbols.</p>
             </div>
             <div class="card-body">
                 <form method="post" action="{{ route('password.update') }}" class="forms-sample">

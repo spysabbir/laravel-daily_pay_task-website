@@ -136,13 +136,15 @@
                         var support_photo = support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : '';
                         var timeDisplay = support.created_at;
 
+                        var sanitizedMessage = support.message.replace(/\n/g, '<br>');
+
                         $('#chatBox').append(`
                             <li class="message-item ${support.sender_id === {{ Auth::user()->id }} ? 'friend' : 'me'}">
                                 <img src="{{ asset('uploads/profile_photo') }}/${profile_photo}" class="img-xs rounded-circle" alt="avatar">
                                 <div class="content">
                                     <div class="message">
                                         <div class="bubble">
-                                            <p>${support.message ? support.message : ''}</p>
+                                            <p>${support.message ? sanitizedMessage: ''}</p>
                                             ${support_photo ? `<a href="{{ asset('uploads/support_photo') }}/${support.photo}" target="_blank">${support_photo}</a>` : ''}
                                         </div>
                                         <span>${support.status == 'Read' ? '<i class="fas fa-check-double text-success"></i>' : '<i class="fas fa-check"></i>'} ${timeDisplay}</span>
@@ -209,6 +211,7 @@
     window.onload = () => {
         window.Echo.channel('support')
         .listen('SupportEvent', function(data) {
+            var sanitizedMessage = data.support.message.replace(/\n/g, '<br>');
             if (data.support.receiver_id === {{ Auth::user()->id }}) {
                 $('#chatBox').append(`
                     <li class="message-item me">
@@ -216,7 +219,7 @@
                         <div class="content">
                             <div class="message">
                                 <div class="bubble">
-                                    <p>${data.support.message ? data.support.message : ''}</p>
+                                    <p>${data.support.message ? sanitizedMessage : ''}</p>
                                     ${data.support.photo ? `<a href="{{ asset('uploads/support_photo') }}/${data.support.photo}" target="_blank"><img src="{{ asset('uploads/support_photo') }}/${data.support.photo}" alt="image" style="max-width: 100px; max-height: 100px;"></a>` : ''}
                                 </div>
                                 <span>${data.support.status == 'Read' ? '<i class="fas fa-check-double text-success"></i>' : '<i class="fas fa-check"></i>'} ${data.support.created_at}</span>

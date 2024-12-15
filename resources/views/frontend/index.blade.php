@@ -307,8 +307,8 @@
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
                     <i class="flaticon-portfolio"></i>
-                    <h2><span>{{ $totalWithdrawal }}</span></h2>
-                    <p>Total Withdrawal</p>
+                    <h2><span>{{ $totalWithdraw }}</span></h2>
+                    <p>Total Withdraw</p>
                 </div>
             </div>
         </div>

@@ -462,7 +462,7 @@ class UserController extends Controller
                     })
                     ->addColumn('approved_or_rejected_at', function ($row) {
                         if ($row->status == 'Approved') {
-                            if ($row->method == 'Withdrawal Balance') {
+                            if ($row->method == 'Withdraw Balance') {
                                 $date = date('d M Y h:i A', strtotime($row->created_at));
                             } else {
                                 $date = date('d M Y h:i A', strtotime($row->approved_at));
@@ -541,17 +541,13 @@ class UserController extends Controller
         }
     }
 
-    public function withdrawalBalanceDepositStore(Request $request)
+    public function depositFromWithdrawBalanceStore(Request $request)
     {
-        $minDepositAmount = get_default_settings('min_deposit_amount');
-        $maxDepositAmount = get_default_settings('max_deposit_amount');
         $currencySymbol = get_site_settings('site_currency_symbol');
-        $chargePercentage = get_default_settings('withdrawal_balance_deposit_charge_percentage');
-
-        $adjustedMinDeposit = number_format($minDepositAmount / (1 - ($chargePercentage / 100)), 2, '.', '');
+        $chargePercentage = get_default_settings('deposit_from_withdraw_balance_charge_percentage');
 
         $validator = Validator::make($request->all(), [
-            'deposit_amount' => "required|numeric|min:$adjustedMinDeposit|max:$maxDepositAmount",
+            'deposit_amount' => "required|numeric|min:1",
         ]);
 
         if($validator->fails()){
@@ -571,7 +567,7 @@ class UserController extends Controller
 
                 Deposit::create([
                     'user_id' => $request->user()->id,
-                    'method' => 'Withdrawal Balance',
+                    'method' => 'Withdraw Balance',
                     'amount' => $request->deposit_amount,
                     'payable_amount' => $payable_amount,
                     'approved_at' => now(),

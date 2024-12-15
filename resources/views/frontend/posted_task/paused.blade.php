@@ -29,13 +29,14 @@
                                 <th>Sl No</th>
                                 <th>Task ID</th>
                                 <th>Title</th>
-                                <th>Approved At</th>
+                                <th>Boosting Time</th>
                                 <th>Proof Submitted</th>
                                 <th>Work Duration Expire</th>
                                 {{-- <th>Proof Status</th> --}}
                                 {{-- <th>Total Cost</th> --}}
                                 {{-- <th>Cost Status</th> --}}
                                 {{-- <th>Pausing Reason</th> --}}
+                                <th>Approved At</th>
                                 <th>Paused At</th>
                                 <th>Paused By</th>
                                 <th>Action</th>
@@ -90,13 +91,14 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
-                { data: 'approved_at', name: 'approved_at' },
+                { data: 'boosting_time', name: 'boosting_time' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'work_duration', name: 'work_duration' },
                 // { data: 'proof_status', name: 'proof_status' },
                 // { data: 'total_cost', name: 'total_cost' },
                 // { data: 'charge_status', name: 'charge_status' },
                 // { data: 'pausing_reason', name: 'pausing_reason' },
+                { data: 'approved_at', name: 'approved_at' },
                 { data: 'paused_at', name: 'paused_at' },
                 { data: 'paused_by', name: 'paused_by' },
                 { data: 'action', name: 'action' },

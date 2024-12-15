@@ -34,7 +34,7 @@ class ReportListController extends Controller implements HasMiddleware
                 DB::raw('SUM(CASE WHEN deposits.method = "Bkash" THEN deposits.amount ELSE 0 END) as bkash_amount'),
                 DB::raw('SUM(CASE WHEN deposits.method = "Nagad" THEN deposits.amount ELSE 0 END) as nagad_amount'),
                 DB::raw('SUM(CASE WHEN deposits.method = "Rocket" THEN deposits.amount ELSE 0 END) as rocket_amount'),
-                DB::raw('SUM(CASE WHEN deposits.method = "Withdrawal Balance" THEN deposits.amount ELSE 0 END) as withdrawal_balance_amount'),
+                DB::raw('SUM(CASE WHEN deposits.method = "Withdraw Balance" THEN deposits.amount ELSE 0 END) as withdraw_balance_amount'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Pending" THEN deposits.amount ELSE 0 END) as pending_amount'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Approved" THEN deposits.amount ELSE 0 END) as approved_amount'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Rejected" THEN deposits.amount ELSE 0 END) as rejected_amount'),
@@ -73,7 +73,7 @@ class ReportListController extends Controller implements HasMiddleware
                 DB::raw('SUM(CASE WHEN deposits.method = "Bkash" THEN deposits.amount ELSE 0 END) as total_bkash_amount_sum'),
                 DB::raw('SUM(CASE WHEN deposits.method = "Nagad" THEN deposits.amount ELSE 0 END) as total_nagad_amount_sum'),
                 DB::raw('SUM(CASE WHEN deposits.method = "Rocket" THEN deposits.amount ELSE 0 END) as total_rocket_amount_sum'),
-                DB::raw('SUM(CASE WHEN deposits.method = "Withdrawal Balance" THEN deposits.amount ELSE 0 END) as total_withdrawal_balance_amount_sum'),
+                DB::raw('SUM(CASE WHEN deposits.method = "Withdraw Balance" THEN deposits.amount ELSE 0 END) as total_withdraw_balance_amount_sum'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Pending" THEN deposits.amount ELSE 0 END) as total_pending_amount_sum'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Approved" THEN deposits.amount ELSE 0 END) as total_approved_amount_sum'),
                 DB::raw('SUM(CASE WHEN deposits.status = "Rejected" THEN deposits.amount ELSE 0 END) as total_rejected_amount_sum'),
@@ -116,8 +116,8 @@ class ReportListController extends Controller implements HasMiddleware
                 ->editColumn('rocket_amount', function ($row) {
                     return '<span class="badge bg-dark">' . $row->rocket_amount . '</span>';
                 })
-                ->editColumn('withdrawal_balance_amount', function ($row) {
-                    return '<span class="badge bg-dark">' . $row->withdrawal_balance_amount . '</span>';
+                ->editColumn('withdraw_balance_amount', function ($row) {
+                    return '<span class="badge bg-dark">' . $row->withdraw_balance_amount . '</span>';
                 })
                 ->editColumn('pending_amount', function ($row) {
                     return '<span class="badge bg-warning">' . $row->pending_amount . '</span>';
@@ -135,13 +135,13 @@ class ReportListController extends Controller implements HasMiddleware
                     'total_bkash_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_bkash_amount_sum,
                     'total_nagad_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_nagad_amount_sum,
                     'total_rocket_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_rocket_amount_sum,
-                    'total_withdrawal_balance_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_withdrawal_balance_amount_sum,
+                    'total_withdraw_balance_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_withdraw_balance_amount_sum,
                     'total_pending_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_pending_amount_sum,
                     'total_approved_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_approved_amount_sum,
                     'total_rejected_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_rejected_amount_sum,
                     'total_amount_sum' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_amount_sum,
                 ])
-                ->rawColumns(['deposit_date', 'bkash_amount', 'nagad_amount', 'rocket_amount', 'withdrawal_balance_amount', 'pending_amount', 'approved_amount', 'rejected_amount', 'total_amount'])
+                ->rawColumns(['deposit_date', 'bkash_amount', 'nagad_amount', 'rocket_amount', 'withdraw_balance_amount', 'pending_amount', 'approved_amount', 'rejected_amount', 'total_amount'])
                 ->make(true);
         }
 

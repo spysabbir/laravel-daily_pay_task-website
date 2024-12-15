@@ -220,9 +220,12 @@
                             @endfor
                         @endif
                     <h5>
-                    <p>Name: <a href="{{ route('user.profile', encrypt($taskDetails->user->id)) }}" class="text-info">{{ $taskDetails->user->name }}</a></p>
+                    {{-- <p>Name: <a href="{{ route('user.profile', encrypt($taskDetails->user->id)) }}" class="text-info">{{ $taskDetails->user->name }}</a></p> --}}
+                    <p>Name: <span class="text-info">{{ $taskDetails->user->name }}</span></p>
                     <p>Last Active: <span class="text-info">{{ Carbon\Carbon::parse($taskDetails->user->last_login_at)->diffForHumans() }}</span></p>
                     <p>Join Date: <span class="text-info">{{ $taskDetails->user->created_at->format('d M, Y') }}</span></p>
+                    <p>Total Posted Task: <span class="text-info">{{ $totalPostedTask }}</span></p>
+                    <p>Total Worked Task: <span class="text-info">{{ $totalWorkedTask }}</span></p>
                 </div>
                 <div class="d-flex align-items-center justify-content-between border p-3">
                     <!-- Report User Button -->

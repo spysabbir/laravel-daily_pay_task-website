@@ -122,7 +122,7 @@
                 <div class="mb-3">
                     <div class="row">
                         <div class="mb-3">
-                            <strong class="text-danger">Warning: if you Reject the proof, the worker can request for review within 72 hours. The admin will check the proof and if it is correct then the worker will be paid or if the proof is wrong then the worker will not be paid. Because of this, only Rejected money will be on hold for 72 hours because you Proof Rejected. If the worker does not request for review within 72 hours, your money will be automatically add your deposit balance. If the worker request for review within 72 hours, the admin will review the proof within 72 hours. Both you and the worker will receive a notification with the results. Please be careful and work well with integrity and don't intentionally reject someone's work.</strong>
+                            <strong class="text-danger">Warning: if you Reject the proof, the worker can request for review within 72 hours. The admin will check the proof and if it is correct then the worker will be paid or if the proof is wrong then the worker will not be paid. Because of this, only Rejected money will be on hold for 72 hours because you Proof Rejected. If the worker does not request for review within 72 hours, your money will be automatically add your deposit balance. If the worker request for review within 72 hours, the admin will review the proof within 72 hours. Please be careful and work well with integrity and don't intentionally reject someone's work.</strong>
                         </div>
                         <div class="col-xl-7 col-lg-12">
                             <button type="button" class="btn btn-sm btn-success btn-xs m-1 " id="approvedAll">All Pending Item Approved</button>
@@ -240,6 +240,7 @@
                     <table id="allDataTable" class="table">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>
                                     <input type="checkbox" class="form-check-input" id="checkAll">
                                 </th>
@@ -639,7 +640,7 @@
         @endif
 
         // Read Data
-        $('#allDataTable').DataTable({
+        const table = $('#allDataTable').DataTable({
             processing: true,
             // serverSide: true,
             searching: true,
@@ -651,6 +652,13 @@
                 }
             },
             columns: [
+                {
+                    className: 'details-control',
+                    orderable: false,
+                    searchable: false,
+                    data: null,
+                    defaultContent: '<i class="fas fa-plus-circle"></i>' // Expand icon
+                },
                 { data: 'checkbox', name: 'checkbox' },
                 { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
@@ -661,6 +669,24 @@
                 { data: 'action', name: 'action' }
             ]
         });
+
+        $('#allDataTable tbody').on('click', 'td.details-control', function () {
+        const tr = $(this).closest('tr');
+        const row = table.row(tr);
+
+        if (row.child.isShown()) {
+            // Close the row
+            row.child.hide();
+            tr.removeClass('shown');
+            $(this).html('<i class="fas fa-plus-circle"></i>'); // Update icon
+        } else {
+            // Open the row and show proof_answer
+            const proofAnswer = row.data().details; // Get proof_answer data
+            row.child(`<div class="nested-row">${proofAnswer}</div>`).show();
+            tr.addClass('shown');
+            $(this).html('<i class="fas fa-minus-circle"></i>'); // Update icon
+        }
+    });
 
         // Filter Data
         $('.filter_data').change(function(){

@@ -77,7 +77,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="status" class="form-label">Status</label>
+                                <label for="filter_status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Active">Active</option>
@@ -271,9 +271,13 @@
                         url: url,
                         method: 'DELETE',
                         success: function(response) {
-                            $('#allDataTable').DataTable().ajax.reload();
-                            $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.warning('Category soft delete successfully.');
+                            if (response.status == 400) {
+                                toastr.error(response.error);
+                            }else{
+                                $('#allDataTable').DataTable().ajax.reload();
+                                $('#trashDataTable').DataTable().ajax.reload();
+                                toastr.warning('Category soft delete successfully.');
+                            }
                         }
                     });
                 }

@@ -14,15 +14,25 @@
                     <input type="hidden" name="email" value="{{ $request->email }}">
                     <div class="form-group">
                         <label>Enter Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" placeholder="Enter Your Password" name="password" required>
-                        <small class="text-info d-block">The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.</small>
+                        <div class="input-group">
+                            <input type="password" class="form-control" placeholder="Enter Your Password" id="password" name="password" required>
+                            <button type="button" class="btn btn-outline-secondary toggle-password" data-target="password">
+                                <i class="bx bx-show"></i>
+                            </button>
+                        </div>
+                        <small class="text-info d-block">The password must be at least 8 characters long and contain upper- and lower-case letters, numbers, and symbols.</small>
                         @error('password')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group">
                         <label>Enter Confirm Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" placeholder="Enter Your Confirm Password" name="password_confirmation" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" placeholder="Enter Your Confirm Password" id="password_confirmation" name="password_confirmation" required>
+                            <button type="button" class="btn btn-outline-secondary toggle-password" data-target="password_confirmation">
+                                <i class="bx bx-show"></i>
+                            </button>
+                        </div>
                         @error('password_confirmation')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -37,3 +47,26 @@
 </div>
 <!-- Reset Password Section End -->
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-password').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('bx-show');
+                    icon.classList.add('bx-hide');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('bx-hide');
+                    icon.classList.add('bx-show');
+                }
+            });
+        });
+    });
+</script>
+

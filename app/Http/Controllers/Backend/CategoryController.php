@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -134,6 +135,13 @@ class CategoryController extends Controller implements HasMiddleware
 
     public function destroy(string $id)
     {
+        $subCategoryExist = SubCategory::where('category_id', $id)->exists();
+        if ($subCategoryExist) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'This category has sub category. Please delete sub category first.'
+            ]);
+        }
         $category = Category::findOrFail($id);
         $category->delete();
     }

@@ -422,6 +422,9 @@ class PostedTaskController extends Controller
 
                 return DataTables::of($taskListRunning)
                     ->addIndexColumn()
+                    ->editColumn('income_of_each_worker', function ($row) {
+                        return get_site_settings('site_currency_symbol') . ' ' . $row->income_of_each_worker;
+                    })
                     ->editColumn('total_boosting_time', function ($row) {
                         $boosting_start_at = Carbon::parse($row->boosting_start_at);
                         $boostingEndTime = $boosting_start_at->addMinutes((int) $row->boosting_time);
@@ -536,7 +539,7 @@ class PostedTaskController extends Controller
                         ';
                         return $btn;
                     })
-                    ->rawColumns(['total_boosting_time', 'work_duration', 'proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'approved_at', 'action'])
+                    ->rawColumns(['income_of_each_worker', 'total_boosting_time', 'work_duration', 'proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'approved_at', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.running');
@@ -647,6 +650,10 @@ class PostedTaskController extends Controller
                     ';
                     return $user;
                 })
+                ->addColumn('details', function ($row) {
+                    return $row->proof_answer; // Include proof_answer for nested row data
+                })
+                ->rawColumns(['details'])
                 ->editColumn('status', function ($row) {
                     if ($row->status == 'Pending') {
                         $status = '<span class="badge bg-info">' . $row->status . '</span>';
@@ -688,7 +695,7 @@ class PostedTaskController extends Controller
                     }
                     return $actionBtn;
                 })
-                ->rawColumns(['checkbox', 'id', 'user', 'status', 'created_at', 'checked_at', 'action'])
+                ->rawColumns(['checkbox', 'id', 'user', 'proof_answer', 'status', 'created_at', 'checked_at', 'action'])
                 ->make(true);
         }
 
@@ -1103,6 +1110,22 @@ class PostedTaskController extends Controller
                     ->editColumn('approved_at', function ($row) {
                         return date('d M, Y h:i A', strtotime($row->approved_at));
                     })
+                    ->editColumn('boosting_time', function ($row) {
+                        if ($row->boosting_time == 0) {
+                            return '<span class="badge bg-secondary">Not boosting</span>';
+                        } else {
+                            if ($row->boosting_time < 60) {
+                                return '
+                                    <span class="badge bg-info">' . $row->boosting_time . ' Minute' . ($row->boosting_time > 1 ? 's' : '') . ' | Waiting</span>
+                                ';
+                            } else {
+                                $hours = round($row->boosting_time / 60, 1);
+                                return '
+                                    <span class="badge bg-info">' . $hours . ' Hour' . ($hours > 1 ? 's' : '') . ' | Waiting</span>
+                                ';
+                            }
+                        }
+                    })
                     ->editColumn('proof_submitted', function ($row) {
                         $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                         $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
@@ -1216,7 +1239,7 @@ class PostedTaskController extends Controller
 
                         return $btn;
                     })
-                    ->rawColumns(['approved_at', 'proof_submitted', 'work_duration', 'proof_status', 'total_cost', 'charge_status', 'pausing_reason', 'paused_by', 'action'])
+                    ->rawColumns(['approved_at', 'boosting_time', 'proof_submitted', 'work_duration', 'proof_status', 'total_cost', 'charge_status', 'pausing_reason', 'paused_by', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.paused');

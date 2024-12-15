@@ -21,11 +21,11 @@ class DefaultSettingTableSeeder extends Seeder
             'deposit_nagad_account' => '01900000000',
             'min_deposit_amount' => 100.00, // every deposit
             'max_deposit_amount' => 10000.00, // every deposit
-            'withdrawal_balance_deposit_charge_percentage' => 2.00, // every deposit
-            'instant_withdraw_charge' => 10.00, // every withdrawal
-            'withdraw_charge_percentage' => 20.00, // every withdrawal
-            'min_withdraw_amount' => 500.00, // every withdrawal
-            'max_withdraw_amount' => 10000.00, // every withdrawal
+            'deposit_from_withdraw_balance_charge_percentage' => 2.00, // every deposit
+            'instant_withdraw_charge' => 10.00, // every withdraw
+            'withdraw_charge_percentage' => 20.00, // every withdraw
+            'min_withdraw_amount' => 500.00, // every withdraw
+            'max_withdraw_amount' => 10000.00, // every withdraw
             'task_posting_charge_percentage' => 5.00, // every task
             'task_posting_additional_required_proof_photo_charge' => 2.50, // every required proof photo
             'task_posting_boosting_time_charge' => 5.00, // every 15 minutes

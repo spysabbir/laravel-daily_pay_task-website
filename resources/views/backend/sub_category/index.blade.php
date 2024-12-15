@@ -88,7 +88,18 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="status" class="form-label">Status</label>
+                                <label for="filter_category_id" class="form-label">Category</label>
+                                <select class="form-select filter_data" id="filter_category_id">
+                                    <option value="">-- Select Category --</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Active">Active</option>
@@ -173,6 +184,7 @@
             ajax: {
                 url: "{{ route('backend.sub_category.index') }}",
                 data: function (e) {
+                    e.category_id = $('#filter_category_id').val();
                     e.status = $('#filter_status').val();
                 }
             },
@@ -295,9 +307,13 @@
                         url: url,
                         method: 'DELETE',
                         success: function(response) {
-                            $('#allDataTable').DataTable().ajax.reload();
-                            $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.warning('Sub Category soft delete successfully.');
+                            if (response.status == 400) {
+                                toastr.error(response.error);
+                            }else{
+                                $('#allDataTable').DataTable().ajax.reload();
+                                $('#trashDataTable').DataTable().ajax.reload();
+                                toastr.warning('Sub Category soft delete successfully.');
+                            }
                         }
                     });
                 }

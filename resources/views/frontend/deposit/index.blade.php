@@ -12,25 +12,18 @@
                     <p class="mb-0">You can deposit money by using Bkash, Nagad, Rocket. After depositing money, you have to submit a deposit request with the transaction id. Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}. After submitting the deposit request, the admin will verify your request and add the money to your account. If you have any problem, please contact the admin.</p>
                 </div>
                 <div class="action-btn d-flex">
-                    <!-- Withdrawal Balance Deposit Modal -->
-                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target=".withdrawalBalanceDepositModel">Withdrawal Balance To Deposit</button>
-                    <div class="modal fade withdrawalBalanceDepositModel" tabindex="-1" aria-labelledby="withdrawalBalanceDepositModelLabel" aria-hidden="true">
+                    <!-- Withdraw Balance To Deposit Modal -->
+                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target=".depositFromWithdrawBalanceModel">Deposit From Withdraw Balance</button>
+                    <div class="modal fade depositFromWithdrawBalanceModel" tabindex="-1" aria-labelledby="depositFromWithdrawBalanceModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="withdrawalBalanceDepositModelLabel">Withdrawal Balance Deposit</h5>
+                                    <h5 class="modal-title" id="depositFromWithdrawBalanceModelLabel">Deposit From Withdraw Balance</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                 </div>
-                                <form class="forms-sample" id="withdrawalBalanceDepositForm">
+                                <form class="forms-sample" id="depositFromWithdrawBalanceForm">
                                     @csrf
                                     <div class="modal-body">
-                                        @php
-                                            $chargePercentage = get_default_settings('withdrawal_balance_deposit_charge_percentage');
-                                            $minDepositAmount = get_default_settings('min_deposit_amount');
-                                            $maxDepositAmount = get_default_settings('max_deposit_amount');
-                                            $adjustedMinDeposit = number_format($minDepositAmount / (1 - ($chargePercentage / 100)), 2, '.', '');
-                                            $adjustedMaxDeposit = number_format($maxDepositAmount - (($maxDepositAmount * $chargePercentage) / 100), 2, '.', '');
-                                        @endphp
                                         <div class="mb-3">
                                             <label for="withdraw_balance" class="form-label">Withdraw Balance</label>
                                             <div class="input-group">
@@ -41,16 +34,16 @@
                                         <div class="mb-3">
                                             <label for="amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" min="{{ $adjustedMinDeposit }}" step="0.01" max="{{ get_default_settings('max_deposit_amount') }}" placeholder="Deposit Amount" required>
+                                                <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" placeholder="Deposit Amount" required>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
-                                            <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ $adjustedMinDeposit }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}</small>
+                                            <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} 1.</small>
                                             <span class="text-danger error-text deposit_amount_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="withdrawal_balance_deposit_charge_percentage" class="form-label">Withdrawal Balance Deposit Charge Percentage</label>
+                                            <label for="deposit_from_withdraw_balance_charge_percentage" class="form-label">Deposit From Withdraw Balance Charge Percentage</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="withdrawal_balance_deposit_charge_percentage" value="{{ get_default_settings('withdrawal_balance_deposit_charge_percentage') }}" disabled>
+                                                <input type="number" class="form-control" id="deposit_from_withdraw_balance_charge_percentage" value="{{ get_default_settings('deposit_from_withdraw_balance_charge_percentage') }}" disabled>
                                                 <span class="input-group-text input-group-addon">%</span>
                                             </div>
                                         </div>
@@ -60,7 +53,6 @@
                                                 <input type="number" class="form-control" id="payable_deposit_amount" value="0" placeholder="Payable Deposit Amount" disabled>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
-                                            <small class="text-info d-block">Note: Minimum payable deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum payable deposit amount is {{ $adjustedMaxDeposit }}</small>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -151,7 +143,7 @@
                                     <option value="Bkash">Bkash</option>
                                     <option value="Nagad">Nagad</option>
                                     <option value="Rocket">Rocket</option>
-                                    <option value="Withdrawal Balance">Withdrawal Balance</option>
+                                    <option value="Withdraw Balance">Withdraw Balance</option>
                                 </select>
                             </div>
                         </div>
@@ -304,10 +296,10 @@
             });
         });
 
-        // Withdrawal Balance Deposit
+        // Deposit From Withdraw Balance
         $('#deposit_amount').on('input', function () {
             var depositAmount = parseFloat($(this).val()) || 0;
-            var chargePercentage = parseFloat($('#withdrawal_balance_deposit_charge_percentage').val()) || 0;
+            var chargePercentage = parseFloat($('#deposit_from_withdraw_balance_charge_percentage').val()) || 0;
 
             if (depositAmount > 0 && chargePercentage >= 0) {
                 var chargeAmount = (depositAmount * chargePercentage) / 100;
@@ -319,8 +311,8 @@
             }
         });
 
-        // Store Withdrawal Balance Deposit
-        $('#withdrawalBalanceDepositForm').submit(function(event) {
+        // Store Deposit From Withdraw Balance
+        $('#depositFromWithdrawBalanceForm').submit(function(event) {
             event.preventDefault();
 
             var submitButton = $(this).find("button[type='submit']");
@@ -329,7 +321,7 @@
             var formData = $(this).serialize();
 
             $.ajax({
-                url: "{{ route('withdrawal.balance.deposit.store') }}",
+                url: "{{ route('deposit.from.withdraw.balance') }}",
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
@@ -345,13 +337,13 @@
                         if (response.status == 401) {
                             toastr.error(response.error);
                         }else{
-                            $('.withdrawalBalanceDepositModel').modal('hide');
-                            $('#withdrawalBalanceDepositForm')[0].reset();
+                            $('.depositFromWithdrawBalanceModel').modal('hide');
+                            $('#depositFromWithdrawBalanceForm')[0].reset();
                             $('#allDataTable').DataTable().ajax.reload();
                             $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                             $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
                             $("#total_deposit_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.total_deposit);
-                            toastr.success('Withdrawal balance deposit request sent successfully.');
+                            toastr.success('Deposit From Withdraw Balance request sent successfully.');
                         }
                     }
                 },

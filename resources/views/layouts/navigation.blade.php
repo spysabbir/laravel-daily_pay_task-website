@@ -359,7 +359,7 @@
             <li class="nav-item">
                 <a href="{{ route('backend.support') }}" class="nav-link">
                     <i class="link-icon" data-feather="message-circle"></i>
-                    <span class="link-title">Support</span>
+                    <span class="link-title">Support <span class="badge bg-primary">{{ $supportsCount }}</span></span>
                 </a>
             </li>
             @endcan
@@ -370,7 +370,7 @@
             <li class="nav-item">
                 <a href="{{ route('backend.contact') }}" class="nav-link">
                     <i class="link-icon" data-feather="phone"></i>
-                    <span class="link-title">Contact</span>
+                    <span class="link-title">Contact <span class="badge bg-primary">{{ $contact }}</span></span>
                 </a>
             </li>
             @endcan
@@ -380,7 +380,7 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#ReportMenu" role="button" aria-expanded="false" aria-controls="ReportMenu">
                     <i class="link-icon" data-feather="alert-triangle"></i>
-                    <span class="link-title">Report</span>
+                    <span class="link-title">Report <span class="badge bg-primary">{{ $report }}</span></span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse" id="ReportMenu">
@@ -405,7 +405,7 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#VerificationMenu" role="button" aria-expanded="false" aria-controls="VerificationMenu">
                     <i class="link-icon" data-feather="user-check"></i>
-                    <span class="link-title">Verification</span>
+                    <span class="link-title">Verification <span class="badge bg-primary">{{ $verification }}</span></span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse" id="VerificationMenu">
@@ -429,7 +429,7 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#DepositMenu" role="button" aria-expanded="false" aria-controls="DepositMenu">
                     <i class="link-icon" data-feather="credit-card"></i>
-                    <span class="link-title">Deposit</span>
+                    <span class="link-title">Deposit <span class="badge bg-primary">{{ $deposit }}</span></span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse" id="DepositMenu">
@@ -453,7 +453,7 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#WithdrawMenu" role="button" aria-expanded="false" aria-controls="WithdrawMenu">
                     <i class="link-icon" data-feather="dollar-sign"></i>
-                    <span class="link-title">Withdraw</span>
+                    <span class="link-title">Withdraw <span class="badge bg-primary">{{ $withdraw }}</span></span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse" id="WithdrawMenu">
@@ -477,7 +477,7 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#PostedTaskMenu" role="button" aria-expanded="false" aria-controls="PostedTaskMenu">
                     <i class="link-icon" data-feather="briefcase"></i>
-                    <span class="link-title">Posted Task</span>
+                    <span class="link-title">Posted Task <span class="badge bg-primary">{{ $postTask }}</span></span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse" id="PostedTaskMenu">
@@ -521,7 +521,7 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#WorkedTaskMenu" role="button" aria-expanded="false" aria-controls="WorkedTaskMenu">
                     <i class="link-icon" data-feather="check-circle"></i>
-                    <span class="link-title">Worked Task</span>
+                    <span class="link-title">Worked Task <span class="badge bg-primary">{{ $proofTask }}</span></span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse" id="WorkedTaskMenu">

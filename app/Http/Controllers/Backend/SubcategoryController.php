@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Category;
+use App\Models\ChildCategory;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -35,6 +36,9 @@ class SubCategoryController extends Controller implements HasMiddleware
 
             $query->orderBy('created_at', 'desc');
 
+            if ($request->category_id) {
+                $query->where('category_id', $request->category_id);
+            }
             if ($request->status) {
                 $query->where('status', $request->status);
             }
@@ -153,6 +157,13 @@ class SubCategoryController extends Controller implements HasMiddleware
 
     public function destroy(string $id)
     {
+        $childCategoryExist = ChildCategory::where('sub_category_id', $id)->exists();
+        if ($childCategoryExist) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'This sub category has child category. Please delete child category first.',
+            ]);
+        }
         $sub_category = SubCategory::findOrFail($id);
         $sub_category->delete();
     }

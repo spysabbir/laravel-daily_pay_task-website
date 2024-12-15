@@ -82,6 +82,20 @@
 </head>
 <body>
 	<div class="main-wrapper">
+
+        @php
+            $verification = App\Models\Verification::where('status', 'Pending')->count();
+            $deposit = App\Models\Deposit::where('status', 'Pending')->count();
+            $withdraw = App\Models\Withdraw::where('status', 'Pending')->count();
+            $postTask = App\Models\PostTask::where('status', 'Pending')->count();
+            $proofTask = App\Models\ProofTask::where('status', 'Reviewed')->count();
+            $report = App\Models\Report::where('status', 'Pending')->count();
+            $contact = App\Models\Contact::where('status', 'Unread')->count();
+            $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', 1)->get();
+            $supportsCount = $supports->count();
+            $backend_notification = $verification + $deposit + $withdraw + $postTask + $proofTask + $report + $contact + $supportsCount;
+        @endphp
+
         <!-- sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
@@ -138,8 +152,6 @@
                                 @php
                                     if (Auth::user()->isFrontendUser()) {
                                         $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', Auth::user()->id)->get();
-                                    } else {
-                                        $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', 1)->get();
                                     }
                                 @endphp
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
@@ -183,15 +195,6 @@
                             </div>
                         </li>
                         <li class="nav-item dropdown">
-                            @php
-                                $verification = App\Models\Verification::where('status', 'Pending')->count();
-                                $deposit = App\Models\Deposit::where('status', 'Pending')->count();
-                                $withdraw = App\Models\Withdraw::where('status', 'Pending')->count();
-                                $postTask = App\Models\PostTask::where('status', 'Pending')->count();
-                                $proofTask = App\Models\ProofTask::where('status', 'Reviewed')->count();
-                                $report = App\Models\Report::where('status', 'Pending')->count();
-                                $backend_notification = $verification + $deposit + $withdraw + $postTask + $proofTask + $report;
-                            @endphp
                             <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i data-feather="bell"></i>
                                 @if ((Auth::user()->isFrontendUser() && Auth::user()->unreadNotifications->count() > 0) || (!Auth::user()->isFrontendUser() && $backend_notification > 0))
@@ -318,6 +321,32 @@
                                                 <strong>Report Request</strong>
                                             </p>
                                             <p class="tx-12 text-muted">{{ $report }} Pending</p>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    @if ($contact > 0)
+                                    <a href="{{ route('backend.contact') }}" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                            <i class="link-icon text-white" data-feather="phone"></i>
+                                        </div>
+                                        <div class="flex-grow-1 me-2">
+                                            <p>
+                                                <strong>Contact Message Request</strong>
+                                            </p>
+                                            <p class="tx-12 text-muted">{{ $contact }} Pending</p>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    @if ($supportsCount > 0)
+                                    <a href="{{ route('backend.support') }}" class="dropdown-item d-flex align-items-center py-2">
+                                        <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                            <i class="link-icon text-white" data-feather="mail"></i>
+                                        </div>
+                                        <div class="flex-grow-1 me-2">
+                                            <p>
+                                                <strong>Support Message Request</strong>
+                                            </p>
+                                            <p class="tx-12 text-muted">{{ $supportsCount }} Pending</p>
                                         </div>
                                     </a>
                                     @endif

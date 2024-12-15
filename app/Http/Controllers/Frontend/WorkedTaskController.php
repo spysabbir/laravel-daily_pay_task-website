@@ -138,7 +138,9 @@ class WorkedTaskController extends Controller
         $reportPostTask = Report::where('post_task_id', $id)->where('reported_by', Auth::id())->first();
         $reportUserCount = Report::where('user_id', $taskDetails->user_id)->where('reported_by', Auth::id())->where('type', 'User')->count();
         $reviewDetails = Rating::where('user_id', $taskDetails->user_id)->get();
-        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'taskProof', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount', 'reviewDetails'));
+        $totalPostedTask = PostTask::where('user_id', $taskDetails->user_id)->count();
+        $totalWorkedTask = ProofTask::where('user_id', $taskDetails->user_id)->count();
+        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'taskProof', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount', 'reviewDetails', 'totalPostedTask', 'totalWorkedTask'));
     }
 
     public function findTaskNotInterested($id)

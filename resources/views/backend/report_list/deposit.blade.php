@@ -19,7 +19,7 @@
                                 <option value="Bkash">Bkash</option>
                                 <option value="Nagad">Nagad</option>
                                 <option value="Rocket">Rocket</option>
-                                <option value="Withdrawal Balance">Withdrawal Balance</option>
+                                <option value="Withdraw Balance">Withdraw Balance</option>
                             </select>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                                 <th>Bkash Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Nagad Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Rocket Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
-                                <th>Withdrawal Balance Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Withdraw Balance Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Pending Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Approved Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Rejected Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
@@ -73,7 +73,7 @@
                                 <th id="bkash_total"></th>
                                 <th id="nagad_total"></th>
                                 <th id="rocket_total"></th>
-                                <th id="withdrawal_balance_total"></th>
+                                <th id="withdraw_balance_total"></th>
                                 <th id="pending_total"></th>
                                 <th id="approved_total"></th>
                                 <th id="rejected_total"></th>
@@ -124,7 +124,7 @@
                 { data: 'bkash_amount', name: 'bkash_amount' },
                 { data: 'nagad_amount', name: 'nagad_amount' },
                 { data: 'rocket_amount', name: 'rocket_amount' },
-                { data: 'withdrawal_balance_amount', name: 'withdrawal_balance_amount' },
+                { data: 'withdraw_balance_amount', name: 'withdraw_balance_amount' },
                 { data: 'pending_amount', name: 'pending_amount' },
                 { data: 'approved_amount', name: 'approved_amount' },
                 { data: 'rejected_amount', name: 'rejected_amount' },
@@ -136,7 +136,7 @@
                 $('#bkash_total').html(response.total_bkash_amount_sum);
                 $('#nagad_total').html(response.total_nagad_amount_sum);
                 $('#rocket_total').html(response.total_rocket_amount_sum);
-                $('#withdrawal_balance_total').html(response.total_withdrawal_balance_amount_sum);
+                $('#withdrawa_balance_total').html(response.total_withdraw_balance_amount_sum);
                 $('#pending_total').html(response.total_pending_amount_sum);
                 $('#approved_total').html(response.total_approved_amount_sum);
                 $('#rejected_total').html(response.total_rejected_amount_sum);

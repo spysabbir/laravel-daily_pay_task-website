@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\ChildCategory;
+use App\Models\PostTask;
 use App\Models\TaskPostCharge;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -36,6 +37,15 @@ class TaskPostChargeController extends Controller implements HasMiddleware
 
             $query->orderBy('created_at', 'desc');
 
+            if ($request->category_id) {
+                $query->where('category_id', $request->category_id);
+            }
+            if ($request->sub_category_id) {
+                $query->where('sub_category_id', $request->sub_category_id);
+            }
+            if ($request->child_category_id) {
+                $query->where('child_category_id', $request->child_category_id);
+            }
             if ($request->status) {
                 $query->where('status', $request->status);
             }
@@ -167,6 +177,15 @@ class TaskPostChargeController extends Controller implements HasMiddleware
     public function destroy(string $id)
     {
         $task_post_charge = TaskPostCharge::findOrFail($id);
+
+        $postTaskExist = PostTask::where('category_id', $task_post_charge->category_id)->where('sub_category_id', $task_post_charge->sub_category_id)->where('child_category_id', $task_post_charge->child_category_id)->exists();
+        if ($postTaskExist) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'This task post charge has post task. You can not delete this task post charge.',
+            ]);
+        }
+
         $task_post_charge->delete();
     }
 
