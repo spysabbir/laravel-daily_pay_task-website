@@ -90,6 +90,7 @@
                                         <div class="status active_status"></div>
                                     </figure>
                                     <div>
+                                        <p class="user-id"></p>
                                         <p class="user-name">User</p>
                                         <p class="text-muted tx-13"></p>
                                     </div>
@@ -212,7 +213,8 @@
             success: function(response) {
                 // Update chat header
                 $('.chat-header img').attr('src', response.profile_photo);
-                $('.chat-header .user-name').text(response.name);
+                $('.chat-header .user-id').text('ID: ' + response.id);
+                $('.chat-header .user-name').text('Name: ' + response.name);
                 $('.chat-header .text-muted').text(response.last_active);
                 $('.chat-header .active_status').removeClass('offline').addClass(response.active_status);
 
@@ -340,7 +342,7 @@
             if (data.support.receiver_id === {{ Auth::user()->id }}) {
                 $('.messages').append(`
                     <li class="message-item friend">
-                        <img src="{{ asset('uploads/profile_photo') }}/${data.support.receiver_photo}" class="img-xs rounded-circle" alt="avatar">
+                        <img src="{{ asset('uploads/profile_photo') }}/${data.support.sender_photo}" class="img-xs rounded-circle" alt="avatar">
                         <div class="content">
                             <div class="message">
                                 <div class="bubble">

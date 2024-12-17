@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->enum('type', ['Ragular', 'Instant']);
             $table->string('method');
-            $table->string('number');
+            $table->string('number')->nullable();
             $table->decimal('amount', 10, 2);
             $table->decimal('payable_amount', 10, 2);
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');

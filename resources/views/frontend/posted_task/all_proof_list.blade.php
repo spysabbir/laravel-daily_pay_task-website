@@ -240,13 +240,16 @@
                     <table id="allDataTable" class="table">
                         <thead>
                             <tr>
-                                <th></th>
                                 <th>
                                     <input type="checkbox" class="form-check-input" id="checkAll">
                                 </th>
                                 <th>Proof Id</th>
                                 <th>User Details</th>
-                                <th>Proof Answer</th>
+                                <th>
+                                    <!-- Header Button for Expand/Collapse All -->
+                                    <i id="toggleAllRows" class="fas fa-plus-circle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
+                                    Proof Answer
+                                </th>
                                 <th>Status</th>
                                 <th>Submited Date</th>
                                 <th>Checked Date</th>
@@ -342,6 +345,20 @@
 </div>
 @endsection
 
+<style>
+    #toggleAllRows,
+    .row-toggle {
+        font-size: 1.1rem;
+    }
+
+    .nested-row {
+        padding: 10px;
+        border-left: 3px solid #007bff;
+        font-size: 14px;
+        background-color: #007bff1a;
+    }
+</style>
+
 @section('script')
 <script>
     $(document).ready(function() {
@@ -394,7 +411,7 @@
                                         </div>
                                         <h4>Proof Answer:</h4>
                                         <div class="mb-2 border p-2">
-                                            ${proofTask.proof_answer}
+                                            ${proofTask.proof_answer.replace(/\n/g, '<br>')}
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -425,11 +442,11 @@
                                 <div class="carousel-inner">${items}</div>
                                 ${response.proofTaskListPending.length > 1 ?
                                 `<a class="carousel-control-prev" data-bs-target="#proofTaskListPendingCarousel" role="button" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="carousel-control-prev-icon bg-primary" aria-hidden="true"></span>
                                     <span class="visually-hidden">Previous</span>
                                 </a>
                                 <a class="carousel-control-next" data-bs-target="#proofTaskListPendingCarousel" role="button" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="carousel-control-next-icon bg-primary" aria-hidden="true"></span>
                                     <span class="visually-hidden">Next</span>
                                 </a>` : ''}
                             </div>
@@ -652,17 +669,20 @@
                 }
             },
             columns: [
-                {
-                    className: 'details-control',
-                    orderable: false,
-                    searchable: false,
-                    data: null,
-                    defaultContent: '<i class="fas fa-plus-circle"></i>' // Expand icon
-                },
                 { data: 'checkbox', name: 'checkbox' },
                 { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
-                { data: 'proof_answer', name: 'proof_answer' },
+                {
+                    data: 'proof_answer',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return `
+                            <i class="fas fa-plus-circle row-toggle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
+                            <span>${data}</span>
+                        `;
+                    }
+                },
                 { data: 'status', name: 'status' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'checked_at', name: 'checked_at' },
@@ -670,23 +690,75 @@
             ]
         });
 
-        $('#allDataTable tbody').on('click', 'td.details-control', function () {
-        const tr = $(this).closest('tr');
-        const row = table.row(tr);
+        // Add click event for the header button to expand/collapse all rows
+        let allRowsOpen = false;
 
-        if (row.child.isShown()) {
-            // Close the row
-            row.child.hide();
-            tr.removeClass('shown');
-            $(this).html('<i class="fas fa-plus-circle"></i>'); // Update icon
-        } else {
-            // Open the row and show proof_answer
-            const proofAnswer = row.data().details; // Get proof_answer data
-            row.child(`<div class="nested-row">${proofAnswer}</div>`).show();
-            tr.addClass('shown');
-            $(this).html('<i class="fas fa-minus-circle"></i>'); // Update icon
+        // Function to check if all rows are expanded
+        function updateGlobalIcon() {
+            const rows = table.rows();
+            const totalRows = rows.count();
+            const openRows = rows.nodes().filter(row => $(row).hasClass('shown')).length;
+
+            if (openRows === totalRows) {
+                $('#toggleAllRows').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                allRowsOpen = true;
+            } else {
+                $('#toggleAllRows').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                allRowsOpen = false;
+            }
         }
-    });
+
+        // Individual row expand/collapse
+        $('#allDataTable tbody').on('click', '.row-toggle', function () {
+            const tr = $(this).closest('tr');
+            const row = table.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+                $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            } else {
+                // Fetch proof_answer or any extra data
+                const proofAnswer = row.data().proof_answer_full;
+                row.child(`<div class="nested-row">${proofAnswer}</div>`).show();
+                tr.addClass('shown');
+                $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            }
+
+            // Update the global expand/collapse button icon
+            updateGlobalIcon();
+        });
+
+        // Global expand/collapse functionality
+        $('#toggleAllRows').on('click', function () {
+            const icon = $(this);
+            const rows = table.rows();
+
+            if (allRowsOpen) {
+                // Collapse all rows
+                rows.every(function () {
+                    if (this.child.isShown()) {
+                        this.child.hide();
+                        $(this.node()).removeClass('shown');
+                        $(this.node()).find('.row-toggle').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                    }
+                });
+                allRowsOpen = false;
+                icon.removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            } else {
+                // Expand all rows
+                rows.every(function () {
+                    const proofAnswer = this.data().proof_answer_full;
+                    if (!this.child.isShown()) {
+                        this.child(`<div class="nested-row">${proofAnswer}</div>`).show();
+                        $(this.node()).addClass('shown');
+                        $(this.node()).find('.row-toggle').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                    }
+                });
+                allRowsOpen = true;
+                icon.removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            }
+        });
 
         // Filter Data
         $('.filter_data').change(function(){
@@ -694,19 +766,37 @@
             $('#allDataTable').DataTable().ajax.reload();
         });
 
-        $('#checkAll').change(function() {
-            let table = $('#allDataTable').DataTable();
+        // "Check All" checkbox logic
+        $('#checkAll').on('change', function () {
             let isChecked = this.checked;
 
-            table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                 let row = this.node();
                 let checkbox = $(row).find('.checkbox'); // Find the checkbox in the row
-                let status = $(row).find('td:eq(4)').text().trim(); // Get the status in the 5th column (0-indexed)
+                let status = $(row).find('td:eq(4)').text().trim(); // Get the status column (adjust index as needed)
 
+                // Only check/uncheck checkboxes with 'Pending' status
                 if (status === 'Pending') {
-                    checkbox.prop('checked', isChecked); // Check or uncheck based on #checkAll
+                    checkbox.prop('checked', isChecked).trigger('change'); // Trigger change for individual logic
                 }
             });
+        });
+
+        // Update "Check All" checkbox state when an individual checkbox changes
+        $('#allDataTable tbody').on('change', '.checkbox', function () {
+            let allPendingCheckboxes = table
+                .rows()
+                .nodes()
+                .to$()
+                .find('.checkbox')
+                .filter(function () {
+                    let status = $(this).closest('tr').find('td:eq(4)').text().trim();
+                    return status === 'Pending';
+                });
+
+            let allChecked = allPendingCheckboxes.length > 0 && allPendingCheckboxes.filter(':not(:checked)').length === 0;
+
+            $('#checkAll').prop('checked', allChecked);
         });
 
         // Approved All

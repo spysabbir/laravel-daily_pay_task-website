@@ -29,21 +29,23 @@ class ReportController extends Controller implements HasMiddleware
     public function reportPending(Request $request)
     {
         if ($request->ajax()) {
-            $reportedUsers = Report::where('status', 'Pending');
+            $reports = Report::where('status', 'Pending');
 
             if ($request->report_id) {
-                $reportedUsers->where('id', $request->report_id);
+                $reports->where('id', $request->report_id);
             }
-
+            if ($request->user_id) {
+                $reports->where('user_id', $request->user_id);
+            }
             if ($request->type) {
-                $reportedUsers->where('type', $request->type);
+                $reports->where('type', $request->type);
             }
 
-            $query = $reportedUsers->select('reports.*')->orderBy('created_at', 'desc');
+            $query = $reports->select('reports.*')->orderBy('created_at', 'desc');
 
-            $reportedList = $query->get();
+            $reportList = $query->get();
 
-            return DataTables::of($reportedList)
+            return DataTables::of($reportList)
                 ->addIndexColumn()
                 ->editColumn('type', function ($row) {
                     if ($row->type == 'User') {
@@ -54,12 +56,22 @@ class ReportController extends Controller implements HasMiddleware
                         return '<span class="badge bg-primary text-white">'.$row->type.'</span>';
                     }
                 })
-                ->editColumn('reported_user', function ($row) {
+                ->editColumn('reported_user_id', function ($row) {
+                    return '
+                        <span class="badge bg-dark text-white">'.$row->reported->id.'</span>
+                    ';
+                })
+                ->editColumn('reported_user_name', function ($row) {
                     return '
                         <span class="badge bg-dark text-white">'.$row->reported->name.'</span>
                     ';
                 })
-                ->editColumn('reported_by', function ($row) {
+                ->editColumn('report_by_user_id', function ($row) {
+                    return '
+                        <span class="badge bg-dark text-white">'.$row->reportedBy->id.'</span>
+                    ';
+                })
+                ->editColumn('report_by_user_name', function ($row) {
                     return '
                         <span class="badge bg-dark text-white">'.$row->reportedBy->name.'</span>
                     ';
@@ -76,7 +88,7 @@ class ReportController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
-                ->rawColumns(['type', 'reported_user', 'reported_by', 'status', 'action'])
+                ->rawColumns(['type', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
         }
         return view('backend.report.pending');
@@ -136,21 +148,23 @@ class ReportController extends Controller implements HasMiddleware
     public function reportResolved(Request $request)
     {
         if ($request->ajax()) {
-            $reportedUsers = Report::where('status', 'Resolved');
+            $reports = Report::where('status', 'Resolved');
 
             if ($request->report_id) {
-                $reportedUsers->where('id', $request->report_id);
+                $reports->where('id', $request->report_id);
             }
-
+            if ($request->user_id) {
+                $reports->where('user_id', $request->user_id);
+            }
             if ($request->type) {
-                $reportedUsers->where('type', $request->type);
+                $reports->where('type', $request->type);
             }
 
-            $query = $reportedUsers->select('reports.*');
+            $query = $reports->select('reports.*');
 
-            $reportedList = $query->get();
+            $reportList = $query->get();
 
-            return DataTables::of($reportedList)
+            return DataTables::of($reportList)
                 ->addIndexColumn()
                 ->editColumn('type', function ($row) {
                     if ($row->type == 'User') {
@@ -161,14 +175,24 @@ class ReportController extends Controller implements HasMiddleware
                         return '<span class="badge bg-primary text-white">'.$row->type.'</span>';
                     }
                 })
-                ->editColumn('reported_user', function ($row) {
+                ->editColumn('reported_user_id', function ($row) {
                     return '
-                        <span class="text-info">'.$row->reported->name.'</span> <br>
+                        <span class="badge bg-dark text-white">'.$row->reported->id.'</span>
                     ';
                 })
-                ->editColumn('reported_by', function ($row) {
+                ->editColumn('reported_user_name', function ($row) {
                     return '
-                        <span class="text-info">'.$row->reportedBy->name.'</span> <br>
+                        <span class="badge bg-dark text-white">'.$row->reported->name.'</span>
+                    ';
+                })
+                ->editColumn('report_by_user_id', function ($row) {
+                    return '
+                        <span class="badge bg-dark text-white">'.$row->reportedBy->id.'</span>
+                    ';
+                })
+                ->editColumn('report_by_user_name', function ($row) {
+                    return '
+                        <span class="badge bg-dark text-white">'.$row->reportedBy->name.'</span>
                     ';
                 })
                 ->editColumn('created_at', function ($row) {
@@ -183,7 +207,7 @@ class ReportController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
-                ->rawColumns(['type', 'reported_user', 'reported_by', 'status', 'action'])
+                ->rawColumns(['type', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
         }
         return view('backend.report.resolved');

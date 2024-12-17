@@ -22,7 +22,7 @@ use App\Models\Report;
 use App\Notifications\RatingNotification;
 use App\Notifications\BonusNotification;
 use Carbon\Carbon;
-
+use Illuminate\Support\Str;
 
 class PostedTaskController extends Controller
 {
@@ -650,10 +650,14 @@ class PostedTaskController extends Controller
                     ';
                     return $user;
                 })
-                ->addColumn('details', function ($row) {
-                    return $row->proof_answer; // Include proof_answer for nested row data
+                ->editColumn('proof_answer', function ($row) {
+                    $limitedAnswer = Str::limit($row->proof_answer,40, '...'); // Limit to 50 characters with "..."
+                    return '<span class="badge bg-info mx-2">Answer: </span>' . e($limitedAnswer);
                 })
-                ->rawColumns(['details'])
+                ->addColumn('proof_answer_full', function ($row) {
+                    $proofAnswer = nl2br(e($row->proof_answer)); // Convert newlines to <br> and escape HTML
+                    return '<span class="badge bg-info my-2">Answer: </span><br>' . $proofAnswer;
+                })
                 ->editColumn('status', function ($row) {
                     if ($row->status == 'Pending') {
                         $status = '<span class="badge bg-info">' . $row->status . '</span>';
@@ -695,7 +699,7 @@ class PostedTaskController extends Controller
                     }
                     return $actionBtn;
                 })
-                ->rawColumns(['checkbox', 'id', 'user', 'proof_answer', 'status', 'created_at', 'checked_at', 'action'])
+                ->rawColumns(['checkbox', 'id', 'user', 'proof_answer', 'proof_answer_full', 'status', 'created_at', 'checked_at', 'action'])
                 ->make(true);
         }
 

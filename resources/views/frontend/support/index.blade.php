@@ -132,7 +132,7 @@
                 // Load messages
                 if (data.supports.length > 0) {
                     data.supports.forEach(function(support) {
-                        var profile_photo = support.sender_id === {{ Auth::user()->id }} ? support.sender_photo : support.receiver_photo;
+                        var profile_photo = support.sender_id === {{ Auth::user()->id }} ? support.sender_photo : support.sender_photo;
                         var support_photo = support.photo ? `<img src="{{ asset('uploads/support_photo') }}/${support.photo}" alt="image" style="max-width: 100px; max-height: 100px;">` : '';
                         var timeDisplay = support.created_at;
 
@@ -215,7 +215,7 @@
             if (data.support.receiver_id === {{ Auth::user()->id }}) {
                 $('#chatBox').append(`
                     <li class="message-item me">
-                        <img src="{{ asset('uploads/profile_photo') }}/${data.support.receiver_photo}" class="img-xs rounded-circle" alt="avatar">
+                        <img src="{{ asset('uploads/profile_photo') }}/${data.support.sender_photo}" class="img-xs rounded-circle" alt="avatar">
                         <div class="content">
                             <div class="message">
                                 <div class="bubble">

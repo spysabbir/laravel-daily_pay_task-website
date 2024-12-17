@@ -9,19 +9,19 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Deposit List</h3>
-                    <p class="mb-0">You can deposit money by using Bkash, Nagad, Rocket. After depositing money, you have to submit a deposit request with the transaction id. Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}. After submitting the deposit request, the admin will verify your request and add the money to your account. If you have any problem, please contact the admin.</p>
+                    <p class="mb-0">Note: You can deposit money by using Bkash, Nagad, Rocket. After depositing money, you have to submit a deposit request with the transaction id. Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}. After submitting the deposit request then admin will verify your request and add the money to your account. If you have any problem, please contact with us.</p>
                 </div>
                 <div class="action-btn d-flex">
                     <!-- Withdraw Balance To Deposit Modal -->
-                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target=".depositFromWithdrawBalanceModel">Deposit From Withdraw Balance</button>
-                    <div class="modal fade depositFromWithdrawBalanceModel" tabindex="-1" aria-labelledby="depositFromWithdrawBalanceModelLabel" aria-hidden="true">
+                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target=".depositBalanceFromWithdrawBalanceModel">Deposit Balance From Withdraw Balance</button>
+                    <div class="modal fade depositBalanceFromWithdrawBalanceModel" tabindex="-1" aria-labelledby="depositBalanceFromWithdrawBalanceModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="depositFromWithdrawBalanceModelLabel">Deposit From Withdraw Balance</h5>
+                                    <h5 class="modal-title" id="depositBalanceFromWithdrawBalanceModelLabel">Deposit Balance From Withdraw Balance</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                 </div>
-                                <form class="forms-sample" id="depositFromWithdrawBalanceForm">
+                                <form class="forms-sample" id="depositBalanceFromWithdrawBalanceForm">
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
@@ -32,7 +32,7 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
+                                            <label for="deposit_amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" placeholder="Deposit Amount" required>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
@@ -41,16 +41,16 @@
                                             <span class="text-danger error-text deposit_amount_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="deposit_from_withdraw_balance_charge_percentage" class="form-label">Deposit From Withdraw Balance Charge Percentage</label>
+                                            <label for="deposit_balance_from_withdraw_balance_charge_percentage" class="form-label">Deposit Balance From Withdraw Balance Charge Percentage</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="deposit_from_withdraw_balance_charge_percentage" value="{{ get_default_settings('deposit_from_withdraw_balance_charge_percentage') }}" disabled>
+                                                <input type="number" class="form-control" id="deposit_balance_from_withdraw_balance_charge_percentage" value="{{ get_default_settings('deposit_balance_from_withdraw_balance_charge_percentage') }}" disabled>
                                                 <span class="input-group-text input-group-addon">%</span>
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="payable_deposit_amount" class="form-label">Payable Deposit Amount</label>
+                                            <label for="payable_deposit_balance" class="form-label">Payable Deposit Balance</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="payable_deposit_amount" value="0" placeholder="Payable Deposit Amount" disabled>
+                                                <input type="number" class="form-control" id="payable_deposit_balance" value="0" placeholder="Payable Deposit Balance" disabled>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                         </div>
@@ -296,23 +296,23 @@
             });
         });
 
-        // Deposit From Withdraw Balance
+        // Deposit Balance From Withdraw Balance
         $('#deposit_amount').on('input', function () {
             var depositAmount = parseFloat($(this).val()) || 0;
-            var chargePercentage = parseFloat($('#deposit_from_withdraw_balance_charge_percentage').val()) || 0;
+            var chargePercentage = parseFloat($('#deposit_balance_from_withdraw_balance_charge_percentage').val()) || 0;
 
             if (depositAmount > 0 && chargePercentage >= 0) {
                 var chargeAmount = (depositAmount * chargePercentage) / 100;
-                var payableAmount = depositAmount - chargeAmount;
+                var payableBalance = depositAmount - chargeAmount;
 
-                $('#payable_deposit_amount').val(payableAmount.toFixed(2));
+                $('#payable_deposit_balance').val(payableBalance.toFixed(2));
             } else {
-                $('#payable_deposit_amount').val('0');
+                $('#payable_deposit_balance').val('0');
             }
         });
 
-        // Store Deposit From Withdraw Balance
-        $('#depositFromWithdrawBalanceForm').submit(function(event) {
+        // Store Deposit Balance From Withdraw Balance
+        $('#depositBalanceFromWithdrawBalanceForm').submit(function(event) {
             event.preventDefault();
 
             var submitButton = $(this).find("button[type='submit']");
@@ -321,7 +321,7 @@
             var formData = $(this).serialize();
 
             $.ajax({
-                url: "{{ route('deposit.from.withdraw.balance') }}",
+                url: "{{ route('deposit.balance.from.withdraw.balance') }}",
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
@@ -337,13 +337,13 @@
                         if (response.status == 401) {
                             toastr.error(response.error);
                         }else{
-                            $('.depositFromWithdrawBalanceModel').modal('hide');
-                            $('#depositFromWithdrawBalanceForm')[0].reset();
+                            $('.depositBalanceFromWithdrawBalanceModel').modal('hide');
+                            $('#depositBalanceFromWithdrawBalanceForm')[0].reset();
                             $('#allDataTable').DataTable().ajax.reload();
                             $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                             $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
                             $("#total_deposit_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.total_deposit);
-                            toastr.success('Deposit From Withdraw Balance request sent successfully.');
+                            toastr.success('Deposit Balance From Withdraw Balance request sent successfully.');
                         }
                     }
                 },

@@ -4,9 +4,9 @@
     </marquee>
     <div class="col-lg-8">
         <div class="mb-3">
-            <h4>Proof Answer:</h4>
+            <h4 class="mb-2">Proof Answer:</h4>
             <div>
-                {{ $proofTask->proof_answer }}
+                {!! nl2br(e($proofTask->proof_answer)) !!}
             </div>
         </div>
         @if (!json_decode($proofTask->proof_photos))
@@ -15,7 +15,7 @@
             </div>
         @else
         <div class="mb-3">
-            <h4>Proof Image:</h4>
+            <h4 class="mb-2">Proof Image:</h4>
             <div id="single-lightgallery" class="image-grid">
                 @foreach (json_decode($proofTask->proof_photos) as $photo)
                 <a href="" class="" data-src="{{ asset('uploads/task_proof_photo') }}/{{ $photo }}" data-sub-html="<h4>Proof Task Photo {{ $loop->iteration }}</h4>">

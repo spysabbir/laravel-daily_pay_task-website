@@ -52,12 +52,13 @@ class SupportController extends Controller implements HasMiddleware
                 'photo' => $message->photo,
                 'status' => $message->status,
                 'created_at' => $message->created_at->diffForHumans(),
-                'profile_photo' => asset('uploads/profile_photo/' . $user->profile_photo),
+                'profile_photo' => $message->sender_id == auth()->id() ? asset('uploads/profile_photo/' . auth()->user()->profile_photo) : asset('uploads/profile_photo/' . $user->profile_photo),
                 'sender_type' => $message->sender_id == auth()->id() ? 'me' : 'friend',
             ];
         });
 
         return response()->json([
+            'id' => $user->id,
             'name' => $user->name,
             'profile_photo' => asset('uploads/profile_photo/' . $user->profile_photo),
             'last_active' => Carbon::parse($user->last_login_at)->diffForHumans(),

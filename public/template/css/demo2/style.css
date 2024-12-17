@@ -25757,7 +25757,10 @@ div.tox .tox-dialog__body {
 
 #checkAllPendingTaskProofData .carousel-control-prev,
 #checkAllPendingTaskProofData .carousel-control-next {
-    margin-bottom: -42rem !important;
+    margin-bottom: 100% !important;
+}
+#checkAllPendingTaskProofData .carousel-control-prev {
+    left: 25rem !important;
 }
 
 .pending-proof-image {

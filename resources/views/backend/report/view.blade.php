@@ -1,14 +1,20 @@
 <div class="card">
     <div class="card-header">
+        <h3 class="card-title">ID: {{ $report->id }}</h3>
         <h3 class="card-title">Type: {{ $report->type }}</h3>
         <h3 class="card-title">Status - {{ $report->status }}</h3>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-lg-6">
-                <h5 class="text-primary">Reported ID: {{ $report->reported->id }}, Reported User Name: {{ $report->reported->name }}</h5>
+                <h5 class="text-primary">Reported User ID: {{ $report->reported->id }}, Reported User Name: {{ $report->reported->name }}</h5>
                 <div class="mb-3">
                     <p class="my-2">Reason: {{ $report->reason }}</p>
+                    <div>
+                        <strong>Report By User ID: {{ $report->reportedBy->id }}</strong><br>
+                        <strong>Report By User Name: {{ $report->reportedBy->name }}</strong><br>
+                        <strong>Report At: {{ $report->created_at->format('d M, Y h:i A') }}</strong>
+                    </div>
                     @if ($report->post_task_id)
                         <div class="border p-2">
                             <strong class="mb-2">Post Task Id:</strong> {{ $report->post_task_id }}<br>
@@ -24,11 +30,6 @@
                     @if ($report->photo)
                     <img src="{{ asset('uploads/report_photo') }}/{{ $report->photo }}" alt="Report Photo" class="img-fluid">
                     @endif
-                </div>
-                <div>
-                    <strong>Reported By Id: {{ $report->reportedBy->id }}</strong><br>
-                    <strong>Reported By Name: {{ $report->reportedBy->name }}</strong><br>
-                    <strong>Reported At: {{ $report->created_at->format('d M, Y h:i A') }}</strong>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -57,11 +58,11 @@
                     <div class="card-body">
                         <p class="card-text">
                             <strong>Reply:</strong> {{ $report_reply->reply }}<br>
+                            <strong>Resolved By:</strong> {{ $report_reply->resolvedBy->name }}<br>
+                            <strong>Resolved At:</strong> {{ date('d M, Y h:i A', strtotime($report_reply->resolved_at)) }}<br>
                             @if ($report_reply->reply_photo)
                             <img src="{{ asset('uploads/report_photo') }}/{{ $report_reply->reply_photo }}" alt="Reply Photo" class="img-fluid my-3">
                             @endif
-                            <strong>Resolved By:</strong> {{ $report_reply->resolvedBy->name }}<br>
-                            <strong>Resolved_at:</strong> {{ date('d M, Y h:i A', strtotime($report_reply->resolved_at)) }}<br>
                         </p>
                     </div>
                 </div>

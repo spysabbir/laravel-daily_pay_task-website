@@ -21,6 +21,8 @@ class UserTableSeeder extends Seeder
         $superAdmin = User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@spysabbir.com',
+            'date_of_birth' => '2024-01-01',
+            'gender' => 'Male',
             'password' => Hash::make('Ss@12345678'),
             'user_type' => 'Backend',
             'status' => 'Active',

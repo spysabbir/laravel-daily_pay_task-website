@@ -117,12 +117,12 @@
                         @endif
                     </div>
                     <div class="my-2 border p-2 rounded">
-                        <h4 class="text-primary">Description:</h4>
-                        <p>{{ $taskDetails->description }}</p>
+                        <h4 class="text-primary mb-2">Description:</h4>
+                        <p>{!! nl2br(e($taskDetails->description)) !!}</p>
                     </div>
                     <div class="border p-2 rounded">
-                        <h4 class="text-primary">Required Proof Answer:</h4>
-                        <p>{{ $taskDetails->required_proof_answer }}</p>
+                        <h4 class="text-primary mb-2">Required Proof Answer:</h4>
+                        <p>{!! nl2br(e($taskDetails->required_proof_answer)) !!}</p>
                     </div>
                 </div>
                 <hr>

@@ -541,10 +541,10 @@ class UserController extends Controller
         }
     }
 
-    public function depositFromWithdrawBalanceStore(Request $request)
+    public function depositBalanceFromWithdrawBalanceStore(Request $request)
     {
         $currencySymbol = get_site_settings('site_currency_symbol');
-        $chargePercentage = get_default_settings('deposit_from_withdraw_balance_charge_percentage');
+        $chargePercentage = get_default_settings('deposit_balance_from_withdraw_balance_charge_percentage');
 
         $validator = Validator::make($request->all(), [
             'deposit_amount' => "required|numeric|min:1",
@@ -574,8 +574,8 @@ class UserController extends Controller
                     'status' => 'Approved',
                 ]);
 
-                $request->user()->increment('deposit_balance', $payable_amount);
                 $request->user()->decrement('withdraw_balance', $request->deposit_amount);
+                $request->user()->increment('deposit_balance', $payable_amount);
                 $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
 
                 return response()->json([
@@ -655,6 +655,14 @@ class UserController extends Controller
                         }
                         return $method;
                     })
+                    ->editColumn('number', function ($row) {
+                        if ($row->number) {
+                            $number = $row->number;
+                        } else {
+                            $number = 'N/A';
+                        }
+                        return $number;
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
@@ -696,7 +704,7 @@ class UserController extends Controller
                         }
                         return $status;
                     })
-                    ->rawColumns(['type', 'method', 'amount', 'payable_amount', 'created_at', 'approved_or_rejected_at', 'status'])
+                    ->rawColumns(['type', 'method', 'amount', 'payable_amount', 'created_at', 'number', 'approved_or_rejected_at', 'status'])
                     ->make(true);
             }
 
@@ -760,6 +768,54 @@ class UserController extends Controller
             'status' => 200,
             'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
         ]);
+    }
+
+    public function withdrawBalanceFromDepositBalanceStore(Request $request)
+    {
+        $currencySymbol = get_site_settings('site_currency_symbol');
+        $chargePercentage = get_default_settings('withdraw_balance_from_deposit_balance_charge_percentage');
+
+        $validator = Validator::make($request->all(), [
+            'withdraw_amount' => "required|numeric|min:1",
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            if ($request->withdraw_amount > $request->user()->deposit_balance) {
+                return response()->json([
+                    'status' => 401,
+                    'error'=> 'Insufficient balance in your account to withdraw ' . $currencySymbol .' '. $request->withdraw_amount .
+                            '. Your current balance is ' . $currencySymbol .' '. $request->user()->deposit_balance
+                ]);
+            }else {
+                $payable_amount = $request->withdraw_amount - ($request->withdraw_amount * $chargePercentage / 100);
+
+                Withdraw::create([
+                    'user_id' => $request->user()->id,
+                    'type' => 'Instant',
+                    'method' => 'Deposit Balance',
+                    'amount' => $request->withdraw_amount,
+                    'payable_amount' => $payable_amount,
+                    'approved_at' => now(),
+                    'status' => 'Approved',
+                ]);
+
+                $request->user()->decrement('deposit_balance', $request->withdraw_amount);
+                $request->user()->increment('withdraw_balance', $payable_amount);
+                $total_withdraw = Withdraw::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
+
+                return response()->json([
+                    'status' => 200,
+                    'deposit_balance' => number_format($request->user()->deposit_balance, 2, '.', ''),
+                    'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
+                    'total_withdraw' => $total_withdraw,
+                ]);
+            }
+        }
     }
 
     // Bonus.............................................................................................................

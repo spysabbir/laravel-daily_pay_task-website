@@ -25,6 +25,12 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label for="filter_reported_user_id" class="form-label">Reported User Id</label>
+                                <input type="number" id="filter_reported_user_id" class="form-control filter_data" placeholder="Search Reported User Id">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label for="filter_type" class="form-label">Type</label>
                                 <select class="form-select filter_data" id="filter_type">
                                     <option value="">-- Select Type --</option>
@@ -43,8 +49,10 @@
                                 <th>Sl No</th>
                                 <th>ID</th>
                                 <th>Type</th>
-                                <th>Reported User</th>
-                                <th>Reported By</th>
+                                <th>Reported User ID</th>
+                                <th>Reported User Name</th>
+                                <th>Report By User ID</th>
+                                <th>Report By User Name</th>
                                 <th>Submit Date</th>
                                 <th>Action</th>
                             </tr>
@@ -95,6 +103,7 @@
                 url: "{{ route('backend.report.resolved') }}",
                 data: function (e) {
                     e.report_id = $('#filter_report_id').val();
+                    e.user_id = $('#filter_reported_user_id').val();
                     e.type = $('#filter_type').val();
                 }
             },
@@ -102,8 +111,10 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'type', name: 'type' },
-                { data: 'reported_user', name: 'reported_user' },
-                { data: 'reported_by', name: 'reported_by' },
+                { data: 'reported_user_id', name: 'reported_user_id' },
+                { data: 'reported_user_name', name: 'reported_user_name' },
+                { data: 'report_by_user_id', name: 'report_by_user_id' },
+                { data: 'report_by_user_name', name: 'report_by_user_name' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action' }
             ]

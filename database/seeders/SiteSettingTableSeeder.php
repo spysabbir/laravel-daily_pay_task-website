@@ -15,8 +15,8 @@ class SiteSettingTableSeeder extends Seeder
     {
         $setting = [
             'site_name' => 'Daily Micro Tasks',
-            'site_tagline' => 'Turn Your Spare Time into Profit',
-            'site_description' => 'At Daily Micro Tasks, turn your spare time into profit with a variety of simple, rewarding tasks. Earn extra cash during your daily routine and discover how small efforts can lead to significant rewards. Join our community and start maximizing your income today!',
+            'site_tagline' => 'Turn Your Spare Time into Earn',
+            'site_description' => 'At Daily Micro Tasks, turn your spare time into earn with a variety of simple, rewarding tasks. Earn extra cash during your daily routine and discover how small efforts can lead to significant rewards. Join our community and start maximizing your earn today!',
             'site_url' => 'http://127.0.0.1:8000',
             'site_timezone' => 'Asia/Dhaka',
             'site_currency' => 'BDT',
@@ -25,8 +25,8 @@ class SiteSettingTableSeeder extends Seeder
             'site_favicon' => 'default_site_favicon.png',
             'site_main_email' => 'info@gmail.com',
             'site_support_email' => 'support@gmail.com',
-            'site_main_phone' => '1234567890',
-            'site_support_phone' => '1234567890',
+            'site_main_phone' => '01800000000',
+            'site_support_phone' => '01800000000',
             'site_address' => 'Dhaka, Bangladesh',
             'site_notice' => 'Submit only authentic evidence. Your account may be suspended if you submit false or group work evidence. Thanks for your cooperation in keeping our community fair and trustworthy.',
             'site_facebook_url' => 'https://facebook.com',

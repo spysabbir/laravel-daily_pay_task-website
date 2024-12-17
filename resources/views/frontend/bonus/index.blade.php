@@ -9,6 +9,9 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Bonus List</h3>
+                    <p class="mb-0">
+                        Note: You and new user will get {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('referral_registration_bonus_amount') }} bonus when new user account verification is completed by your referral link. If the user sign up by your referral link then you will get {{ get_default_settings('referral_withdrawal_bonus_percentage') }} % bonus of their every withdrawal amount. The buyer will give you a bonus if your work proof is satisfied so work with honestly and stay with us.
+                    </p>
                 </div>
             </div>
             <div class="card-body">
