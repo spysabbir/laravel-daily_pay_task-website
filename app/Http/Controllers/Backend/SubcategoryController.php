@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Category;
 use App\Models\ChildCategory;
+use App\Models\TaskPostCharge;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -158,10 +159,16 @@ class SubCategoryController extends Controller implements HasMiddleware
     public function destroy(string $id)
     {
         $childCategoryExist = ChildCategory::where('sub_category_id', $id)->exists();
+        $taskPostChargeExist = TaskPostCharge::where('sub_category_id', $id)->exists();
         if ($childCategoryExist) {
             return response()->json([
                 'status' => 400,
                 'error' => 'This sub category has child category. Please delete child category first.',
+            ]);
+        } elseif ($taskPostChargeExist) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'This child category has task post charge. Please delete task post charge first.',
             ]);
         }
         $sub_category = SubCategory::findOrFail($id);

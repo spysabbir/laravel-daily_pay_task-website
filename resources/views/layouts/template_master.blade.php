@@ -145,17 +145,22 @@
                     @endif
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
+                            @php
+                                if (Auth::user()->isFrontendUser()) {
+                                    $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', Auth::user()->id)->get();
+                                }
+                            @endphp
                             <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i data-feather="mail"></i>
+                                @if ($supports->count() > 0)
+                                <div class="indicator">
+                                    <div class="circle"></div>
+                                </div>
+                                @endif
                             </a>
                             <div class="dropdown-menu p-0" aria-labelledby="messageDropdown">
-                                @php
-                                    if (Auth::user()->isFrontendUser()) {
-                                        $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', Auth::user()->id)->get();
-                                    }
-                                @endphp
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
-                                    <p>{{ $supports->count() }} New Messages</p>
+                                    <p class="text-info mx-2">{{ $supports->count() }} New Messages</p>
                                 </div>
                                 <div class="p-1">
                                     @if ($supports->count() > 0)

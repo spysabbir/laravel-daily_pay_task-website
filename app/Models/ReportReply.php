@@ -25,6 +25,6 @@ class ReportReply extends Model
 
     public function resolvedBy()
     {
-        return $this->belongsTo(User::class, 'resolved_by');
+        return $this->belongsTo(User::class, 'replied_by');
     }
 }

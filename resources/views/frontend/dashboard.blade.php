@@ -277,7 +277,7 @@
                 </div>
             </div>
             <div class="card-body">
-                @if ($today_pending_report == 0 && $today_resolved_report == 0)
+                @if ($today_pending_report == 0 && $today_false_report == 0 && $today_received_report == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
                         <i data-feather="alert-circle"></i>
@@ -914,8 +914,8 @@
     var monthlyWithdrawSeries = {!! json_encode(array_values($monthlyWithdraw)) !!};
     var monthlyDepositeSeries = {!! json_encode(array_values($monthlyDeposite)) !!};
 
-    var todayReportLabels = ['Pending', 'Resolved'];
-    var todayReportSeries = [{{ $today_pending_report }}, {{ $today_resolved_report }}];
+    var todayReportLabels = ['Pending', 'False', 'Received'];
+    var todayReportSeries = [{{ $today_pending_report }}, {{ $today_false_report }}, {{ $today_received_report }}];
 
     const totalTaskProofSubmitChartjsLineData = @json($totalTaskProofSubmitChartjsLineData);
     const totalWorkedTaskApexLineData = @json($totalWorkedTaskApexLineData);

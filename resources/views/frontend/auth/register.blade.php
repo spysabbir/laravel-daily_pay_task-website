@@ -23,10 +23,11 @@
                     </div>
                     <div class="form-group">
                         <label>Enter Date of Birth <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth') }}" placeholder="Enter Your Date of Birth" required>
+                        <input type="date" class="form-control" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth') }}" placeholder="Enter Your Date of Birth" required>
                         @error('date_of_birth')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
+                        <small class="text-danger d-block" id="date_of_birth_error"></small>
                     </div>
                     <div class="form-group">
                         <label>Gender <span class="text-danger">*</span></label>
@@ -127,6 +128,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Toggle password visibility
         document.querySelectorAll('.toggle-password').forEach(function (button) {
             button.addEventListener('click', function () {
                 const targetId = this.getAttribute('data-target');
@@ -143,6 +145,19 @@
                     icon.classList.add('bx-show');
                 }
             });
+        });
+
+        // Set the max date of birth to today
+        const dateInput = document.getElementById('date_of_birth');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('max', today);
+        dateInput.addEventListener('change', function () {
+            if (this.value > today) {
+                document.getElementById('date_of_birth_error').textContent = 'Future dates are not allowed';
+                this.value = '';
+            } else {
+                document.getElementById('date_of_birth_error').textContent = '';
+            }
         });
     });
 </script>

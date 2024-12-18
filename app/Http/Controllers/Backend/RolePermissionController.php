@@ -52,12 +52,12 @@ class RolePermissionController extends Controller implements HasMiddleware
                         : '';
                     if ($row->name !== 'Super Admin') {
                         $deleteBtn = $canDelete
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Remove All</button>'
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Remove All Permission</button>'
                         : '';
                     }else{
                         $deleteBtn = '';
                     }
-                    
+
 
                     return $viewBtn . ' ' . $assigningBtn . ' ' . $deleteBtn;
                 })

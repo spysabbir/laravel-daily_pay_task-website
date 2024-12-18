@@ -233,7 +233,8 @@ class UserController extends Controller
             'total_withdraw' => Withdraw::where('user_id', Auth::id())->sum('amount'),
             // Report .............................................................................................................
             'today_pending_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
-            'today_resolved_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Resolved')->count(),
+            'today_false_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'False')->count(),
+            'today_received_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Received')->count(),
             'monthly_report' => Report::where('reported_by', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
             'yearly_report' => Report::where('reported_by', Auth::id())->whereYear('created_at', date('Y'))->count(),
             'total_report' => Report::where('reported_by', Auth::id())->count(),
@@ -248,9 +249,9 @@ class UserController extends Controller
         $verification = Verification::where('user_id', $user->id)->first();
         $ratingGiven = Rating::where('rated_by', $user->id)->get();
         $ratingReceived  = Rating::where('user_id', $user->id)->get();
-        $reportUserCount = Report::where('user_id', $user->id)->where('type', 'User')->count();
-        $reportPostTaskCount = Report::where('user_id', $user->id)->where('type', 'Post Task')->count();
-        $reportProofTaskCount = Report::where('user_id', $user->id)->where('type', 'Proof Task')->count();
+        $reportUserCount = Report::where('user_id', $user->id)->where('type', 'User')->where('status', 'Received')->count();
+        $reportPostTaskCount = Report::where('user_id', $user->id)->where('type', 'Post Task')->where('status', 'Received')->count();
+        $reportProofTaskCount = Report::where('user_id', $user->id)->where('type', 'Proof Task')->where('status', 'Received')->count();
         return view('profile.edit', compact('user', 'verification', 'ratingGiven', 'ratingReceived', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
     }
 
@@ -262,9 +263,9 @@ class UserController extends Controller
         $ratingGiven = Rating::where('rated_by', $user->id)->get();
         $ratingReceived  = Rating::where('user_id', $user->id)->get();
         $blockedStatuses = UserStatus::where('user_id', $user->id)->where('status', 'Blocked')->latest()->get();
-        $reportUserCount = Report::where('user_id', $user->id)->where('type', 'User')->count();
-        $reportPostTaskCount = Report::where('user_id', $user->id)->where('type', 'Post Task')->count();
-        $reportProofTaskCount = Report::where('user_id', $user->id)->where('type', 'Proof Task')->count();
+        $reportUserCount = Report::where('user_id', $user->id)->where('type', 'User')->where('status', 'Received')->count();
+        $reportPostTaskCount = Report::where('user_id', $user->id)->where('type', 'Post Task')->where('status', 'Received')->count();
+        $reportProofTaskCount = Report::where('user_id', $user->id)->where('type', 'Proof Task')->where('status', 'Received')->count();
         return view('profile.setting', compact('user', 'userDetails', 'verification', 'ratingGiven', 'ratingReceived', 'blockedStatuses', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
     }
 
@@ -601,7 +602,7 @@ class UserController extends Controller
             return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
-                $query = Withdraw::where('user_id', Auth::id());
+                $query = Withdraw::where('user_id', Auth::id())->whereNot('method', 'Deposit Balance');
 
                 if ($request->status) {
                     $query->where('withdraws.status', $request->status);
@@ -656,12 +657,7 @@ class UserController extends Controller
                         return $method;
                     })
                     ->editColumn('number', function ($row) {
-                        if ($row->number) {
-                            $number = $row->number;
-                        } else {
-                            $number = 'N/A';
-                        }
-                        return $number;
+                        return $row->number;
                     })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
@@ -708,9 +704,10 @@ class UserController extends Controller
                     ->make(true);
             }
 
-            $total_withdraw = Withdraw::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
+            $total_withdraw = Withdraw::where('user_id', $request->user()->id)->whereNot('method', 'Deposit Balance')->where('status', 'Approved')->sum('amount');
+            $withdrawBalanceFromDepositBalance = Withdraw::where('user_id', $request->user()->id)->where('method', 'Deposit Balance')->sum('amount');
 
-            return view('frontend.withdraw.index', compact('total_withdraw'));
+            return view('frontend.withdraw.index', compact('total_withdraw', 'withdrawBalanceFromDepositBalance'));
         }
     }
 
@@ -770,13 +767,43 @@ class UserController extends Controller
         ]);
     }
 
+    public function withdrawBalanceFromDepositBalance(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Withdraw::where('user_id', Auth::id())->where('method', 'Deposit Balance');
+
+            $query->select('withdraws.*')->orderBy('created_at', 'desc');
+
+            $withdraws = $query->get();
+
+            return DataTables::of($withdraws)
+                ->addIndexColumn()
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-dark">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->format('d M Y h:i A');
+                })
+                ->addColumn('approved_at', function ($row) {
+                    return date('d M Y h:i A', strtotime($row->approved_at));
+                })
+                ->rawColumns(['amount', 'payable_amount', 'created_at', 'approved_at'])
+                ->make(true);
+        }
+
+        return view('frontend.withdraw.index');
+    }
+
     public function withdrawBalanceFromDepositBalanceStore(Request $request)
     {
         $currencySymbol = get_site_settings('site_currency_symbol');
         $chargePercentage = get_default_settings('withdraw_balance_from_deposit_balance_charge_percentage');
 
         $validator = Validator::make($request->all(), [
-            'withdraw_amount' => "required|numeric|min:1",
+            'withdraw_balance' => "required|numeric|min:1",
         ]);
 
         if($validator->fails()){
@@ -785,34 +812,34 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            if ($request->withdraw_amount > $request->user()->deposit_balance) {
+            if ($request->withdraw_balance > $request->user()->deposit_balance) {
                 return response()->json([
                     'status' => 401,
-                    'error'=> 'Insufficient balance in your account to withdraw ' . $currencySymbol .' '. $request->withdraw_amount .
+                    'error'=> 'Insufficient balance in your account to withdraw balance ' . $currencySymbol .' '. $request->withdraw_balance .
                             '. Your current balance is ' . $currencySymbol .' '. $request->user()->deposit_balance
                 ]);
             }else {
-                $payable_amount = $request->withdraw_amount - ($request->withdraw_amount * $chargePercentage / 100);
+                $payable_amount = $request->withdraw_balance - ($request->withdraw_balance * $chargePercentage / 100);
 
                 Withdraw::create([
                     'user_id' => $request->user()->id,
                     'type' => 'Instant',
                     'method' => 'Deposit Balance',
-                    'amount' => $request->withdraw_amount,
+                    'amount' => $request->withdraw_balance,
                     'payable_amount' => $payable_amount,
                     'approved_at' => now(),
                     'status' => 'Approved',
                 ]);
 
-                $request->user()->decrement('deposit_balance', $request->withdraw_amount);
+                $request->user()->decrement('deposit_balance', $request->withdraw_balance);
                 $request->user()->increment('withdraw_balance', $payable_amount);
-                $total_withdraw = Withdraw::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
+                $totalWithdrawBalanceFromDepositBalance = Withdraw::where('user_id', $request->user()->id)->where('method', 'Deposit Balance')->sum('amount');
 
                 return response()->json([
                     'status' => 200,
                     'deposit_balance' => number_format($request->user()->deposit_balance, 2, '.', ''),
                     'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
-                    'total_withdraw' => $total_withdraw,
+                    'totalWithdrawBalanceFromDepositBalance' => $totalWithdrawBalanceFromDepositBalance,
                 ]);
             }
         }
@@ -1089,7 +1116,11 @@ class UserController extends Controller
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
                             $status = '
-                            <span class="badge bg-warning">' . $row->status . '</span>
+                            <span class="badge bg-info">' . $row->status . '</span>
+                            ';
+                        } else if ($row->status == 'False') {
+                            $status = '
+                            <span class="badge bg-danger">' . $row->status . '</span>
                             ';
                         } else {
                             $status = '

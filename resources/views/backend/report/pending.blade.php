@@ -11,7 +11,8 @@
                     <h3 class="card-title">Report List - Pending</h3>
                 </div>
                 <div class="action-btn">
-                    <a href="{{ route('backend.report.resolved') }}" class="btn btn-success">Resolved List</a>
+                    <a href="{{ route('backend.report.false') }}" class="btn btn-danger">False List</a>
+                    <a href="{{ route('backend.report.received') }}" class="btn btn-success">Received List</a>
                 </div>
             </div>
             <div class="card-body">
@@ -47,7 +48,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>ID</th>
+                                <th>Report ID</th>
                                 <th>Type</th>
                                 <th>Reported User ID</th>
                                 <th>Reported User Name</th>

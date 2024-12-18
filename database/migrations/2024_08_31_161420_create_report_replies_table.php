@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('report_replies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('report_id')->constrained()->onDelete('cascade');
+            $table->foreignId('report_id')->constrained('reports')->onDelete('cascade');
             $table->longText('reply');
             $table->string('reply_photo')->nullable();
-            $table->foreignId('resolved_by');
-            $table->timestamp('resolved_at');
+            $table->foreignId('replied_by')->constrained('users')->onDelete('cascade');
+            $table->timestamp('replied_at');
         });
     }
 

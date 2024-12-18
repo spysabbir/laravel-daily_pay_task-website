@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('proof_task_id')->nullable()->constrained()->onDelete('cascade');
             $table->longText('reason');
             $table->string('photo')->nullable();
-            $table->enum('status', ['Pending', 'Resolved'])->default('Pending');
+            $table->enum('status', ['Pending', 'False', 'Received'])->default('Pending');
             $table->foreignId('reported_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

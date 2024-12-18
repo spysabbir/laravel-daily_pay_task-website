@@ -182,7 +182,8 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::put('worked_task_check_update/{id}', [TaskController::class, 'workedTaskCheckUpdate'])->name('worked_task_check_update');
     // Report User
     Route::get('report-pending', [ReportController::class, 'reportPending'])->name('report.pending');
-    Route::get('report-resolved', [ReportController::class, 'reportResolved'])->name('report.resolved');
+    Route::get('report-false', [ReportController::class, 'reportFalse'])->name('report.false');
+    Route::get('report-received', [ReportController::class, 'reportReceived'])->name('report.received');
     Route::get('report-view/{id}', [ReportController::class, 'reportView'])->name('report.view');
     Route::post('report-reply', [ReportController::class, 'reportReply'])->name('report.reply');
     // Support

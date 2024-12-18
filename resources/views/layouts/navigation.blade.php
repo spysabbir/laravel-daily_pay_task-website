@@ -390,9 +390,14 @@
                             <a href="{{ route('backend.report.pending') }}" class="nav-link">Pending</a>
                         </li>
                         @endcan
-                        @can('report.resolved')
+                        @can('report.false')
                         <li class="nav-item">
-                            <a href="{{ route('backend.report.resolved') }}" class="nav-link">Resolved</a>
+                            <a href="{{ route('backend.report.false') }}" class="nav-link">False</a>
+                        </li>
+                        @endcan
+                        @can('report.received')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.report.received') }}" class="nav-link">Received</a>
                         </li>
                         @endcan
                     </ul>

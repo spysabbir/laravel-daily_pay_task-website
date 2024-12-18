@@ -193,7 +193,8 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'ReportMenu', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
             ['name' => 'report.pending', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
             ['name' => 'report.check', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
-            ['name' => 'report.resolved', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
+            ['name' => 'report.false', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
+            ['name' => 'report.received', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
             // SupportManagement
             ['name' => 'SupportMenu', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
             ['name' => 'support.index', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],

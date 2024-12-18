@@ -27,10 +27,10 @@
                                 <th>Task ID</th>
                                 <th>Title</th>
                                 <th>Task Rate</th>
+                                <th>Total Cost</th>
                                 <th>Proof Submitted</th>
                                 <th>Total Boosting Time</th>
                                 <th>Work Duration Expire</th>
-                                <th>Total Cost</th>
                                 {{-- <th>Proof Status</th> --}}
                                 {{-- <th>Cost Status</th> --}}
                                 <th>Approved At</th>
@@ -174,10 +174,10 @@
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'income_of_each_worker', name: 'income_of_each_worker' },
+                { data: 'total_cost', name: 'total_cost' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'total_boosting_time', name: 'total_boosting_time' },
                 { data: 'work_duration', name: 'work_duration' },
-                { data: 'total_cost', name: 'total_cost' },
                 { data: 'approved_at', name: 'approved_at' },
                 // { data: 'proof_status', name: 'proof_status' },
                 // { data: 'charge_status', name: 'charge_status' },

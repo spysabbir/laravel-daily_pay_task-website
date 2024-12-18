@@ -113,6 +113,7 @@
                         @error('date_of_birth')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
+                        <small class="text-danger d-block" id="userDateOfBirthError"></small>
                     </div>
                     <div class="mb-3">
                         <div>
@@ -165,21 +166,36 @@
                     @method('put')
                     <div class="mb-3">
                         <label for="update_current_password" class="form-label">Current Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="update_current_password" name="current_password" placeholder="Current Password" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="update_current_password" name="current_password" placeholder="Current Password" required>
+                            <button type="button" class="input-group-text input-group-addon toggle-password" data-target="update_current_password">
+                                <span class="icon">🔒</span>
+                            </button>
+                        </div>
                         @error('current_password')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="mb-3">
                         <label for="update_new_password" class="form-label">New Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="update_new_password" name="password" placeholder="New Password" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="update_new_password" name="password" placeholder="New Password" required>
+                            <button type="button" class="input-group-text input-group-addon toggle-password" data-target="update_new_password">
+                                <span class="icon">🔒</span>
+                            </button>
+                        </div>
                         @error('password')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="mb-3">
                         <label for="update_password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="update_password_confirmation" name="password_confirmation" placeholder="Confirm Password" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="update_password_confirmation" name="password_confirmation" placeholder="Confirm Password" required>
+                            <button type="button" class="input-group-text input-group-addon toggle-password" data-target="update_password_confirmation">
+                                <span class="icon">🔒</span>
+                            </button>
+                        </div>
                         @error('password_confirmation')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -196,6 +212,40 @@
 @endsection
 
 @section('script')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('.icon');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.textContent = '👁️'; // Change to "eye" icon
+                } else {
+                    input.type = 'password';
+                    icon.textContent = '🔒'; // Change to "eye-off" icon
+                }
+            });
+        });
+
+        // Set the max date of birth to today
+        const dateInput = document.getElementById('userDateOfBirth');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('max', today);
+        dateInput.addEventListener('change', function () {
+            if (this.value > today) {
+                document.getElementById('userDateOfBirthError').textContent = 'Future dates are not allowed';
+                this.value = '';
+            } else {
+                document.getElementById('userDateOfBirthError').textContent = '';
+            }
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function(){
         // Profile Image Preview

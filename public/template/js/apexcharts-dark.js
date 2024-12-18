@@ -126,7 +126,7 @@ $(function() {
                 colors: ['rgba(0,0,0,0)']
             },
             labels: todayReportLabels,
-            colors: [colors.primary, colors.success],
+            colors: [colors.primary, colors.danger, colors.success],
             legend: {
                 show: true,
                 position: "top",

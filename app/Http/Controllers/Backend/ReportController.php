@@ -81,11 +81,9 @@ class ReportController extends Controller implements HasMiddleware
                 })
                 ->addColumn('action', function ($row) {
                     $viewPermission = auth()->user()->can('report.check');
-
                     $viewBtn = $viewPermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
                         : '';
-
                     return $viewBtn;
                 })
                 ->rawColumns(['type', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
@@ -104,6 +102,7 @@ class ReportController extends Controller implements HasMiddleware
     public function reportReply(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'status' => 'required',
             'reply' => 'required',
             'reply_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -116,7 +115,7 @@ class ReportController extends Controller implements HasMiddleware
         } else {
             $report = Report::findOrFail($request->report_id);
             $report->update([
-                'status' => 'Resolved',
+                'status' => $request->status,
             ]);
 
             $photo_name = null;
@@ -131,8 +130,8 @@ class ReportController extends Controller implements HasMiddleware
             $report_reply->report_id = $request->report_id;
             $report_reply->reply = $request->reply;
             $report_reply->reply_photo = $photo_name;
-            $report_reply->resolved_by = auth()->user()->id;
-            $report_reply->resolved_at = now();
+            $report_reply->replied_by = auth()->user()->id;
+            $report_reply->replied_at = now();
             $report_reply->save();
 
             $user = User::findOrFail($report->reported_by);
@@ -145,10 +144,10 @@ class ReportController extends Controller implements HasMiddleware
         }
     }
 
-    public function reportResolved(Request $request)
+    public function reportFalse(Request $request)
     {
         if ($request->ajax()) {
-            $reports = Report::where('status', 'Resolved');
+            $reports = Report::where('status', 'False');
 
             if ($request->report_id) {
                 $reports->where('id', $request->report_id);
@@ -210,6 +209,74 @@ class ReportController extends Controller implements HasMiddleware
                 ->rawColumns(['type', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
         }
-        return view('backend.report.resolved');
+        return view('backend.report.false');
+    }
+
+    public function reportReceived(Request $request)
+    {
+        if ($request->ajax()) {
+            $reports = Report::where('status', 'Received');
+
+            if ($request->report_id) {
+                $reports->where('id', $request->report_id);
+            }
+            if ($request->user_id) {
+                $reports->where('user_id', $request->user_id);
+            }
+            if ($request->type) {
+                $reports->where('type', $request->type);
+            }
+
+            $query = $reports->select('reports.*');
+
+            $reportList = $query->get();
+
+            return DataTables::of($reportList)
+                ->addIndexColumn()
+                ->editColumn('type', function ($row) {
+                    if ($row->type == 'User') {
+                        return '<span class="badge bg-success text-white">'.$row->type.'</span>';
+                    } else if ($row->type == 'Post Task') {
+                        return '<span class="badge bg-info text-white">'.$row->type.'</span>';
+                    } else if ($row->type == 'Proof Task') {
+                        return '<span class="badge bg-primary text-white">'.$row->type.'</span>';
+                    }
+                })
+                ->editColumn('reported_user_id', function ($row) {
+                    return '
+                        <span class="badge bg-dark text-white">'.$row->reported->id.'</span>
+                    ';
+                })
+                ->editColumn('reported_user_name', function ($row) {
+                    return '
+                        <span class="badge bg-dark text-white">'.$row->reported->name.'</span>
+                    ';
+                })
+                ->editColumn('report_by_user_id', function ($row) {
+                    return '
+                        <span class="badge bg-dark text-white">'.$row->reportedBy->id.'</span>
+                    ';
+                })
+                ->editColumn('report_by_user_name', function ($row) {
+                    return '
+                        <span class="badge bg-dark text-white">'.$row->reportedBy->name.'</span>
+                    ';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return date('d M Y h:i A', strtotime($row->created_at));
+                })
+                ->addColumn('action', function ($row) {
+                    $viewPermission = auth()->user()->can('report.check');
+
+                    $viewBtn = $viewPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>'
+                        : '';
+
+                    return $viewBtn;
+                })
+                ->rawColumns(['type', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
+                ->make(true);
+        }
+        return view('backend.report.received');
     }
 }

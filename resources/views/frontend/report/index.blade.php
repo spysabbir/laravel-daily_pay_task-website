@@ -31,7 +31,8 @@
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
                                     <option value="Pending">Pending</option>
-                                    <option value="Resolved">Resolved</option>
+                                    <option value="False">False</option>
+                                    <option value="Received">Received</option>
                                 </select>
                             </div>
                         </div>
@@ -42,7 +43,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>ID</th>
+                                <th>Report ID</th>
                                 <th>Type</th>
                                 <th>User</th>
                                 <th>Submited At</th>
