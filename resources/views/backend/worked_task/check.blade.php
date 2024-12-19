@@ -27,8 +27,14 @@
         <div class="mb-3">
             <h4>Proof Task Information:</h4>
             <div class="mb-2 border p-2">
-                <p><strong>Proof Id:</strong> {{ $proofTask->id }}</p>
+                <p><strong>Proof Task Id:</strong> {{ $proofTask->id }}</p>
                 <p><strong>Submited Date:</strong>{{ $proofTask->created_at->format('d M, Y h:i A') }}</p>
+            </div>
+            <div class="mb-3">
+                <h4 class="mb-2">Additional Note:</h4>
+                <div>
+                    {!! nl2br(e($proofTask->additional_note)) !!}
+                </div>
             </div>
         </div>
         <div class="mb-3">

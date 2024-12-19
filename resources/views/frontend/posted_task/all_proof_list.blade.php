@@ -143,7 +143,13 @@
                                                     <!-- Check All Pending Task Proof Content -->
                                                 </div>
                                                 <div class="col-lg-4 d-none" id="checkAllPendingTaskProofAction">
-                                                    <div>
+                                                    <div class="mb-3 border p-2">
+                                                        <h4 class="mb-2">Additional Note:</h4>
+                                                        <div>
+                                                            {!! nl2br(e($postTask->additional_note)) !!}
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
                                                         <h4>Update Proof Task Status:</h4>
                                                         <form class="forms-sample border mt-2 p-2" id="checkAllPendingTaskProofEditForm" enctype="multipart/form-data">
                                                             @csrf
@@ -398,7 +404,7 @@
                                     <div class="mb-3">
                                         <h4>Proof Task Information:</h4>
                                         <div class="mb-2 border p-2">
-                                            <strong>Proof Id:</strong> ${proofTask.id},
+                                            <strong>Proof Task Id:</strong> ${proofTask.id},
                                             <strong>Submited Date:</strong>${proofTask.formatted_created_at},
                                         </div>
                                     </div>

@@ -8,6 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Find Tasks</h3>
+                <h3>Total: <span id="total_tasks_count">0</span></h3>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -114,6 +115,11 @@
                 data: function (d) {
                     d.category_id = $('#filter_category_id').val();
                     d.sort_by = $('#filter_sort_by').val();
+                },
+                dataSrc: function (json) {
+                    // Update total task count
+                    $('#total_tasks_count').text(json.totalTasksCount);
+                    return json.data;
                 }
             },
             columns: [

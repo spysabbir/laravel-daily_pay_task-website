@@ -9,6 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Report List</h3>
+                    <h3>Total: <span id="total_reports_count">0</span></h3>
                 </div>
             </div>
             <div class="card-body">
@@ -98,6 +99,11 @@
                 data: function (e) {
                     e.type = $('#filter_type').val();
                     e.status = $('#filter_status').val();
+                },
+                dataSrc: function (json) {
+                    // Update total report count
+                    $('#total_reports_count').text(json.totalReportsCount);
+                    return json.data;
                 }
             },
             columns: [

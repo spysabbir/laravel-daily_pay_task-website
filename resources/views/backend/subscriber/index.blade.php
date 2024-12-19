@@ -8,6 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Subscriber List</h3>
+                <h3>Total: <span id="total_subscribers_count">0</span></h3>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -64,6 +65,11 @@
                 url: "{{ route('backend.subscriber.index') }}",
                 data: function (e) {
                     e.status = $('#filter_status').val();
+                },
+                dataSrc: function (json) {
+                    // Update total task count
+                    $('#total_subscribers_count').text(json.totalSubscribersCount);
+                    return json.data;
                 }
             },
             columns: [

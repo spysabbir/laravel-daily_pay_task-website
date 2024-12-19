@@ -9,6 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div>
                     <h3 class="card-title">Working Task List - Pending</h3>
+                    <h3>Total: <span id="total_proofs_count">0</span></h3>
                     <p class="text-info">
                         <strong>Note:</strong> You can see only the last 5 days of data.
                     </p>
@@ -69,6 +70,11 @@
                 url: "{{ route('worked_task.list.pending') }}",
                 data: function (d) {
                     d.filter_date = $('#filter_date').val();
+                },
+                dataSrc: function (json) {
+                    // Update total proof count
+                    $('#total_proofs_count').text(json.totalProofsCount);
+                    return json.data;
                 }
             },
             columns: [

@@ -427,6 +427,7 @@
                             $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                             $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
                             $("#totalWithdrawBalanceFromDepositBalance strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.totalWithdrawBalanceFromDepositBalance);
+                            $("#deposit_balance").val(response.deposit_balance);
                             toastr.success('Withdraw Balance From Deposit Balance request sent successfully.');
                         }
                     }

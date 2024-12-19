@@ -3,7 +3,13 @@
         <strong class="text-danger">Warning: if you Reject the proof, the worker can request for review within 72 hours. The admin will check the proof and if it is correct then the worker will be paid or if the proof is wrong then the worker will not be paid. Because of this, only Rejected money will be on hold for 72 hours because you Proof Rejected. If the worker does not request for review within 72 hours, your money will be automatically add your deposit balance. If the worker request for review within 72 hours, the admin will review the proof within 72 hours. Please be careful and work well with integrity and don't intentionally reject someone's work.</strong>
     </marquee>
     <div class="col-lg-8">
-        <div class="mb-3">
+        <div class="mb-3 border p-2">
+            <h4 class="mb-2">Post Task Additional Note:</h4>
+            <div>
+                {!! nl2br(e($proofTask->postTask->additional_note)) !!}
+            </div>
+        </div>
+        <div class="mb-3 border p-2">
             <h4 class="mb-2">Proof Answer:</h4>
             <div>
                 {!! nl2br(e($proofTask->proof_answer)) !!}
@@ -30,7 +36,7 @@
         <div class="mb-3">
             <h4>Proof Task Information:</h4>
             <div class="mb-2 border p-2">
-                <p><strong>Proof Id:</strong> {{ $proofTask->id }}</p>
+                <p><strong>Proof Task Id:</strong> {{ $proofTask->id }}</p>
                 <p><strong>Submited Date:</strong>{{ $proofTask->created_at->format('d M, Y h:i A') }}</p>
             </div>
         </div>

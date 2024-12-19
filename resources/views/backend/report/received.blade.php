@@ -41,6 +41,12 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_reported_by_user_id" class="form-label">Reported By User Id</label>
+                                <input type="number" id="filter_reported_by_user_id" class="form-control filter_data" placeholder="Search Reported By User Id">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -48,7 +54,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>ID</th>
+                                <th>Report ID</th>
                                 <th>Type</th>
                                 <th>Reported User ID</th>
                                 <th>Reported User Name</th>
@@ -106,6 +112,7 @@
                     e.report_id = $('#filter_report_id').val();
                     e.user_id = $('#filter_reported_user_id').val();
                     e.type = $('#filter_type').val();
+                    e.reported_by = $('#filter_reported_by_user_id').val();
                 }
             },
             columns: [

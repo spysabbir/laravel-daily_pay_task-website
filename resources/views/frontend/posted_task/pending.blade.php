@@ -9,6 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Pending</h3>
+                    <h3>Total: <span id="total_tasks_count">0</span></h3>
                 </div>
                 <div>
                     <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
@@ -74,6 +75,11 @@
             searching: true,
             ajax: {
                 url: "{{ route('posted_task.list.pending') }}",
+                dataSrc: function (json) {
+                    // Update total task count
+                    $('#total_tasks_count').text(json.totalTasksCount);
+                    return json.data;
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },

@@ -22,14 +22,19 @@
                 @csrf
                 <div class="mb-3">
                     <label for="userEmail" class="form-label">Email address <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="userEmail" name="email" value="superadmin@spysabbir.com" placeholder="Email">
+                    <input type="email" class="form-control" id="userEmail" name="email" value="superadmin@spysabbir.com" placeholder="Email" required>
                     @error('email')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="mb-3">
                     <label for="userPassword" class="form-label">Password <span class="text-danger">*</span></label>
-                    <input type="password" class="form-control" id="userPassword" value="Ss@12345678" name="password" placeholder="Password">
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="userPassword" value="Ss@12345678" name="password" placeholder="Password">
+                        <button type="button" class="input-group-text input-group-addon toggle-password" data-target="userPassword" required>
+                            <span class="icon">🔒</span>
+                        </button>
+                    </div>
                     @error('password')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -59,3 +64,24 @@
     </div>
 </div>
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('.icon');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.textContent = '👁️'; // Change to "eye" icon
+                } else {
+                    input.type = 'password';
+                    icon.textContent = '🔒'; // Change to "eye-off" icon
+                }
+            });
+        });
+    });
+</script>

@@ -36,7 +36,8 @@ class PostedTaskController extends Controller
         } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
             return redirect()->route('dashboard');
         } else {
-            $categories = Category::where('status', 'Active')->get();
+            $TaskPostChargeCategoryIds = TaskPostCharge::where('status', 'Active')->select('category_id')->groupBy('category_id')->pluck('category_id')->toArray();
+            $categories = Category::where('status', 'Active')->whereIn('id', $TaskPostChargeCategoryIds)->get();
             return view('frontend.post_task.create', compact('categories'));
         }
     }
@@ -44,7 +45,8 @@ class PostedTaskController extends Controller
     public function postTaskGetSubCategories(Request $request)
     {
         $categoryId = $request->category_id;
-        $subCategories = SubCategory::where('category_id', $categoryId)->get();
+        $TaskPostChargeSubCategoryIds = TaskPostCharge::where('status', 'Active')->select('sub_category_id')->groupBy('sub_category_id')->pluck('sub_category_id')->toArray();
+        $subCategories = SubCategory::where('status', 'Active')->where('category_id', $categoryId)->whereIn('id', $TaskPostChargeSubCategoryIds)->get();
 
         $response = [];
         if ($subCategories->isNotEmpty()) {
@@ -58,7 +60,8 @@ class PostedTaskController extends Controller
     {
         $categoryId = $request->category_id;
         $subCategoryId = $request->sub_category_id;
-        $childCategories = ChildCategory::where('sub_category_id', $subCategoryId)->get();
+        $TaskPostChargeChildCategoryIds = TaskPostCharge::where('status', 'Active')->select('child_category_id')->groupBy('child_category_id')->pluck('child_category_id')->toArray();
+        $childCategories = ChildCategory::where('status', 'Active')->where('sub_category_id', $subCategoryId)->whereIn('id', $TaskPostChargeChildCategoryIds)->get();
 
         $response = [];
         if ($childCategories->isNotEmpty()) {
@@ -161,7 +164,8 @@ class PostedTaskController extends Controller
     public function postTaskEdit($id)
     {
         $id = decrypt($id);
-        $categories = Category::where('status', 'Active')->get();
+        $TaskPostChargeCategoryIds = TaskPostCharge::where('status', 'Active')->select('category_id')->groupBy('category_id')->pluck('category_id')->toArray();
+        $categories = Category::where('status', 'Active')->whereIn('id', $TaskPostChargeCategoryIds)->get();
         $postTask = PostTask::findOrFail($id);
         return view('frontend.post_task.edit', compact('categories', 'postTask'));
     }
@@ -260,6 +264,9 @@ class PostedTaskController extends Controller
 
                 $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
+                // Total filtered count
+                $totalTasksCount = $query->count();
+                
                 $taskListPending = $query->get();
 
                 return DataTables::of($taskListPending)
@@ -274,6 +281,7 @@ class PostedTaskController extends Controller
                         ';
                         return $actionBtn;
                     })
+                    ->with(['totalTasksCount' => $totalTasksCount])
                     ->rawColumns(['action'])
                     ->make(true);
             }
@@ -323,6 +331,9 @@ class PostedTaskController extends Controller
 
                 $query->select('post_tasks.*')->orderBy('rejected_at', 'desc');
 
+                // Total filtered count
+                $totalTasksCount = $query->count();
+
                 $taskListRejected = $query->get();
 
                 return DataTables::of($taskListRejected)
@@ -333,6 +344,14 @@ class PostedTaskController extends Controller
                     ->editColumn('rejected_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->rejected_at));
                     })
+                    ->editColumn('rejection_reason', function ($row) {
+                        $rejection_reason = Str::limit($row->rejection_reason,40, '...'); // Limit to 50 characters with "..."
+                        return e($rejection_reason);
+                    })
+                    ->addColumn('rejection_reason_full', function ($row) {
+                        $rejection_reason = nl2br(e($row->rejection_reason)); // Convert newlines to <br> and escape HTML
+                        return '<span class="badge bg-info my-2">Reason: </span><br>' . $rejection_reason;
+                    })
                     ->addColumn('action', function ($row) {
                         $actionBtn = '
                             <a href="' . route('post_task.edit', encrypt($row->id)) . '" class="btn btn-primary btn-xs">Edit</a>
@@ -340,7 +359,8 @@ class PostedTaskController extends Controller
                         ';
                         return $actionBtn;
                     })
-                    ->rawColumns(['created_at', 'action'])
+                    ->with(['totalTasksCount' => $totalTasksCount])
+                    ->rawColumns(['created_at', 'rejection_reason', 'rejection_reason_full', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.rejected');
@@ -417,6 +437,9 @@ class PostedTaskController extends Controller
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Running');
 
                 $query->select('post_tasks.*')->orderBy('approved_at', 'desc');
+
+                // Total filtered count
+                $totalTasksCount = $query->count();
 
                 $taskListRunning = $query->get();
 
@@ -539,6 +562,7 @@ class PostedTaskController extends Controller
                         ';
                         return $btn;
                     })
+                    ->with(['totalTasksCount' => $totalTasksCount])
                     ->rawColumns(['income_of_each_worker', 'total_boosting_time', 'work_duration', 'proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'approved_at', 'action'])
                     ->make(true);
             }
@@ -979,6 +1003,9 @@ class PostedTaskController extends Controller
 
                 $query->select('post_tasks.*')->orderBy('canceled_at', 'desc');
 
+                // Total filtered count
+                $totalTasksCount = $query->count();
+
                 $taskListCanceled = $query->get();
 
                 return DataTables::of($taskListCanceled)
@@ -1085,6 +1112,7 @@ class PostedTaskController extends Controller
                         ';
                         return $btn;
                     })
+                    ->with(['totalTasksCount' => $totalTasksCount])
                     ->rawColumns(['proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'cancellation_reason', 'canceled_by', 'action'])
                     ->make(true);
             }
@@ -1106,6 +1134,9 @@ class PostedTaskController extends Controller
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Paused');
 
                 $query->select('post_tasks.*')->orderBy('paused_at', 'desc');
+
+                // Total filtered count
+                $totalTasksCount = $query->count();
 
                 $taskListPaused = $query->get();
 
@@ -1143,7 +1174,7 @@ class PostedTaskController extends Controller
                     })
                     ->editColumn('work_duration', function ($row) {
                         $approvedDate = Carbon::parse($row->approved_at);
-                        $endDate = $approvedDate->addDays($row->work_duration);
+                        $endDate = $approvedDate->addDays((int) $row->work_duration);
                         return '<span class="badge bg-primary">' . $endDate->format('d M, Y h:i:s A') . '</span>';
                     })
                     ->editColumn('proof_status', function ($row) {
@@ -1243,6 +1274,7 @@ class PostedTaskController extends Controller
 
                         return $btn;
                     })
+                    ->with(['totalTasksCount' => $totalTasksCount])
                     ->rawColumns(['approved_at', 'boosting_time', 'proof_submitted', 'work_duration', 'proof_status', 'total_cost', 'charge_status', 'pausing_reason', 'paused_by', 'action'])
                     ->make(true);
             }
@@ -1264,6 +1296,9 @@ class PostedTaskController extends Controller
                 $query = PostTask::where('user_id', Auth::id())->where('status', 'Completed');
 
                 $query->select('post_tasks.*')->orderBy('completed_at', 'desc');
+
+                // Total filtered count
+                $totalTasksCount = $query->count();
 
                 $taskListCompleted = $query->get();
 
@@ -1358,6 +1393,7 @@ class PostedTaskController extends Controller
                         ';
                         return $status;
                     })
+                    ->with(['totalTasksCount' => $totalTasksCount])
                     ->rawColumns(['proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'approved_at', 'completed_at', 'action'])
                     ->make(true);
             }

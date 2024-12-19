@@ -9,8 +9,9 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Paused</h3>
+                    <h3>Total: <span id="total_tasks_count">0</span></h3>
                     <p class="card-description text-warning">
-                        Note: If your task paused by admin, you can see the reason here. If you want to resume the task, you can contact with admin.
+                        Note: Hi user, below tasks list is your paused task. If you pause the task you can be resume the task but if the task is paused by admin and want to resume the task need to contact with us. Also If you facing any problems please contact with us.
                     </p>
                 </div>
                 <div>
@@ -86,6 +87,11 @@
             searching: true,
             ajax: {
                 url: "{{ route('posted_task.list.paused') }}",
+                dataSrc: function (json) {
+                    // Update total task count
+                    $('#total_tasks_count').text(json.totalTasksCount);
+                    return json.data;
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },

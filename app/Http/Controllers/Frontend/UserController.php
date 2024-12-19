@@ -1001,6 +1001,9 @@ class UserController extends Controller
 
                 $query = $blockedUsers->select('blocks.*');
 
+                // Total filtered count
+                $totalBlockedsCount = $query->count();
+
                 $blockedList = $query->get();
 
                 return DataTables::of($blockedList)
@@ -1023,6 +1026,7 @@ class UserController extends Controller
                         ';
                         return $action;
                     })
+                    ->with(['totalBlockedsCount' => $totalBlockedsCount])
                     ->rawColumns(['user', 'action'])
                     ->make(true);
             }
@@ -1084,6 +1088,9 @@ class UserController extends Controller
                     $query->where('reports.status', $request->status);
                 }
 
+                // Total filtered count
+                $totalReportsCount = $query->count();
+
                 $reportedList = $query->get();
 
                 return DataTables::of($reportedList)
@@ -1135,6 +1142,7 @@ class UserController extends Controller
                         ';
                         return $action;
                     })
+                    ->with(['totalReportsCount' => $totalReportsCount])
                     ->rawColumns(['type', 'user', 'status', 'action'])
                     ->make(true);
             }

@@ -37,6 +37,9 @@ class SubscriberController extends Controller implements HasMiddleware
                 $query->where('status', $request->status);
             }
 
+            // Total filtered count
+            $totalSubscribersCount = $query->count();
+
             // Fetch data with sorting
             $subscriberList = $query->orderByDesc('created_at')->get();
 
@@ -56,6 +59,7 @@ class SubscriberController extends Controller implements HasMiddleware
 
                     return $deleteBtn;
                 })
+                ->with(['totalSubscribersCount' => $totalSubscribersCount])
                 ->rawColumns(['created_at', 'status', 'action'])
                 ->make(true);
         }

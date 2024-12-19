@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class WorkedTaskController extends Controller
 {
@@ -70,7 +71,11 @@ class WorkedTaskController extends Controller
                     END
                 ");
 
-                $findTasks = $query->orderBy('approved_at', 'desc')->get();
+                // Total filtered count
+                $totalTasksCount = $findTasks->count();
+
+                // $findTasks = $query->orderBy('approved_at', 'desc')->get();
+                $findTasks = $findTasks->orderBy('approved_at', 'desc')->get();
 
                 return DataTables::of($findTasks)
                     ->addIndexColumn()
@@ -109,6 +114,7 @@ class WorkedTaskController extends Controller
                         ';
                         return $action;
                     })
+                    ->with(['totalTasksCount' => $totalTasksCount])
                     ->rawColumns(['category_name', 'title', 'worker_needed', 'income_of_each_worker', 'approved_at', 'action'])
                     ->make(true);
             }
@@ -261,6 +267,11 @@ class WorkedTaskController extends Controller
                     $query->whereDate('proof_tasks.created_at', $request->filter_date);
                 }
 
+                $query->whereDate('proof_tasks.created_at', '>', now()->subDays(5));
+
+                // Total filtered count
+                $totalProofsCount = $query->count();
+
                 $taskList = $query->get();
 
                 return DataTables::of($taskList)
@@ -278,6 +289,7 @@ class WorkedTaskController extends Controller
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
+                    ->with(['totalProofsCount' => $totalProofsCount])
                     ->rawColumns(['title'])
                     ->make(true);
             }
@@ -304,6 +316,9 @@ class WorkedTaskController extends Controller
                 }
 
                 $query->whereDate('proof_tasks.approved_at', '>', now()->subDays(7));
+
+                // Total filtered count
+                $totalProofsCount = $query->count();
 
                 $taskList = $query->get();
 
@@ -346,6 +361,7 @@ class WorkedTaskController extends Controller
                         ';
                         return $action;
                     })
+                    ->with(['totalProofsCount' => $totalProofsCount])
                     ->rawColumns(['title', 'rating', 'bonus', 'approved_by', 'action'])
                     ->make(true);
             }
@@ -380,6 +396,9 @@ class WorkedTaskController extends Controller
 
                 $query->whereDate('proof_tasks.rejected_at', '>', now()->subDays(7));
 
+                // Total filtered count
+                $totalProofsCount = $query->count();
+
                 $taskList = $query->get();
 
                 return DataTables::of($taskList)
@@ -392,7 +411,12 @@ class WorkedTaskController extends Controller
                         ';
                     })
                     ->editColumn('rejected_reason', function ($row) {
-                        return $row->rejected_reason;
+                        $rejected_reason = Str::limit($row->rejected_reason,40, '...');
+                        return e($rejected_reason);
+                    })
+                    ->addColumn('rejected_reason_full', function ($row) {
+                        $rejected_reason = nl2br(e($row->rejected_reason));
+                        return '<span class="badge bg-info my-2">Reason: </span><br>' . $rejected_reason;
                     })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
@@ -413,7 +437,8 @@ class WorkedTaskController extends Controller
                         ';
                         return $action;
                     })
-                    ->rawColumns(['title', 'rating', 'rejected_by', 'action'])
+                    ->with(['totalProofsCount' => $totalProofsCount])
+                    ->rawColumns(['title', 'rating', 'rejected_reason', 'rejected_reason_full', 'rejected_by', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.rejected');
@@ -496,7 +521,10 @@ class WorkedTaskController extends Controller
                     $query->whereDate('proof_tasks.reviewed_at', $request->filter_date);
                 }
 
-                // $query->whereDate('proof_tasks.reviewed_at', '>', now()->subDays(7));
+                $query->whereDate('proof_tasks.reviewed_at', '>', now()->subDays(5));
+
+                // Total filtered count
+                $totalProofsCount = $query->count();
 
                 $taskList = $query->get();
 
@@ -524,6 +552,7 @@ class WorkedTaskController extends Controller
                         ';
                         return $action;
                     })
+                    ->with(['totalProofsCount' => $totalProofsCount])
                     ->rawColumns(['title', 'rating', 'created_at', 'rejected_at', 'reviewed_at', 'action'])
                     ->make(true);
             }

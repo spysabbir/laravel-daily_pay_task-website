@@ -9,6 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Block List</h3>
+                    <h3>Total: <span id="total_blockeds_count">0</span></h3>
                 </div>
             </div>
             <div class="card-body">
@@ -49,6 +50,11 @@
             searching: true,
             ajax: {
                 url: "{{ route('block_list') }}",
+                dataSrc: function (json) {
+                    // Update total blocked count
+                    $('#total_blockeds_count').text(json.totalBlockedsCount);
+                    return json.data;
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },

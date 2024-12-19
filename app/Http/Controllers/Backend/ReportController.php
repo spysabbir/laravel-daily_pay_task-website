@@ -40,6 +40,9 @@ class ReportController extends Controller implements HasMiddleware
             if ($request->type) {
                 $reports->where('type', $request->type);
             }
+            if ($request->reported_by) {
+                $reports->where('reported_by', $request->reported_by);
+            }
 
             $query = $reports->select('reports.*')->orderBy('created_at', 'desc');
 
@@ -158,6 +161,9 @@ class ReportController extends Controller implements HasMiddleware
             if ($request->type) {
                 $reports->where('type', $request->type);
             }
+            if ($request->reported_by) {
+                $reports->where('reported_by', $request->reported_by);
+            }
 
             $query = $reports->select('reports.*');
 
@@ -225,6 +231,9 @@ class ReportController extends Controller implements HasMiddleware
             }
             if ($request->type) {
                 $reports->where('type', $request->type);
+            }
+            if ($request->reported_by) {
+                $reports->where('reported_by', $request->reported_by);
             }
 
             $query = $reports->select('reports.*');

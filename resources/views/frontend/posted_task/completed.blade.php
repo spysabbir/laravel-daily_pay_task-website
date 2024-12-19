@@ -9,6 +9,10 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Completed</h3>
+                    <h3>Total: <span id="total_tasks_count">0</span></h3>
+                    <p class="card-description text-warning">
+                        Note: Hi user, below tasks list is your completed task. These tasks will be automatically remove from here after 7 days then you can't see anymore. If you facing any problems please contact with us.
+                    </p>
                 </div>
                 <div>
                     <a href="{{ route('posted_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
@@ -79,6 +83,11 @@
             searching: true,
             ajax: {
                 url: "{{ route('posted_task.list.completed') }}",
+                dataSrc: function (json) {
+                    // Update total task count
+                    $('#total_tasks_count').text(json.totalTasksCount);
+                    return json.data;
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },

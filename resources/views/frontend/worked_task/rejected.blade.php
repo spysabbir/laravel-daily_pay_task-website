@@ -9,6 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div>
                     <h3 class="card-title">Working Task List - Rejected</h3>
+                    <h3>Total: <span id="total_proofs_count">0</span></h3>
                     <p class="text-info">
                         <strong>Note:</strong> You can see only the last 7 days of data.
                     </p>
@@ -38,7 +39,11 @@
                                 <th>Task Id</th>
                                 <th>Task Title</th>
                                 <th>Submit Date</th>
-                                <th>Rejected Reason</th>
+                                <th>
+                                    <!-- Header Button for Expand/Collapse All -->
+                                    <i id="toggleAllRows" class="fas fa-plus-circle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
+                                    Rejected Reason
+                                </th>
                                 <th>Rejected Date</th>
                                 <th>Rejected By</th>
                                 <th>Action</th>
@@ -82,7 +87,7 @@
         });
 
         // Read Data
-        $('#allDataTable').DataTable({
+        const table = $('#allDataTable').DataTable({
             processing: true,
             serverSide: true,
             searching: true,
@@ -90,6 +95,11 @@
                 url: "{{ route('worked_task.list.rejected') }}",
                 data: function (d) {
                     d.filter_date = $('#filter_date').val();
+                },
+                dataSrc: function (json) {
+                    // Update total proof count
+                    $('#total_proofs_count').text(json.totalProofsCount);
+                    return json.data;
                 }
             },
             columns: [
@@ -97,11 +107,91 @@
                 { data: 'post_task_id', name: 'post_task_id' },
                 { data: 'title', name: 'title' },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'rejected_reason', name: 'rejected_reason' },
+                {
+                    data: 'rejected_reason',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return `
+                            <i class="fas fa-plus-circle row-toggle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
+                            <span>${data}</span>
+                        `;
+                    }
+                },
                 { data: 'rejected_at', name: 'rejected_at' },
                 { data: 'rejected_by', name: 'rejected_by' },
                 { data: 'action', name: 'action' }
             ]
+        });
+
+        // Add click event for the header button to expand/collapse all rows
+        let allRowsOpen = false;
+
+        // Function to check if all rows are expanded
+        function updateGlobalIcon() {
+            const rows = table.rows();
+            const totalRows = rows.count();
+            const openRows = rows.nodes().filter(row => $(row).hasClass('shown')).length;
+
+            if (openRows === totalRows) {
+                $('#toggleAllRows').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                allRowsOpen = true;
+            } else {
+                $('#toggleAllRows').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                allRowsOpen = false;
+            }
+        }
+
+        // Individual row expand/collapse
+        $('#allDataTable tbody').on('click', '.row-toggle', function () {
+            const tr = $(this).closest('tr');
+            const row = table.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+                $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            } else {
+                // Fetch proof_answer or any extra data
+                const rejected_reason = row.data().rejected_reason_full;
+                row.child(`<div class="nested-row">${rejected_reason}</div>`).show();
+                tr.addClass('shown');
+                $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            }
+
+            // Update the global expand/collapse button icon
+            updateGlobalIcon();
+        });
+
+        // Global expand/collapse functionality
+        $('#toggleAllRows').on('click', function () {
+            const icon = $(this);
+            const rows = table.rows();
+
+            if (allRowsOpen) {
+                // Collapse all rows
+                rows.every(function () {
+                    if (this.child.isShown()) {
+                        this.child.hide();
+                        $(this.node()).removeClass('shown');
+                        $(this.node()).find('.row-toggle').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                    }
+                });
+                allRowsOpen = false;
+                icon.removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            } else {
+                // Expand all rows
+                rows.every(function () {
+                    const rejected_reason = this.data().rejected_reason_full;
+                    if (!this.child.isShown()) {
+                        this.child(`<div class="nested-row">${rejected_reason}</div>`).show();
+                        $(this.node()).addClass('shown');
+                        $(this.node()).find('.row-toggle').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                    }
+                });
+                allRowsOpen = true;
+                icon.removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            }
         });
 
         // Filter Data

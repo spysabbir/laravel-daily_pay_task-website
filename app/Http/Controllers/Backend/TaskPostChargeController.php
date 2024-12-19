@@ -182,7 +182,7 @@ class TaskPostChargeController extends Controller implements HasMiddleware
         if ($postTaskExist) {
             return response()->json([
                 'status' => 400,
-                'error' => 'This task post charge has post task. You can not delete this task post charge.',
+                'error' => 'This task post charge already used in post task. So, you can not delete this.'
             ]);
         }
 
