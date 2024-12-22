@@ -173,8 +173,10 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('running-posted_task_paused_resume/{id}', [TaskController::class, 'runningPostedTaskPausedResume'])->name('running.posted_task_paused_resume');
     Route::put('posted_task_status_update/{id}', [TaskController::class, 'postedTaskStatusUpdate'])->name('posted_task_status_update');
     // Worked  Task
-    Route::get('worked_task_list-all', [TaskController::class, 'workedTaskListAll'])->name('worked_task_list.all');
-    Route::get('all-worked_task_view/{id}', [TaskController::class, 'allWorkedTaskView'])->name('all.worked_task_view');
+    Route::get('worked_task_list-pending', [TaskController::class, 'workedTaskListPending'])->name('worked_task_list.pending');
+    Route::get('pending-worked_task_view/{id}', [TaskController::class, 'pendingWorkedTaskView'])->name('pending.worked_task_view');
+    Route::get('worked_task_list-checking', [TaskController::class, 'workedTaskListChecking'])->name('worked_task_list.checking');
+    Route::get('checking-worked_task_view/{id}', [TaskController::class, 'checkingWorkedTaskView'])->name('checking.worked_task_view');
     Route::get('worked_task_list-reviewed', [TaskController::class, 'workedTaskListReviewed'])->name('worked_task_list.reviewed');
     Route::get('reviewed-worked_task_view/{id}', [TaskController::class, 'reviewedWorkedTaskView'])->name('reviewed.worked_task_view');
 

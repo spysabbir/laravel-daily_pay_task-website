@@ -18,7 +18,7 @@
                                 <div>
                                     <p>{{ Auth::user()->name }}</p>
                                     <p class="text-muted tx-13">
-                                        Id: {{ Auth::user()->id }}
+                                        Username : {{ Auth::user()->username ?? 'Not set' }}
                                     </p>
                                 </div>
                             </div>

@@ -10,6 +10,9 @@
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Rejected</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
+                    <p class="card-description text-info">
+                        Note: Hi user, the task list below is your rejected task by admin. The tasks will be removed from the list below after 7 days so the task removal countdown will start automatically. You can edit this task again within this time and resubmit for approval. Please contact us if you encounter any issues, thanks.
+                    </p>
                 </div>
                 <div>
                     <a href="{{ route('posted_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
@@ -27,6 +30,7 @@
                                 <th>Sl No</th>
                                 <th>Task ID</th>
                                 <th>Title</th>
+                                <th>Total Cost</th>
                                 <th>Submited At</th>
                                 <th>Rejected At</th>
                                 <th>
@@ -74,6 +78,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
+                { data: 'total_cost', name: 'total_cost' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_at', name: 'rejected_at' },
                 {

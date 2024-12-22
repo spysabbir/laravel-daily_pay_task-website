@@ -10,6 +10,9 @@
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Pending</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
+                    <p class="card-description text-info">
+                        Note: Hi user, below tasks list is your posted task and waiting for approval from admin. If your task is approved you will see it in the running folder and if it is rejected then you will see it in the rejected folder. If your task is here more than 48 hours then contact us. Also please contact us if you face any problem, thanks.
+                    </p>
                 </div>
                 <div>
                     <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
@@ -27,6 +30,7 @@
                                 <th>Sl No</th>
                                 <th>Task ID</th>
                                 <th>Title</th>
+                                <th>Total Cost</th>
                                 <th>Submited At</th>
                                 <th>Action</th>
                             </tr>
@@ -85,6 +89,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
+                { data: 'total_cost', name: 'total_cost' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action' }
             ]

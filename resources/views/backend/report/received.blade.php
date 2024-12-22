@@ -18,19 +18,19 @@
             <div class="card-body">
                 <div class="filter mb-3">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="filter_report_id" class="form-label">Report Id</label>
                                 <input type="number" id="filter_report_id" class="form-control filter_data" placeholder="Search Report Id">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="filter_reported_user_id" class="form-label">Reported User Id</label>
                                 <input type="number" id="filter_reported_user_id" class="form-control filter_data" placeholder="Search Reported User Id">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="filter_type" class="form-label">Type</label>
                                 <select class="form-select filter_data" id="filter_type">
@@ -41,7 +41,19 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="filter_post_task_id" class="form-label">Post Task Id</label>
+                                <input type="number" id="filter_post_task_id" class="form-control filter_data" placeholder="Search Post Task Id">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="filter_proof_task_id" class="form-label">Proof Task Id</label>
+                                <input type="number" id="filter_proof_task_id" class="form-control filter_data" placeholder="Search Proof Task Id">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="filter_reported_by_user_id" class="form-label">Reported By User Id</label>
                                 <input type="number" id="filter_reported_by_user_id" class="form-control filter_data" placeholder="Search Reported By User Id">
@@ -56,6 +68,8 @@
                                 <th>Sl No</th>
                                 <th>Report ID</th>
                                 <th>Type</th>
+                                <th>Post Task ID</th>
+                                <th>Proof Task ID</th>
                                 <th>Reported User ID</th>
                                 <th>Reported User Name</th>
                                 <th>Report By User ID</th>
@@ -112,6 +126,8 @@
                     e.report_id = $('#filter_report_id').val();
                     e.user_id = $('#filter_reported_user_id').val();
                     e.type = $('#filter_type').val();
+                    e.post_task_id = $('#filter_post_task_id').val();
+                    e.proof_task_id = $('#filter_proof_task_id').val();
                     e.reported_by = $('#filter_reported_by_user_id').val();
                 }
             },
@@ -119,6 +135,8 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'type', name: 'type' },
+                { data: 'post_task_id', name: 'post_task_id' },
+                { data: 'proof_task_id', name: 'proof_task_id' },
                 { data: 'reported_user_id', name: 'reported_user_id' },
                 { data: 'reported_user_name', name: 'reported_user_name' },
                 { data: 'report_by_user_id', name: 'report_by_user_id' },

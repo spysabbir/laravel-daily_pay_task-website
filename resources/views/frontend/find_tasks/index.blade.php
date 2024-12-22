@@ -6,9 +6,14 @@
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Find Tasks</h3>
-                <h3>Total: <span id="total_tasks_count">0</span></h3>
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Find Tasks</h3>
+                    <h3>Total: <span id="total_tasks_count">0</span></h3>
+                </div>
+                <p class="card-description text-info">
+                    Note: Hi everyone, find the preferred task from the below list to working and will get result from buyers within 72 hours after submitting task proof. You will get automatically payment if the buyer does not approve or reject your Task Proof within 72 hours so work with honesty and perfectly. Alert: Please don’t' try to hassle others and submit false work. Please contact us if you face any problem, Thanks.
+                </p>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -50,7 +55,7 @@
                                 <th>Sl No</th>
                                 <th>Category</th>
                                 <th>Task Title</th>
-                                <th>Income Of Each Worker</th>
+                                <th>Worker Earn</th>
                                 <th>Proof Submitted</th>
                                 <th>Approved At</th>
                                 <th>Action</th>

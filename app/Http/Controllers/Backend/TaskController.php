@@ -623,9 +623,9 @@ class TaskController extends Controller implements HasMiddleware
 
     // Worked Task .............................................................................................
 
-    public function workedTaskListAll(Request $request){
+    public function workedTaskListPending(Request $request){
         if ($request->ajax()) {
-            $taskIds = ProofTask::whereNot('status', 'Reviewed')->pluck('post_task_id')->toArray();
+            $taskIds = ProofTask::where('status', 'Pending')->pluck('post_task_id')->toArray();
             $query = PostTask::whereIn('id', $taskIds);
 
             if ($request->posted_task_id) {
@@ -682,13 +682,13 @@ class TaskController extends Controller implements HasMiddleware
                 ->rawColumns(['proof_submitted', 'proof_status', 'action'])
                 ->make(true);
         }
-        return view('backend.worked_task.all');
+        return view('backend.worked_task.pending');
     }
 
-    public function allWorkedTaskView(Request $request, string $id){
+    public function pendingWorkedTaskView(Request $request, string $id){
 
         if ($request->ajax()) {
-            $query = ProofTask::where('post_task_id', decrypt($id))->whereNot('status', 'Reviewed');
+            $query = ProofTask::where('post_task_id', decrypt($id))->where('status', 'Pending');
 
             if ($request->proof_id) {
                 $query->where('id', $request->proof_id);
@@ -773,7 +773,160 @@ class TaskController extends Controller implements HasMiddleware
 
         $postTask = PostTask::findOrFail(decrypt($id));
         $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
-        return view('backend.worked_task.all_list', compact('postTask', 'proofSubmitted'));
+        return view('backend.worked_task.pending_list', compact('postTask', 'proofSubmitted'));
+    }
+
+    public function workedTaskListChecking(Request $request){
+        if ($request->ajax()) {
+            $taskIds = ProofTask::whereNotIn('status', ['Pending', 'Reviewed'])->pluck('post_task_id')->toArray();
+            $query = PostTask::whereIn('id', $taskIds);
+
+            if ($request->posted_task_id) {
+                $query->where('id', $request->posted_task_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+
+            $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+
+            $taskList = $query->get();
+
+            return DataTables::of($taskList)
+                ->addIndexColumn()
+                ->editColumn('proof_submitted', function ($row) {
+                    $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
+                    $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
+                    $progressBarClass = $proofSubmitted == 0 ? 'primary' : 'success';
+                    return '
+                    <div class="progress position-relative">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-' . $progressBarClass . '" role="progressbar" style="width: ' . $proofStyleWidth . '%" aria-valuenow="' . $proofSubmitted . '" aria-valuemin="0" aria-valuemax="' . $row->worker_needed . '"></div>
+                        <span class="position-absolute w-100 text-center">' . $proofSubmitted . '/' . $row->worker_needed . '</span>
+                    </div>
+                    ';
+                })
+                ->editColumn('proof_status', function ($row) {
+                    $statuses = [
+                        'Pending' => 'bg-warning',
+                        'Approved' => 'bg-success',
+                        'Rejected' => 'bg-danger',
+                        'Reviewed' => 'bg-info'
+                    ];
+                    $proofStatus = '';
+                    $proofCount = ProofTask::where('post_task_id', $row->id)->count();
+                    if ($proofCount === 0) {
+                        return '<span class="badge bg-secondary">Proof not submitted yet.</span>';
+                    }
+                    foreach ($statuses as $status => $class) {
+                        $count = ProofTask::where('post_task_id', $row->id)->where('status', $status)->count();
+                        if ($count > 0) {
+                            $proofStatus .= "<span class=\"badge $class\"> $status: $count</span> ";
+                        }
+                    }
+                    return $proofStatus;
+                })
+                ->editColumn('action', function ($row) {
+                    $btn = '
+                        <a href="' . route('backend.all.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
+                    ';
+                    return $btn;
+                })
+                ->rawColumns(['proof_submitted', 'proof_status', 'action'])
+                ->make(true);
+        }
+        return view('backend.worked_task.checking');
+    }
+
+    public function checkingWorkedTaskView(Request $request, string $id){
+
+        if ($request->ajax()) {
+            $query = ProofTask::where('post_task_id', decrypt($id))->whereNotIn('status', ['Pending', 'Reviewed']);
+
+            if ($request->proof_id) {
+                $query->where('id', $request->proof_id);
+            }
+
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+
+            $query->select('proof_tasks.*');
+
+            $proofTasks = $query->get();
+
+            return DataTables::of($proofTasks)
+                ->addIndexColumn()
+                ->editColumn('id', function ($row) {
+                    return '<span class="badge bg-primary">' . $row->id . '</span>';
+                })
+                ->editColumn('user', function ($row) {
+                    $userDetail = UserDetail::where('user_id', $row->user_id)->first();
+                    $user = '
+                        <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
+                        <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
+                        <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
+                    ';
+                    return $user;
+                })
+                ->editColumn('status', function ($row) {
+                    if ($row->status == 'Pending') {
+                        $status = '<span class="badge bg-info">' . $row->status . '</span>';
+                    } else if ($row->status == 'Approved') {
+                        $status = '<span class="badge bg-success">' . $row->status . '</span>';
+                    } else if ($row->status == 'Rejected') {
+                        $status = '<span class="badge bg-danger">' . $row->status . '</span>';
+                    }else {
+                        $status = '<span class="badge bg-warning">' . $row->status . '</span>';
+                    }
+                    return $status;
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->format('d M Y h:i A');
+                })
+                ->editColumn('checked_at', function ($row) {
+                    if ($row->approved_at) {
+                        $checked_at = date('d M Y h:i A', strtotime($row->approved_at));
+                    } else if ($row->rejected_at) {
+                        $checked_at = date('d M Y h:i A', strtotime($row->rejected_at));
+                    } else if ($row->reviewed_at) {
+                        $checked_at = date('d M Y h:i A', strtotime($row->reviewed_at));
+                    } else {
+                        $checked_at = 'Waiting...';
+                    }
+                    return $checked_at;
+                })
+                ->editColumn('checked_by', function ($row) {
+                    if ($row->approved_by) {
+                        $checked_by = $row->approvedBy->user_type == 'Backend' ? 'Admin' : $row->approvedBy->name;
+                        $checked_by = '<span class="badge bg-success">' . $checked_by . '</span>';
+                    } else if ($row->rejected_by) {
+                        $checked_by = $row->rejectedBy->user_type == 'Backend' ? 'Admin' : $row->rejectedBy->name;
+                        $checked_by = '<span class="badge bg-primary">' . $checked_by . '</span>';
+                    } else if ($row->reviewed_by) {
+                        $checked_by = $row->user->name;
+                        $checked_by = '<span class="badge bg-info">' . $checked_by . '</span>';
+                    } else {
+                        $checked_by = '<span class="badge bg-warning">Waiting...</span>';
+                    }
+                    return $checked_by;
+                })
+                ->addColumn('action', function ($row) {
+                    $viewPermission = auth()->user()->can('worked_task.check');
+
+                    $viewBtn = $viewPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>'
+                        : '';
+
+                    return $viewBtn;
+                })
+                ->rawColumns(['id', 'user','status', 'created_at', 'checked_at', 'checked_by', 'action'])
+                ->make(true);
+        }
+
+        $postTask = PostTask::findOrFail(decrypt($id));
+        $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
+        return view('backend.worked_task.checking_list', compact('postTask', 'proofSubmitted'));
     }
 
     public function workedTaskListReviewed(Request $request){

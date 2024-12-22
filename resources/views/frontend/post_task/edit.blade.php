@@ -130,10 +130,10 @@
                                 <label for="required_proof_photo" class="form-label">
                                     Required Proof Photo <small class="text-info">* Optional </small>
                                 </label>
-                                <input type="number" class="form-control" name="required_proof_photo" id="required_proof_photo" value="{{ old('required_proof_photo', $postTask->required_proof_photo) }}" placeholder="Please enter how many required proof photo are required." required>
+                                <input type="number" class="form-control" name="required_proof_photo" id="required_proof_photo" value="{{ old('required_proof_photo', $postTask->required_proof_photo) }}" placeholder="Please enter how many required proof photo are required." min="0" max="10" required>
                                 <small class="text-danger" id="required_proof_photo_error"></small>
                                 <small class="text-info d-block">* Additional required proof photo charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_additional_required_proof_photo_charge') }} per required proof photo.</small>
-                                <small class="text-info d-block">* Note: You get 1 required proof photo for free.</small>
+                                <small class="text-info d-block">* Note: You get 1 required proof photo for free. Max required proof photo is 10.</small>
                             </div>
                             <div class="mb-2">
                                 <label for="additional_note" class="form-label">
@@ -336,8 +336,8 @@
             }
             // Validate the extra required proof photo field
             var required_proof_photo = parseInt($('#required_proof_photo').val());
-            if (required_proof_photo < 0) {
-                $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
+            if (required_proof_photo < 0 || required_proof_photo > 10) {
+                $('#required_proof_photo_error').text('Required proof photo should be greater than or equal to 0 and less than or equal to 10.');
             } else {
                 $('#required_proof_photo_error').text('');
             }
@@ -469,8 +469,8 @@
                     }
                     // Validate the extra required proof photo field
                     var required_proof_photo = parseInt($('#required_proof_photo').val());
-                    if (required_proof_photo < 0) {
-                        $('#required_proof_photo_error').text('Extra required proof photo should be greater than or equal to 0.');
+                    if (required_proof_photo < 0 || required_proof_photo > 10) {
+                        $('#required_proof_photo_error').text('Required proof photo should be greater than or equal to 0 and less than or equal to 10.');
                         isValid = false;
                     } else {
                         $('#required_proof_photo_error').text('');

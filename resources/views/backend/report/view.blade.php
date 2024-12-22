@@ -84,5 +84,21 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function() {
+        $('#status').change(function (e) {
+            e.preventDefault();
+
+            var report_id = $('input[name="report_id"]').val();
+
+            if ($(this).val() == 'False') {
+                $('#reply').val('Hi, We are reviewing your report but the report has been regard false so please check carefully before sending it to us. Alert: If your report over and over false your account will suspended so do not send false evidence to us for checking, Thanks. (Report ID: ' + report_id + ')');
+            } else {
+                $('#reply').val('Hi, we are reviewing your report. Your report has been accepted. We will look into this matter, thank you. (Report ID: ' + report_id + ')');
+            }
+        });
+    });
+</script>
+
 
 

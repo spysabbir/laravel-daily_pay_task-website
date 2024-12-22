@@ -131,7 +131,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Today Task Proof Submit Status</h6>
+                    <h6 class="card-title">Today Posted Task Proof Submit Status</h6>
                 </div>
             </div>
             <div class="card-body">
@@ -202,7 +202,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Task Proof Submit Status</h6>
+                            <h6 class="card-title mb-2">Posted Task Proof Submit Status</h6>
                         </div>
                     </div>
                     <div class="card-body">
@@ -273,7 +273,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Today Report Status</h6>
+                    <h6 class="card-title">Today Report Send Status</h6>
                 </div>
             </div>
             <div class="card-body">
@@ -342,7 +342,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Report Status</h6>
+                            <h6 class="card-title mb-2">Report Send Status</h6>
                         </div>
                     </div>
                     <div class="card-body">
@@ -387,7 +387,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Total Task Proof Submit Status</h6>
+                    <h6 class="card-title">Total Posted Task Proof Submit Status</h6>
                 </div>
             </div>
             <div class="card-body">
@@ -440,7 +440,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Total Task Proof Submit Status</h6>
+                            <h6 class="card-title mb-2">Total Posted Task Proof Submit Status</h6>
                         </div>
                     </div>
                     <div class="card-body">
@@ -901,8 +901,8 @@
 
 
 <script>
-    var today_posted_task_labels = ['Pending', 'Running', 'Rejected', 'Canceled', 'Paused', 'Completed'];
-    var today_posted_task_series = [{{ $today_pending_posted_task }}, {{ $today_running_posted_task }}, {{ $today_rejected_posted_task }}, {{ $today_canceled_posted_task }}, {{ $today_paused_posted_task }}, {{ $today_completed_posted_task }}];
+    var today_posted_task_labels = ['Pending', 'Running', 'Paused', 'Rejected', 'Canceled', 'Completed'];
+    var today_posted_task_series = [{{ $today_pending_posted_task }}, {{ $today_running_posted_task }}, {{ $today_paused_posted_task }}, {{ $today_rejected_posted_task }}, {{ $today_canceled_posted_task }}, {{ $today_completed_posted_task }}];
 
     var today_task_proof_submit_labels = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
     var today_task_proof_submit_series = [{{ $today_pending_task_proof_submit }}, {{ $today_approved_task_proof_submit }}, {{ $today_rejected_task_proof_submit }}, {{ $today_reviewed_task_proof_submit }}];

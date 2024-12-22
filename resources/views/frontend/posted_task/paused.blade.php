@@ -10,8 +10,8 @@
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Paused</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
-                    <p class="card-description text-warning">
-                        Note: Hi user, below tasks list is your paused task. If you pause the task you can be resume the task but if the task is paused by admin and want to resume the task need to contact with us. Also If you facing any problems please contact with us.
+                    <p class="card-description text-info">
+                        Note: Hi user, below tasks list is your paused task. If you pause the task you can be resume the task but if the task is paused by admin and want to resume the task need to contact us. Tasks will automatically removed from here after task work duration expires and get return pending money under our policy wise then tasks will move to canceled folder. Also If you facing any problems please contact us.
                     </p>
                 </div>
                 <div>
@@ -30,13 +30,17 @@
                                 <th>Sl No</th>
                                 <th>Task ID</th>
                                 <th>Title</th>
+                                <th>Total Cost</th>
                                 <th>Boosting Time</th>
                                 <th>Proof Submitted</th>
                                 <th>Work Duration Expire</th>
                                 {{-- <th>Proof Status</th> --}}
-                                {{-- <th>Total Cost</th> --}}
                                 {{-- <th>Cost Status</th> --}}
-                                {{-- <th>Pausing Reason</th> --}}
+                                <th>
+                                    <!-- Header Button for Expand/Collapse All -->
+                                    <i id="toggleAllRows" class="fas fa-plus-circle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
+                                    Pausing Reason
+                                </th>
                                 <th>Approved At</th>
                                 <th>Paused At</th>
                                 <th>Paused By</th>
@@ -81,7 +85,7 @@
         });
 
         // Read Data
-        $('#allDataTable').DataTable({
+        const table = $('#allDataTable').DataTable({
             processing: true,
             serverSide: true,
             searching: true,
@@ -97,18 +101,98 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
+                { data: 'total_cost', name: 'total_cost' },
                 { data: 'boosting_time', name: 'boosting_time' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'work_duration', name: 'work_duration' },
                 // { data: 'proof_status', name: 'proof_status' },
-                // { data: 'total_cost', name: 'total_cost' },
                 // { data: 'charge_status', name: 'charge_status' },
-                // { data: 'pausing_reason', name: 'pausing_reason' },
+                {
+                    data: 'pausing_reason',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return `
+                            <i class="fas fa-plus-circle row-toggle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
+                            <span>${data}</span>
+                        `;
+                    }
+                },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'paused_at', name: 'paused_at' },
                 { data: 'paused_by', name: 'paused_by' },
                 { data: 'action', name: 'action' },
             ]
+        });
+
+        // Add click event for the header button to expand/collapse all rows
+        let allRowsOpen = false;
+
+        // Function to check if all rows are expanded
+        function updateGlobalIcon() {
+            const rows = table.rows();
+            const totalRows = rows.count();
+            const openRows = rows.nodes().filter(row => $(row).hasClass('shown')).length;
+
+            if (openRows === totalRows) {
+                $('#toggleAllRows').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                allRowsOpen = true;
+            } else {
+                $('#toggleAllRows').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                allRowsOpen = false;
+            }
+        }
+
+        // Individual row expand/collapse
+        $('#allDataTable tbody').on('click', '.row-toggle', function () {
+            const tr = $(this).closest('tr');
+            const row = table.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+                $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            } else {
+                // Fetch proof_answer or any extra data
+                const pausing_reason = row.data().pausing_reason_full;
+                row.child(`<div class="nested-row">${pausing_reason}</div>`).show();
+                tr.addClass('shown');
+                $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            }
+
+            // Update the global expand/collapse button icon
+            updateGlobalIcon();
+        });
+
+        // Global expand/collapse functionality
+        $('#toggleAllRows').on('click', function () {
+            const icon = $(this);
+            const rows = table.rows();
+
+            if (allRowsOpen) {
+                // Collapse all rows
+                rows.every(function () {
+                    if (this.child.isShown()) {
+                        this.child.hide();
+                        $(this.node()).removeClass('shown');
+                        $(this.node()).find('.row-toggle').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                    }
+                });
+                allRowsOpen = false;
+                icon.removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            } else {
+                // Expand all rows
+                rows.every(function () {
+                    const pausing_reason = this.data().pausing_reason_full;
+                    if (!this.child.isShown()) {
+                        this.child(`<div class="nested-row">${pausing_reason}</div>`).show();
+                        $(this.node()).addClass('shown');
+                        $(this.node()).find('.row-toggle').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                    }
+                });
+                allRowsOpen = true;
+                icon.removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            }
         });
 
         // View Data

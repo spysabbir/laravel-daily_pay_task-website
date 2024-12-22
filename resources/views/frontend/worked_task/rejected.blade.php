@@ -10,8 +10,8 @@
                 <div>
                     <h3 class="card-title">Working Task List - Rejected</h3>
                     <h3>Total: <span id="total_proofs_count">0</span></h3>
-                    <p class="text-info">
-                        <strong>Note:</strong> You can see only the last 7 days of data.
+                    <p class="card-description text-info">
+                        Note: Hi user, below reject proof list has been rejected by buyer or admin panel. When the buyer rejects your proof, countdown will start automatically for sending review us. You can send to review us for checking your task proof within 24 hours. After 24 hours you cannot send the review to us. If you send task proof review us then we will checking your task proof. You will get notification after we are checking your review. Tasks will removed from below list after 7 days so task removal countdown will start automatically. Please contact us if you face any problem.
                     </p>
                 </div>
                 <div>
@@ -36,8 +36,8 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Task Id</th>
                                 <th>Task Title</th>
+                                <th>Task Rate</th>
                                 <th>Submit Date</th>
                                 <th>
                                     <!-- Header Button for Expand/Collapse All -->
@@ -104,8 +104,8 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'post_task_id', name: 'post_task_id' },
                 { data: 'title', name: 'title' },
+                { data: 'income_of_each_worker', name: 'income_of_each_worker' },
                 { data: 'created_at', name: 'created_at' },
                 {
                     data: 'rejected_reason',

@@ -98,7 +98,7 @@ class PostedTaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'required_proof_answer' => 'required|string',
-            'required_proof_photo' => 'nullable|numeric|min:0',
+            'required_proof_photo' => 'nullable|numeric|min:0|max:10',
             'additional_note' => 'required|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'worker_needed' => 'required|numeric|min:1',
@@ -179,7 +179,7 @@ class PostedTaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'required_proof_answer' => 'required|string',
-            'required_proof_photo' => 'nullable|numeric|min:0',
+            'required_proof_photo' => 'nullable|numeric|min:0|max:10',
             'additional_note' => 'required|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'worker_needed' => 'required|numeric|min:1',
@@ -266,11 +266,17 @@ class PostedTaskController extends Controller
 
                 // Total filtered count
                 $totalTasksCount = $query->count();
-                
+
                 $taskListPending = $query->get();
 
                 return DataTables::of($taskListPending)
                     ->addIndexColumn()
+                    ->editColumn('total_cost', function ($row) {
+                        $total_cost = '
+                            <span class="badge bg-primary">' . get_site_settings('site_currency_symbol'). ' ' . $row->total_cost . '</span>
+                        ';
+                        return $total_cost;
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i:s A');
                     })
@@ -282,7 +288,7 @@ class PostedTaskController extends Controller
                         return $actionBtn;
                     })
                     ->with(['totalTasksCount' => $totalTasksCount])
-                    ->rawColumns(['action'])
+                    ->rawColumns(['total_cost', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.pending');
@@ -338,6 +344,12 @@ class PostedTaskController extends Controller
 
                 return DataTables::of($taskListRejected)
                     ->addIndexColumn()
+                    ->editColumn('total_cost', function ($row) {
+                        $total_cost = '
+                            <span class="badge bg-primary">' . get_site_settings('site_currency_symbol'). ' ' . $row->total_cost . '</span>
+                        ';
+                        return $total_cost;
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
@@ -360,7 +372,7 @@ class PostedTaskController extends Controller
                         return $actionBtn;
                     })
                     ->with(['totalTasksCount' => $totalTasksCount])
-                    ->rawColumns(['created_at', 'rejection_reason', 'rejection_reason_full', 'action'])
+                    ->rawColumns(['total_cost', 'created_at', 'rejection_reason', 'rejection_reason_full', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.rejected');
@@ -999,7 +1011,9 @@ class PostedTaskController extends Controller
             return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
-                $query = PostTask::where('user_id', Auth::id())->where('status', 'Canceled');
+                $query = PostTask::where('user_id', Auth::id())
+                    ->where('status', 'Canceled')
+                    ->whereBetween('canceled_at', [now()->subDays(7), now()]);
 
                 $query->select('post_tasks.*')->orderBy('canceled_at', 'desc');
 
@@ -1089,8 +1103,13 @@ class PostedTaskController extends Controller
                         if ($row->cancellation_reason == 'Work duration exceeded') {
                             return '<span class="badge bg-danger">' . $row->cancellation_reason . '</span>';
                         } else {
-                            return '<span class="badge bg-warning">' . $row->cancellation_reason . '</span>';
+                            $cancellation_reason = Str::limit($row->cancellation_reason,40, '...'); // Limit to 50 characters with "..."
+                            return '<span class="badge bg-warning">' . e($cancellation_reason) . '</span>';
                         }
+                    })
+                    ->addColumn('cancellation_reason_full', function ($row) {
+                        $cancellation_reason = nl2br(e($row->cancellation_reason)); // Convert newlines to <br> and escape HTML
+                        return '<span class="badge bg-info my-2">Reason: </span><br>' . $cancellation_reason;
                     })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
@@ -1113,7 +1132,7 @@ class PostedTaskController extends Controller
                         return $btn;
                     })
                     ->with(['totalTasksCount' => $totalTasksCount])
-                    ->rawColumns(['proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'cancellation_reason', 'canceled_by', 'action'])
+                    ->rawColumns(['proof_submitted', 'proof_status', 'total_cost', 'charge_status', 'cancellation_reason', 'cancellation_reason_full', 'canceled_by', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.canceled');
@@ -1246,8 +1265,13 @@ class PostedTaskController extends Controller
                         if ($row->pausing_reason == null) {
                             return '<span class="badge bg-info">N/A</span>';
                         } else {
-                            return '<span class="badge bg-warning">' . $row->pausing_reason . '</span>';
+                            $pausing_reason = Str::limit($row->pausing_reason,40, '...'); // Limit to 50 characters with "..."
+                            return '<span class="badge bg-warning">' . e($pausing_reason) . '</span>';
                         }
+                    })
+                    ->addColumn('pausing_reason_full', function ($row) {
+                        $pausing_reason = $row->pausing_reason ? nl2br(e($row->pausing_reason)) : 'N/A'; // Convert newlines to <br> and escape HTML
+                        return '<span class="badge bg-info my-2">Reason: </span><br>' . $pausing_reason;
                     })
                     ->editColumn('paused_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->paused_at));
@@ -1275,7 +1299,7 @@ class PostedTaskController extends Controller
                         return $btn;
                     })
                     ->with(['totalTasksCount' => $totalTasksCount])
-                    ->rawColumns(['approved_at', 'boosting_time', 'proof_submitted', 'work_duration', 'proof_status', 'total_cost', 'charge_status', 'pausing_reason', 'paused_by', 'action'])
+                    ->rawColumns(['approved_at', 'boosting_time', 'proof_submitted', 'work_duration', 'proof_status', 'total_cost', 'charge_status', 'pausing_reason', 'pausing_reason_full', 'paused_by', 'action'])
                     ->make(true);
             }
             return view('frontend.posted_task.paused');
@@ -1293,7 +1317,9 @@ class PostedTaskController extends Controller
             return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
-                $query = PostTask::where('user_id', Auth::id())->where('status', 'Completed');
+                $query = PostTask::where('user_id', Auth::id())
+                    ->where('status', 'Completed')
+                    ->whereBetween('completed_at', [now()->subDays(7), now()]);
 
                 $query->select('post_tasks.*')->orderBy('completed_at', 'desc');
 

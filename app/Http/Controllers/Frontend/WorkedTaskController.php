@@ -267,7 +267,7 @@ class WorkedTaskController extends Controller
                     $query->whereDate('proof_tasks.created_at', $request->filter_date);
                 }
 
-                $query->whereDate('proof_tasks.created_at', '>', now()->subDays(5));
+                $query->whereDate('proof_tasks.created_at', '>', now()->subDays(7));
 
                 // Total filtered count
                 $totalProofsCount = $query->count();
@@ -410,6 +410,9 @@ class WorkedTaskController extends Controller
                             </a>
                         ';
                     })
+                    ->editColumn('income_of_each_worker', function ($row) {
+                        return  get_site_settings('site_currency_symbol') . ' ' . $row->postTask->income_of_each_worker;
+                    })
                     ->editColumn('rejected_reason', function ($row) {
                         $rejected_reason = Str::limit($row->rejected_reason,40, '...');
                         return e($rejected_reason);
@@ -438,7 +441,7 @@ class WorkedTaskController extends Controller
                         return $action;
                     })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['title', 'rating', 'rejected_reason', 'rejected_reason_full', 'rejected_by', 'action'])
+                    ->rawColumns(['title', 'income_of_each_worker', 'rejected_reason', 'rejected_reason_full', 'rejected_by', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.rejected');
@@ -521,7 +524,7 @@ class WorkedTaskController extends Controller
                     $query->whereDate('proof_tasks.reviewed_at', $request->filter_date);
                 }
 
-                $query->whereDate('proof_tasks.reviewed_at', '>', now()->subDays(5));
+                $query->whereDate('proof_tasks.reviewed_at', '>', now()->subDays(7));
 
                 // Total filtered count
                 $totalProofsCount = $query->count();

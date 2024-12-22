@@ -10,6 +10,9 @@
                 <div class="text">
                     <h3 class="card-title">Block List</h3>
                     <h3>Total: <span id="total_blockeds_count">0</span></h3>
+                    <p class="card-description text-info">
+                        Note: Hi user, This is the block list so when you block buyers you can see the blocked buyers here. You can block or unblock buyers at any time. When you will block the buyer you will not be able to see the tasks posted by the buyer but if you unblock then again you will see the tasks posted by the buyer. Please contact us if you face any problem.
+                    </p>
                 </div>
             </div>
             <div class="card-body">

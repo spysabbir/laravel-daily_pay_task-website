@@ -80,8 +80,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_user_id" class="form-label">User Id</label>
-                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
+                                <label for="filter_user_id" class="form-label">Employee Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search Employee Id">
                             </div>
                         </div>
                     </div>
@@ -91,11 +91,12 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>Id</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Last Login</th>
-                                <th>Created At</th>
+                                <th>Join Date</th>
                                 <th>Roles</th>
                                 <th>Action</th>
                             </tr>
@@ -194,6 +195,7 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'id', name: 'id' },
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },

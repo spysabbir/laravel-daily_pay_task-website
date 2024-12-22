@@ -10,8 +10,8 @@
                 <div>
                     <h3 class="card-title">Working Task List - Approved</h3>
                     <h3>Total: <span id="total_proofs_count">0</span></h3>
-                    <p class="text-info">
-                        <strong>Note:</strong> You can see only the last 7 days of data.
+                    <p class="card-description text-info">
+                        Note: Hi user, below tasks list is your worked task and waiting for approval from buyer. If your task is approved you will see it in the Approved folder and if it is rejected then you will see it in the rejected folder. If your task is here more than 72 hours then contact us. Tasks will removed from below list after 7 days so task removal countdown will start automatically. Also please contact us if you face any problem.
                     </p>
                 </div>
                 <div>

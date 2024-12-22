@@ -9,8 +9,8 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Notification List</h3>
-                    <p class="mb-0">
-                        This is the list of all notification.
+                    <p class="card-description text-info">
+                        Hi user, You will can see here all notifications. Please contact us if you face any problem.
                     </p>
                 </div>
                 <a href="{{ route('notification.read.all') }}" class="text-info m-3">Read all notification</a>

@@ -40,6 +40,12 @@ class ReportController extends Controller implements HasMiddleware
             if ($request->type) {
                 $reports->where('type', $request->type);
             }
+            if ($request->post_task_id) {
+                $reports->where('post_task_id', $request->post_task_id);
+            }
+            if ($request->proof_task_id) {
+                $reports->where('proof_task_id', $request->proof_task_id);
+            }
             if ($request->reported_by) {
                 $reports->where('reported_by', $request->reported_by);
             }
@@ -58,6 +64,18 @@ class ReportController extends Controller implements HasMiddleware
                     } else if ($row->type == 'Proof Task') {
                         return '<span class="badge bg-primary text-white">'.$row->type.'</span>';
                     }
+                })
+                ->editColumn('post_task_id', function ($row) {
+                    $post_task_id = $row->post_task_id ? $row->post_task_id : '-';
+                    return '
+                        <span class="badge bg-dark text-white">'.$post_task_id.'</span>
+                    ';
+                })
+                ->editColumn('proof_task_id', function ($row) {
+                    $proof_task_id = $row->proof_task_id ? $row->proof_task_id : '-';
+                    return '
+                        <span class="badge bg-dark text-white">'.$proof_task_id.'</span>
+                    ';
                 })
                 ->editColumn('reported_user_id', function ($row) {
                     return '
@@ -89,7 +107,7 @@ class ReportController extends Controller implements HasMiddleware
                         : '';
                     return $viewBtn;
                 })
-                ->rawColumns(['type', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
+                ->rawColumns(['type', 'post_task_id', 'proof_task_id', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
         }
         return view('backend.report.pending');
@@ -161,6 +179,12 @@ class ReportController extends Controller implements HasMiddleware
             if ($request->type) {
                 $reports->where('type', $request->type);
             }
+            if ($request->post_task_id) {
+                $reports->where('post_task_id', $request->post_task_id);
+            }
+            if ($request->proof_task_id) {
+                $reports->where('proof_task_id', $request->proof_task_id);
+            }
             if ($request->reported_by) {
                 $reports->where('reported_by', $request->reported_by);
             }
@@ -179,6 +203,18 @@ class ReportController extends Controller implements HasMiddleware
                     } else if ($row->type == 'Proof Task') {
                         return '<span class="badge bg-primary text-white">'.$row->type.'</span>';
                     }
+                })
+                ->editColumn('post_task_id', function ($row) {
+                    $post_task_id = $row->post_task_id ? $row->post_task_id : '-';
+                    return '
+                        <span class="badge bg-dark text-white">'.$post_task_id.'</span>
+                    ';
+                })
+                ->editColumn('proof_task_id', function ($row) {
+                    $proof_task_id = $row->proof_task_id ? $row->proof_task_id : '-';
+                    return '
+                        <span class="badge bg-dark text-white">'.$proof_task_id.'</span>
+                    ';
                 })
                 ->editColumn('reported_user_id', function ($row) {
                     return '
@@ -212,7 +248,7 @@ class ReportController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
-                ->rawColumns(['type', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
+                ->rawColumns(['type', 'post_task_id', 'proof_task_id', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
         }
         return view('backend.report.false');
@@ -232,6 +268,12 @@ class ReportController extends Controller implements HasMiddleware
             if ($request->type) {
                 $reports->where('type', $request->type);
             }
+            if ($request->post_task_id) {
+                $reports->where('post_task_id', $request->post_task_id);
+            }
+            if ($request->proof_task_id) {
+                $reports->where('proof_task_id', $request->proof_task_id);
+            }
             if ($request->reported_by) {
                 $reports->where('reported_by', $request->reported_by);
             }
@@ -250,6 +292,18 @@ class ReportController extends Controller implements HasMiddleware
                     } else if ($row->type == 'Proof Task') {
                         return '<span class="badge bg-primary text-white">'.$row->type.'</span>';
                     }
+                })
+                ->editColumn('post_task_id', function ($row) {
+                    $post_task_id = $row->post_task_id ? $row->post_task_id : '-';
+                    return '
+                        <span class="badge bg-dark text-white">'.$post_task_id.'</span>
+                    ';
+                })
+                ->editColumn('proof_task_id', function ($row) {
+                    $proof_task_id = $row->proof_task_id ? $row->proof_task_id : '-';
+                    return '
+                        <span class="badge bg-dark text-white">'.$proof_task_id.'</span>
+                    ';
                 })
                 ->editColumn('reported_user_id', function ($row) {
                     return '
@@ -283,7 +337,7 @@ class ReportController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
-                ->rawColumns(['type', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
+                ->rawColumns(['type', 'post_task_id', 'proof_task_id', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
         }
         return view('backend.report.received');

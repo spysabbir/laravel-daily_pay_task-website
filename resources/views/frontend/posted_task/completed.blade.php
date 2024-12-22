@@ -10,7 +10,7 @@
                 <div class="text">
                     <h3 class="card-title">Posting Task List - Completed</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
-                    <p class="card-description text-warning">
+                    <p class="card-description text-info">
                         Note: Hi user, below tasks list is your completed task. These tasks will be automatically remove from here after 7 days then you can't see anymore. If you facing any problems please contact with us.
                     </p>
                 </div>
@@ -30,9 +30,9 @@
                                 <th>Sl No</th>
                                 <th>Task ID</th>
                                 <th>Title</th>
+                                <th>Total Cost</th>
                                 <th>Proof Submitted</th>
                                 {{-- <th>Proof Status</th> --}}
-                                {{-- <th>Total Cost</th> --}}
                                 {{-- <th>Cost Status</th> --}}
                                 <th>Approved At</th>
                                 <th>Completed At</th>
@@ -93,9 +93,9 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
+                { data: 'total_cost', name: 'total_cost' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 // { data: 'proof_status', name: 'proof_status' },
-                // { data: 'total_cost', name: 'total_cost' },
                 // { data: 'charge_status', name: 'charge_status' },
                 { data: 'approved_at', name: 'approved_at' },
                 { data: 'completed_at', name: 'completed_at' },

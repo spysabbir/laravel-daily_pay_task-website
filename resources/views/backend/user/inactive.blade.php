@@ -34,7 +34,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Last Login</th>
-                                <th>Created At</th>
+                                <th>Join Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

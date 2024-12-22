@@ -531,9 +531,14 @@
                 </a>
                 <div class="collapse" id="WorkedTaskMenu">
                     <ul class="nav sub-menu">
-                        @can('worked_task_list.all')
+                        @can('worked_task_list.pending')
                         <li class="nav-item">
-                            <a href="{{ route('backend.worked_task_list.all') }}" class="nav-link">All</a>
+                            <a href="{{ route('backend.worked_task_list.pending') }}" class="nav-link">Pending</a>
+                        </li>
+                        @endcan
+                        @can('worked_task_list.checking')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.worked_task_list.checking') }}" class="nav-link">Checking</a>
                         </li>
                         @endcan
                         @can('worked_task_list.reviewed')
@@ -603,16 +608,16 @@
                         <a href="{{ route('posted_task.list.pending') }}" class="nav-link">Pending</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('posted_task.list.rejected') }}" class="nav-link">Rejected</a>
-                    </li>
-                    <li class="nav-item">
                         <a href="{{ route('posted_task.list.running') }}" class="nav-link">Running</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('posted_task.list.canceled') }}" class="nav-link">Canceled</a>
+                        <a href="{{ route('posted_task.list.paused') }}" class="nav-link">Paused</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('posted_task.list.paused') }}" class="nav-link">Paused</a>
+                        <a href="{{ route('posted_task.list.rejected') }}" class="nav-link">Rejected</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('posted_task.list.canceled') }}" class="nav-link">Canceled</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('posted_task.list.completed') }}" class="nav-link">Completed</a>

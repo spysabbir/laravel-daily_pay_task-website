@@ -153,7 +153,7 @@ $(function() {
                 labels: today_posted_task_labels,
                 datasets: [{
                     label: "Population (millions)",
-                    backgroundColor: [colors.info, colors.success, colors.warning, colors.danger, colors.primary, colors.secondary],
+                    backgroundColor: [colors.info, colors.success, colors.primary, colors.warning, colors.danger, colors.secondary],
                     borderColor: colors.cardBg,
                     data: today_posted_task_series,
                 }]
