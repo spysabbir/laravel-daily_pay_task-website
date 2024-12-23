@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Task List - Reviewed')
+@section('title', 'Task List - Approved & Rejected')
 
 @section('content')
 <div class="row">
@@ -81,7 +81,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Proof Task List</h3>
-                    <h3>Total Reviewed: <span id="reviewed_proof_tasks_count">0</span></h3>
+                    <h3>Approved: <span id="approved_proof_tasks_count">0</span>, Rejected: <span id="rejected_proof_tasks_count">0</span></h3>
                 </div>
             </div>
             <div class="card-body">
@@ -99,6 +99,16 @@
                                 <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group m-1">
+                                <label for="filter_status" class="form-label">Status</label>
+                                <select class="form-select filter_data" id="filter_status">
+                                    <option value="">-- Select Status --</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -109,8 +119,10 @@
                                 <th>Proof Id</th>
                                 <th>User Details</th>
                                 {{-- <th>Proof Answer</th> --}}
+                                <th>Status</th>
                                 <th>Submited Date</th>
-                                <th>Reviewed Date</th>
+                                <th>Checked Date</th>
+                                <th>Checked By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -157,15 +169,17 @@
             // serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.reviewed.worked_task_view', encrypt($postTask->id)) }}",
+                url: "{{ route('backend.approved-rejected.worked_task_view', encrypt($postTask->id)) }}",
                 type: "GET",
                 data: function (d) {
                     d.proof_id = $('#filter_proof_id').val();
                     d.user_id = $('#filter_user_id').val();
+                    d.status = $('#filter_status').val();
                 },
                 dataSrc: function (json) {
                     // Update total count
-                    $('#reviewed_proof_tasks_count').text(json.reviewedProofTasksCount);
+                    $('#approved_proof_tasks_count').text(json.approvedProofTasksCount);
+                    $('#rejected_proof_tasks_count').text(json.rejectedProofTasksCount);
                     return json.data;
                 }
             },
@@ -174,13 +188,18 @@
                 { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
                 // { data: 'proof_answer', name: 'proof_answer' },
+                { data: 'status', name: 'status' },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'reviewed_at', name: 'reviewed_at' },
+                { data: 'checked_at', name: 'checked_at' },
+                { data: 'checked_by', name: 'checked_by' },
                 { data: 'action', name: 'action' }
             ]
         });
 
         // Filter Data
+        $('.filter_data').change(function(){
+            $('#allDataTable').DataTable().ajax.reload();
+        });
         $('.filter_data').keyup(function(){
             $('#allDataTable').DataTable().ajax.reload();
         });
@@ -214,7 +233,7 @@
                 },
             });
         });
-        $(document).on('onCloseAfter.lg', '#single-lightgallery', function () {
+        $(document).on('onCloseAfter.lg', '#backend-single-lightgallery', function () {
             // Remove hash fragment from the URL
             const url = window.location.href.split('#')[0];
             window.history.replaceState(null, null, url);

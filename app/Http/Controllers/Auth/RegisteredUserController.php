@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
                 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'
             ],
             'terms_conditions' => 'required',
-            'g-recaptcha-response' => 'required|captcha',
+            // 'g-recaptcha-response' => 'required|captcha',
         ],
         [
             'email.regex' => 'The email must follow the format " ****@****.*** ".',

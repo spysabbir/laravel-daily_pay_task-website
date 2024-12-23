@@ -70,7 +70,7 @@
                     @csrf
                     <input type="hidden" id="withdraw_id" value="{{ $withdraw->id }}">
                     <div class="mb-3">
-                        <label for="withdraw_status" class="form-label">Withdraw Status</label>
+                        <label for="withdraw_status" class="form-label">Withdraw Status <span class="text-danger">*</span></label>
                         <select class="form-select" id="withdraw_status" name="status">
                             <option value="">-- Select Status --</option>
                             <option value="Approved">Approved</option>
@@ -79,7 +79,7 @@
                         <span class="text-danger error-text update_status_error"></span>
                     </div>
                     <div class="mb-3" id="rejected_reason_div" style="display: none;">
-                        <label for="withdraw_rejected_reason" class="form-label">Rejected Reason</label>
+                        <label for="withdraw_rejected_reason" class="form-label">Rejected Reason <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="withdraw_rejected_reason" name="rejected_reason" rows="4" placeholder="Rejected Reason"></textarea>
                         <span class="text-danger error-text update_rejected_reason_error"></span>
                     </div>

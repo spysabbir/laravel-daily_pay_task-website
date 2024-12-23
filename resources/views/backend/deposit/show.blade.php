@@ -67,7 +67,7 @@
                     @csrf
                     <input type="hidden" id="deposit_id" value="{{ $deposit->id }}">
                     <div class="mb-3">
-                        <label for="deposit_status" class="form-label">Deposit Status</label>
+                        <label for="deposit_status" class="form-label">Deposit Status <span class="text-danger">*</span></label>
                         <select class="form-select" id="deposit_status" name="status">
                             <option value="">-- Select Status --</option>
                             <option value="Approved">Approved</option>
@@ -76,7 +76,7 @@
                         <span class="text-danger error-text update_status_error"></span>
                     </div>
                     <div class="mb-3" id="rejected_reason_div" style="display: none;">
-                        <label for="deposit_rejected_reason" class="form-label">Rejected Reason</label>
+                        <label for="deposit_rejected_reason" class="form-label">Rejected Reason <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="deposit_rejected_reason" name="rejected_reason" rows="4" placeholder="Rejected Reason"></textarea>
                         <span class="text-danger error-text update_rejected_reason_error"></span>
                     </div>

@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Worked Task List - Reviewed')
+@section('title', 'Worked Task List - Pending')
 
 @section('content')
 <div class="row">
@@ -8,10 +8,10 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Worked Task List - Reviewed</h3>
+                    <h3 class="card-title">Worked Task List - Pending</h3>
                 </div>
                 <div class="action-btn">
-                    <a href="{{ route('backend.worked_task_list.pending') }}" class="btn btn-info btn-fw">Pending List</a>
+                    <a href="{{ route('backend.worked_task_list.reviewed') }}" class="btn btn-warning btn-fw">Reviewed List</a>
                     <a href="{{ route('backend.worked_task_list.approved-rejected') }}" class="btn btn-primary btn-fw">Approved & Rejected List</a>
                 </div>
             </div>
@@ -38,10 +38,10 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>Task ID</th>
-                                <th>User Id</th>
+                                <th>User ID</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
-                                <th>Reviewed Count</th>
+                                <th>Pending Count</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -71,7 +71,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.worked_task_list.reviewed') }}",
+                url: "{{ route('backend.worked_task_list.pending') }}",
                 type: "GET",
                 data: function (d) {
                     d.posted_task_id = $('#filter_posted_task_id').val();
@@ -84,7 +84,7 @@
                 { data: 'user_id', name: 'user_id' },
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
-                { data: 'reviewed_count', name: 'reviewed_count' },
+                { data: 'pending_count', name: 'pending_count' },
                 { data: 'action', name: 'action' }
             ]
         });

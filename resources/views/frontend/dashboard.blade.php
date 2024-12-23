@@ -708,9 +708,9 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
-                    <h6 class="card-title mb-0">Last 12 Months Deposit and Withdraw Amount Status<h6></h6>
+                    <h6 class="card-title mb-0">Last 12 Months approved Deposit and Withdraw Amount Status<h6></h6>
                 </div>
-                <p class="text-muted">This chart shows the monthly deposit and withdraw amount.</p>
+                <p class="text-muted">This chart shows the monthly approved deposit and withdraw amount.</p>
             </div>
             <div class="card-body">
                 @if ($total_withdraw == 0 && $total_deposit == 0)
@@ -720,7 +720,7 @@
                         <h4>No data found!</h4>
                     </div>
                     <p class="mt-3">
-                        No data found for monthly deposit and withdraw amount status. Please check back later.
+                        No data found for monthly approved deposit and withdraw amount status. Please check back later.
                     </p>
                 </div>
                 @else
@@ -738,7 +738,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Deposit Amount</h6>
+                            <h6 class="card-title mb-2">Approved Deposit Amount</h6>
                         </div>
                     </div>
                     <div class="card-body">
@@ -778,7 +778,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Withdraw Amount</h6>
+                            <h6 class="card-title mb-2">Approved Withdraw Amount</h6>
                         </div>
                     </div>
                     <div class="card-body">

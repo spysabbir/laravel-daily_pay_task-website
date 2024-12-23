@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Task List - All')
+@section('title', 'Task List - Pending')
 
 @section('content')
 <div class="row">
@@ -37,7 +37,7 @@
                     <strong class="text-info">Submited At: </strong>{{ $postTask->created_at->format('d F, Y h:i:s A') }},
                     <strong class="text-info">Approved At: </strong>{{ date('d F, Y h:i:s A', strtotime($postTask->approved_at)) }}
                 </p>
-                <div class="my-3">
+                {{-- <div class="my-3">
                     @php
                         $proofSubmittedCount = $proofSubmitted->count();
                         $proofStyleWidth = $proofSubmittedCount != 0 ? round(($proofSubmittedCount / $postTask->worker_needed) * 100, 2) : 100;
@@ -70,7 +70,7 @@
                         <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: {{ $rejectedProofStyleWidth }}%" aria-valuenow="{{ $rejectedProofStyleWidth }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $rejectedProofCount }} / {{ $totalProof }}</div>
                         <div class="progress-bar bg-warning progress-bar-striped" role="progressbar" style="width: {{ $reviewedProofStyleWidth }}%" aria-valuenow="{{ $reviewedProofCount }}" aria-valuemin="0" aria-valuemax="{{ $totalProof }}">{{ $reviewedProofCount }} / {{ $totalProof }}</div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -81,6 +81,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Proof Task List</h3>
+                    <h3>Total Pending: <span id="pending_proof_tasks_count">0</span></h3>
                 </div>
             </div>
             <div class="card-body">
@@ -107,11 +108,12 @@
                                 <th>Sl No</th>
                                 <th>Proof Id</th>
                                 <th>User Details</th>
-                                {{-- <th>Proof Answer</th> --}}
-                                <th>Status</th>
+                                <th>
+                                    <!-- Header Button for Expand/Collapse All -->
+                                    <i id="toggleAllRows" class="fas fa-plus-circle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
+                                    Proof Answer
+                                </th>
                                 <th>Submited Date</th>
-                                <th>Checked Date</th>
-                                <th>Checked By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -153,29 +155,111 @@
         });
 
         // Read Data
-        $('#allDataTable').DataTable({
+        const table = $('#allDataTable').DataTable({
             processing: true,
             // serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.all.worked_task_view', encrypt($postTask->id)) }}",
+                url: "{{ route('backend.pending.worked_task_view', encrypt($postTask->id)) }}",
                 type: "GET",
                 data: function (d) {
                     d.proof_id = $('#filter_proof_id').val();
                     d.user_id = $('#filter_user_id').val();
+                },
+                dataSrc: function (json) {
+                    // Update total count
+                    $('#pending_proof_tasks_count').text(json.pendingProofTasksCount);
+                    return json.data;
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
-                // { data: 'proof_answer', name: 'proof_answer' },
-                { data: 'status', name: 'status' },
+                {
+                    data: 'proof_answer',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return `
+                            <i class="fas fa-plus-circle row-toggle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
+                            <span>${data}</span>
+                        `;
+                    }
+                },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'checked_at', name: 'checked_at' },
-                { data: 'checked_by', name: 'checked_by' },
                 { data: 'action', name: 'action' }
             ]
+        });
+
+        // Add click event for the header button to expand/collapse all rows
+        let allRowsOpen = false;
+
+        // Function to check if all rows are expanded
+        function updateGlobalIcon() {
+            const rows = table.rows();
+            const totalRows = rows.count();
+            const openRows = rows.nodes().filter(row => $(row).hasClass('shown')).length;
+
+            if (openRows === totalRows) {
+                $('#toggleAllRows').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                allRowsOpen = true;
+            } else {
+                $('#toggleAllRows').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                allRowsOpen = false;
+            }
+        }
+
+        // Individual row expand/collapse
+        $('#allDataTable tbody').on('click', '.row-toggle', function () {
+            const tr = $(this).closest('tr');
+            const row = table.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+                $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            } else {
+                // Fetch proof_answer or any extra data
+                const proofAnswer = row.data().proof_answer_full;
+                row.child(`<div class="nested-row">${proofAnswer}</div>`).show();
+                tr.addClass('shown');
+                $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            }
+
+            // Update the global expand/collapse button icon
+            updateGlobalIcon();
+        });
+
+        // Global expand/collapse functionality
+        $('#toggleAllRows').on('click', function () {
+            const icon = $(this);
+            const rows = table.rows();
+
+            if (allRowsOpen) {
+                // Collapse all rows
+                rows.every(function () {
+                    if (this.child.isShown()) {
+                        this.child.hide();
+                        $(this.node()).removeClass('shown');
+                        $(this.node()).find('.row-toggle').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                    }
+                });
+                allRowsOpen = false;
+                icon.removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            } else {
+                // Expand all rows
+                rows.every(function () {
+                    const proofAnswer = this.data().proof_answer_full;
+                    if (!this.child.isShown()) {
+                        this.child(`<div class="nested-row">${proofAnswer}</div>`).show();
+                        $(this.node()).addClass('shown');
+                        $(this.node()).find('.row-toggle').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                    }
+                });
+                allRowsOpen = true;
+                icon.removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            }
         });
 
         // Filter Data
@@ -212,7 +296,7 @@
                 },
             });
         });
-        $(document).on('onCloseAfter.lg', '#backend-single-lightgallery', function () {
+        $(document).on('onCloseAfter.lg', '#single-lightgallery', function () {
             // Remove hash fragment from the URL
             const url = window.location.href.split('#')[0];
             window.history.replaceState(null, null, url);

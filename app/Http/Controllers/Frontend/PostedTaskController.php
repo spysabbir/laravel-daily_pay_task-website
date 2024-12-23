@@ -665,76 +665,78 @@ class PostedTaskController extends Controller
 
             $query->select('proof_tasks.*');
 
+            // Clone the query for each count
+            $pendingProofTasksCount = (clone $query)->where('status', 'Pending')->count();
+            $approvedProofTasksCount = (clone $query)->where('status', 'Approved')->count();
+            $rejectedProofTasksCount = (clone $query)->where('status', 'Rejected')->count();
+            $reviewedProofTasksCount = (clone $query)->where('status', 'Reviewed')->count();
+
+            // Get the main query results
             $proofTasks = $query->get();
 
             return DataTables::of($proofTasks)
                 ->addColumn('checkbox', function ($row) {
                     $checkPending = $row->status != 'Pending' ? 'disabled' : '';
-                    $checkbox = '
-                        <input type="checkbox" class="form-check-input checkbox" value="' . $row->id . '" ' . $checkPending . '>
-                    ';
-                    return $checkbox;
+                    return '<input type="checkbox" class="form-check-input checkbox" value="' . $row->id . '" ' . $checkPending . '>';
                 })
+
                 ->editColumn('id', function ($row) {
                     return '<span class="badge bg-primary">' . $row->id . '</span>';
                 })
                 ->editColumn('user', function ($row) {
-                    $user = '
+                    return '
                         <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
                         <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
                         <span class="badge bg-dark">Ip: ' . $row->user->userDetail->ip . '</span>
                     ';
-                    return $user;
                 })
                 ->editColumn('proof_answer', function ($row) {
-                    $limitedAnswer = Str::limit($row->proof_answer,40, '...'); // Limit to 50 characters with "..."
-                    return '<span class="badge bg-info mx-2">Answer: </span>' . e($limitedAnswer);
+                    return '<span class="badge bg-info mx-2">Answer: </span>' . e(Str::limit($row->proof_answer, 40, '...'));
                 })
                 ->addColumn('proof_answer_full', function ($row) {
-                    $proofAnswer = nl2br(e($row->proof_answer)); // Convert newlines to <br> and escape HTML
-                    return '<span class="badge bg-info my-2">Answer: </span><br>' . $proofAnswer;
+                    return '<span class="badge bg-info my-2">Answer: </span><br>' . nl2br(e($row->proof_answer));
                 })
                 ->editColumn('status', function ($row) {
-                    if ($row->status == 'Pending') {
-                        $status = '<span class="badge bg-info">' . $row->status . '</span>';
-                    } else if ($row->status == 'Approved') {
-                        $status = '<span class="badge bg-success">' . $row->status . '</span>';
-                    } else if ($row->status == 'Rejected') {
-                        $status = '<span class="badge bg-danger">' . $row->status . '</span>';
-                    }else {
-                        $status = '<span class="badge bg-warning">' . $row->status . '</span>';
-                    }
-                    return $status;
+                    $statusClasses = [
+                        'Pending' => 'info',
+                        'Approved' => 'success',
+                        'Rejected' => 'danger',
+                        'Reviewed' => 'warning',
+                    ];
+                    $statusClass = $statusClasses[$row->status] ?? 'secondary';
+                    return '<span class="badge bg-' . $statusClass . '">' . $row->status . '</span>';
                 })
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->format('d M Y h:i A');
                 })
                 ->editColumn('checked_at', function ($row) {
                     if ($row->approved_at) {
-                        $checked_at = date('d M Y h:i A', strtotime($row->approved_at));
-                    } else if ($row->rejected_at) {
-                        $checked_at = date('d M Y h:i A', strtotime($row->rejected_at));
-                    } else if ($row->reviewed_at) {
-                        $checked_at = date('d M Y h:i A', strtotime($row->reviewed_at));
+                        return date('d M Y h:i A', strtotime($row->approved_at));
+                    } elseif ($row->rejected_at) {
+                        return date('d M Y h:i A', strtotime($row->rejected_at));
+                    } elseif ($row->reviewed_at) {
+                        return date('d M Y h:i A', strtotime($row->reviewed_at));
                     } else {
-                        $checked_at = 'Waiting...';
+                        return 'Waiting...';
                     }
-                    return $checked_at;
                 })
                 ->addColumn('action', function ($row) {
                     $btnName = $row->status == 'Pending' ? 'Check' : 'View';
                     if ($row->status == 'Rejected') {
-                        $actionBtn = '
+                        return '
                             <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">' . $btnName . '</button>
                             <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs reportProofTaskBtn">Report</button>
-                            ';
+                        ';
                     } else {
-                        $actionBtn = '
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">' . $btnName . '</button>
-                            ';
+                        return '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">' . $btnName . '</button>';
                     }
-                    return $actionBtn;
                 })
+                ->with([
+                    'pendingProofTasksCount' => $pendingProofTasksCount,
+                    'approvedProofTasksCount' => $approvedProofTasksCount,
+                    'rejectedProofTasksCount' => $rejectedProofTasksCount,
+                    'reviewedProofTasksCount' => $reviewedProofTasksCount,
+                ])
                 ->rawColumns(['checkbox', 'id', 'user', 'proof_answer', 'proof_answer_full', 'status', 'created_at', 'checked_at', 'action'])
                 ->make(true);
         }
@@ -744,25 +746,23 @@ class PostedTaskController extends Controller
         $pendingProof = ProofTask::where('post_task_id', $postTask->id)->where('status', 'Pending')->count();
         $approvedProof = ProofTask::where('post_task_id', $postTask->id)->where('status', 'Approved')->count();
         $refundProof = ProofTask::where('post_task_id', $postTask->id)->where('status', 'Rejected')
-                        ->where(function ($query) {
-                            $query->where(function ($query) {
-                                    $query->whereNull('reviewed_at')
-                                        ->where('rejected_at', '<=', now()->subHours(72));
-                                })
-                                ->orWhereNotNull('reviewed_at');
-                        })->count();
-
+            ->where(function ($query) {
+                $query->where(function ($query) {
+                    $query->whereNull('reviewed_at')
+                        ->where('rejected_at', '<=', now()->subHours(72));
+                })
+                ->orWhereNotNull('reviewed_at');
+            })->count();
         $holdProof = ProofTask::where('post_task_id', $postTask->id)
-                        ->where(function ($query) {
-                            $query->where('status', 'Reviewed')
-                                ->orWhere(function ($query) {
-                                    $query->where('status', 'Rejected')
-                                            ->whereNull('reviewed_at')
-                                            ->where('rejected_at', '>', now()->subHours(72));
-                                });
-                        })->count();
+            ->where(function ($query) {
+                $query->where('status', 'Reviewed')
+                    ->orWhere(function ($query) {
+                        $query->where('status', 'Rejected')
+                            ->whereNull('reviewed_at')
+                            ->where('rejected_at', '>', now()->subHours(72));
+                    });
+            })->count();
 
-        // Clear filters if requested
         if (session()->has('clear_filters')) {
             session()->forget('clear_filters');
             $clearFilters = true;

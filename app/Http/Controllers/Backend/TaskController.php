@@ -16,6 +16,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 use App\Notifications\ReviewedTaskProofCheckNotification;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Str;
 
 class TaskController extends Controller implements HasMiddleware
 {
@@ -32,7 +33,8 @@ class TaskController extends Controller implements HasMiddleware
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task.canceled') , only:['runningPostedTaskCanceled']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('posted_task.paused.resume') , only:['runningPostedTaskPaused', 'runningPostedTaskPausedResume']),
 
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task_list.all') , only:['workedTaskListAll', 'allWorkedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task_list.pending') , only:['workedTaskListPending', 'pendingWorkedTaskView']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task_list.approved-rejected') , only:['workedTaskListApprovedRejected', 'approvedRejectedWorkedTaskView']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task_list.reviewed') , only:['workedTaskListReviewed', 'reviewedWorkedTaskView']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task.check') , only:['workedTaskCheck', 'workedTaskCheckUpdate']),
         ];
@@ -494,7 +496,7 @@ class TaskController extends Controller implements HasMiddleware
         $user = User::findOrFail($postTask->user_id);
         if ($request->status == 'Rejected') {
             $user->update([
-                'deposit_balance' => $user->deposit_balance + $postTask->total_charge,
+                'deposit_balance' => $user->deposit_balance + $postTask->total_cost,
             ]);
         }
 
@@ -536,7 +538,6 @@ class TaskController extends Controller implements HasMiddleware
             'status' => 200,
         ]);
     }
-
 
     public function runningPostedTaskCanceled(Request $request, string $id)
     {
@@ -653,33 +654,17 @@ class TaskController extends Controller implements HasMiddleware
                     </div>
                     ';
                 })
-                ->editColumn('proof_status', function ($row) {
-                    $statuses = [
-                        'Pending' => 'bg-warning',
-                        'Approved' => 'bg-success',
-                        'Rejected' => 'bg-danger',
-                        'Reviewed' => 'bg-info'
-                    ];
-                    $proofStatus = '';
-                    $proofCount = ProofTask::where('post_task_id', $row->id)->count();
-                    if ($proofCount === 0) {
-                        return '<span class="badge bg-secondary">Proof not submitted yet.</span>';
-                    }
-                    foreach ($statuses as $status => $class) {
-                        $count = ProofTask::where('post_task_id', $row->id)->where('status', $status)->count();
-                        if ($count > 0) {
-                            $proofStatus .= "<span class=\"badge $class\"> $status: $count</span> ";
-                        }
-                    }
-                    return $proofStatus;
+                ->editColumn('pending_count', function ($row) {
+                    $countPending = ProofTask::where('post_task_id', $row->id)->where('status', 'Pending')->count();
+                    return '<span class="badge bg-primary">Pending: ' . $countPending . '</span>';
                 })
                 ->editColumn('action', function ($row) {
                     $btn = '
-                        <a href="' . route('backend.all.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
+                        <a href="' . route('backend.pending.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
-                ->rawColumns(['proof_submitted', 'proof_status', 'action'])
+                ->rawColumns(['proof_submitted', 'pending_count', 'action'])
                 ->make(true);
         }
         return view('backend.worked_task.pending');
@@ -700,6 +685,8 @@ class TaskController extends Controller implements HasMiddleware
 
             $query->select('proof_tasks.*');
 
+            $pendingProofTasksCount = $query->count();
+
             $proofTasks = $query->get();
 
             return DataTables::of($proofTasks)
@@ -716,47 +703,14 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                     return $user;
                 })
-                ->editColumn('status', function ($row) {
-                    if ($row->status == 'Pending') {
-                        $status = '<span class="badge bg-info">' . $row->status . '</span>';
-                    } else if ($row->status == 'Approved') {
-                        $status = '<span class="badge bg-success">' . $row->status . '</span>';
-                    } else if ($row->status == 'Rejected') {
-                        $status = '<span class="badge bg-danger">' . $row->status . '</span>';
-                    }else {
-                        $status = '<span class="badge bg-warning">' . $row->status . '</span>';
-                    }
-                    return $status;
+                ->editColumn('proof_answer', function ($row) {
+                    return '<span class="badge bg-info mx-2">Answer: </span>' . e(Str::limit($row->proof_answer, 40, '...'));
+                })
+                ->addColumn('proof_answer_full', function ($row) {
+                    return '<span class="badge bg-info my-2">Answer: </span><br>' . nl2br(e($row->proof_answer));
                 })
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->format('d M Y h:i A');
-                })
-                ->editColumn('checked_at', function ($row) {
-                    if ($row->approved_at) {
-                        $checked_at = date('d M Y h:i A', strtotime($row->approved_at));
-                    } else if ($row->rejected_at) {
-                        $checked_at = date('d M Y h:i A', strtotime($row->rejected_at));
-                    } else if ($row->reviewed_at) {
-                        $checked_at = date('d M Y h:i A', strtotime($row->reviewed_at));
-                    } else {
-                        $checked_at = 'Waiting...';
-                    }
-                    return $checked_at;
-                })
-                ->editColumn('checked_by', function ($row) {
-                    if ($row->approved_by) {
-                        $checked_by = $row->approvedBy->user_type == 'Backend' ? 'Admin' : $row->approvedBy->name;
-                        $checked_by = '<span class="badge bg-success">' . $checked_by . '</span>';
-                    } else if ($row->rejected_by) {
-                        $checked_by = $row->rejectedBy->user_type == 'Backend' ? 'Admin' : $row->rejectedBy->name;
-                        $checked_by = '<span class="badge bg-primary">' . $checked_by . '</span>';
-                    } else if ($row->reviewed_by) {
-                        $checked_by = $row->user->name;
-                        $checked_by = '<span class="badge bg-info">' . $checked_by . '</span>';
-                    } else {
-                        $checked_by = '<span class="badge bg-warning">Waiting...</span>';
-                    }
-                    return $checked_by;
                 })
                 ->addColumn('action', function ($row) {
                     $viewPermission = auth()->user()->can('worked_task.check');
@@ -767,7 +721,10 @@ class TaskController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
-                ->rawColumns(['id', 'user','status', 'created_at', 'checked_at', 'checked_by', 'action'])
+                ->with([
+                    'pendingProofTasksCount' => $pendingProofTasksCount
+                ])
+                ->rawColumns(['id', 'user', 'proof_answer', 'proof_answer_full', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -776,7 +733,7 @@ class TaskController extends Controller implements HasMiddleware
         return view('backend.worked_task.pending_list', compact('postTask', 'proofSubmitted'));
     }
 
-    public function workedTaskListChecking(Request $request){
+    public function workedTaskListApprovedRejected(Request $request){
         if ($request->ajax()) {
             $taskIds = ProofTask::whereNotIn('status', ['Pending', 'Reviewed'])->pluck('post_task_id')->toArray();
             $query = PostTask::whereIn('id', $taskIds);
@@ -808,16 +765,10 @@ class TaskController extends Controller implements HasMiddleware
                 })
                 ->editColumn('proof_status', function ($row) {
                     $statuses = [
-                        'Pending' => 'bg-warning',
                         'Approved' => 'bg-success',
                         'Rejected' => 'bg-danger',
-                        'Reviewed' => 'bg-info'
                     ];
                     $proofStatus = '';
-                    $proofCount = ProofTask::where('post_task_id', $row->id)->count();
-                    if ($proofCount === 0) {
-                        return '<span class="badge bg-secondary">Proof not submitted yet.</span>';
-                    }
                     foreach ($statuses as $status => $class) {
                         $count = ProofTask::where('post_task_id', $row->id)->where('status', $status)->count();
                         if ($count > 0) {
@@ -828,17 +779,17 @@ class TaskController extends Controller implements HasMiddleware
                 })
                 ->editColumn('action', function ($row) {
                     $btn = '
-                        <a href="' . route('backend.all.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
+                        <a href="' . route('backend.approved-rejected.worked_task_view', encrypt($row->id)) . '" class="btn btn-info btn-xs">Check</a>
                     ';
                     return $btn;
                 })
                 ->rawColumns(['proof_submitted', 'proof_status', 'action'])
                 ->make(true);
         }
-        return view('backend.worked_task.checking');
+        return view('backend.worked_task.approved-rejected');
     }
 
-    public function checkingWorkedTaskView(Request $request, string $id){
+    public function approvedRejectedWorkedTaskView(Request $request, string $id){
 
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->whereNotIn('status', ['Pending', 'Reviewed']);
@@ -851,7 +802,14 @@ class TaskController extends Controller implements HasMiddleware
                 $query->where('user_id', $request->user_id);
             }
 
+            if ($request->status) {
+                $query->where('status', $request->status);
+            }
+
             $query->select('proof_tasks.*');
+
+            $approvedProofTasksCount = (clone $query)->where('status', 'Approved')->count();
+            $rejectedProofTasksCount = (clone $query)->where('status', 'Rejected')->count();
 
             $proofTasks = $query->get();
 
@@ -920,13 +878,17 @@ class TaskController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
+                ->with([
+                    'approvedProofTasksCount' => $approvedProofTasksCount,
+                    'rejectedProofTasksCount' => $rejectedProofTasksCount
+                ])
                 ->rawColumns(['id', 'user','status', 'created_at', 'checked_at', 'checked_by', 'action'])
                 ->make(true);
         }
 
         $postTask = PostTask::findOrFail(decrypt($id));
         $proofSubmitted = ProofTask::where('post_task_id', $postTask->id)->get();
-        return view('backend.worked_task.checking_list', compact('postTask', 'proofSubmitted'));
+        return view('backend.worked_task.approved-rejected_list', compact('postTask', 'proofSubmitted'));
     }
 
     public function workedTaskListReviewed(Request $request){
@@ -959,9 +921,9 @@ class TaskController extends Controller implements HasMiddleware
                     </div>
                     ';
                 })
-                ->editColumn('reviewed_status', function ($row) {
-                    $proofCount = ProofTask::where('post_task_id', $row->id)->where('status', 'Reviewed')->count();
-                    return '<span class="badge bg-primary">Reviewed: '.$proofCount.'</span>';
+                ->editColumn('reviewed_count', function ($row) {
+                    $countReviewed = ProofTask::where('post_task_id', $row->id)->where('status', 'Reviewed')->count();
+                    return '<span class="badge bg-warning">Reviewed: ' . $countReviewed . '</span>';
                 })
                 ->editColumn('action', function ($row) {
                     $btn = '
@@ -969,7 +931,7 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                     return $btn;
                 })
-                ->rawColumns(['proof_submitted', 'reviewed_status', 'action'])
+                ->rawColumns(['proof_submitted', 'reviewed_count', 'action'])
                 ->make(true);
         }
         return view('backend.worked_task.reviewed');
@@ -989,6 +951,8 @@ class TaskController extends Controller implements HasMiddleware
             }
 
             $query->select('proof_tasks.*');
+
+            $reviewedProofTasksCount = $query->count();
 
             $proofTasks = $query->get();
 
@@ -1026,6 +990,9 @@ class TaskController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
+                ->with([
+                    'reviewedProofTasksCount' => $reviewedProofTasksCount
+                ])
                 ->rawColumns(['id', 'user','status', 'created_at', 'reviewed_at', 'action'])
                 ->make(true);
         }

@@ -116,6 +116,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Proof Task List</h3>
+                    <h3>Pending: <span id="pending_proof_tasks_count">0</span>, Approved: <span id="approved_proof_tasks_count">0</span>, Rejected: <span id="rejected_proof_tasks_count">0</span>, Reviewed: <span id="reviewed_proof_tasks_count">0</span></h3>
                 </div>
             </div>
             <div class="card-body">
@@ -353,20 +354,6 @@
     </div>
 </div>
 @endsection
-
-<style>
-    #toggleAllRows,
-    .row-toggle {
-        font-size: 1.1rem;
-    }
-
-    .nested-row {
-        padding: 10px;
-        border-left: 3px solid #007bff;
-        font-size: 14px;
-        background-color: #007bff1a;
-    }
-</style>
 
 @section('script')
 <script>
@@ -675,6 +662,14 @@
                 type: 'GET',
                 data: function(d) {
                     d.status = $('#filter_status').val();
+                },
+                dataSrc: function (json) {
+                    // Update total count
+                    $('#pending_proof_tasks_count').text(json.pendingProofTasksCount);
+                    $('#approved_proof_tasks_count').text(json.approvedProofTasksCount);
+                    $('#rejected_proof_tasks_count').text(json.rejectedProofTasksCount);
+                    $('#reviewed_proof_tasks_count').text(json.reviewedProofTasksCount);
+                    return json.data;
                 }
             },
             columns: [

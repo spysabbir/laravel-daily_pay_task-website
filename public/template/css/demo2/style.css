@@ -25784,3 +25784,16 @@ div.tox .tox-dialog__body {
 .lg-outer {
     z-index: 1053 !important;
 }
+
+
+#toggleAllRows,
+.row-toggle {
+    font-size: 1.1rem;
+}
+
+.nested-row {
+    padding: 10px;
+    border-left: 3px solid #007bff;
+    font-size: 14px;
+    background-color: #007bff1a;
+}

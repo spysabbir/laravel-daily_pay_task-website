@@ -87,14 +87,14 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="form-group text-center">
+                    {{-- <div class="form-group text-center">
                         <div class="d-flex justify-content-center align-items-center">
                             {!! NoCaptcha::display() !!}
                         </div>
                         @error('g-recaptcha-response')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>
+                    </div> --}}
                     <div class="form-group text-center">
                         <input type="checkbox" class="form-check-input" id="termsConditions" name="terms_conditions" required>
                         <label class="form-check-label" for="termsConditions">

@@ -175,8 +175,8 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     // Worked  Task
     Route::get('worked_task_list-pending', [TaskController::class, 'workedTaskListPending'])->name('worked_task_list.pending');
     Route::get('pending-worked_task_view/{id}', [TaskController::class, 'pendingWorkedTaskView'])->name('pending.worked_task_view');
-    Route::get('worked_task_list-checking', [TaskController::class, 'workedTaskListChecking'])->name('worked_task_list.checking');
-    Route::get('checking-worked_task_view/{id}', [TaskController::class, 'checkingWorkedTaskView'])->name('checking.worked_task_view');
+    Route::get('worked_task_list-approved-rejected', [TaskController::class, 'workedTaskListApprovedRejected'])->name('worked_task_list.approved-rejected');
+    Route::get('approved-rejected-worked_task_view/{id}', [TaskController::class, 'approvedRejectedWorkedTaskView'])->name('approved-rejected.worked_task_view');
     Route::get('worked_task_list-reviewed', [TaskController::class, 'workedTaskListReviewed'])->name('worked_task_list.reviewed');
     Route::get('reviewed-worked_task_view/{id}', [TaskController::class, 'reviewedWorkedTaskView'])->name('reviewed.worked_task_view');
 

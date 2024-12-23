@@ -115,7 +115,7 @@
                     @csrf
                     <input type="hidden" id="verification_id" value="{{ $verification->id }}">
                     <div class="mb-3">
-                        <label for="verification_status" class="form-label">Verification Status</label>
+                        <label for="verification_status" class="form-label">Verification Status <span class="text-danger">*</span></label>
                         <select class="form-select" id="verification_status" name="status">
                             <option value="">-- Select Status --</option>
                             <option value="Approved">Approved</option>
@@ -124,7 +124,7 @@
                         <span class="text-danger error-text update_status_error"></span>
                     </div>
                     <div class="mb-3" id="verification_rejected_reason_div" style="display: none;">
-                        <label for="verification_rejected_reason" class="form-label">Rejected Reason</label>
+                        <label for="verification_rejected_reason" class="form-label">Rejected Reason <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="verification_rejected_reason" name="rejected_reason" rows="4" placeholder="Rejected Reason">Submitted information not matching with your profile information. Please check and try again.</textarea>
                         <span class="text-danger error-text update_rejected_reason_error"></span>
                     </div>

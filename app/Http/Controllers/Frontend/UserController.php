@@ -39,6 +39,8 @@ class UserController extends Controller
             $formattedMonth = $month->format('M-y');
 
             $amount = Withdraw::where('user_id', Auth::id())
+                ->where('status', 'Approved')
+                ->whereNot('method', 'Deposit Balance')
                 ->whereMonth('created_at', $month->format('m'))
                 ->whereYear('created_at', $month->format('Y'))
                 ->sum('amount');
@@ -55,6 +57,7 @@ class UserController extends Controller
             $formattedMonth = $month->format('M-y');
 
             $amount = Deposit::where('user_id', Auth::id())
+                ->where('status', 'Approved')
                 ->whereMonth('created_at', $month->format('m'))
                 ->whereYear('created_at', $month->format('Y'))
                 ->sum('amount');
@@ -221,16 +224,16 @@ class UserController extends Controller
             'total_pending_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Pending')->sum('amount'),
             'total_rejected_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Rejected')->sum('amount'),
             'total_approved_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
-            'monthly_deposit' => Deposit::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->sum('amount'),
-            'yearly_deposit' => Deposit::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->sum('amount'),
-            'total_deposit' => Deposit::where('user_id', Auth::id())->sum('amount'),
+            'monthly_deposit' => Deposit::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'Approved')->sum('amount'),
+            'yearly_deposit' => Deposit::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->where('status', 'Approved')->sum('amount'),
+            'total_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
             // Withdraw .............................................................................................................
-            'total_pending_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Pending')->sum('amount'),
-            'total_rejected_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Rejected')->sum('amount'),
-            'total_approved_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
-            'monthly_withdraw' => Withdraw::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->sum('amount'),
-            'yearly_withdraw' => Withdraw::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->sum('amount'),
-            'total_withdraw' => Withdraw::where('user_id', Auth::id())->sum('amount'),
+            'total_pending_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Pending')->whereNot('method', 'Deposit Balance')->sum('amount'),
+            'total_rejected_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Rejected')->whereNot('method', 'Deposit Balance')->sum('amount'),
+            'total_approved_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
+            'monthly_withdraw' => Withdraw::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
+            'yearly_withdraw' => Withdraw::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
+            'total_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
             // Report .............................................................................................................
             'today_pending_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
             'today_false_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'False')->count(),
@@ -920,7 +923,21 @@ class UserController extends Controller
     {
         if ($request->ajax()) {
             $user = Auth::user();
-            $notifications = $user->notifications;
+            $notificationsQuery = $user->notifications();
+
+            if ($request->status) {
+                if ($request->status == 'Read') {
+                    $notificationsQuery->whereNotNull('read_at');
+                } else {
+                    $notificationsQuery->whereNull('read_at');
+                }
+            }
+
+            // Clone the query for counts
+            $readNotificationsCount = (clone $notificationsQuery)->whereNotNull('read_at')->count();
+            $unreadNotificationsCount = (clone $notificationsQuery)->whereNull('read_at')->count();
+
+            $notifications = $notificationsQuery->get();
 
             return DataTables::of($notifications)
                 ->addIndexColumn()
@@ -938,16 +955,16 @@ class UserController extends Controller
                 })
                 ->editColumn('status', function ($row) {
                     if ($row->read_at) {
-                        $status = '
-                        <span class="badge bg-success">Read</span>
-                        ';
+                        $status = '<span class="badge bg-success">Read</span>';
                     } else {
-                        $status = '
-                        <span class="badge bg-danger">Unread</span>
-                        ';
+                        $status = '<span class="badge bg-danger">Unread</span>';
                     }
                     return $status;
                 })
+                ->with([
+                    'readNotificationsCount' => $readNotificationsCount,
+                    'unreadNotificationsCount' => $unreadNotificationsCount,
+                ])
                 ->rawColumns(['status'])
                 ->make(true);
         }
@@ -1072,12 +1089,11 @@ class UserController extends Controller
 
         if (!$hasVerification) {
             return redirect()->route('verification')->with('error', 'Please verify your account first.');
-        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+        } elseif ($user->status == 'Blocked' || $user->status == 'Banned') {
             return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
                 $reportedUsers = Report::where('reported_by', Auth::id());
-
                 $query = $reportedUsers->select('reports.*');
 
                 if ($request->type) {
@@ -1088,8 +1104,10 @@ class UserController extends Controller
                     $query->where('reports.status', $request->status);
                 }
 
-                // Total filtered count
-                $totalReportsCount = $query->count();
+                // Clone query for each count
+                $pendingReportsCount = (clone $query)->where('status', 'Pending')->count();
+                $falseReportsCount = (clone $query)->where('status', 'False')->count();
+                $receivedReportsCount = (clone $query)->where('status', 'Received')->count();
 
                 $reportedList = $query->get();
 
@@ -1097,52 +1115,34 @@ class UserController extends Controller
                     ->addIndexColumn()
                     ->editColumn('type', function ($row) {
                         if ($row->type == 'User') {
-                            $type = '
-                            <span class="badge bg-primary">' . $row->type . '</span>
-                            ';
-                        } else if ($row->type == 'Post Task') {
-                            $type = '
-                            <span class="badge bg-secondary">' . $row->type . '</span>
-                            ';
+                            $type = '<span class="badge bg-primary">' . $row->type . '</span>';
+                        } elseif ($row->type == 'Post Task') {
+                            $type = '<span class="badge bg-secondary">' . $row->type . '</span>';
                         } else {
-                            $type = '
-                            <span class="badge bg-info">' . $row->type . '</span>
-                            ';
+                            $type = '<span class="badge bg-info">' . $row->type . '</span>';
                         }
                         return $type;
                     })
                     ->editColumn('user', function ($row) {
-                        return '
-                            <a href="'.route('user.profile', encrypt($row->reported->id)).'" title="'.$row->reported->name.'" class="text-info">
-                                '.$row->reported->name.'
-                        ';
+                        return '<a href="' . route('user.profile', encrypt($row->reported->id)) . '" title="' . $row->reported->name . '" class="text-info">' . $row->reported->name . '</a>';
                     })
                     ->editColumn('created_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->created_at));
                     })
                     ->editColumn('status', function ($row) {
                         if ($row->status == 'Pending') {
-                            $status = '
-                            <span class="badge bg-info">' . $row->status . '</span>
-                            ';
-                        } else if ($row->status == 'False') {
-                            $status = '
-                            <span class="badge bg-danger">' . $row->status . '</span>
-                            ';
+                            $status = '<span class="badge bg-info">' . $row->status . '</span>';
+                        } elseif ($row->status == 'False') {
+                            $status = '<span class="badge bg-danger">' . $row->status . '</span>';
                         } else {
-                            $status = '
-                            <span class="badge bg-success">' . $row->status . '</span>
-                            ';
+                            $status = '<span class="badge bg-success">' . $row->status . '</span>';
                         }
                         return $status;
                     })
                     ->addColumn('action', function ($row) {
-                        $action = '
-                            <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
-                        ';
-                        return $action;
+                        return '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>';
                     })
-                    ->with(['totalReportsCount' => $totalReportsCount])
+                    ->with(['pendingReportsCount' => $pendingReportsCount, 'falseReportsCount' => $falseReportsCount, 'receivedReportsCount' => $receivedReportsCount])
                     ->rawColumns(['type', 'user', 'status', 'action'])
                     ->make(true);
             }

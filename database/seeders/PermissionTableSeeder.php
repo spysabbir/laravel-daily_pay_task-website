@@ -187,7 +187,7 @@ class PermissionTableSeeder extends Seeder
             // WorkedTaskManagement
             ['name' => 'WorkedTaskMenu', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'worked_task_list.pending', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
-            ['name' => 'worked_task_list.checking', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
+            ['name' => 'worked_task_list.approved-rejected', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'worked_task_list.reviewed', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'worked_task.check', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
             // ReportManagement

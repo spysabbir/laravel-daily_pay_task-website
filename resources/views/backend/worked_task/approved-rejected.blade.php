@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Worked Task List - All')
+@section('title', 'Worked Task List - Approved & Rejected')
 
 @section('content')
 <div class="row">
@@ -8,10 +8,11 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Worked Task List - All</h3>
+                    <h3 class="card-title">Worked Task List - Approved & Rejected</h3>
                 </div>
                 <div class="action-btn">
-                    <a href="{{ route('backend.worked_task_list.reviewed') }}" class="btn btn-primary btn-fw">Reviewed List</a>
+                    <a href="{{ route('backend.worked_task_list.reviewed') }}" class="btn btn-warning btn-fw">Reviewed List</a>
+                    <a href="{{ route('backend.worked_task_list.pending') }}" class="btn btn-primary btn-fw">Pending List</a>
                 </div>
             </div>
             <div class="card-body">
@@ -70,7 +71,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.worked_task_list.all') }}",
+                url: "{{ route('backend.worked_task_list.approved-rejected') }}",
                 type: "GET",
                 data: function (d) {
                     d.posted_task_id = $('#filter_posted_task_id').val();

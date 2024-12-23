@@ -9,6 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Notification List</h3>
+                    <h3>Read: <span id="read_notifications_count">0</span>, Unread: <span id="unread_notifications_count">0</span></h3>
                     <p class="card-description text-info">
                         Hi user, You will can see here all notifications. Please contact us if you face any problem.
                     </p>
@@ -16,6 +17,20 @@
                 <a href="{{ route('notification.read.all') }}" class="text-info m-3">Read all notification</a>
             </div>
             <div class="card-body">
+                <div class="filter mb-3">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="form-group">
+                                <label for="filter_status" class="form-label">Status</label>
+                                <select class="form-select filter_data" id="filter_status">
+                                    <option value="">-- Select Status --</option>
+                                    <option value="Unread">Unread</option>
+                                    <option value="Read">Read</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
@@ -55,6 +70,16 @@
             searching: true,
             ajax: {
                 url: "{{ route('notification') }}",
+                type: 'GET',
+                data: function (d) {
+                    d.status = $('#filter_status').val();
+                },
+                dataSrc: function (json) {
+                    // Update total notification count
+                    $('#read_notifications_count').text(json.readNotificationsCount);
+                    $('#unread_notifications_count').text(json.unreadNotificationsCount);
+                    return json.data;
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
@@ -64,6 +89,11 @@
                 { data: 'created_at', name: 'created_at'},
                 { data: 'status', name: 'status'},
             ]
+        });
+
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#allDataTable').DataTable().ajax.reload();
         });
     });
 </script>

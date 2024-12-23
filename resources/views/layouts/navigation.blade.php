@@ -536,9 +536,9 @@
                             <a href="{{ route('backend.worked_task_list.pending') }}" class="nav-link">Pending</a>
                         </li>
                         @endcan
-                        @can('worked_task_list.checking')
+                        @can('worked_task_list.approved-rejected')
                         <li class="nav-item">
-                            <a href="{{ route('backend.worked_task_list.checking') }}" class="nav-link">Checking</a>
+                            <a href="{{ route('backend.worked_task_list.approved-rejected') }}" class="nav-link">Approved & Rejected</a>
                         </li>
                         @endcan
                         @can('worked_task_list.reviewed')

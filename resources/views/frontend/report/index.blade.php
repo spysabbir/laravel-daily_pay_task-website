@@ -9,7 +9,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
                     <h3 class="card-title">Report List</h3>
-                    <h3>Total: <span id="total_reports_count">0</span></h3>
+                    <h3>Pending: <span id="pending_reports_count">0</span>, False: <span id="false_reports_count">0</span>, Received: <span id="received_reports_count">0</span></h3>
                     <p class="card-description text-info">
                         Note: Hi user, This is the report list so when you will report others you will can see this here. Also you will can see here your report feedback from admin panel. Alert: If your report over and over false your account will suspended so do not send false evidence to us for checking. Please contact us if you face any problem.
                     </p>
@@ -105,7 +105,9 @@
                 },
                 dataSrc: function (json) {
                     // Update total report count
-                    $('#total_reports_count').text(json.totalReportsCount);
+                    $('#pending_reports_count').text(json.pendingReportsCount);
+                    $('#false_reports_count').text(json.falseReportsCount);
+                    $('#received_reports_count').text(json.receivedReportsCount);
                     return json.data;
                 }
             },

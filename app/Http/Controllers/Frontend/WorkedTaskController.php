@@ -17,6 +17,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class WorkedTaskController extends Controller
 {
@@ -434,6 +435,14 @@ class WorkedTaskController extends Controller
                             return '<span class="badge bg-info">'. $row->rejectedBy->name .'</span>';
                         }
                     })
+                    ->editColumn('review_send_expired', function ($row) {
+                        $rejectedDate = Carbon::parse($row->rejected_at);
+                        $endDate = $rejectedDate->addHours((int) get_default_settings('task_proof_status_rejected_charge_auto_refund_time'));
+                        if ($endDate < now()) {
+                            return '<span class="badge bg-danger">Expired</span>';
+                        }
+                        return '<span class="badge bg-primary">' . $endDate->format('d M, Y h:i:s A') . '</span>';
+                    })
                     ->addColumn('action', function ($row) {
                         $action = '
                         <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>
@@ -441,7 +450,7 @@ class WorkedTaskController extends Controller
                         return $action;
                     })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['title', 'income_of_each_worker', 'rejected_reason', 'rejected_reason_full', 'rejected_by', 'action'])
+                    ->rawColumns(['title', 'income_of_each_worker', 'rejected_reason', 'rejected_reason_full', 'rejected_by', 'review_send_expired', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.rejected');
@@ -540,11 +549,22 @@ class WorkedTaskController extends Controller
                             </a>
                         ';
                     })
+                    ->editColumn('income_of_each_worker', function ($row) {
+                        return  get_site_settings('site_currency_symbol') . ' ' . $row->postTask->income_of_each_worker;
+                    })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
                     ->editColumn('rejected_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->rejected_at));
+                    })
+                    ->editColumn('reviewed_reason', function ($row) {
+                        $reviewed_reason = Str::limit($row->reviewed_reason,40, '...');
+                        return e($reviewed_reason);
+                    })
+                    ->addColumn('reviewed_reason_full', function ($row) {
+                        $reviewed_reason = nl2br(e($row->reviewed_reason));
+                        return '<span class="badge bg-info my-2">Reason: </span><br>' . $reviewed_reason;
                     })
                     ->editColumn('reviewed_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->reviewed_at));
@@ -556,7 +576,7 @@ class WorkedTaskController extends Controller
                         return $action;
                     })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['title', 'rating', 'created_at', 'rejected_at', 'reviewed_at', 'action'])
+                    ->rawColumns(['title', 'income_of_each_worker', 'created_at', 'rejected_at', 'reviewed_reason', 'reviewed_reason_full', 'reviewed_at', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.reviewed');
