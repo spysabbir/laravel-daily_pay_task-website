@@ -110,9 +110,10 @@ class UserController extends Controller
         $postTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Pending', 'Rejected'])->get();
 
         $canceledTaskIds = PostTask::where('user_id', Auth::id())->where('status', ['Canceled'])->pluck('id')->toArray();
-        $otherTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Canceled'])->pluck('id')->toArray();
+        $otherTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Canceled', 'Rejected'])->pluck('id')->toArray();
         $validPostTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Pending', 'Rejected'])->pluck('id')->toArray();
-        $postTaskChargeTotal = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Pending', 'Rejected'])->sum('total_cost');
+        $postTaskChargeTotal = PostTask::where('user_id', Auth::id())->sum('total_cost');
+        $postRejectedTaskChargeTotal = PostTask::where('user_id', Auth::id())->where('status', 'Rejected')->sum('total_cost');
         $postTaskChargeWaiting = 0;
         $postTaskChargeCanceled = 0;
         $postTaskChargePending = 0;
@@ -131,6 +132,7 @@ class UserController extends Controller
             $postTaskChargeCanceled += $chargePerTask * ($postTaskCanceled->worker_needed - $proofCount) ?? 0;
         }
 
+        $otherTaskIds;
         foreach ($otherTaskIds as $otherTaskId) {
             $postTaskOther = PostTask::find($otherTaskId);
             if (!$postTaskOther) {
@@ -241,7 +243,7 @@ class UserController extends Controller
             'monthly_report' => Report::where('reported_by', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
             'yearly_report' => Report::where('reported_by', Auth::id())->whereYear('created_at', date('Y'))->count(),
             'total_report' => Report::where('reported_by', Auth::id())->count(),
-        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData', 'userStatus', 'postTaskChargeTotal', 'postTaskChargeWaiting', 'postTaskChargeCanceled', 'postTaskChargePending', 'postTaskChargeWorkerPayment', 'postTaskChargeSitePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
+        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData', 'userStatus', 'postTaskChargeTotal', 'postRejectedTaskChargeTotal', 'postTaskChargeWaiting', 'postTaskChargeCanceled', 'postTaskChargePending', 'postTaskChargeWorkerPayment', 'postTaskChargeSitePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
     }
 
     // Profile.............................................................................................................

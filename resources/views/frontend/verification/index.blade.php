@@ -64,7 +64,7 @@
                 <h3 class="card-title">Verification</h3>
                 @if ($verification && $verification->status !== 'Rejected')
                 <p class="text-info">
-                    <strong>Note:</strong> You have already submitted the verification. <br>
+                    <strong>Note:</strong> You have already submitted for verification request. Please wait for the approval.
                 </p>
                 @else
                 <p class="text-warning">

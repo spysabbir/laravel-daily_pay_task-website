@@ -64,7 +64,7 @@ Schedule::call(function () {
 // Task proof status update to Approved
 Schedule::call(function () {
     $now = now();
-    $autoApproveTimeInHours = get_default_settings('task_proof_status_auto_approved_time');
+    $autoApproveTimeInHours = get_default_settings('posted_task_proof_submit_auto_approved_time');
     $proofTasks = ProofTask::where('status', 'Pending')->get();
 
     foreach ($proofTasks as $proofTask) {
@@ -131,7 +131,7 @@ Schedule::call(function () {
 // Task proof status Rejected refund to task owner
 Schedule::call(function () {
     $now = now();
-    $autoRefundTimeInHours = get_default_settings('task_proof_status_rejected_charge_auto_refund_time');
+    $autoRefundTimeInHours = get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time');
     $proofTasks = ProofTask::where('status', 'Rejected')->where('reviewed_at', null)->get();
 
     foreach ($proofTasks as $proofTask) {

@@ -21,7 +21,8 @@ return new class extends Migration
             $table->text('rejected_reason')->nullable();
             $table->integer('rejected_reason_photo')->nullable();
             $table->text('reviewed_reason')->nullable();
-            $table->integer('reviewed_reason_photo')->nullable();
+            $table->decimal('reviewed_charge', 8, 2)->default(0);
+            $table->json('reviewed_reason_photos')->nullable();
             $table->integer('approved_by')->nullable();
             $table->integer('rejected_by')->nullable();
             $table->timestamp('approved_at')->nullable();

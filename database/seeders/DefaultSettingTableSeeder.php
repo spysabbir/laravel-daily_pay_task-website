@@ -32,12 +32,11 @@ class DefaultSettingTableSeeder extends Seeder
             'task_posting_boosting_time_charge' => 5.00, // every 15 minutes
             'task_posting_additional_work_duration_charge' => 2.50, // every day
             'task_posting_min_budget' => 100.00, // every task
-            'task_proof_max_bonus_amount' => 20.00, // every proof
-            'task_proof_monthly_free_review_time' => 30, // times
-            'task_proof_additional_review_charge' => 0.25, // every review
-            'task_proof_status_auto_approved_time' => 72, // hours
-            'task_proof_status_rejected_charge_auto_refund_time' => 72, // hours
-            'user_max_blocked_time' => 3, // times
+            'posted_task_proof_submit_user_max_bonus_amount' => 20.00, // every proof
+            'posted_task_proof_submit_auto_approved_time' => 72, // hours
+            'posted_task_proof_submit_rejected_charge_auto_refund_time' => 24, // hours
+            'rejected_worked_task_review_charge' => 0.25, // every review
+            'user_max_blocked_time_for_banned' => 3, // every banned
         ];
 
         DefaultSetting::create($setting);

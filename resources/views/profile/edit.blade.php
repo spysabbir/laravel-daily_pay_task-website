@@ -87,8 +87,8 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="userName" class="form-label">Full Name <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
-                        <input type="text" class="form-control" id="userName" name="name" value="{{ old('name', $user->name) }}" placeholder="Name" {{ $user->isFrontendUser() && $user->hasVerification('Pending') || $user->hasVerification('Approved') ? 'readonly' : '' }} required>
+                        <label for="fullName" class="form-label">Full Name <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
+                        <input type="text" class="form-control" id="fullName" name="name" value="{{ old('name', $user->name) }}" placeholder="Name" {{ $user->isFrontendUser() && $user->hasVerification('Pending') || $user->hasVerification('Approved') ? 'readonly' : '' }} required>
                         @error('name')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

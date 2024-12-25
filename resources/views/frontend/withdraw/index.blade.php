@@ -82,7 +82,7 @@
                                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                                     </div>
                                                 </div>
-                                                <button type="submit" class="btn btn-primary">Withdraw</button>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
                                             </form>
                                         </div>
                                     </div>

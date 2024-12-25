@@ -73,10 +73,11 @@ class SettingController extends Controller implements HasMiddleware
             'task_posting_boosting_time_charge' => 'required',
             'task_posting_additional_work_duration_charge' => 'required',
             'task_posting_min_budget' => 'required',
-            'task_proof_max_bonus_amount' => 'required',
-            'task_proof_monthly_free_review_time' => 'required',
-            'task_proof_additional_review_charge' => 'required',
-            'user_max_blocked_time' => 'required',
+            'posted_task_proof_submit_user_max_bonus_amount' => 'required',
+            'posted_task_proof_submit_auto_approved_time' => 'required',
+            'posted_task_proof_submit_rejected_charge_auto_refund_time' => 'required',
+            'rejected_worked_task_review_charge' => 'required',
+            'user_max_blocked_time_for_banned' => 'required',
         ],
         [
             'deposit_bkash_account.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
@@ -105,10 +106,11 @@ class SettingController extends Controller implements HasMiddleware
             'task_posting_boosting_time_charge' => $request->task_posting_boosting_time_charge,
             'task_posting_additional_work_duration_charge' => $request->task_posting_additional_work_duration_charge,
             'task_posting_min_budget' => $request->task_posting_min_budget,
-            'task_proof_max_bonus_amount' => $request->task_proof_max_bonus_amount,
-            'task_proof_monthly_free_review_time' => $request->task_proof_monthly_free_review_time,
-            'task_proof_additional_review_charge' => $request->task_proof_additional_review_charge,
-            'user_max_blocked_time' => $request->user_max_blocked_time,
+            'posted_task_proof_submit_user_max_bonus_amount' => $request->posted_task_proof_submit_user_max_bonus_amount,
+            'posted_task_proof_submit_auto_approved_time' => $request->posted_task_proof_submit_auto_approved_time,
+            'posted_task_proof_submit_rejected_charge_auto_refund_time' => $request->posted_task_proof_submit_rejected_charge_auto_refund_time,
+            'rejected_worked_task_review_charge' => $request->rejected_worked_task_review_charge,
+            'user_max_blocked_time_for_banned' => $request->user_max_blocked_time_for_banned,
         ]);
 
         $notification = array(

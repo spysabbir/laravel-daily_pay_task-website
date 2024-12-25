@@ -51,7 +51,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/approved-worked_task-view/{id}', [WorkedTaskController::class, 'approvedWorkedTaskView'])->name('approved.worked_task.view');
     Route::get('/reviewed-worked_task-view/{id}', [WorkedTaskController::class, 'reviewedWorkedTaskView'])->name('reviewed.worked_task.view');
     Route::get('/rejected-worked_task-check/{id}', [WorkedTaskController::class, 'rejectedWorkedTaskCheck'])->name('rejected.worked_task.check');
-    Route::put('/rejected-worked_task-reviewed/{id}', [WorkedTaskController::class, 'rejectedWorkedTaskReviewed'])->name('rejected.worked_task.reviewed');
+    Route::get('/rejected-worked_task-reviewed/{id}', [WorkedTaskController::class, 'rejectedWorkedTaskReviewed'])->name('rejected.worked_task.reviewed');
+    Route::put('/rejected-worked_task-reviewed/send/{id}', [WorkedTaskController::class, 'rejectedWorkedTaskReviewedSend'])->name('rejected.worked_task.reviewed.send');
     // Posted Task
     Route::get('/post_task', [PostedTaskController::class, 'postTask'])->name('post_task');
     Route::get('/post_task-get-sub-category', [PostedTaskController::class, 'postTaskGetSubCategories'])->name('post_task.get.sub.category');

@@ -323,12 +323,13 @@
                 url: url,
                 type: "GET",
                 success: function (response) {
+                    updateBoostingTimeOptions(response.remainingTimeMinutes);
                     $('#post_task_id').val(response.id);
                     $('#income_of_each_worker').text(response.income_of_each_worker);
 
                     // Calculate boosting end time
                     let endTime = new Date(response.boosting_start_at);
-                    endTime.setMinutes(endTime.getMinutes() + response.boosting_time);
+                    endTime.setMinutes(endTime.getMinutes() + parseInt(response.boosting_time, 10));
                     let currentTime = new Date();
                     if (currentTime < endTime) {
                         // Boosting is active
@@ -354,6 +355,33 @@
                 },
             });
         });
+
+        function updateBoostingTimeOptions(remainingTimeMinutes) {
+            const boostingTimeSelect = $('#boosting_time');
+            const allOptions = [
+                { value: 0, text: 'No Additional Boosting Time' },
+                { value: 15, text: '15 Minutes' },
+                { value: 30, text: '30 Minutes' },
+                { value: 45, text: '45 Minutes' },
+                { value: 60, text: '1 Hour' },
+                { value: 120, text: '2 Hours' },
+                { value: 180, text: '3 Hours' },
+                { value: 240, text: '4 Hours' },
+                { value: 300, text: '5 Hours' },
+                { value: 360, text: '6 Hours' },
+            ];
+
+            const maxAllowedTime = Math.min(360, remainingTimeMinutes); // Maximum allowed boosting time is 6 hours
+
+            // Filter options based on the remaining time.
+            const filteredOptions = allOptions.filter(option => option.value <= remainingTimeMinutes);
+
+            // Clear existing options and append filtered options.
+            boostingTimeSelect.empty();
+            filteredOptions.forEach(option => {
+                boostingTimeSelect.append(new Option(option.text, option.value));
+            });
+        }
 
         function startCountdown(endTime, elementSelector) {
             let interval = setInterval(function () {

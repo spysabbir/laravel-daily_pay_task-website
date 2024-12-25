@@ -158,10 +158,10 @@
                         <div class="mb-3">
                             <label for="proof_check_bonus" class="form-label">Bonus <span class="text-info">* Optonal</span></label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="proof_check_bonus" name="bonus" min="0" max="{{ get_default_settings('task_proof_max_bonus_amount') }}" placeholder="Bonus">
+                                <input type="number" class="form-control" id="proof_check_bonus" name="bonus" min="0" max="{{ get_default_settings('posted_task_proof_submit_user_max_bonus_amount') }}" placeholder="Bonus">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
-                            <small class="text-info">The bonus field must not be greater than {{ get_default_settings('task_proof_max_bonus_amount') }} {{ get_site_settings('site_currency_symbol') }}.</small>
+                            <small class="text-info">The bonus field must not be greater than {{ get_default_settings('posted_task_proof_submit_user_max_bonus_amount') }} {{ get_site_settings('site_currency_symbol') }}.</small>
                             <span class="text-danger error-text update_bonus_error"></span>
                         </div>
                     </div>

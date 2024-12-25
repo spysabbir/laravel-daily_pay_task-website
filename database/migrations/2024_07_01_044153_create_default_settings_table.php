@@ -31,12 +31,11 @@ return new class extends Migration
             $table->decimal('task_posting_boosting_time_charge', 10, 2)->nullable();
             $table->decimal('task_posting_additional_work_duration_charge', 10, 2)->nullable();
             $table->decimal('task_posting_min_budget', 10, 2)->nullable();
-            $table->decimal('task_proof_max_bonus_amount', 10, 2)->nullable();
-            $table->integer('task_proof_monthly_free_review_time')->nullable();
-            $table->decimal('task_proof_additional_review_charge', 10, 2)->nullable();
-            $table->integer('task_proof_status_auto_approved_time')->nullable();
-            $table->integer('task_proof_status_rejected_charge_auto_refund_time')->nullable();
-            $table->integer('user_max_blocked_time')->nullable();
+            $table->decimal('posted_task_proof_submit_user_max_bonus_amount', 10, 2)->nullable();
+            $table->integer('posted_task_proof_submit_auto_approved_time')->nullable();
+            $table->integer('posted_task_proof_submit_rejected_charge_auto_refund_time')->nullable();
+            $table->decimal('rejected_worked_task_review_charge', 10, 2)->nullable();
+            $table->integer('user_max_blocked_time_for_banned')->nullable();
             $table->timestamps();
         });
     }

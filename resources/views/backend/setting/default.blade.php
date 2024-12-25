@@ -188,36 +188,49 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="task_proof_max_bonus_amount" class="form-label">Task Proof Max Bonus Amount</label>
+                            <label for="posted_task_proof_submit_user_max_bonus_amount" class="form-label">Posted Task Proof Submit User Max Bonus Amount</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="task_proof_max_bonus_amount" name="task_proof_max_bonus_amount" value="{{ old('task_proof_max_bonus_amount', $defaultSetting->task_proof_max_bonus_amount) }}" placeholder="Task Proof Max Bonus Amount">
+                                <input type="number" class="form-control" id="posted_task_proof_submit_user_max_bonus_amount" name="posted_task_proof_submit_user_max_bonus_amount" value="{{ old('posted_task_proof_submit_user_max_bonus_amount', $defaultSetting->posted_task_proof_submit_user_max_bonus_amount) }}" placeholder="Posted Task Proof Submit User Max Bonus Amount">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
-                            @error('task_proof_max_bonus_amount')
+                            @error('posted_task_proof_submit_user_max_bonus_amount')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="task_proof_monthly_free_review_time" class="form-label">Proof Task Monthly Free Review Time</label>
-                            <input type="number" class="form-control" id="task_proof_monthly_free_review_time" name="task_proof_monthly_free_review_time" value="{{ old('task_proof_monthly_free_review_time', $defaultSetting->task_proof_monthly_free_review_time) }}" placeholder="Proof Task Monthly Free Review Time">
-                            @error('task_proof_monthly_free_review_time')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                        </div><!-- Col -->
-                        <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="task_proof_additional_review_charge" class="form-label">Proof Task Additional Review Charge</label>
+                            <label for="posted_task_proof_submit_auto_approved_time" class="form-label">Posted Task Proof Submit Auto Approved Time</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="task_proof_additional_review_charge" name="task_proof_additional_review_charge" value="{{ old('task_proof_additional_review_charge', $defaultSetting->task_proof_additional_review_charge) }}" placeholder="Proof Task Additional Review Charge">
+                                <input type="number" class="form-control" id="posted_task_proof_submit_auto_approved_time" name="posted_task_proof_submit_auto_approved_time" value="{{ old('posted_task_proof_submit_auto_approved_time', $defaultSetting->posted_task_proof_submit_auto_approved_time) }}" placeholder="Posted Task Proof Submit Auto Approved Time">
                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                             </div>
-                            @error('task_proof_additional_review_charge')
+                            @error('posted_task_proof_submit_auto_approved_time')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="user_max_blocked_time" class="form-label">User Max Blocked Time</label>
-                            <input type="number" class="form-control" id="user_max_blocked_time" name="user_max_blocked_time" value="{{ old('user_max_blocked_time', $defaultSetting->user_max_blocked_time) }}" placeholder="User Max Blocked Time">
-                            @error('user_max_blocked_time')
+                            <label for="posted_task_proof_submit_rejected_charge_auto_refund_time" class="form-label">Posted Task Proof Submit Rejected Charge Auto Refund Time</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="posted_task_proof_submit_rejected_charge_auto_refund_time" name="posted_task_proof_submit_rejected_charge_auto_refund_time" value="{{ old('posted_task_proof_submit_rejected_charge_auto_refund_time', $defaultSetting->posted_task_proof_submit_rejected_charge_auto_refund_time) }}" placeholder="Posted Task Proof Submit Rejected Charge Auto Refund Time">
+                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                            </div>
+                            @error('posted_task_proof_submit_rejected_charge_auto_refund_time')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="rejected_worked_task_review_charge" class="form-label">Rejected Worked Task Review Charge</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="rejected_worked_task_review_charge" name="rejected_worked_task_review_charge" value="{{ old('rejected_worked_task_review_charge', $defaultSetting->rejected_worked_task_review_charge) }}" placeholder="Rejected Worked Task Review Charge">
+                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                            </div>
+                            @error('rejected_worked_task_review_charge')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                        </div><!-- Col -->
+                        <div class="col-lg-3 col-sm-6 mb-3">
+                            <label for="user_max_blocked_time_for_banned" class="form-label">User Max Blocked Time For Banned</label>
+                            <input type="number" class="form-control" id="user_max_blocked_time_for_banned" name="user_max_blocked_time_for_banned" value="{{ old('user_max_blocked_time_for_banned', $defaultSetting->user_max_blocked_time_for_banned) }}" placeholder="User Max Blocked Time For Banned">
+                            @error('user_max_blocked_time_for_banned')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

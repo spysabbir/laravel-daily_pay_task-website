@@ -584,8 +584,26 @@ class PostedTaskController extends Controller
 
     public function runningPostedTaskEdit(string $id)
     {
+
         $postTask = PostTask::where('id', $id)->first();
-        return response()->json($postTask);
+
+        if ($postTask) {
+            $startTime = $postTask->approved_at; // The start time (when approved)
+            $workDurationDays = $postTask->work_duration; // Duration in days
+
+            // Calculate the end time by adding work duration to the start time
+            $endTime = Carbon::parse($startTime)->addDays($workDurationDays);
+
+            $now = now();
+            $remainingTimeMinutes = $endTime->greaterThan($now)
+                ? $now->diffInMinutes($endTime, false)
+                : 0;
+
+            return response()->json([
+                'postTask' => $postTask,
+                'remainingTimeMinutes' => $remainingTimeMinutes,
+            ]);
+        }
     }
 
     public function runningPostedTaskUpdate(Request $request, string $id)
@@ -887,7 +905,7 @@ class PostedTaskController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'status' => 'required|in:Approved,Rejected',
-            'bonus' => 'nullable|numeric|min:0|max:' . get_default_settings('task_proof_max_bonus_amount'),
+            'bonus' => 'nullable|numeric|min:0|max:' . get_default_settings('posted_task_proof_submit_user_max_bonus_amount'),
             'rating' => 'nullable|numeric|min:0|max:5',
             'rejected_reason' => 'required_if:status,Rejected',
             'rejected_reason_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',

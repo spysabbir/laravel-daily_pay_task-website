@@ -620,6 +620,15 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postRejectedTaskChargeTotal, 2) }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-warning">
+                                        <span>Rejected</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWaiting, 2) }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-secondary">
@@ -637,6 +646,19 @@
                                     </p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <h6 class="card-title mb-2">Total Posted Task Proof Submit Charge Status</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
                             <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargePending, 2) }}</h3>
                                 <div class="d-flex align-items-baseline">
@@ -646,33 +668,11 @@
                                     </p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Total Posted Task Charge Status</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
                             <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWorkerPayment, 2) }}</h3>
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWorkerPayment + $postTaskChargeSitePayment, 2) }}</h3>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-success">
-                                        <span>Worker Payment</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeSitePayment, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <span>Site Payment</span>
+                                        <span>Payment</span>
                                         <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>

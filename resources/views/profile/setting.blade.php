@@ -103,7 +103,7 @@
             <div class="card-header">
                 <h6 class="card-title">Blocked Statuses</h6>
                 <p class="text-info">
-                    Note: If your account is blocked maximum {{ get_default_settings('user_max_blocked_time') }} times, eventually your account will be permanently banned.
+                    Note: If your account is blocked maximum {{ get_default_settings('user_max_blocked_time_for_banned') }} times, eventually your account will be permanently banned.
                 </p>
             </div>
             <div class="card-body">

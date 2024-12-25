@@ -437,7 +437,7 @@ class WorkedTaskController extends Controller
                     })
                     ->editColumn('review_send_expired', function ($row) {
                         $rejectedDate = Carbon::parse($row->rejected_at);
-                        $endDate = $rejectedDate->addHours((int) get_default_settings('task_proof_status_rejected_charge_auto_refund_time'));
+                        $endDate = $rejectedDate->addHours((int) get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time'));
                         if ($endDate < now()) {
                             return '<span class="badge bg-danger">Expired</span>';
                         }
@@ -446,6 +446,7 @@ class WorkedTaskController extends Controller
                     ->addColumn('action', function ($row) {
                         $action = '
                         <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs reviewedBtn">Reviewed</button>
                         ';
                         return $action;
                     })
@@ -464,11 +465,18 @@ class WorkedTaskController extends Controller
         return view('frontend.worked_task.rejected_check', compact('proofTask' , 'postTask'));
     }
 
-    public function rejectedWorkedTaskReviewed(Request $request, $id)
+    public function rejectedWorkedTaskReviewed($id)
+    {
+        $proofTask = ProofTask::findOrFail($id);
+        $postTask = PostTask::findOrFail($proofTask->post_task_id);
+        return view('frontend.worked_task.rejected_reviewed', compact('proofTask' , 'postTask'));
+    }
+
+    public function rejectedWorkedTaskReviewedSend(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'reviewed_reason' => 'required',
-            'reviewed_reason_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'reviewed_reason_photos.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -477,35 +485,32 @@ class WorkedTaskController extends Controller
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
-            $reviewedCount = ProofTask::where('user_id', Auth::id())->where('reviewed_at', '!=', null)->whereMonth('reviewed_at', now()->month)->count();
-
-            if ($reviewedCount >= get_default_settings('task_proof_monthly_free_review_time')) {
-                if($request->user()->withdraw_balance < get_default_settings('task_proof_additional_review_charge')){
-                    return response()->json([
-                        'status' => 401,
-                        'error' => 'Insufficient balance in your account to review additional task proof.'
-                    ]);
-                }else{
-                    User::where('id', Auth::id())->update([
-                        'withdraw_balance' => $request->user()->withdraw_balance - get_default_settings('task_proof_additional_review_charge'),
-                    ]);
+            if($request->user()->withdraw_balance < get_default_settings('rejected_worked_task_review_charge')){
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'Insufficient balance in your account to review additional task proof.'
+                ]);
+            }else{
+                User::where('id', Auth::id())->update([
+                    'withdraw_balance' => $request->user()->withdraw_balance - get_default_settings('rejected_worked_task_review_charge'),
+                ]);
+            }
+            $reviewedPhotos = [];
+            $manager = new ImageManager(new Driver());
+            if ($request->hasFile('reviewed_reason_photos')) {
+                foreach ($request->file('reviewed_reason_photos') as $key => $reviewed_reason_photo) {
+                    $reviewed_reason_photo_name = $id . "-" . $request->user()->id . "-proof_photo-".($key+1).".". $reviewed_reason_photo->getClientOriginalExtension();
+                    $image = $manager->read($reviewed_reason_photo);
+                    $image->toJpeg(80)->save(base_path("public/uploads/task_proof_reviewed_reason_photo/").$reviewed_reason_photo_name);
+                    $reviewedPhotos[] = $reviewed_reason_photo_name;
                 }
             }
-
-            $reviewed_reason_photo_name = null;
-            if ($request->file('reviewed_reason_photo')) {
-                $manager = new ImageManager(new Driver());
-                $reviewed_reason_photo_name = $id."-reviewed_reason_photo-".date('YmdHis').".".$request->file('reviewed_reason_photo')->getClientOriginalExtension();
-                $image = $manager->read($request->file('reviewed_reason_photo'));
-                $image->toJpeg(80)->save(base_path("public/uploads/task_proof_reviewed_reason_photo/").$reviewed_reason_photo_name);
-            }
-
 
             $proofTask = ProofTask::findOrFail($id);
 
             $proofTask->status = 'Reviewed';
             $proofTask->reviewed_reason = $request->reviewed_reason;
-            $proofTask->reviewed_reason_photo = $reviewed_reason_photo_name;
+            $proofTask->reviewed_reason_photos = json_encode($reviewedPhotos);
             $proofTask->reviewed_at = now();
             $proofTask->save();
 

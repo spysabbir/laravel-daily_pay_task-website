@@ -71,6 +71,23 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Reviewed Modal -->
+                            <div class="modal fade reviewedModal" tabindex="-1" aria-labelledby="reviewedModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="reviewedModalLabel">Reviewed</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                        </div>
+                                        <div class="modal-body" id="reviewedModalBody">
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </tbody>
                     </table>
                 </div>
@@ -216,6 +233,23 @@
 
                     // Show Modal
                     $('.viewModal').modal('show');
+                },
+            });
+        });
+
+        // Reviewed Data
+        $(document).on('click', '.reviewedBtn', function () {
+            var id = $(this).data('id');
+            var url = "{{ route('rejected.worked_task.reviewed', ":id") }}";
+            url = url.replace(':id', id)
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    $('#reviewedModalBody').html(response);
+
+                    // Show Modal
+                    $('.reviewedModal').modal('show');
                 },
             });
         });
