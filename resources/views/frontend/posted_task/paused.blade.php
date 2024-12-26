@@ -14,13 +14,6 @@
                         Note: Hi user, below tasks list is your paused task. If you pause the task you can be resume the task but if the task is paused by admin and want to resume the task need to contact us. Tasks will automatically removed from here after task work duration expires and get return pending money under our policy wise then tasks will move to canceled folder. Also If you facing any problems please contact us.
                     </p>
                 </div>
-                <div>
-                    <a href="{{ route('posted_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
-                    <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
-                    <a href="{{ route('posted_task.list.running') }}" class="btn btn-info btn-xs m-1">Running List</a>
-                    <a href="{{ route('posted_task.list.canceled') }}" class="btn btn-warning btn-xs m-1">Canceled List</a>
-                    <a href="{{ route('posted_task.list.completed') }}" class="btn btn-success btn-xs m-1">Completed List</a>
-                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

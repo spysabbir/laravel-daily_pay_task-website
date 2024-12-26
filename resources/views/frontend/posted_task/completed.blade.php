@@ -14,13 +14,6 @@
                         Note: Hi user, below tasks list is your completed task. These tasks will be automatically remove from here after 7 days then you can't see anymore. If you facing any problems please contact with us.
                     </p>
                 </div>
-                <div>
-                    <a href="{{ route('posted_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
-                    <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
-                    <a href="{{ route('posted_task.list.running') }}" class="btn btn-info btn-xs m-1">Running List</a>
-                    <a href="{{ route('posted_task.list.canceled') }}" class="btn btn-warning btn-xs m-1">Canceled List</a>
-                    <a href="{{ route('posted_task.list.paused') }}" class="btn btn-secondary btn-xs m-1">Paused List</a>
-                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

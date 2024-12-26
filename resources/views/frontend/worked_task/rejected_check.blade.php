@@ -1,13 +1,13 @@
 <div class="row">
     <div class="col-lg-8">
         <div class="mb-3">
-            <h4>Proof Answer:</h4>
+            <h4 class="mb-2">Proof Answer:</h4>
             <div>
                 {{ $proofTask->proof_answer }}
             </div>
         </div>
         <div class="mb-3">
-            <h4>Proof Image:</h4>
+            <h4 class="mb-2">Proof Image:</h4>
             @if (!json_decode($proofTask->proof_photos))
                 <div class="alert alert-warning">This task does not require any proof photo.</div>
             @else

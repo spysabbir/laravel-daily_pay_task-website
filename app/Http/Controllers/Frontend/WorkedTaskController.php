@@ -370,7 +370,7 @@ class WorkedTaskController extends Controller
         }
     }
 
-    public function approvedWorkedTaskView($id)
+    public function workedTaskViewApproved($id)
     {
         $proofTask = ProofTask::findOrFail($id);
         $postTask = PostTask::findOrFail($proofTask->post_task_id);
@@ -438,15 +438,17 @@ class WorkedTaskController extends Controller
                     ->editColumn('review_send_expired', function ($row) {
                         $rejectedDate = Carbon::parse($row->rejected_at);
                         $endDate = $rejectedDate->addHours((int) get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time'));
-                        if ($endDate < now()) {
+                        if ($row->reviewed_at != null) {
+                            return '<span class="badge bg-success">Already Reviewed</span>';
+                        } else if ($endDate < now()) {
                             return '<span class="badge bg-danger">Expired</span>';
                         }
                         return '<span class="badge bg-primary">' . $endDate->format('d M, Y h:i:s A') . '</span>';
                     })
                     ->addColumn('action', function ($row) {
                         $action = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs reviewedBtn">Reviewed</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Proof Check</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs reviewedBtn">Reviewed Check</button>
                         ';
                         return $action;
                     })
@@ -458,21 +460,21 @@ class WorkedTaskController extends Controller
         }
     }
 
-    public function rejectedWorkedTaskCheck($id)
+    public function workedTaskCheckRejected($id)
     {
         $proofTask = ProofTask::findOrFail($id);
         $postTask = PostTask::findOrFail($proofTask->post_task_id);
         return view('frontend.worked_task.rejected_check', compact('proofTask' , 'postTask'));
     }
 
-    public function rejectedWorkedTaskReviewed($id)
+    public function workedTaskCheckReviewed($id)
     {
         $proofTask = ProofTask::findOrFail($id);
         $postTask = PostTask::findOrFail($proofTask->post_task_id);
-        return view('frontend.worked_task.rejected_reviewed', compact('proofTask' , 'postTask'));
+        return view('frontend.worked_task.reviewed_check', compact('proofTask' , 'postTask'));
     }
 
-    public function rejectedWorkedTaskReviewedSend(Request $request, $id)
+    public function workedTaskReviewedSend(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'reviewed_reason' => 'required',
@@ -480,44 +482,57 @@ class WorkedTaskController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 400,
-                'error' => $validator->errors()->toArray()
-            ]);
-        } else {
-            if($request->user()->withdraw_balance < get_default_settings('rejected_worked_task_review_charge')){
-                return response()->json([
-                    'status' => 401,
-                    'error' => 'Insufficient balance in your account to review additional task proof.'
-                ]);
-            }else{
-                User::where('id', Auth::id())->update([
-                    'withdraw_balance' => $request->user()->withdraw_balance - get_default_settings('rejected_worked_task_review_charge'),
-                ]);
-            }
-            $reviewedPhotos = [];
-            $manager = new ImageManager(new Driver());
-            if ($request->hasFile('reviewed_reason_photos')) {
-                foreach ($request->file('reviewed_reason_photos') as $key => $reviewed_reason_photo) {
-                    $reviewed_reason_photo_name = $id . "-" . $request->user()->id . "-proof_photo-".($key+1).".". $reviewed_reason_photo->getClientOriginalExtension();
-                    $image = $manager->read($reviewed_reason_photo);
-                    $image->toJpeg(80)->save(base_path("public/uploads/task_proof_reviewed_reason_photo/").$reviewed_reason_photo_name);
-                    $reviewedPhotos[] = $reviewed_reason_photo_name;
+            $errors = $validator->errors()->toArray();
+            $formattedErrors = [];
+
+            foreach ($errors as $key => $messages) {
+                if (strpos($key, 'reviewed_reason_photos.') !== false) {
+                    $index = explode('.', $key)[1]; // Extract the index
+                    $formattedMessage = preg_replace('/reviewed_reason_photos\.\d+/', 'reviewed_reason_photos', $messages[0]);
+                    $formattedErrors["reviewed_reason_photos_$index"] = $formattedMessage; // Use the corrected message
+                } else {
+                    $formattedErrors[$key] = $messages[0];
                 }
             }
 
-            $proofTask = ProofTask::findOrFail($id);
+            return response()->json(['status' => 400, 'error' => $formattedErrors]);
+        }
 
-            $proofTask->status = 'Reviewed';
-            $proofTask->reviewed_reason = $request->reviewed_reason;
-            $proofTask->reviewed_reason_photos = json_encode($reviewedPhotos);
-            $proofTask->reviewed_at = now();
-            $proofTask->save();
-
+        // Deduct balance logic
+        if ($request->user()->withdraw_balance < get_default_settings('rejected_worked_task_review_charge')) {
             return response()->json([
-                'status' => 200,
+                'status' => 401,
+                'error' => 'Insufficient balance in your account to review the proof.'
             ]);
         }
+
+        User::where('id', Auth::id())->update([
+            'withdraw_balance' => $request->user()->withdraw_balance - get_default_settings('rejected_worked_task_review_charge'),
+        ]);
+
+        $reviewedPhotos = [];
+        $manager = new ImageManager(new Driver());
+        if ($request->hasFile('reviewed_reason_photos')) {
+            foreach ($request->file('reviewed_reason_photos') as $key => $reviewed_reason_photo) {
+                $reviewed_reason_photo_name = $id . "-" . $request->user()->id . "-proof_photo-".($key+1).".". $reviewed_reason_photo->getClientOriginalExtension();
+                $image = $manager->read($reviewed_reason_photo);
+                $image->toJpeg(80)->save(base_path("public/uploads/task_proof_reviewed_reason_photo/").$reviewed_reason_photo_name);
+                $reviewedPhotos[] = $reviewed_reason_photo_name;
+            }
+        }
+
+        $proofTask = ProofTask::findOrFail($id);
+        $proofTask->update([
+            'status' => 'Reviewed',
+            'reviewed_reason' => $request->reviewed_reason,
+            'reviewed_charge' => get_default_settings('rejected_worked_task_review_charge'),
+            'reviewed_reason_photos' => json_encode($reviewedPhotos),
+            'reviewed_at' => now(),
+        ]);
+
+        return response()->json([
+            'status' => 200,
+        ]);
     }
 
     public function workedTaskListReviewed(Request $request)
@@ -576,7 +591,8 @@ class WorkedTaskController extends Controller
                     })
                     ->addColumn('action', function ($row) {
                         $action = '
-                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-success btn-xs viewBtn">Proof Check</button>
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs reviewedBtn">Reviewed Check</button>
                         ';
                         return $action;
                     })
@@ -586,12 +602,5 @@ class WorkedTaskController extends Controller
             }
             return view('frontend.worked_task.reviewed');
         }
-    }
-
-    public function reviewedWorkedTaskView($id)
-    {
-        $proofTask = ProofTask::findOrFail($id);
-        $postTask = PostTask::findOrFail($proofTask->post_task_id);
-        return view('frontend.worked_task.reviewed_check', compact('proofTask' , 'postTask'));
     }
 }

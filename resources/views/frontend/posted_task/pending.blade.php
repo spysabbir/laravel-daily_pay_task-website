@@ -14,13 +14,6 @@
                         Note: Hi user, below tasks list is your posted task and waiting for approval from admin. If your task is approved you will see it in the running folder and if it is rejected then you will see it in the rejected folder. If your task is here more than 48 hours then contact us. Also please contact us if you face any problem, thanks.
                     </p>
                 </div>
-                <div>
-                    <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
-                    <a href="{{ route('posted_task.list.running') }}" class="btn btn-info btn-xs m-1">Running List</a>
-                    <a href="{{ route('posted_task.list.canceled') }}" class="btn btn-warning btn-xs m-1">Canceled List</a>
-                    <a href="{{ route('posted_task.list.paused') }}" class="btn btn-secondary btn-xs m-1">Paused List</a>
-                    <a href="{{ route('posted_task.list.completed') }}" class="btn btn-success btn-xs m-1">Completed List</a>
-                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

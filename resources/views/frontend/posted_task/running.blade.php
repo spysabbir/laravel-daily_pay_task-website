@@ -14,13 +14,6 @@
                         Note: Hi user, below tasks list is your running task. You will can boost and update your task before your task work duration expires. If you cancel your task will get return pending money under our policy wise. Tasks will automatically removed from here when task work duration expires then tasks will move to completed folder. Please contact us if you face any problem.
                     </p>
                 </div>
-                <div>
-                    <a href="{{ route('posted_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
-                    <a href="{{ route('posted_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
-                    <a href="{{ route('posted_task.list.canceled') }}" class="btn btn-warning btn-xs m-1">Canceled List</a>
-                    <a href="{{ route('posted_task.list.paused') }}" class="btn btn-secondary btn-xs m-1">Paused List</a>
-                    <a href="{{ route('posted_task.list.completed') }}" class="btn btn-success btn-xs m-1">Completed List</a>
-                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

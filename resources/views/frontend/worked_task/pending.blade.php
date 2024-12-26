@@ -14,11 +14,6 @@
                         Note: Hi user, below tasks list is your worked task and waiting for approval from buyer. If your task is approved you will see it in the Approved folder and if it is rejected then you will see it in the rejected folder. If your task is here more than 72 hours then contact us. Tasks will removed from below list after 7 days. Also please contact us if you face any problem.
                     </p>
                 </div>
-                <div>
-                    <a href="{{ route('worked_task.list.approved') }}" class="btn btn-success btn-xs m-1">Approved List</a>
-                    <a href="{{ route('worked_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
-                    <a href="{{ route('worked_task.list.reviewed') }}" class="btn btn-warning btn-xs m-1">Reviewed List</a>
-                </div>
             </div>
             <div class="card-body">
                 <div class="filter mb-3 border p-2">

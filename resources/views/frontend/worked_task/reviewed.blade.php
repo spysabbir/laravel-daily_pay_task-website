@@ -14,11 +14,6 @@
                         Note: Hi worker, below tasks list is waiting for approval from admin panel. If your review is approved you will see it in the Approved folder and if it is rejected then you will see it in the rejected folder. After review checking you will get notification from admin panel. If your review is here more than 48 hours then contact us. Tasks will removed from below list after 7 days. Also please contact us if you face any problem.
                     </p>
                 </div>
-                <div>
-                    <a href="{{ route('worked_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
-                    <a href="{{ route('worked_task.list.approved') }}" class="btn btn-success btn-xs m-1">Approved List</a>
-                    <a href="{{ route('worked_task.list.rejected') }}" class="btn btn-danger btn-xs m-1">Rejected List</a>
-                </div>
             </div>
             <div class="card-body">
                 <div class="filter mb-3 border p-2">
@@ -61,6 +56,23 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                         </div>
                                         <div class="modal-body" id="modalBody">
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Reviewed Modal -->
+                            <div class="modal fade reviewedModal" tabindex="-1" aria-labelledby="reviewedModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="reviewedModalLabel">Reviewed</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                        </div>
+                                        <div class="modal-body" id="reviewedModalBody">
 
                                         </div>
                                         <div class="modal-footer">
@@ -204,7 +216,7 @@
         // Check Data
         $(document).on('click', '.viewBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('reviewed.worked_task.view', ":id") }}";
+            var url = "{{ route('worked_task.check.rejected', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -216,6 +228,42 @@
                     $('.viewModal').modal('show');
                 },
             });
+        });
+
+        // Check Reviewed Data
+        $(document).on('click', '.reviewedBtn', function () {
+            var id = $(this).data('id');
+            var url = "{{ route('worked_task.check.reviewed', ":id") }}";
+            url = url.replace(':id', id)
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    $('#reviewedModalBody').html(response);
+
+                    // Destroy the existing LightGallery instance if it exists
+                    var lightGalleryInstance = $('#single-lightgallery').data('lightGallery');
+                    if (lightGalleryInstance) {
+                        lightGalleryInstance.destroy(true); // Pass `true` to completely remove DOM bindings
+                    }
+
+                    // Reinitialize LightGallery
+                    $('#single-lightgallery').lightGallery({
+                        share: false,
+                        showThumbByDefault: false,
+                        hash: false,
+                        mousewheel: false,
+                    });
+
+                    // Show Modal
+                    $('.reviewedModal').modal('show');
+                },
+            });
+        });
+        $(document).on('onCloseAfter.lg', '#single-lightgallery', function () {
+            // Remove hash fragment from the URL
+            const url = window.location.href.split('#')[0];
+            window.history.replaceState(null, null, url);
         });
 
         // Set Date Range

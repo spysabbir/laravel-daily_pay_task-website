@@ -25777,6 +25777,10 @@ div.tox .tox-dialog__body {
     z-index: 1051 !important;
 }
 
+.reviewedModal {
+    z-index: 1051 !important;
+}
+
 .lg-backdrop {
     z-index: 1052 !important;
 }

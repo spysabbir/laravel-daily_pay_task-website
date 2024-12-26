@@ -14,11 +14,6 @@
                         Note: Hi user, Below tasks list has been rejected by buyer or admin panel. If buyer rejects your proof you can send us to review your proof within 24 hours then 10 rupees will be deducted from your withdrawal balance. If you send the task proof to us for review, we will check your task proof. You will be notified after we check your review. If your review proof is correct then you will get refund of review cost in your withdrawal balance but if your review proof is not correct then you will not get refund of review cost. Tasks will be removed from the below list after 7 days. Please contact us if you face any problems.
                     </p>
                 </div>
-                <div>
-                    <a href="{{ route('worked_task.list.pending') }}" class="btn btn-primary btn-xs m-1">Pending List</a>
-                    <a href="{{ route('worked_task.list.approved') }}" class="btn btn-success btn-xs m-1">Approved List</a>
-                    <a href="{{ route('worked_task.list.reviewed') }}" class="btn btn-warning btn-xs m-1">Reviewed List</a>
-                </div>
             </div>
             <div class="card-body">
                 <div class="filter mb-3 border p-2">
@@ -47,7 +42,7 @@
                                 <th>Rejected Date</th>
                                 <th>Rejected By</th>
                                 <th>
-                                    Review Send Expired
+                                    Review Send Expired Date
                                 </th>
                                 <th>Action</th>
                             </tr>
@@ -223,7 +218,7 @@
         // Check Data
         $(document).on('click', '.viewBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('rejected.worked_task.check', ":id") }}";
+            var url = "{{ route('worked_task.check.rejected', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -237,16 +232,30 @@
             });
         });
 
-        // Reviewed Data
+        // Check Reviewed Data
         $(document).on('click', '.reviewedBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('rejected.worked_task.reviewed', ":id") }}";
+            var url = "{{ route('worked_task.check.reviewed', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
                     $('#reviewedModalBody').html(response);
+
+                    // Destroy the existing LightGallery instance if it exists
+                    var lightGalleryInstance = $('#single-lightgallery').data('lightGallery');
+                    if (lightGalleryInstance) {
+                        lightGalleryInstance.destroy(true); // Pass `true` to completely remove DOM bindings
+                    }
+
+                    // Reinitialize LightGallery
+                    $('#single-lightgallery').lightGallery({
+                        share: false,
+                        showThumbByDefault: false,
+                        hash: false,
+                        mousewheel: false,
+                    });
 
                     // Show Modal
                     $('.reviewedModal').modal('show');
