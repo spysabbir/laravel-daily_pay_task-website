@@ -79,10 +79,9 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <div class="text">
                     <h3 class="card-title">Proof Task List</h3>
-                    <h3>Total Reviewed: <span id="reviewed_proof_tasks_count">0</span></h3>
-                </div>
+                    <h4>Total Reviewed: <span id="reviewed_proof_tasks_count">0</span></h4>
+                    <h4>Running Reviewed: <span id="running_reviewed_proof_tasks_count">0</span></h4>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -133,6 +132,23 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Reviewed Modal -->
+                            <div class="modal fade reviewedModal" tabindex="-1" aria-labelledby="reviewedModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="reviewedModalLabel">Reviewed</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                        </div>
+                                        <div class="modal-body" id="reviewedModalBody">
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </tbody>
                     </table>
                 </div>
@@ -166,6 +182,7 @@
                 dataSrc: function (json) {
                     // Update total count
                     $('#reviewed_proof_tasks_count').text(json.reviewedProofTasksCount);
+                    $('#running_reviewed_proof_tasks_count').text(json.reviewedProofTasksCountRunning);
                     return json.data;
                 }
             },
@@ -188,7 +205,7 @@
         // Check Data
         $(document).on('click', '.viewBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.worked_task_check', ":id") }}";
+            var url = "{{ route('backend.worked_task.proof_check', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,
@@ -214,6 +231,38 @@
                 },
             });
         });
+
+        // Check Reviewed Data
+        $(document).on('click', '.reviewedBtn', function () {
+            var id = $(this).data('id');
+            var url = "{{ route('backend.worked_task.reviewed_check', ":id") }}";
+            url = url.replace(':id', id)
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    $('#reviewedModalBody').html(response);
+
+                    // Destroy the existing LightGallery instance if it exists
+                    var lightGalleryInstance = $('#single-lightgallery-reviewed').data('lightGallery');
+                    if (lightGalleryInstance) {
+                        lightGalleryInstance.destroy(true); // Pass `true` to completely remove DOM bindings
+                    }
+
+                    // Reinitialize LightGallery
+                    $('#single-lightgallery-reviewed').lightGallery({
+                        share: false,
+                        showThumbByDefault: false,
+                        hash: false,
+                        mousewheel: false,
+                    });
+
+                    // Show Modal
+                    $('.reviewedModal').modal('show');
+                },
+            });
+        });
+
         $(document).on('onCloseAfter.lg', '#single-lightgallery', function () {
             // Remove hash fragment from the URL
             const url = window.location.href.split('#')[0];

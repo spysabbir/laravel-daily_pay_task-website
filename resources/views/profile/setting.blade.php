@@ -70,8 +70,8 @@
     <div class="col-xl-9 col-lg-12 grid-margin">
         <div class="card rounded mb-3">
             <div class="card-header">
-                <h6 class="card-title mb-0">Ip Address</h6>
-                <small class="text-muted">Note: latest 5 IP addresses are shown here.</small>
+                <h6 class="card-title mb-0">Ip Address Statuses</h6>
+                <small class="text-muted">Note: Last 5 IP addresses are shown here.</small>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -79,7 +79,7 @@
                         <thead>
                             <tr>
                                 <th>Ip</th>
-                                <th>Device</th>
+                                <th>Device Type</th>
                                 <th>Updated Time</th>
                             </tr>
                         </thead>
@@ -87,7 +87,7 @@
                             @foreach ($userDetails as $userDetail)
                             <tr>
                                 <td>{{ $userDetail->ip }}</td>
-                                <td>{{ $userDetail->device }}</td>
+                                <td>{{ $userDetail->device_type }}</td>
                                 <td>{{ date('j M, Y  h:i:s A', strtotime($userDetail->updated_at)) }}</td>
                             </tr>
                             @endforeach
@@ -151,7 +151,7 @@
                     @method('delete')
 
                     <p class="text-light mb-3">
-                        Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.
+                        Hi User, If you delete this account, you will not be able to reopen this account and this account details and balance will be permanently deleted. Please enter the account password to confirm that you want to permanently delete this account then press the Delete Account button. Contact us if you face any problems.
                     </p>
 
                     <div class="mb-3">

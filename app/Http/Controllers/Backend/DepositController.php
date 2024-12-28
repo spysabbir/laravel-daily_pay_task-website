@@ -40,6 +40,9 @@ class DepositController extends Controller implements HasMiddleware
 
             $query->select('deposits.*')->orderBy('created_at', 'desc');
 
+            // Clone the query for counts
+            $totalDepositsCount = (clone $query)->count();
+
             $pendingRequest = $query->get();
 
             return DataTables::of($pendingRequest)
@@ -82,6 +85,9 @@ class DepositController extends Controller implements HasMiddleware
                     ';
                 return $btn;
                 })
+                ->with([
+                    'totalDepositsCount' => $totalDepositsCount,
+                ])
                 ->rawColumns(['user_name', 'method', 'amount', 'payable_amount', 'created_at', 'action'])
                 ->make(true);
         }
@@ -218,6 +224,9 @@ class DepositController extends Controller implements HasMiddleware
 
             $query->select('deposits.*')->orderBy('approved_at', 'desc');
 
+            // Clone the query for counts
+            $totalDepositsCount = (clone $query)->count();
+
             $approvedData = $query->get();
 
             return DataTables::of($approvedData)
@@ -288,6 +297,9 @@ class DepositController extends Controller implements HasMiddleware
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
+                ->with([
+                    'totalDepositsCount' => $totalDepositsCount,
+                ])
                 ->rawColumns(['user_name', 'method', 'number', 'transaction_id', 'amount','payable_amount', 'approved_by', 'approved_at'])
                 ->make(true);
         }

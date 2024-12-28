@@ -36,7 +36,8 @@ class TaskController extends Controller implements HasMiddleware
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task_list.pending') , only:['workedTaskListPending', 'pendingWorkedTaskView']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task_list.approved-rejected') , only:['workedTaskListApprovedRejected', 'approvedRejectedWorkedTaskView']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task_list.reviewed') , only:['workedTaskListReviewed', 'reviewedWorkedTaskView']),
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task.check') , only:['workedTaskCheck', 'workedTaskCheckUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task.proof_check') , only:['workedTaskProofCheck', 'workedTaskCheckUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('worked_task.reviewed_check') , only:['workedTaskReviewedCheck', 'workedTaskCheckUpdate']),
         ];
     }
 
@@ -56,6 +57,9 @@ class TaskController extends Controller implements HasMiddleware
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
+            // Clone the query for counts
+            $totalPostedTasksCount = (clone $query)->count();
+
             $pendingRequest = $query->get();
 
             return DataTables::of($pendingRequest)
@@ -73,6 +77,9 @@ class TaskController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
+                ->with([
+                    'totalPostedTasksCount' => $totalPostedTasksCount,
+                ])
                 ->rawColumns(['user', 'created_at', 'action'])
                 ->make(true);
         }
@@ -99,6 +106,9 @@ class TaskController extends Controller implements HasMiddleware
             }
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+
+            // Clone the query for counts
+            $totalPostedTasksCount = (clone $query)->count();
 
             $taskList = $query->get();
 
@@ -128,6 +138,9 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                 return $btn;
                 })
+                ->with([
+                    'totalPostedTasksCount' => $totalPostedTasksCount,
+                ])
                 ->rawColumns(['user', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
@@ -154,6 +167,9 @@ class TaskController extends Controller implements HasMiddleware
             }
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+
+            // Clone the query for counts
+            $totalPostedTasksCount = (clone $query)->count();
 
             $taskList = $query->get();
 
@@ -217,6 +233,9 @@ class TaskController extends Controller implements HasMiddleware
 
                     return $viewBtn . ' ' . $canceledBtn . ' ' . $pausedBtn;
                 })
+                ->with([
+                    'totalPostedTasksCount' => $totalPostedTasksCount,
+                ])
                 ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'approved_at', 'action'])
                 ->make(true);
         }
@@ -243,6 +262,9 @@ class TaskController extends Controller implements HasMiddleware
             }
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+
+            // Clone the query for counts
+            $totalPostedTasksCount = (clone $query)->count();
 
             $taskList = $query->get();
 
@@ -304,6 +326,9 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                 return $btn;
                 })
+                ->with([
+                    'totalPostedTasksCount' => $totalPostedTasksCount,
+                ])
                 ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'canceled_at', 'canceled_by', 'action'])
                 ->make(true);
         }
@@ -330,6 +355,9 @@ class TaskController extends Controller implements HasMiddleware
             }
 
             $query->select('post_tasks.*')->orderBy('paused_at', 'desc');
+
+            // Clone the query for counts
+            $totalPostedTasksCount = (clone $query)->count();
 
             $taskList = $query->get();
 
@@ -397,6 +425,9 @@ class TaskController extends Controller implements HasMiddleware
 
                     return $viewBtn . ' ' . $pausedBtn;
                 })
+                ->with([
+                    'totalPostedTasksCount' => $totalPostedTasksCount,
+                ])
                 ->rawColumns(['user', 'proof_submitted', 'proof_status', 'approved_at', 'paused_at', 'paused_by', 'action'])
                 ->make(true);
         }
@@ -423,6 +454,9 @@ class TaskController extends Controller implements HasMiddleware
             }
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+
+            // Clone the query for counts
+            $totalPostedTasksCount = (clone $query)->count();
 
             $taskList = $query->get();
 
@@ -456,6 +490,9 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                 return $btn;
                 })
+                ->with([
+                    'totalPostedTasksCount' => $totalPostedTasksCount,
+                ])
                 ->rawColumns(['user', 'worker_needed', 'approved_at', 'completed_at', 'action'])
                 ->make(true);
         }
@@ -639,6 +676,9 @@ class TaskController extends Controller implements HasMiddleware
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
+            // Clone the query for counts
+            $totalPostedTasksCount = (clone $query)->count();
+
             $taskList = $query->get();
 
             return DataTables::of($taskList)
@@ -664,6 +704,9 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                     return $btn;
                 })
+                ->with([
+                    'totalPostedTasksCount' => $totalPostedTasksCount,
+                ])
                 ->rawColumns(['proof_submitted', 'pending_count', 'action'])
                 ->make(true);
         }
@@ -713,7 +756,7 @@ class TaskController extends Controller implements HasMiddleware
                     return $row->created_at->format('d M Y h:i A');
                 })
                 ->addColumn('action', function ($row) {
-                    $viewPermission = auth()->user()->can('worked_task.check');
+                    $viewPermission = auth()->user()->can('worked_task.proof_check');
 
                     $viewBtn = $viewPermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>'
@@ -747,6 +790,9 @@ class TaskController extends Controller implements HasMiddleware
             }
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
+
+            // Clone the query for counts
+            $totalPostedTasksCount = (clone $query)->count();
 
             $taskList = $query->get();
 
@@ -783,6 +829,9 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                     return $btn;
                 })
+                ->with([
+                    'totalPostedTasksCount' => $totalPostedTasksCount,
+                ])
                 ->rawColumns(['proof_submitted', 'proof_status', 'action'])
                 ->make(true);
         }
@@ -870,7 +919,7 @@ class TaskController extends Controller implements HasMiddleware
                     return $checked_by;
                 })
                 ->addColumn('action', function ($row) {
-                    $viewPermission = auth()->user()->can('worked_task.check');
+                    $viewPermission = auth()->user()->can('worked_task.proof_check');
 
                     $viewBtn = $viewPermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>'
@@ -906,6 +955,9 @@ class TaskController extends Controller implements HasMiddleware
 
             $query->select('post_tasks.*')->orderBy('created_at', 'desc');
 
+            // Clone the query for counts
+            $totalPostedTasksCount = (clone $query)->count();
+
             $taskList = $query->get();
 
             return DataTables::of($taskList)
@@ -931,6 +983,9 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                     return $btn;
                 })
+                ->with([
+                    'totalPostedTasksCount' => $totalPostedTasksCount,
+                ])
                 ->rawColumns(['proof_submitted', 'reviewed_count', 'action'])
                 ->make(true);
         }
@@ -952,7 +1007,8 @@ class TaskController extends Controller implements HasMiddleware
 
             $query->select('proof_tasks.*');
 
-            $reviewedProofTasksCount = $query->count();
+            $reviewedProofTasksCount = ProofTask::where('post_task_id', decrypt($id))->where('reviewed_at', '!=', null)->count();
+            $reviewedProofTasksCountRunning = $query->count();
 
             $proofTasks = $query->get();
 
@@ -982,16 +1038,24 @@ class TaskController extends Controller implements HasMiddleware
                     return $checked_at;
                 })
                 ->addColumn('action', function ($row) {
-                    $viewPermission = auth()->user()->can('worked_task.check');
+                    $viewPermission = auth()->user()->can('worked_task.proof_check');
+                    $reviewedPermission = auth()->user()->can('worked_task.reviewed_check');
 
-                    $viewBtn = $viewPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">Check</button>'
-                        : '';
+                    $action = '';
 
-                    return $viewBtn;
+                    if ($viewPermission) {
+                        $action .= '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs mx-1 viewBtn">Proof Check</button>';
+                    }
+
+                    if ($reviewedPermission) {
+                        $action .= '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs mx-1 reviewedBtn">Reviewed Check</button>';
+                    }
+
+                    return $action;
                 })
                 ->with([
-                    'reviewedProofTasksCount' => $reviewedProofTasksCount
+                    'reviewedProofTasksCount' => $reviewedProofTasksCount,
+                    'reviewedProofTasksCountRunning' => $reviewedProofTasksCountRunning
                 ])
                 ->rawColumns(['id', 'user','status', 'created_at', 'reviewed_at', 'action'])
                 ->make(true);
@@ -1002,10 +1066,18 @@ class TaskController extends Controller implements HasMiddleware
         return view('backend.worked_task.reviewed_list', compact('postTask', 'proofSubmitted'));
     }
 
-    public function workedTaskCheck($id)
+    public function workedTaskProofCheck($id)
     {
         $proofTask = ProofTask::findOrFail($id);
-        return view('backend.worked_task.check', compact('proofTask'));
+        $postTask = PostTask::findOrFail($proofTask->post_task_id);
+        return view('backend.worked_task.proof_check', compact('proofTask', 'postTask'));
+    }
+
+    public function workedTaskReviewedCheck($id)
+    {
+        $proofTask = ProofTask::findOrFail($id);
+        $postTask = PostTask::findOrFail($proofTask->post_task_id);
+        return view('backend.worked_task.reviewed_check', compact('proofTask', 'postTask'));
     }
 
     public function workedTaskCheckUpdate(Request $request, $id)
@@ -1048,8 +1120,10 @@ class TaskController extends Controller implements HasMiddleware
                 $proofTask->rejected_by = auth()->user()->id;
             }else{
                 $proofTaskUser->update([
-                    'withdraw_balance' => $proofTaskUser->withdraw_balance + $postTask->income_of_each_worker,
+                    'withdraw_balance' => $proofTaskUser->withdraw_balance + $postTask->income_of_each_worker + $proofTask->reviewed_charge,
                 ]);
+
+                $proofTask->reviewed_charge = 0;
 
                 $proofTask->approved_at = now();
                 $proofTask->approved_by = auth()->user()->id;

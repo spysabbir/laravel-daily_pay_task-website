@@ -60,7 +60,7 @@ class UserController extends Controller implements HasMiddleware
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
 
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $viewBtn = '<a href="' . route('backend.user.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>';
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';
@@ -107,7 +107,7 @@ class UserController extends Controller implements HasMiddleware
                 ->addColumn('action', function ($row) {
                     $deletePermission = auth()->user()->can('user.destroy');
 
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $viewBtn = '<a href="' . route('backend.user.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>';
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';
@@ -152,7 +152,7 @@ class UserController extends Controller implements HasMiddleware
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
 
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $viewBtn = '<a href="' . route('backend.user.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>';
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';
@@ -200,7 +200,7 @@ class UserController extends Controller implements HasMiddleware
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
 
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $viewBtn = '<a href="' . route('backend.user.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>';
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';

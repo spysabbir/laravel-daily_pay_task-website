@@ -189,7 +189,8 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'worked_task_list.pending', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'worked_task_list.approved-rejected', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'worked_task_list.reviewed', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
-            ['name' => 'worked_task.check', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
+            ['name' => 'worked_task.proof_check', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
+            ['name' => 'worked_task.reviewed_check', 'group_name' => 'WorkedTaskManagement', 'guard_name' => 'web'],
             // ReportManagement
             ['name' => 'ReportMenu', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
             ['name' => 'report.pending', 'group_name' => 'ReportManagement', 'guard_name' => 'web'],
@@ -202,7 +203,8 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'support.reply', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
             // ContactManagement
             ['name' => 'ContactMenu', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
-            ['name' => 'contact.index', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
+            ['name' => 'contact.unred', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
+            ['name' => 'contact.read', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
             ['name' => 'contact.delete', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
             // SubscriberManagement
             ['name' => 'SubscriberMenu', 'group_name' => 'SubscriberManagement', 'guard_name' => 'web'],

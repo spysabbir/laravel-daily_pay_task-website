@@ -8,8 +8,8 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Deposit Request (Pending)</h3>
+                <h3>Total: <span id="total_deposits_count">0</span></h3>
                 <div class="action-btn">
-                    <a href="{{ route('backend.deposit.request.approved') }}" class="btn btn-success">Approved List</a>
                     @can('deposit.request.rejected')
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".rejectedData">
                         Rejected Request
@@ -140,6 +140,11 @@
                 data: function (e) {
                     e.method = $('#filter_method').val();
                     e.user_id = $('#filter_user_id').val();
+                },
+                dataSrc: function (json) {
+                    // Update total deposit count
+                    $('#total_deposits_count').text(json.totalDepositsCount);
+                    return json.data;
                 }
             },
             columns: [

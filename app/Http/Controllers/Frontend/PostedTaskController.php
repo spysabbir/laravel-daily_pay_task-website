@@ -305,7 +305,7 @@ class PostedTaskController extends Controller
                         ->where(function ($query) {
                             $query->where(function ($query) {
                                     $query->whereNull('reviewed_at')
-                                        ->where('rejected_at', '<=', now()->subHours(72));
+                                        ->where('rejected_at', '<=', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
                                 })
                                 ->orWhereNotNull('reviewed_at');
                         })->count();
@@ -316,7 +316,7 @@ class PostedTaskController extends Controller
                                 ->orWhere(function ($query) {
                                     $query->where('status', 'Rejected')
                                             ->whereNull('reviewed_at')
-                                            ->where('rejected_at', '>', now()->subHours(72));
+                                            ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
                                 });
                         })->count();
         return view('frontend.posted_task.view', compact('postTask', 'proofSubmitted', 'pendingProof', 'approvedProof', 'refundProof', 'holdProof'));
@@ -529,14 +529,14 @@ class PostedTaskController extends Controller
                         $approvedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Approved')->count();
                         $refundProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')
                             ->where(function ($query) {
-                                $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(72))
+                                $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')))
                                     ->orWhereNotNull('reviewed_at');
                             })->count();
                         $holdProof = ProofTask::where('post_task_id', $row->id)
                             ->where(function ($query) {
                                 $query->where('status', 'Reviewed')
                                     ->orWhere('status', 'Rejected')->whereNull('reviewed_at')
-                                    ->where('rejected_at', '>', now()->subHours(72));
+                                    ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
                             })->count();
 
                         $proofStatus = '';
@@ -767,7 +767,7 @@ class PostedTaskController extends Controller
             ->where(function ($query) {
                 $query->where(function ($query) {
                     $query->whereNull('reviewed_at')
-                        ->where('rejected_at', '<=', now()->subHours(72));
+                        ->where('rejected_at', '<=', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
                 })
                 ->orWhereNotNull('reviewed_at');
             })->count();
@@ -777,7 +777,7 @@ class PostedTaskController extends Controller
                     ->orWhere(function ($query) {
                         $query->where('status', 'Rejected')
                             ->whereNull('reviewed_at')
-                            ->where('rejected_at', '>', now()->subHours(72));
+                            ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
                     });
             })->count();
 
@@ -1085,14 +1085,14 @@ class PostedTaskController extends Controller
                         $approvedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Approved')->count();
                         $refundProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')
                             ->where(function ($query) {
-                                $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(72))
+                                $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')))
                                     ->orWhereNotNull('reviewed_at');
                             })->count();
                         $holdProof = ProofTask::where('post_task_id', $row->id)
                             ->where(function ($query) {
                                 $query->where('status', 'Reviewed')
                                     ->orWhere('status', 'Rejected')->whereNull('reviewed_at')
-                                    ->where('rejected_at', '>', now()->subHours(72));
+                                    ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
                             })->count();
 
                         $proofStatus = '';
@@ -1246,14 +1246,14 @@ class PostedTaskController extends Controller
                         $approvedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Approved')->count();
                         $finallyRejectedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')
                             ->where(function ($query) {
-                                $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(72))
+                                $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')))
                                     ->orWhereNotNull('reviewed_at');
                             })->count();
                         $waitingRejectedProof = ProofTask::where('post_task_id', $row->id)
                             ->where(function ($query) {
                                 $query->where('status', 'Reviewed')
                                     ->orWhere('status', 'Rejected')->whereNull('reviewed_at')
-                                    ->where('rejected_at', '>', now()->subHours(72));
+                                    ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
                             })->count();
 
                         $proofStatus = '';
@@ -1391,14 +1391,14 @@ class PostedTaskController extends Controller
                         $approvedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Approved')->count();
                         $finallyRejectedProof = ProofTask::where('post_task_id', $row->id)->where('status', 'Rejected')
                             ->where(function ($query) {
-                                $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(72))
+                                $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')))
                                     ->orWhereNotNull('reviewed_at');
                             })->count();
                         $waitingRejectedProof = ProofTask::where('post_task_id', $row->id)
                             ->where(function ($query) {
                                 $query->where('status', 'Reviewed')
                                     ->orWhere('status', 'Rejected')->whereNull('reviewed_at')
-                                    ->where('rejected_at', '>', now()->subHours(72));
+                                    ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
                             })->count();
 
                         $proofStatus = '';

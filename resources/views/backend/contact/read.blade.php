@@ -1,29 +1,16 @@
 @extends('layouts.template_master')
 
-@section('title', 'Contact')
+@section('title', 'Contact (Read)')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Contact List</h3>
+                <h3 class="card-title">Contact List (Read)</h3>
+                <h3>Total: <span id="total_contacts_count">0</span></h3>
             </div>
             <div class="card-body">
-                <div class="filter mb-3">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="status" class="form-label">Status</label>
-                                <select class="form-select filter_data" id="filter_status">
-                                    <option value="">-- Select Status --</option>
-                                    <option value="Read">Read</option>
-                                    <option value="Unread">Unread</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="table-responsive">
                     <table id="allDataTable" class="table">
                         <thead>
@@ -31,7 +18,6 @@
                                 <th>Sl No</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Status</th>
                                 <th>Submit Date</th>
                                 <th>Action</th>
                             </tr>
@@ -79,16 +65,17 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.contact') }}",
-                data: function (e) {
-                    e.status = $('#filter_status').val();
+                url: "{{ route('backend.contact.read') }}",
+                dataSrc: function (json) {
+                    // Update total contact count
+                    $('#total_contacts_count').text(json.totalContactsCount);
+                    return json.data;
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
-                { data: 'status', name: 'status' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]

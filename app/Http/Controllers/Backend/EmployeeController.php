@@ -66,7 +66,7 @@ class EmployeeController extends Controller implements HasMiddleware
                     $editPermission = auth()->user()->can('employee.edit');
                     $deletePermission = auth()->user()->can('employee.destroy');
 
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $viewBtn = '<a href="' . route('backend.employee.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>';
                     $statusBtn = $canChangeStatus
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs statusBtn">Deactive</button>'
                         : '';
@@ -278,7 +278,7 @@ class EmployeeController extends Controller implements HasMiddleware
                     $canChangeStatus = auth()->user()->can('employee.status');
                     $deletePermission = auth()->user()->can('employee.destroy');
 
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '"  data-bs-toggle="modal" data-bs-target=".viewModal" class="btn btn-primary btn-xs viewBtn">View</button>';
+                    $viewBtn = '<a href="' . route('backend.employee.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>';
                     $statusBtn = $canChangeStatus
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-success btn-xs statusBtn">Active</button>'
                         : '';

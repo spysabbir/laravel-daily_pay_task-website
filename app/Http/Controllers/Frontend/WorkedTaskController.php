@@ -147,7 +147,13 @@ class WorkedTaskController extends Controller
         $reviewDetails = Rating::where('user_id', $taskDetails->user_id)->get();
         $totalPostedTask = PostTask::where('user_id', $taskDetails->user_id)->count();
         $totalWorkedTask = ProofTask::where('user_id', $taskDetails->user_id)->count();
-        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'taskProof', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount', 'reviewDetails', 'totalPostedTask', 'totalWorkedTask'));
+
+        $postedTaskIds = PostTask::where('user_id', $taskDetails->user_id)->pluck('id')->toArray();
+        $totalPostedTaskProofApproved = ProofTask::whereIn('post_task_id', $postedTaskIds)->where('status', 'Approved')->count();
+
+        $totalWorkedTaskProofApproved = ProofTask::where('user_id', $taskDetails->user_id)->where('status', 'Approved')->count();
+
+        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'taskProof', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount', 'reviewDetails', 'totalPostedTask', 'totalWorkedTask', 'totalPostedTaskProofApproved', 'totalWorkedTaskProofApproved'));
     }
 
     public function findTaskNotInterested($id)
@@ -562,6 +568,9 @@ class WorkedTaskController extends Controller
 
                 return DataTables::of($taskList)
                     ->addIndexColumn()
+                    ->editColumn('review_id', function ($row) {
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'_'.$row->id.'</span>';
+                    })
                     ->editColumn('title', function ($row) {
                         return '
                             <a href="'.route('find_task.details', encrypt($row->post_task_id)).'" title="'.$row->postTask->title.'" class="text-info">
@@ -597,7 +606,7 @@ class WorkedTaskController extends Controller
                         return $action;
                     })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['title', 'income_of_each_worker', 'created_at', 'rejected_at', 'reviewed_reason', 'reviewed_reason_full', 'reviewed_at', 'action'])
+                    ->rawColumns(['review_id', 'title', 'income_of_each_worker', 'created_at', 'rejected_at', 'reviewed_reason', 'reviewed_reason_full', 'reviewed_at', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.reviewed');

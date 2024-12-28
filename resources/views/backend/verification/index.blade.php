@@ -8,8 +8,8 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Verification Request (Pending)</h3>
+                <h3>Total: <span id="total_verifications_count">0</span></h3>
                 <div class="action-btn">
-                    <a href="{{ route('backend.verification.request.approved') }}" class="btn btn-success">Approved List</a>
                     @can('verification.request.rejected')
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".rejectedData">
                         Rejected List
@@ -119,6 +119,11 @@
             searching: true,
             ajax: {
                 url: "{{ route('backend.verification.request') }}",
+                dataSrc: function (json) {
+                    // Update total verification count
+                    $('#total_verifications_count').text(json.totalVerificationsCount);
+                    return json.data;
+                }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },

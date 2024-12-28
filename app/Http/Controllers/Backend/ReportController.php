@@ -52,6 +52,9 @@ class ReportController extends Controller implements HasMiddleware
 
             $query = $reports->select('reports.*')->orderBy('created_at', 'desc');
 
+            // Clone the query for counts
+            $totalReportsCount = (clone $query)->count();
+
             $reportList = $query->get();
 
             return DataTables::of($reportList)
@@ -107,6 +110,9 @@ class ReportController extends Controller implements HasMiddleware
                         : '';
                     return $viewBtn;
                 })
+                ->with([
+                    'total_reports_count' => $totalReportsCount,
+                ])
                 ->rawColumns(['type', 'post_task_id', 'proof_task_id', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
         }
@@ -191,6 +197,9 @@ class ReportController extends Controller implements HasMiddleware
 
             $query = $reports->select('reports.*');
 
+            // Clone the query for counts
+            $totalReportsCount = (clone $query)->count();
+
             $reportList = $query->get();
 
             return DataTables::of($reportList)
@@ -248,6 +257,9 @@ class ReportController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
+                ->with([
+                    'total_reports_count' => $totalReportsCount,
+                ])
                 ->rawColumns(['type', 'post_task_id', 'proof_task_id', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
         }
@@ -280,6 +292,9 @@ class ReportController extends Controller implements HasMiddleware
 
             $query = $reports->select('reports.*');
 
+            // Clone the query for counts
+            $totalReportsCount = (clone $query)->count();
+
             $reportList = $query->get();
 
             return DataTables::of($reportList)
@@ -337,6 +352,9 @@ class ReportController extends Controller implements HasMiddleware
 
                     return $viewBtn;
                 })
+                ->with([
+                    'total_reports_count' => $totalReportsCount,
+                ])
                 ->rawColumns(['type', 'post_task_id', 'proof_task_id', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
         }

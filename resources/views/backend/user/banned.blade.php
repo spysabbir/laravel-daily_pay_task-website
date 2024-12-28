@@ -40,23 +40,6 @@
                         </thead>
                         <tbody>
 
-                            <!-- View Modal -->
-                            <div class="modal fade viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="viewModalLabel">View</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                        </div>
-                                        <div class="modal-body" id="modalBody">
-
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <!-- Status Modal -->
                             <div class="modal fade statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
@@ -118,20 +101,6 @@
         // Filter Data
         $('.filter_data').keyup(function() {
             $('#allDataTable').DataTable().ajax.reload();
-        });
-
-        // View Data
-        $(document).on('click', '.viewBtn', function () {
-            var id = $(this).data('id');
-            var url = "{{ route('backend.user.show', ":id") }}";
-            url = url.replace(':id', id)
-            $.ajax({
-                url: url,
-                type: "GET",
-                success: function (response) {
-                    $('#modalBody').html(response);
-                },
-            });
         });
 
         // Status Data

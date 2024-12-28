@@ -270,7 +270,7 @@
         // Check Data
         $(document).on('click', '.viewBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.worked_task_check', ":id") }}";
+            var url = "{{ route('backend.worked_task.proof_check', ":id") }}";
             url = url.replace(':id', id)
             $.ajax({
                 url: url,

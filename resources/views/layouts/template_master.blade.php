@@ -134,7 +134,7 @@
                         </form> --}}
 					</div>
                     @if (auth()->user()->user_type === 'Frontend')
-                    <div class="d-xl-flex py-xl-3">
+                    <div class="d-xl-flex py-xl-3 d-sm-block d-none">
                         <div class="badge bg-primary mt-1 mx-1" id="deposit_balance_div">
                             <h6 class="">Deposit Balance: <strong class="bg-dark px-1 rounded">{{ get_site_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}</strong></h6>
                         </div>
@@ -330,7 +330,7 @@
                                     </a>
                                     @endif
                                     @if ($contact > 0)
-                                    <a href="{{ route('backend.contact') }}" class="dropdown-item d-flex align-items-center py-2">
+                                    <a href="{{ route('backend.contact.unread') }}" class="dropdown-item d-flex align-items-center py-2">
                                         <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
                                             <i class="link-icon text-white" data-feather="phone"></i>
                                         </div>
@@ -338,7 +338,7 @@
                                             <p>
                                                 <strong>Contact Message Request</strong>
                                             </p>
-                                            <p class="tx-12 text-muted">{{ $contact }} Pending</p>
+                                            <p class="tx-12 text-muted">{{ $contact }} Unread</p>
                                         </div>
                                     </a>
                                     @endif
@@ -412,6 +412,17 @@
 
             <!-- content -->
             <div class="page-content">
+
+                @if (auth()->user()->user_type === 'Frontend')
+                <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin p-2 d-sm-none d-block border mb-3 rounded">
+                    <div class="badge bg-primary mt-1 mx-1" id="deposit_balance_div">
+                        <h6 class="">Deposit Balance: <strong class="bg-dark px-1 rounded">{{ get_site_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}</strong></h6>
+                    </div>
+                    <div class="badge bg-success mt-1 mx-1" id="withdraw_balance_div">
+                        <h6 class="">Withdraw Balance: <strong class="bg-dark px-1 rounded">{{ get_site_settings('site_currency_symbol') }} {{ auth::user()->withdraw_balance }}</strong></h6>
+                    </div>
+                </div>
+                @endif
 
                 <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
                     <div>

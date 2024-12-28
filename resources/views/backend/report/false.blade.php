@@ -10,10 +10,7 @@
                 <div class="text">
                     <h3 class="card-title">Report List - False</h3>
                 </div>
-                <div class="action-btn">
-                    <a href="{{ route('backend.report.pending') }}" class="btn btn-primary">Pending List</a>
-                    <a href="{{ route('backend.report.received') }}" class="btn btn-success">Received List</a>
-                </div>
+                <h3>Total: <span id="total_reports_count">0</span></h3>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -129,6 +126,11 @@
                     e.post_task_id = $('#filter_post_task_id').val();
                     e.proof_task_id = $('#filter_proof_task_id').val();
                     e.reported_by = $('#filter_reported_by_user_id').val();
+                },
+                dataSrc: function (json) {
+                    // Update total report count
+                    $('#total_reports_count').text(json.totalReportsCount);
+                    return json.data;
                 }
             },
             columns: [

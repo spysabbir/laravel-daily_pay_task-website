@@ -154,14 +154,14 @@ class UserController extends Controller
             $approvedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Approved')->count();
             $rejectedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Rejected')
                 ->where(function ($query) {
-                    $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(72))
+                    $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')))
                         ->orWhereNotNull('reviewed_at');
                 })->count();
             $reviewedCount = ProofTask::where('post_task_id', $postTaskId)
                 ->where(function ($query) {
                     $query->where('status', 'Reviewed')
                         ->orWhere('status', 'Rejected')->whereNull('reviewed_at')
-                        ->where('rejected_at', '>', now()->subHours(72));
+                        ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
                 })->count();
             $postTaskChargePending += $chargePerTask * $pendingCount ?? 0;
             $postTaskChargeWorkerPayment += $postTask->income_of_each_worker * $approvedCount ?? 0;

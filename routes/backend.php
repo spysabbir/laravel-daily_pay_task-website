@@ -180,8 +180,9 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('worked_task_list-reviewed', [TaskController::class, 'workedTaskListReviewed'])->name('worked_task_list.reviewed');
     Route::get('reviewed-worked_task_view/{id}', [TaskController::class, 'reviewedWorkedTaskView'])->name('reviewed.worked_task_view');
 
-    Route::get('worked_task_check/{id}', [TaskController::class, 'workedTaskCheck'])->name('worked_task_check');
-    Route::put('worked_task_check_update/{id}', [TaskController::class, 'workedTaskCheckUpdate'])->name('worked_task_check_update');
+    Route::get('worked_task-proof_check/{id}', [TaskController::class, 'workedTaskProofCheck'])->name('worked_task.proof_check');
+    Route::get('worked_task-reviewed_check/{id}', [TaskController::class, 'workedTaskReviewedCheck'])->name('worked_task.reviewed_check');
+    Route::put('worked_task-check_update/{id}', [TaskController::class, 'workedTaskCheckUpdate'])->name('worked_task.check_update');
     // Report User
     Route::get('report-pending', [ReportController::class, 'reportPending'])->name('report.pending');
     Route::get('report-false', [ReportController::class, 'reportFalse'])->name('report.false');
@@ -194,7 +195,8 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('/get/search/support/user', [SupportController::class, 'getSearchSupportUser'])->name('get.search.support.user');
     Route::post('/support-send-message-reply/{userId}', [SupportController::class, 'supportSendMessageReply'])->name('support.send-message.reply');
     // Contact
-    Route::get('contact', [ContactController::class, 'contact'])->name('contact');
+    Route::get('contact/unread', [ContactController::class, 'contactUnread'])->name('contact.unread');
+    Route::get('contact/read', [ContactController::class, 'contactRead'])->name('contact.read');
     Route::get('contact-view/{id}', [ContactController::class, 'contactView'])->name('contact.view');
     Route::get('contact-delete/{id}', [ContactController::class, 'contactDelete'])->name('contact.delete');
     // Subscriber

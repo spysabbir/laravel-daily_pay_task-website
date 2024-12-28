@@ -36,20 +36,19 @@
                                 <strong>Important Notice:</strong>
                             </h4>
                             <div class="mb-3">
-                                <strong>1. </strong> Please fill out the form carefully. Once you submit the form, you can't edit it. <br>
-                                <strong>2. </strong> You can't cancel the task once you submit it. <br>
-                                <strong>3. </strong> You can't get a refund once you submit the task. <br>
-                                <strong>4. </strong> You can't get a refund if you don't complete the task. <br>
-                                <strong>5. </strong> Your task will be boosting for the selected time. <br>
-                                <strong>6. </strong> Your task will be running for the selected days. <br>
-                                <strong>7. </strong> You can't change the task category once you submit the task. <br>
-                                <strong>8. </strong> You can only change the task cost if you want to increase it. <br>
-                                <strong>9. </strong> You can't change the task cost if you want to decrease it. <br>
-                                <strong>10. </strong> You can't change the task thumbnail once you submit the task. <br>
-                                <strong>11. </strong> You can only change the task worker needed if you want to increase it. <br>
-                                <strong>12. </strong> You can't change the task worker needed if you want to decrease it. <br>
-                                <strong>13. </strong> Youy task is not aproved if you provide wrong information. <br>
-                                <strong>14. </strong> You task is not submit if your total task cost is not 100. <br>
+                                <strong>1)</strong> Please fill out the form carefully. Once you submit the task, you can't edit, cancel or delete it.<br>
+                                <strong>2)</strong> Your posted task will not approved if you violence's our policy or provide wrong information.<br>
+                                <strong>3)</strong> After posted task you will see it in pending folder.<br>
+                                <strong>4)</strong> If your posted task is approved by admin panel you will see it in running folder.<br>
+                                <strong>5)</strong> Before your task expires, you will can boost, increase worker, and extend the duration of your running tasks.<br>
+                                <strong>6)</strong> When you will boost your task, the task will showing at the top of the all posted task list.<br>
+                                <strong>7)</strong> When your running task expires, it will be automatically removed from the running folder and moving to the completed folder, so the worker won't see your task in the Find Tasks option.<br>
+                                <strong>8)</strong> If your posted task is rejected by admin panel you will get refund money and see it in rejected folder. You will be can edit and again resubmit before task duration expires.<br>
+                                <strong>9</strong>) You will not get refund money before the task expires but if you cancel your running task then pending money will be refunded to you as per our policy wise and will see it in cancelled folder.<br>
+                                <strong>10)</strong> You will can anytime pause your running tasks. If you pause your running task you will see it in paused folder and you can be resume the task from the paused folder before your task expires but if the task is paused by admin panel and want to resume the task need to contact us. When your task expires, it will be automatically removed from the paused folder and moving to the completed folder and get return pending money under our policy wise.<br>
+                                <strong>11)</strong> You can be send bonuses, give ratings, approve and reject workers according to task proofs.<br>
+                                <strong>12)</strong> If you do not approve or reject the Task Proof within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours of submitting the worker Task Proof, the Task Proof will be automatically approved. If you reject the task proof, the worker can send us a request to review the task proof within {{ get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') }} hours.<br>
+                                <strong>13)</strong> Task submitting minimum rate is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('task_posting_min_budget') }}.
                             </div>
                         </section>
 

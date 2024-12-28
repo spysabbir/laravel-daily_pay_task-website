@@ -366,14 +366,27 @@
         @endcan
 
         @can('ContactMenu')
-            @can('contact.index')
             <li class="nav-item">
-                <a href="{{ route('backend.contact') }}" class="nav-link">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ContactMenu" role="button" aria-expanded="false" aria-controls="ContactMenu">
                     <i class="link-icon" data-feather="phone"></i>
                     <span class="link-title">Contact <span class="badge bg-primary">{{ $contact }}</span></span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
+                <div class="collapse" id="ContactMenu">
+                    <ul class="nav sub-menu">
+                        @can('contact.unread')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.contact.unread') }}" class="nav-link">Unread</a>
+                        </li>
+                        @endcan
+                        @can('contact.read')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.contact.read') }}" class="nav-link">Read</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
             </li>
-            @endcan
         @endcan
 
         @can('ReportMenu')

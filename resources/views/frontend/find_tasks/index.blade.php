@@ -12,7 +12,7 @@
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                 </div>
                 <p class="card-description text-info">
-                    Note: Hi everyone, find the preferred task from the below list to working and will get result from buyers within 72 hours after submitting task proof. You will get automatically payment if the buyer does not approve or reject your Task Proof within 72 hours so work with honesty and perfectly. Alert: Please don’t' try to hassle others and submit false work. Please contact us if you face any problem, Thanks.
+                    Note: Hi everyone, find the preferred task from the below list to working and will get result from buyers within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours after submitting task proof. You will get automatically payment if the buyer does not approve or reject your Task Proof within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours so work with honesty and perfectly. Alert: Please don’t' try to hassle others and submit false work. Please contact us if you face any problem, Thanks.
                 </p>
             </div>
             <div class="card-body">

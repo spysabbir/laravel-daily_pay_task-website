@@ -15,8 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('ip');
-            $table->string('device');
+            $table->string('device_type');
+            $table->string('device_name');
             $table->string('browser');
+            $table->string('country');
+            $table->string('region');
+            $table->string('city');
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->timestamps();
         });
     }

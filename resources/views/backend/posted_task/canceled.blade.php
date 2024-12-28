@@ -8,13 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Posted Task List (Canceled)</h3>
-                <div class="action-btn">
-                    <a href="{{ route('backend.posted_task_list.pending') }}" class="btn btn-info btn-sm">Pending List</a>
-                    <a href="{{ route('backend.posted_task_list.rejected') }}" class="btn btn-danger btn-sm">Rejected List</a>
-                    <a href="{{ route('backend.posted_task_list.paused') }}" class="btn btn-warning btn-sm">Paused List</a>
-                    <a href="{{ route('backend.posted_task_list.completed') }}" class="btn btn-success btn-sm">Completed List</a>
-                    <a href="{{ route('backend.posted_task_list.running') }}" class="btn btn-primary btn-sm">Running List</a>
-                </div>
+                <h3>Total: <span id="total_posted_tasks_count">0</span></h3>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -97,6 +91,11 @@
                 data: function (d) {
                     d.posted_task_id = $('#filter_posted_task_id').val();
                     d.user_id = $('#filter_user_id').val();
+                },
+                dataSrc: function (json) {
+                    // Update total deposit count
+                    $('#total_posted_tasks_count').text(json.totalPostedTasksCount);
+                    return json.data;
                 }
             },
             columns: [

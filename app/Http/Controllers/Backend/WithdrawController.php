@@ -32,7 +32,7 @@ class WithdrawController extends Controller implements HasMiddleware
     public function withdrawRequest(Request $request)
     {
         if ($request->ajax()) {
-            $query = Withdraw::where('status', 'Pending');
+            $query = Withdraw::where('status', 'Pending')->whereNot('method', 'Deposit Balance');
 
             if ($request->method){
                 $query->where('withdraws.method', $request->method);
@@ -47,6 +47,9 @@ class WithdrawController extends Controller implements HasMiddleware
             }
 
             $query->select('withdraws.*')->orderBy('type', 'desc')->orderBy('created_at', 'desc');
+
+            // Clone the query for counts
+            $totalWithdrawsCount = (clone $query)->count();
 
             $pendingRequest = $query->get();
 
@@ -102,6 +105,9 @@ class WithdrawController extends Controller implements HasMiddleware
                     ';
                 return $btn;
                 })
+                ->with([
+                    'totalWithdrawsCount' => $totalWithdrawsCount,
+                ])
                 ->rawColumns(['user_name', 'type', 'method', 'amount', 'payable_amount', 'created_at', 'action'])
                 ->make(true);
         }
@@ -176,7 +182,7 @@ class WithdrawController extends Controller implements HasMiddleware
     public function withdrawRequestRejected(Request $request)
     {
         if ($request->ajax()) {
-            $query = Withdraw::where('status', 'Rejected');
+            $query = Withdraw::where('status', 'Rejected')->whereNot('method', 'Deposit Balance');
 
             $query->select('withdraws.*')->orderBy('rejected_at', 'desc');
 
@@ -257,7 +263,7 @@ class WithdrawController extends Controller implements HasMiddleware
     public function withdrawRequestApproved(Request $request)
     {
         if ($request->ajax()) {
-            $query = Withdraw::where('status', 'Approved');
+            $query = Withdraw::where('status', 'Approved')->whereNot('method', 'Deposit Balance');
 
             if ($request->method){
                 $query->where('withdraws.method', $request->method);
@@ -272,6 +278,9 @@ class WithdrawController extends Controller implements HasMiddleware
             }
 
             $query->select('withdraws.*')->orderBy('approved_at', 'desc');
+
+            // Clone the query for counts
+            $totalWithdrawsCount = (clone $query)->count();
 
             $approvedData = $query->get();
 
@@ -331,6 +340,9 @@ class WithdrawController extends Controller implements HasMiddleware
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
+                ->with([
+                    'totalWithdrawsCount' => $totalWithdrawsCount,
+                ])
                 ->rawColumns(['user_name', 'type', 'method', 'amount', 'payable_amount', 'created_at', 'approved_by', 'approved_at'])
                 ->make(true);
         }

@@ -8,9 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Verification Request (Approved)</h3>
-                <div class="action-btn">
-                    <a href="{{ route('backend.verification.request') }}" class="btn btn-info">Pending List</a>
-                </div>
+                <h3>Total: <span id="total_verifications_count">0</span></h3>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -84,6 +82,11 @@
                 type: 'GET',
                 data: function (d) {
                     d.user_id = $('#filter_user_id').val();
+                },
+                dataSrc: function (json) {
+                    // Update total verification count
+                    $('#total_verifications_count').text(json.totalVerificationsCount);
+                    return json.data;
                 }
             },
             columns: [

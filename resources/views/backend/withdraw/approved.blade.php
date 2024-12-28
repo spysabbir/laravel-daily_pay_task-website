@@ -8,9 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Withdraw Request (Approved)</h3>
-                <div class="action-btn">
-                    <a href="{{ route('backend.withdraw.request') }}" class="btn btn-info">Pending List</a>
-                </div>
+                <h3>Total: <span id="total_withdraws_count">0</span></h3>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -91,6 +89,11 @@
                 data: function (e) {
                     e.method = $('#filter_method').val();
                     e.type = $('#filter_type').val();
+                },
+                dataSrc: function (json) {
+                    // Update total deposit count
+                    $('#total_withdraws_count').text(json.totalWithdrawsCount);
+                    return json.data;
                 }
             },
             columns: [

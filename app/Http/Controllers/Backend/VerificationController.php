@@ -39,6 +39,9 @@ class VerificationController extends Controller implements HasMiddleware
 
             $query->select('verifications.*')->orderBy('created_at', 'desc');
 
+            // Clone the query for counts
+            $totalVerificationsCount = (clone $query)->count();
+
             $pendingRequest = $query->get();
 
             return DataTables::of($pendingRequest)
@@ -64,6 +67,9 @@ class VerificationController extends Controller implements HasMiddleware
                     ';
                 return $btn;
                 })
+                ->with([
+                    'totalVerificationsCount' => $totalVerificationsCount,
+                ])
                 ->rawColumns(['user_name', 'user_email', 'created_at', 'action'])
                 ->make(true);
         }
@@ -191,6 +197,9 @@ class VerificationController extends Controller implements HasMiddleware
 
             $query->select('verifications.*')->orderBy('created_at', 'desc');
 
+            // Clone the query for counts
+            $totalVerificationsCount = (clone $query)->count();
+
             $approvedRequest = $query->get();
 
             return DataTables::of($approvedRequest)
@@ -226,6 +235,9 @@ class VerificationController extends Controller implements HasMiddleware
                     ';
                 return $btn;
                 })
+                ->with([
+                    'totalVerificationsCount' => $totalVerificationsCount,
+                ])
                 ->rawColumns(['user_name', 'user_email', 'created_at', 'approved_by', 'approved_at', 'action'])
                 ->make(true);
         }

@@ -37,7 +37,7 @@
                     <div class="row border my-2 py-2">
                         <div class="col-sm-12">
                             <div class="form-check mb-2">
-                                <input type="checkbox" class="form-check-input group-checkbox" data-group="{{ $group->group_name }}" id="PermissionGroup_{{ $group->group_name }}" {{ App\Models\User::roleHasPermissions($role, $permissions) ? 'checked' : '' }} @if($role->name == 'Super Admin') disabled @endif>
+                                <input type="checkbox" class="form-check-input group-checkbox" data-group="{{ $group->group_name }}" id="PermissionGroup_{{ $group->group_name }}" {{ App\Models\User::roleHasPermissions($role, $permissions) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="PermissionGroup_{{ $group->group_name }}">
                                     <span class="badge bg-success">
                                         {{ $group->group_name }}
@@ -49,7 +49,7 @@
                             <div class="d-flex justify-content-between flex-wrap">
                                 @foreach ($permissions as $permission)
                                 <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input group-permission" data-group="{{ $group->group_name }}" name="permission_id[]" value="{{ $permission->id }}" id="permission_id{{ $permission->id }}" {{ $role->hasPermissionTo($permission->name) ? 'checked' : '' }} @if($role->name == 'Super Admin') disabled @endif>
+                                    <input type="checkbox" class="form-check-input group-permission" data-group="{{ $group->group_name }}" name="permission_id[]" value="{{ $permission->id }}" id="permission_id{{ $permission->id }}" {{ $role->hasPermissionTo($permission->name) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="permission_id{{ $permission->id }}">
                                         <span class="badge bg-dark">
                                             {{ $permission->name }}

@@ -10,10 +10,7 @@
                 <div class="text">
                     <h3 class="card-title">Worked Task List - Pending</h3>
                 </div>
-                <div class="action-btn">
-                    <a href="{{ route('backend.worked_task_list.reviewed') }}" class="btn btn-warning btn-fw">Reviewed List</a>
-                    <a href="{{ route('backend.worked_task_list.approved-rejected') }}" class="btn btn-primary btn-fw">Approved & Rejected List</a>
-                </div>
+                <h3>Total: <span id="total_posted_tasks_count">0</span></h3>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -76,6 +73,11 @@
                 data: function (d) {
                     d.posted_task_id = $('#filter_posted_task_id').val();
                     d.user_id = $('#filter_user_id').val();
+                },
+                dataSrc: function (json) {
+                    // Update total deposit count
+                    $('#total_posted_tasks_count').text(json.totalPostedTasksCount);
+                    return json.data;
                 }
             },
             columns: [
