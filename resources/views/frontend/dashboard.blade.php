@@ -40,7 +40,7 @@
         <h4>Welcome to {{ config('app.name') }}!</h4>
     </div>
     <hr>
-    <marquee behavior="" direction=""><strong class="text-info">Notice: {{ get_site_settings('site_notice') }}</strong></marquee>
+    <marquee><strong class="text-info">Notice: {{ get_site_settings('site_notice') }}</strong></marquee>
 </div>
 @else
 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">

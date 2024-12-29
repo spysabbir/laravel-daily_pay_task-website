@@ -28,19 +28,35 @@ class ReportReplyNotification extends Notification implements ShouldQueue
 
     public function toDatabase($notifiable)
     {
+        if ($this->report['status'] === 'False') {
+            $message = 'You submitted a false report. Please submit a valid report in the future. Please check the report section for more details.';
+        } else if ($this->report['status'] === 'Received') {
+            $message = 'We received your report. We will investigate and take necessary actions. Please check the report section for more details.';
+        } else {
+            $message = 'Your report has been resolved.';
+        }
+
         return [
-            'title' => 'Your report has been resolved',
-            'message' => 'Report ID: ' . $this->report['id'] . ' has been resolved.'
+            'title' => 'Your report id ' . $this->report['id'] . ' has been resolved.',
+            'message' => $message,
         ];
     }
 
     public function toMail($notifiable)
     {
+        if ($this->report['status'] === 'False') {
+            $message = 'You submitted a false report. Please submit a valid report in the future. Please check the report section for more details.';
+        } else if ($this->report['status'] === 'Received') {
+            $message = 'We received your report. We will investigate and take necessary actions. Please check the report section for more details.';
+        } else {
+            $message = 'Your report has been resolved.';
+        }
+
         return (new MailMessage)
                     ->subject('Report Resolved')
                     ->greeting('Hello ' . $notifiable->name . ',')
-                    ->line('Your report has been resolved.')
-                    ->line('Report ID: ' . $this->report['id'] . ' has been resolved.')
+                    ->line('Your report id ' . $this->report['id'] . ' has been resolved.')
+                    ->line($message)
                     ->line('Report Reason: ' . $this->report['reason'])
                     ->line('Reply: ' . $this->report_reply['reply'])
                     ->line('Resolved on: ' . Carbon::parse($this->report_reply['created_at'])->format('d M, Y h:i:s A'))

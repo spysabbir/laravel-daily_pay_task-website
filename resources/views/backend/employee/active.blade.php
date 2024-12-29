@@ -9,7 +9,6 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Employee List - Active</h3>
                 <div class="action-btn">
-                    <a href="{{ route('backend.employee.inactive') }}" class="btn btn-danger"><i data-feather="eye-off"></i> Inactive Employee List</a>
                     @can('employee.create')
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
                     @endcan

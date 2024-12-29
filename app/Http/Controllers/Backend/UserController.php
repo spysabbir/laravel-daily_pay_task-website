@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Models\User;
+use App\Models\UserDetail;
 use App\Models\UserStatus;
 use App\Notifications\UserStatusNotification;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
-
+use App\Models\PostTask;
+use App\Models\ProofTask;
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -45,6 +47,51 @@ class UserController extends Controller implements HasMiddleware
 
             return DataTables::of($allUser)
                 ->addIndexColumn()
+                ->editColumn('deposit_balance', function ($row) {
+                    return '
+                        <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->deposit_balance . '</span>
+                        ';
+                })
+                ->editColumn('withdraw_balance', function ($row) {
+                    return '
+                        <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->withdraw_balance . '</span>
+                        ';
+                })
+                ->editColumn('hold_balance', function ($row) {
+                    $postTaskChargeHold = 0;
+
+                    // Fetch valid post tasks with necessary relationships and data in one query
+                    $validPostTasks = PostTask::where('user_id', $row->id)
+                        ->whereNotIn('status', ['Pending', 'Rejected'])
+                        ->with(['proofTasks' => function ($query) {
+                            $query->where(function ($query) {
+                                $query->where('status', 'Reviewed')
+                                    ->orWhere(function ($query) {
+                                        $query->where('status', 'Rejected')
+                                                ->whereNull('reviewed_at')
+                                                ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
+                                    });
+                            });
+                        }])
+                        ->get();
+
+                    // Calculate the hold balance
+                    foreach ($validPostTasks as $postTask) {
+                        $chargePerTask = ($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed;
+                        $reviewedCount = $postTask->proofTasks->count();
+                        $postTaskChargeHold += $chargePerTask * $reviewedCount;
+                    }
+
+                    return '
+                        <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . number_format($postTaskChargeHold, 2) . '</span>
+                    ';
+                })
+                ->editColumn('block_count', function ($row) {
+                    $block_count = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->count();
+                    return '
+                        <span class="badge bg-warning">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
+                        ';
+                })
                 ->editColumn('last_login', function ($row) {
                     $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
                     return '
@@ -71,7 +118,7 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
                     return $btn;
                 })
-                ->rawColumns(['last_login', 'created_at', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'block_count', 'last_login', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -137,6 +184,51 @@ class UserController extends Controller implements HasMiddleware
 
             return DataTables::of($allUser)
                 ->addIndexColumn()
+                ->editColumn('deposit_balance', function ($row) {
+                    return '
+                        <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->deposit_balance . '</span>
+                        ';
+                })
+                ->editColumn('withdraw_balance', function ($row) {
+                    return '
+                        <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->withdraw_balance . '</span>
+                        ';
+                })
+                ->editColumn('hold_balance', function ($row) {
+                    $postTaskChargeHold = 0;
+
+                    // Fetch valid post tasks with necessary relationships and data in one query
+                    $validPostTasks = PostTask::where('user_id', $row->id)
+                        ->whereNotIn('status', ['Pending', 'Rejected'])
+                        ->with(['proofTasks' => function ($query) {
+                            $query->where(function ($query) {
+                                $query->where('status', 'Reviewed')
+                                    ->orWhere(function ($query) {
+                                        $query->where('status', 'Rejected')
+                                                ->whereNull('reviewed_at')
+                                                ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
+                                    });
+                            });
+                        }])
+                        ->get();
+
+                    // Calculate the hold balance
+                    foreach ($validPostTasks as $postTask) {
+                        $chargePerTask = ($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed;
+                        $reviewedCount = $postTask->proofTasks->count();
+                        $postTaskChargeHold += $chargePerTask * $reviewedCount;
+                    }
+
+                    return '
+                        <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . number_format($postTaskChargeHold, 2) . '</span>
+                    ';
+                })
+                ->editColumn('block_count', function ($row) {
+                    $block_count = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->count();
+                    return '
+                        <span class="badge bg-warning">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
+                        ';
+                })
                 ->editColumn('last_login', function ($row) {
                     $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
                     return '
@@ -163,7 +255,7 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
                     return $btn;
                 })
-                ->rawColumns(['last_login', 'created_at', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'block_count', 'last_login', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -185,6 +277,57 @@ class UserController extends Controller implements HasMiddleware
 
             return DataTables::of($allUser)
                 ->addIndexColumn()
+                ->editColumn('deposit_balance', function ($row) {
+                    return '
+                        <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->deposit_balance . '</span>
+                        ';
+                })
+                ->editColumn('withdraw_balance', function ($row) {
+                    return '
+                        <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->withdraw_balance . '</span>
+                        ';
+                })
+                ->editColumn('hold_balance', function ($row) {
+                    $postTaskChargeHold = 0;
+
+                    // Fetch valid post tasks with necessary relationships and data in one query
+                    $validPostTasks = PostTask::where('user_id', $row->id)
+                        ->whereNotIn('status', ['Pending', 'Rejected'])
+                        ->with(['proofTasks' => function ($query) {
+                            $query->where(function ($query) {
+                                $query->where('status', 'Reviewed')
+                                    ->orWhere(function ($query) {
+                                        $query->where('status', 'Rejected')
+                                                ->whereNull('reviewed_at')
+                                                ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
+                                    });
+                            });
+                        }])
+                        ->get();
+
+                    // Calculate the hold balance
+                    foreach ($validPostTasks as $postTask) {
+                        $chargePerTask = ($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed;
+                        $reviewedCount = $postTask->proofTasks->count();
+                        $postTaskChargeHold += $chargePerTask * $reviewedCount;
+                    }
+
+                    return '
+                        <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . number_format($postTaskChargeHold, 2) . '</span>
+                    ';
+                })
+                ->editColumn('block_count', function ($row) {
+                    $block_count = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->count();
+                    return '
+                        <span class="badge bg-warning">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
+                        ';
+                })
+                ->editColumn('banned_at', function ($row) {
+                    $banned_at = UserStatus::where('user_id', $row->id)->where('status', 'Banned')->first()->created_at;
+                    return '
+                        <span class="badge text-danger bg-dark">' . date('d M, Y  h:i:s A', strtotime($banned_at)) . '</span>
+                        ';
+                })
                 ->editColumn('last_login', function ($row) {
                     $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
                     return '
@@ -211,7 +354,7 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
                     return $btn;
                 })
-                ->rawColumns(['last_login', 'created_at', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'block_count', 'banned_at', 'last_login', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -221,7 +364,9 @@ class UserController extends Controller implements HasMiddleware
     public function userView(string $id)
     {
         $user = User::where('id', $id)->first();
-        return view('backend.user.show', compact('user'));
+        $userStatuses = UserStatus::where('user_id', $id)->get();
+        $userDetails = UserDetail::where('user_id', $id)->get();
+        return view('backend.user.show', compact('user', 'userStatuses', 'userDetails'));
     }
 
     public function userStatus(string $id)
@@ -253,6 +398,7 @@ class UserController extends Controller implements HasMiddleware
             'status' => $request->status,
             'reason' => $request->reason,
             'blocked_duration' => $request->blocked_duration ?? null,
+            'blocked_resolved' => $request->status == 'Active' ? now() : null,
             'created_by' => auth()->user()->id,
             'created_at' => now(),
         ]);

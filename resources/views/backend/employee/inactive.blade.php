@@ -9,7 +9,6 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Employee List - Inactive</h3>
                 <div class="action-btn">
-                    <a href="{{ route('backend.employee.index') }}" class="btn btn-primary"><i data-feather="users"></i> Active Employee List</a>
                     @can('employee.trash')
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
                     @endcan

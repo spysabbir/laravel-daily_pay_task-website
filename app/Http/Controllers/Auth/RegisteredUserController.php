@@ -23,7 +23,9 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request)
     {
-        $referrer = User::where('referral_code', $request->referral_code)->where('user_type', 'Frontend')->first();
+        $referrer = User::where('referral_code', $request->referral_code)
+                        ->where('user_type', 'Frontend')
+                        ->first();
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -62,7 +64,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $referralBonus = get_default_settings('referral_registration_bonus_amount');
-        if ($request->referral_code) {
+        if ($referrer) {
             $user->update(['withdraw_balance' => $referralBonus]);
 
             $userBonus = Bonus::create([
@@ -72,7 +74,13 @@ class RegisteredUserController extends Controller
                 'amount' => $referralBonus,
             ]);
 
+            // Send notification to the referred user (new user)
             $user->notify(new ReferralRegistrationNotification($referrer, $user));
+
+            // Send notification to the referrer
+            $referrer->notify(new ReferralRegistrationNotification($referrer, $user));
+
+            // Bonus notification for the referred user
             $user->notify(new BonusNotification($userBonus));
         }
 

@@ -30,9 +30,11 @@ class BonusNotification extends Notification implements ShouldQueue
     {
         $bonus = $this->referrerBonus ?? $this->userBonus;
 
+        $currencySymbol = get_site_settings('site_currency_symbol');
+
         return [
-            'title' => 'You have received a bonus of ' . get_site_settings('site_currency_symbol') . ' ' . $bonus['amount'],
-            'message' => 'The bonus type is ' . $bonus['type'],
+            'title' => 'You have received ' . $currencySymbol . ' ' . ($bonus['amount']) . ' ' . ($bonus['type']) . '.',
+            'message' => 'Please check the bonus section for more details. Thank you for using our application!',
         ];
     }
 
@@ -40,11 +42,13 @@ class BonusNotification extends Notification implements ShouldQueue
     {
         $bonus = $this->referrerBonus ?? $this->userBonus;
 
+        $currencySymbol = get_site_settings('site_currency_symbol');
+
         return (new MailMessage)
             ->subject('Bonus Received')
             ->greeting('Hello ' . $notifiable->name . ',')
-            ->line('You have received a bonus of ' . get_site_settings('site_currency_symbol') . ' ' . $bonus['amount'])
-            ->line('The bonus type is ' . $bonus['type'])
+            ->line('You have received ' . $currencySymbol . ' ' . ($bonus['amount']) . ' ' . ($bonus['type']) . ' bonus.')
+            ->line('Please check the bonus section for more details.')
             ->line('Updated on: ' . Carbon::now()->format('d M, Y h:i:s A'))
             ->line('Thank you for using our application!');
     }

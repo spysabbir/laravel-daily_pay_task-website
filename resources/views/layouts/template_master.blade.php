@@ -414,7 +414,7 @@
             <div class="page-content">
 
                 @if (auth()->user()->user_type === 'Frontend')
-                <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin p-2 d-sm-none d-block border mb-3 rounded">
+                <div class="d-flex justify-content-center align-items-center flex-wrap grid-margin p-2 d-sm-none d-block border mb-3 rounded">
                     <div class="badge bg-primary mt-1 mx-1" id="deposit_balance_div">
                         <h6 class="">Deposit Balance: <strong class="bg-dark px-1 rounded">{{ get_site_settings('site_currency_symbol') }} {{ auth::user()->deposit_balance }}</strong></h6>
                     </div>

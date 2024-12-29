@@ -24,41 +24,38 @@ class PostTaskCheckNotification extends Notification implements ShouldQueue
         return ['database', 'mail'];
     }
 
+    private function getMessage()
+    {
+        switch ($this->postTask['status']) {
+            case 'Approved':
+                return 'Please check running posted task list for more details.';
+            case 'Rejected':
+                return 'Rejection Reason: ' . ($this->postTask['rejection_reason'] ?? 'N/A') . '. Please check rejected posted task list section for more details.';
+            case 'Canceled':
+                return 'Cancellation Reason: ' . ($this->postTask['cancellation_reason'] ?? 'N/A') . '. Please check canceled posted task list section for more details.';
+            case 'Paused':
+                return 'Pausing Reason: ' . ($this->postTask['pausing_reason'] ?? 'N/A') . '. Please check paused posted task list section for more details.';
+            default:
+                return 'Please check the posted task list. Thank you!';
+        }
+    }
+
     public function toDatabase($notifiable)
     {
-        if ($this->postTask['status'] === 'Rejected') {
-            $message = 'Rejection Reason: ' . $this->postTask['rejection_reason'];
-        } else if ($this->postTask['status'] === 'Canceled') {
-            $message = 'Cancellation Reason: ' . $this->postTask['cancellation_reason'];
-        } else if ($this->postTask['status'] === 'Paused') {
-            $message = 'Pausing Reason: ' . $this->postTask['pausing_reason'];
-        } else {
-            $message = 'Please check the task post. Thank you!';
-        }
         return [
-            'title' => 'Now your task post status is ' . $this->postTask['status'] . ' and the task post id is ' . $this->postTask['id'] . '.',
-            'message' => $message,
+            'title' => 'Your posted task request ID ' . $this->postTask['id'] . ' is ' . $this->postTask['status'] . '.',
+            'message' => $this->getMessage(),
         ];
     }
 
     public function toMail($notifiable)
     {
-        if ($this->postTask['status'] === 'Rejected') {
-            $message = 'Rejection Reason: ' . $this->postTask['rejection_reason'];
-        } else if ($this->postTask['status'] === 'Canceled') {
-            $message = 'Cancellation Reason: ' . $this->postTask['cancellation_reason'];
-        } else if ($this->postTask['status'] === 'Paused') {
-            $message = 'Pausing Reason: ' . $this->postTask['pausing_reason'];
-        } else {
-            $message = 'Please check the task post. Thank you!';
-        }
         return (new MailMessage)
-                    ->subject('Post Task Status')
+                    ->subject('Posted Task Status')
                     ->greeting('Hello ' . $notifiable->name . ',')
-                    ->line('Now your task post status is ' . $this->postTask['status'] . ' and the task post id is ' . $this->postTask['id'] . '. and the title is ' . $this->postTask['title'] . '.')
-                    ->line($message)
-                    ->line('Updated on: ' . Carbon::parse($this->postTask['updated_at'])->format('d M, Y h:i:s A'))
+                    ->line('Your posted task request ID ' . $this->postTask['id'] . ' is ' . $this->postTask['status'] . '.')
+                    ->line($this->getMessage())
+                    ->line('Updated on: ' . Carbon::parse($this->postTask['updated_at'] ?? now())->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }
-
 }

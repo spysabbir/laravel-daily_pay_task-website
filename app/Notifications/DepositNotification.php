@@ -26,20 +26,36 @@ class DepositNotification extends Notification implements ShouldQueue
 
     public function toDatabase($notifiable)
     {
+        $message = 'Thank you for using our application!';
+
+        if ($this->deposit['status'] === 'Rejected') {
+            $message = 'Rejection Reason: ' . ($this->deposit['rejected_reason']) . '. Please check the deposit section for more details.';
+        }
+
+        $currencySymbol = get_site_settings('site_currency_symbol');
+
         return [
-            'title' => 'Now your deposit amount is ' . get_site_settings('site_currency_symbol'). ' ' . $this->deposit['amount'] . ' and status is ' . $this->deposit['status'],
-            'message' => $this->deposit['rejected_reason'] ?? 'Thank you for using our application!',
+            'title' => 'Your deposit request amount ' . $currencySymbol . ' ' . $this->deposit['amount'] . ' is ' . $this->deposit['status'] . '.',
+            'message' => $message
         ];
     }
 
     public function toMail($notifiable)
     {
+        $message = 'Thank you for using our application!';
+
+        if ($this->deposit['status'] === 'Rejected') {
+            $message = 'Rejection Reason: ' . ($this->deposit['rejected_reason']) . '. Please check the deposit section for more details.';
+        }
+
+        $currencySymbol = get_site_settings('site_currency_symbol');
+
         return (new MailMessage)
                     ->subject('Deposit Status')
                     ->greeting('Hello ' . $notifiable->name . ',')
-                    ->line('Now your deposit status is ' . $this->deposit['status'] . ' and the amount is ' . get_site_settings('site_currency_symbol') . $this->deposit['amount'])
-                    ->line($this->deposit['rejected_reason'] ?? 'Thank you for using our application!')
-                    ->line('Updated on: ' . Carbon::parse($this->deposit['created_at'])->format('d M, Y h:i:s A'))
+                    ->line('Your deposit request amount ' . $currencySymbol . ' ' . $this->deposit['amount'] . ' is ' . $this->deposit['status'] . '.')
+                    ->line($message)
+                    ->line('Updated on: ' . Carbon::parse($this->deposit['created_at'] ?? now())->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }
 }

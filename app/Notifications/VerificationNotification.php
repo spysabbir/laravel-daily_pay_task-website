@@ -26,19 +26,31 @@ class VerificationNotification extends Notification implements ShouldQueue
 
     public function toDatabase($notifiable)
     {
+        $message = 'Thank you for using our application!';
+
+        if ($this->verification['status'] === 'Rejected') {
+            $message = 'Rejection Reason: ' . $this->verification['rejected_reason'] . '. Please check the verification section for more details.';
+        }
+
         return [
-            'title' => 'Now your ' . $this->verification['id_type'] . ' id verification status is ' . $this->verification['status'],
-            'message' => $this->verification['rejected_reason'] ?? 'Thank you for using our application!',
+            'title' => 'Your ' . $this->verification['id_type'] . ' ID verification request  is ' . $this->verification['status'] . '.',
+            'message' => $message,
         ];
     }
 
     public function toMail($notifiable)
     {
+        $message = 'Thank you for using our application!';
+
+        if ($this->verification['status'] === 'Rejected') {
+            $message = 'Rejection Reason: ' . $this->verification['rejected_reason'] . '. Please check the verification section for more details.';
+        }
+
         return (new MailMessage)
                     ->subject('Verification Status')
                     ->greeting('Hello ' . $notifiable->name . ',')
-                    ->line('Your ' . $this->verification['id_type'] . ' verification status is now ' . $this->verification['status'] . '.')
-                    ->line($this->verification['rejected_reason'] ?? 'Thank you for using our application!')
+                    ->line('Your ' . $this->verification['id_type'] . ' ID verification request is ' . $this->verification['status'] . '.')
+                    ->line($message)
                     ->line('Updated on: ' . Carbon::parse($this->verification['created_at'])->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }

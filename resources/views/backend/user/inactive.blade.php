@@ -8,11 +8,6 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">User List - Inactive</h3>
-                <div class="action-btn">
-                    <a href="{{ route('backend.user.active') }}" class="btn btn-primary btn-xs"><i data-feather="eye"></i> Active User List</a>
-                    <a href="{{ route('backend.user.blocked') }}" class="btn btn-warning btn-xs"><i data-feather="lock"></i> Blocked User List</a>
-                    <a href="{{ route('backend.user.banned') }}" class="btn btn-danger btn-xs"><i data-feather="lock"></i> Banned User List</a>
-                </div>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -33,8 +28,8 @@
                                 <th>User Id</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Last Login</th>
                                 <th>Join Date</th>
+                                <th>Last Login</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -75,8 +70,8 @@
                 { data: 'id', name: 'id' },
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
-                { data: 'last_login', name: 'last_login' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'last_login', name: 'last_login' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

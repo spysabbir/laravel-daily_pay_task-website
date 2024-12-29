@@ -26,19 +26,39 @@ class UserStatusNotification extends Notification implements ShouldQueue
 
     public function toDatabase($notifiable)
     {
+        if ($this->userStatus['status'] == 'Active') {
+            $message = 'Reason: ' . $this->userStatus['reason'] . '. Please stay active!';
+        } else if ($this->userStatus['status'] == 'Blocked') {
+            $message = 'Reason: ' . $this->userStatus['reason'] . '. Blocked until: ' . $this->userStatus['blocked_duration'] . ' hours. Please wait for the unblock!';
+        } else if ($this->userStatus['status'] == 'Banned') {
+            $message = 'Reason: ' . $this->userStatus['reason'] . '. Sorry, you are banned! If you think this is a mistake, please contact us!';
+        } else {
+            $message = 'Reason: ' . $this->userStatus['reason'] . '. Please contact us for more information!';
+        }
+
         return [
-            'title' => 'Your account status is now ' . $this->userStatus['status'],
-            'message' => 'Reason: ' . $this->userStatus['reason'] . $this->userStatus['blocked_duration'] ? 'Blocked until: ' . $this->userStatus['blocked_duration'] . ' hours' : 'Thank you for using our application!',
+            'title' => 'Your account status is now ' . $this->userStatus['status'] . '.',
+            'message' => $message,
         ];
     }
 
     public function toMail($notifiable)
     {
+        if ($this->userStatus['status'] == 'Active') {
+            $message = 'Reason: ' . $this->userStatus['reason'] . '. Please stay active!';
+        } else if ($this->userStatus['status'] == 'Blocked') {
+            $message = 'Reason: ' . $this->userStatus['reason'] . '. Blocked until: ' . $this->userStatus['blocked_duration'] . ' hours. Please wait for the unblock!';
+        } else if ($this->userStatus['status'] == 'Banned') {
+            $message = 'Reason: ' . $this->userStatus['reason'] . '. Sorry, you are banned! If you think this is a mistake, please contact us!';
+        } else {
+            $message = 'Reason: ' . $this->userStatus['reason'] . '. Please contact us for more information!';
+        }
+
         return (new MailMessage)
                     ->subject('Account Status')
                     ->greeting('Hello ' . $notifiable->name . ',')
                     ->line('Your account status is now ' . $this->userStatus['status'] . '.')
-                    ->line('Reason: ' . $this->userStatus['reason'] . $this->userStatus['blocked_duration'] ? 'Blocked until: ' . $this->userStatus['blocked_duration'] . ' hours' : 'Please stay active!')
+                    ->line($message)
                     ->line('Updated on: ' . Carbon::parse($this->userStatus['created_at'])->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');
     }
