@@ -2,7 +2,7 @@
     <div class="col-lg-8">
         <p class="mb-2"><strong>Reviewed Reason:</strong> {{ $proofTask->reviewed_reason }}</p>
         <p class="mb-2"><strong>Reviewed Date:</strong> {{ date('d M Y h:i A', strtotime($proofTask->reviewed_at)) }}</p>
-        @if ($proofTask->reviewed_reason_photos)
+        @if (json_decode($proofTask->reviewed_reason_photos))
             <strong>Reviewed Reason Photos: </strong>
             <div id="single-lightgallery-reviewed" class="image-grid">
                 @foreach (json_decode($proofTask->reviewed_reason_photos) as $photo)
@@ -11,6 +11,8 @@
                 </a>
                 @endforeach
             </div>
+        @else
+            <p class="mb-2"><strong>Reviewed Reason Photos:</strong> Not submitted.</p>
         @endif
     </div>
     <div class="col-lg-4">

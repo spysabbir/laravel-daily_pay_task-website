@@ -149,11 +149,19 @@ class WorkedTaskController extends Controller
         $totalWorkedTask = ProofTask::where('user_id', $taskDetails->user_id)->count();
 
         $postedTaskIds = PostTask::where('user_id', $taskDetails->user_id)->pluck('id')->toArray();
-        $totalPostedTaskProofApproved = ProofTask::whereIn('post_task_id', $postedTaskIds)->where('status', 'Approved')->count();
+        $totalPostedTaskProofCount = ProofTask::whereIn('post_task_id', $postedTaskIds)->count();
+        $totalPostedTaskProofApprovedCount = ProofTask::whereIn('post_task_id', $postedTaskIds)->where('status', 'Approved')->count();
+        $totalPostedTaskProofApproved = $totalPostedTaskProofCount > 0 ? round(($totalPostedTaskProofApprovedCount / $totalPostedTaskProofCount) * 100, 2) : 0;
+        $totalPostedTaskProofRejectedCount = ProofTask::whereIn('post_task_id', $postedTaskIds)->where('status', 'Rejected')->count();
+        $totalPostedTaskProofRejected = $totalPostedTaskProofCount > 0 ? round(($totalPostedTaskProofRejectedCount / $totalPostedTaskProofCount) * 100, 2) : 0;
 
-        $totalWorkedTaskProofApproved = ProofTask::where('user_id', $taskDetails->user_id)->where('status', 'Approved')->count();
+        $totalWorkedTaskProofSubmitCount = ProofTask::where('user_id', $taskDetails->user_id)->count();
+        $totalWorkedTaskProofApprovedCount = ProofTask::where('user_id', $taskDetails->user_id)->where('status', 'Approved')->count();
+        $totalWorkedTaskProofApproved = $totalWorkedTaskProofSubmitCount > 0 ? round(($totalWorkedTaskProofApprovedCount / $totalWorkedTaskProofSubmitCount) * 100, 2) : 0;
+        $totalWorkedTaskProofRejectedCount = ProofTask::where('user_id', $taskDetails->user_id)->where('status', 'Rejected')->count();
+        $totalWorkedTaskProofRejected = $totalWorkedTaskProofSubmitCount > 0 ? round(($totalWorkedTaskProofRejectedCount / $totalWorkedTaskProofSubmitCount) * 100, 2) : 0;
 
-        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'taskProof', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount', 'reviewDetails', 'totalPostedTask', 'totalWorkedTask', 'totalPostedTaskProofApproved', 'totalWorkedTaskProofApproved'));
+        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'taskProof', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount', 'reviewDetails', 'totalPostedTask', 'totalWorkedTask', 'totalPostedTaskProofCount', 'totalPostedTaskProofApproved', 'totalPostedTaskProofRejected', 'totalWorkedTaskProofApproved', 'totalWorkedTaskProofRejected'));
     }
 
     public function findTaskNotInterested($id)
@@ -569,7 +577,7 @@ class WorkedTaskController extends Controller
                 return DataTables::of($taskList)
                     ->addIndexColumn()
                     ->editColumn('review_id', function ($row) {
-                        return '<span class="badge bg-primary">'.$row->postTask->id.'_'.$row->id.'</span>';
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'#'.$row->id.'</span>';
                     })
                     ->editColumn('title', function ($row) {
                         return '
@@ -598,6 +606,14 @@ class WorkedTaskController extends Controller
                     ->editColumn('reviewed_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->reviewed_at));
                     })
+                    ->editColumn('checking_expired_time', function ($row) {
+                        $submitDate = Carbon::parse($row->reviewed_at);
+                        $endDate = $submitDate->addHours((int) get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time'));
+                        if ($endDate < now()) {
+                            return '<span class="badge bg-danger">Please contact support</span>';
+                        }
+                        return '<span class="badge bg-primary">' . $endDate->format('d M, Y h:i:s A') . '</span>';
+                    })
                     ->addColumn('action', function ($row) {
                         $action = '
                         <button type="button" data-id="' . $row->id . '" class="btn btn-success btn-xs viewBtn">Proof Check</button>
@@ -606,7 +622,7 @@ class WorkedTaskController extends Controller
                         return $action;
                     })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['review_id', 'title', 'income_of_each_worker', 'created_at', 'rejected_at', 'reviewed_reason', 'reviewed_reason_full', 'reviewed_at', 'action'])
+                    ->rawColumns(['review_id', 'title', 'income_of_each_worker', 'created_at', 'rejected_at', 'reviewed_reason', 'reviewed_reason_full', 'reviewed_at', 'checking_expired_time', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.reviewed');

@@ -5,9 +5,9 @@
             <h4 class="mb-3">Reviewed Task</h4>
             <div class="alert alert-info" role="alert">
                 <h4 class="alert-heading">Reviewed Time Limit!</h4>
-                <p>You have to review this task within {{ get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') }} hours after that this task review not allowed. This task review time will expire at {{ date('d M Y h:i A', strtotime($proofTask->rejected_at) + (get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') * 3600)) }}.</p>
+                <p>You have to review this task within {{ get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') }} hours after that this task review not allowed. Submitting this task for review will expire at {{ date('d M Y h:i A', strtotime($proofTask->rejected_at) + (get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') * 3600)) }}.</p>
                 <small class="text-warning d-block mt-2">
-                    <strong>Note:</strong> Explain why you think this task is correct. When you review this task {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('rejected_worked_task_review_charge') }} will be charged from your account balance. If you don't provide a valid reason for the review your charge will not be refunded and the task will be rejected. And if you provide a valid reason for the review your charge will be refunded and the task will be approved. Only one review is allowed for each task.
+                    <strong>Note:</strong> Explain why you think this task is correct. When you will send this task for review, {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('rejected_worked_task_review_charge') }} will be charged from your withdraw account balance. After submitting this task for review, you will get notification from us within {{ get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') }} hours. If you don't provide a valid reason for the review your charge will not be refunded and the task will be rejected. And if you provide a valid reason for the review your charge will be refunded and the task will be approved. Only one review is allowed for each task.
                 </small>
             </div>
             <form class="forms-sample" id="editForm" enctype="multipart/form-data" method="POST">
@@ -52,6 +52,7 @@
                     <p><strong class="text-danger">Your worked task has been finally rejected by the Admin.</strong></p>
                 @endif
                 <hr>
+                <p class="mb-2"><strong>Reviewed Id:</strong> <span class="badge bg-info">{{ $proofTask->postTask->id }}#{{ $proofTask->id }}</span></p>
                 <p class="mb-2"><strong>Reviewed Reason:</strong> {{ $proofTask->reviewed_reason }}</p>
                 <p class="mb-2"><strong>Reviewed Date:</strong> {{ date('d M Y h:i A', strtotime($proofTask->reviewed_at)) }}</p>
                 @if ($proofTask->reviewed_reason_photos)

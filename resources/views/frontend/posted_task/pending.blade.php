@@ -11,7 +11,7 @@
                     <h3 class="card-title">Posting Task List - Pending</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                     <p class="card-description text-info">
-                        Note: Hi user, below tasks list is your posted task and waiting for approval from admin. If your task is approved you will see it in the running folder and if it is rejected then you will see it in the rejected folder. If your task is here more than 48 hours then contact us. Also please contact us if you face any problem, thanks.
+                        Note: Hi user, below tasks list is your posted task and waiting for approval from admin. If your task is approved you will see it in the running folder and if it is rejected then you will see it in the rejected folder. If your task is here more than {{ get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') }} hours then contact us. Also please contact us if you face any problem, thanks.
                     </p>
                 </div>
             </div>

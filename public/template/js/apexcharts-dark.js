@@ -104,8 +104,8 @@ $(function() {
     // totalWorkedTaskApexLine end
 
 
-    // todayReportApexDonut start
-    if ($('#todayReportApexDonut').length) {
+    // totalApprovedPostedTaskChargeApexDonut start
+    if ($('#totalApprovedPostedTaskChargeApexDonut').length) {
         var options = {
             chart: {
                 height: 300,
@@ -126,7 +126,7 @@ $(function() {
                 colors: ['rgba(0,0,0,0)']
             },
             labels: todayReportLabels,
-            colors: [colors.primary, colors.danger, colors.success],
+            colors: [colors.primary, colors.success, colors.danger, colors.warning],
             legend: {
                 show: true,
                 position: "top",
@@ -143,10 +143,10 @@ $(function() {
             series: todayReportSeries
         };
 
-        var chart = new ApexCharts(document.querySelector("#todayReportApexDonut"), options);
+        var chart = new ApexCharts(document.querySelector("#totalApprovedPostedTaskChargeApexDonut"), options);
         chart.render();
     }
-    // todayReportApexDonut end
+    // totalApprovedPostedTaskChargeApexDonut end
 
 
     // todayWorkedTaskApexPie start

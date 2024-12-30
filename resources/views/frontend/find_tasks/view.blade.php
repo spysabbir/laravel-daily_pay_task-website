@@ -224,13 +224,23 @@
                     <p>Name: <span class="text-info">{{ $taskDetails->user->name }}</span></p>
                     <p>Last Active: <span class="text-info">{{ Carbon\Carbon::parse($taskDetails->user->last_login_at)->diffForHumans() }}</span></p>
                     <p>Join Date: <span class="text-info">{{ $taskDetails->user->created_at->format('d M, Y') }}</span></p>
+                    <hr>
                     <p>Total Posted Task: <span class="text-info">{{ $totalPostedTask }}</span></p>
+                    <hr>
+                    <p>Total Posted Task Proof Submitted: <span class="text-info">{{ $totalPostedTaskProofCount }}</span></p>
                     <p>
-                        Posted Task Proof Approved: <span class="text-success">{{ $totalPostedTaskProofApproved }}</span> |
+                        Posted Task Proof Approved: <span class="text-success">{{ $totalPostedTaskProofApproved }} %</span>
                     </p>
-                    <p>Total Worked Task: <span class="text-info">{{ $totalWorkedTask }}</span></p>
                     <p>
-                        Worked Task Proof Approved: <span class="text-success">{{ $totalWorkedTaskProofApproved }}</span> |
+                        Posted Task Proof Rejected: <span class="text-danger">{{ $totalPostedTaskProofRejected }} %</span>
+                    </p>
+                    <hr>
+                    <p>Total Worked Task Proof Submitted: <span class="text-info">{{ $totalWorkedTask }}</span></p>
+                    <p>
+                        Worked Task Proof Approved: <span class="text-success">{{ $totalWorkedTaskProofApproved }} %</span>
+                    </p>
+                    <p>
+                        Worked Task Proof Rejected: <span class="text-danger">{{ $totalWorkedTaskProofRejected }} %</span>
                     </p>
                 </div>
                 <div class="d-flex align-items-center justify-content-between border p-3">

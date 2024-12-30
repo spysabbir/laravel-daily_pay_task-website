@@ -15,7 +15,6 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
-use Stevebauman\Location\Facades\Location;
 use App\Models\Report;
 use App\Models\ReportReply;
 use App\Models\Support;
@@ -106,69 +105,64 @@ class UserController extends Controller
 
         $userStatus = UserStatus::where('user_id', Auth::id())->latest()->first();
 
-        // PostTask Charges
-        $postTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Pending', 'Rejected'])->get();
+// PostTask Charges
+$postTaskChargeTotal = PostTask::where('user_id', Auth::id())
+    ->whereNotNull('approved_at')
+    ->sum('total_cost');
 
-        $canceledTaskIds = PostTask::where('user_id', Auth::id())->where('status', ['Canceled'])->pluck('id')->toArray();
-        $otherTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Canceled', 'Rejected'])->pluck('id')->toArray();
-        $validPostTaskIds = PostTask::where('user_id', Auth::id())->whereNotIn('status', ['Pending', 'Rejected'])->pluck('id')->toArray();
-        $postTaskChargeTotal = PostTask::where('user_id', Auth::id())->sum('total_cost');
-        $postRejectedTaskChargeTotal = PostTask::where('user_id', Auth::id())->where('status', 'Rejected')->sum('total_cost');
-        $postTaskChargeWaiting = 0;
-        $postTaskChargeCanceled = 0;
-        $postTaskChargePending = 0;
-        $postTaskChargeWorkerPayment = 0;
-        $postTaskChargeSitePayment = 0;
-        $postTaskChargeRefund = 0;
-        $postTaskChargeHold = 0;
+$postTasks = PostTask::where('user_id', Auth::id())
+    ->whereNotNull('approved_at')
+    ->with(['proofTasks' => function ($query) {
+        $query->select('id', 'post_task_id', 'status', 'reviewed_at', 'rejected_at');
+    }])
+    ->get();
 
-        foreach ($canceledTaskIds as $canceledTaskId) {
-            $postTaskCanceled = PostTask::find($canceledTaskId);
-            if (!$postTaskCanceled) {
-                continue;
-            }
-            $chargePerTask = ($postTaskCanceled->sub_cost + $postTaskCanceled->site_charge) / $postTaskCanceled->worker_needed;
-            $proofCount = ProofTask::where('post_task_id', $canceledTaskId)->count();
-            $postTaskChargeCanceled += $chargePerTask * ($postTaskCanceled->worker_needed - $proofCount) ?? 0;
-        }
+$canceledTasks = $postTasks->where('status', 'Canceled');
+$otherTasks = $postTasks->where('status', '!=', 'Canceled');
 
-        $otherTaskIds;
-        foreach ($otherTaskIds as $otherTaskId) {
-            $postTaskOther = PostTask::find($otherTaskId);
-            if (!$postTaskOther) {
-                continue;
-            }
-            $chargePerTask = ($postTaskOther->sub_cost + $postTaskOther->site_charge) / $postTaskOther->worker_needed;
-            $proofCount = ProofTask::where('post_task_id', $otherTaskId)->count();
-            $postTaskChargeWaiting += $chargePerTask * ($postTaskOther->worker_needed - $proofCount) ?? 0;
-        }
+$postTaskChargeWaiting = 0;
+$postTaskChargePayment = 0;
+$postTaskChargeRefund = 0;
+$postTaskChargeHold = 0;
 
-        $postTaskIds = PostTask::where('user_id', Auth::id())->pluck('id')->toArray();
-        foreach ($validPostTaskIds as $postTaskId) {
-            $postTask = PostTask::find($postTaskId);
-            if (!$postTask) {
-                continue;
-            }
-            $chargePerTask = ($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed;
-            $pendingCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Pending')->count();
-            $approvedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Approved')->count();
-            $rejectedCount = ProofTask::where('post_task_id', $postTaskId)->where('status', 'Rejected')
-                ->where(function ($query) {
-                    $query->whereNull('reviewed_at')->where('rejected_at', '<=', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')))
-                        ->orWhereNotNull('reviewed_at');
-                })->count();
-            $reviewedCount = ProofTask::where('post_task_id', $postTaskId)
-                ->where(function ($query) {
-                    $query->where('status', 'Reviewed')
-                        ->orWhere('status', 'Rejected')->whereNull('reviewed_at')
-                        ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
-                })->count();
-            $postTaskChargePending += $chargePerTask * $pendingCount ?? 0;
-            $postTaskChargeWorkerPayment += $postTask->income_of_each_worker * $approvedCount ?? 0;
-            $postTaskChargeSitePayment += $postTask->site_charge / $postTask->worker_needed * $approvedCount + $postTask->required_proof_photo_charge + $postTask->boosting_time_charge +  $postTask->work_duration_charge ?? 0;
-            $postTaskChargeRefund += $chargePerTask * $rejectedCount ?? 0;
-            $postTaskChargeHold += $chargePerTask * $reviewedCount ?? 0;
-        }
+// Handle Canceled Tasks
+foreach ($canceledTasks as $task) {
+    $chargePerTask = ($task->sub_cost + $task->site_charge) / $task->worker_needed;
+    $proofCount = $task->proofTasks->count();
+    $postTaskChargeRefund += $chargePerTask * ($task->worker_needed - $proofCount);
+}
+
+// Handle Other Tasks
+foreach ($otherTasks as $task) {
+    $chargePerTask = ($task->sub_cost + $task->site_charge) / $task->worker_needed;
+
+    $pendingCount = $task->proofTasks->where('status', 'Pending')->count();
+    $approvedCount = $task->proofTasks->where('status', 'Approved')->count();
+    $rejectedCount = $task->proofTasks->where('status', 'Rejected')
+        ->where(function ($proof) {
+            return is_null($proof->reviewed_at)
+                && $proof->rejected_at <= now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time'))
+                || !is_null($proof->reviewed_at);
+        })->count();
+    $holdTaskCount = $task->proofTasks->where(function ($proof) {
+        return $proof->status === 'Reviewed'
+            || ($proof->status === 'Rejected' && is_null($proof->reviewed_at)
+            && $proof->rejected_at > now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
+    })->count();
+
+    // Add "not submitting charge" calculation
+    $notSubmittingCount = $task->worker_needed - $task->proofTasks->count();
+    $notSubmittingCharge = $chargePerTask * $notSubmittingCount;
+
+    $postTaskChargeWaiting += $chargePerTask * $pendingCount + $notSubmittingCharge;
+    $postTaskChargePayment += ($task->income_of_each_worker * $approvedCount)
+        + (($task->site_charge / $task->worker_needed) * $approvedCount
+        + $task->required_proof_photo_charge + $task->boosting_time_charge
+        + $task->work_duration_charge);
+    $postTaskChargeRefund += $chargePerTask * $rejectedCount;
+    $postTaskChargeHold += $chargePerTask * $holdTaskCount;
+}
+
 
         return view('frontend/dashboard', [
             // Posted Task .............................................................................................................
@@ -243,7 +237,7 @@ class UserController extends Controller
             'monthly_report' => Report::where('reported_by', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
             'yearly_report' => Report::where('reported_by', Auth::id())->whereYear('created_at', date('Y'))->count(),
             'total_report' => Report::where('reported_by', Auth::id())->count(),
-        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData', 'userStatus', 'postTaskChargeTotal', 'postRejectedTaskChargeTotal', 'postTaskChargeWaiting', 'postTaskChargeCanceled', 'postTaskChargePending', 'postTaskChargeWorkerPayment', 'postTaskChargeSitePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
+        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData', 'userStatus', 'postTaskChargeTotal', 'postTaskChargeWaiting', 'postTaskChargePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
     }
 
     // Profile.............................................................................................................
@@ -883,25 +877,19 @@ class UserController extends Controller
                     })
                     ->editColumn('bonus_by', function ($row) {
                         if ($row->type == 'Proof Task Approved Bonus') {
-                            $bonus_by = '
-                                <a href="'.route('user.profile', encrypt($row->user_id)).'" title="'.$row->user->name.'" class="text-info">
-                                    '.$row->user->name.'
-                                </a>
-                            ';
+                            $bonus_by = '<span class="badge bg-success">Buyer</span>';
                         } else {
-                            $bonus_by = '
-                                <span class="badge bg-primary">'.get_site_settings('site_name').'</span>
-                            ';
+                            $bonus_by = '<span class="badge bg-primary">Admin</span>';
                         }
                         return $bonus_by;
                     })
-                    ->editColumn('bonus_user', function ($row) {
-                        $bonus_user = '
+                    ->editColumn('for_user', function ($row) {
+                        $for_user = '
                         <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
                             '.$row->bonusBy->name.'
                         </a>
                         ';
-                        return $bonus_user;
+                        return $for_user;
                     })
                     ->editColumn('amount', function ($row) {
                         return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
@@ -909,7 +897,7 @@ class UserController extends Controller
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
-                    ->rawColumns(['type', 'bonus_user', 'bonus_by', 'amount', 'created_at'])
+                    ->rawColumns(['type', 'for_user', 'bonus_by', 'amount', 'created_at'])
                     ->make(true);
             }
 

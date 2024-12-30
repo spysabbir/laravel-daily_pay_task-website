@@ -27,8 +27,8 @@ class PostTaskCheckNotification extends Notification implements ShouldQueue
     private function getMessage()
     {
         switch ($this->postTask['status']) {
-            case 'Approved':
-                return 'Please check running posted task list for more details.';
+            case 'Running':
+                return 'Please check running posted task list for checking the progress of your posted task.';
             case 'Rejected':
                 return 'Rejection Reason: ' . ($this->postTask['rejection_reason'] ?? 'N/A') . '. Please check rejected posted task list section for more details.';
             case 'Canceled':

@@ -83,6 +83,9 @@
                     <h3 class="card-title">Proof Task List</h3>
                     <h3>Total Pending: <span id="pending_proof_tasks_count">0</span></h3>
                 </div>
+                <div class="action">
+                    <button class="btn btn-sm btn-primary" id="expiredAllProofTaskApproved">Expired All Proof Task Approved</button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -114,6 +117,9 @@
                                     Proof Answer
                                 </th>
                                 <th>Submited Date</th>
+                                <th>
+                                    Checking Expired Time
+                                </th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -188,6 +194,7 @@
                     }
                 },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'checking_expired_time', name: 'checking_expired_time' },
                 { data: 'action', name: 'action' }
             ]
         });
@@ -300,6 +307,24 @@
             // Remove hash fragment from the URL
             const url = window.location.href.split('#')[0];
             window.history.replaceState(null, null, url);
+        });
+
+        // Expired All Proof Task Approved
+        $('#expiredAllProofTaskApproved').on('click', function () {
+            var url = "{{ route('backend.worked_task.expired_all_proof_task_approved', ":id") }}";
+            url = url.replace(':id', "{{ $postTask->id }}");
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    if (response.status == 400) {
+                        toastr.error(response.error);
+                    } else {
+                        toastr.success('All Proof Task Approved Successfully');
+                        $('#allDataTable').DataTable().ajax.reload();
+                    }
+                },
+            });
         });
     });
 </script>

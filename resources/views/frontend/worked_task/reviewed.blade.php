@@ -11,7 +11,7 @@
                     <h3 class="card-title">Working Task List - Reviewed</h3>
                     <h3>Total: <span id="total_proofs_count">0</span></h3>
                     <p class="card-description text-info">
-                        Note: Hi worker, below tasks list is waiting for approval from admin panel. If your review is approved you will see it in the Approved folder and if it is rejected then you will see it in the rejected folder. After review checking you will get notification from admin panel. If your review is here more than 48 hours then contact us. Tasks will removed from below list after 7 days. Also please contact us if you face any problem.
+                        Note: Hi worker, below tasks list is waiting for approval from admin panel. If your review is approved you will see it in the Approved folder and if it is rejected then you will see it in the rejected folder. After review checking you will get notification from admin panel. If your review is here more than {{ get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') }} hours then contact us. Tasks will removed from below list after 7 days. Also please contact us if you face any problem.
                     </p>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                                 <th>Review Id</th>
                                 <th>Task Title</th>
                                 <th>Task Rate</th>
-                                <th>Submit Date</th>
+                                {{-- <th>Submit Date</th> --}}
                                 {{-- <th>Rejected Reason</th> --}}
                                 <th>Rejected Date</th>
                                 <th>
@@ -43,6 +43,7 @@
                                     Reviewed Reason
                                 </th>
                                 <th>Reviewed Date</th>
+                                <th>Checking Expired Time</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -121,7 +122,7 @@
                 { data: 'review_id', name: 'review_id' },
                 { data: 'title', name: 'title' },
                 { data: 'income_of_each_worker', name: 'income_of_each_worker' },
-                { data: 'created_at', name: 'created_at' },
+                // { data: 'created_at', name: 'created_at' },
                 // { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'rejected_at', name: 'rejected_at' },
                 {
@@ -136,6 +137,7 @@
                     }
                 },
                 { data: 'reviewed_at', name: 'reviewed_at' },
+                { data: 'checking_expired_time', name: 'checking_expired_time' },
                 { data: 'action', name: 'action' }
             ]
         });

@@ -17,6 +17,7 @@ use App\Notifications\ReviewedTaskProofCheckNotification;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class TaskController extends Controller implements HasMiddleware
 {
@@ -753,7 +754,15 @@ class TaskController extends Controller implements HasMiddleware
                     return '<span class="badge bg-info my-2">Answer: </span><br>' . nl2br(e($row->proof_answer));
                 })
                 ->editColumn('created_at', function ($row) {
-                    return $row->created_at->format('d M Y h:i A');
+                    return $row->created_at->format('d M Y h:i:s A');
+                })
+                ->editColumn('checking_expired_time', function ($row) {
+                    $submitDate = Carbon::parse($row->created_at);
+                    $endDate = $submitDate->addHours((int) get_default_settings('posted_task_proof_submit_auto_approved_time'));
+                    if ($endDate < now()) {
+                        return '<span class="badge bg-danger">Expired</span>';
+                    }
+                    return '<span class="badge bg-primary">' . $endDate->format('d M, Y h:i:s A') . '</span>';
                 })
                 ->addColumn('action', function ($row) {
                     $viewPermission = auth()->user()->can('worked_task.proof_check');
@@ -767,7 +776,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'pendingProofTasksCount' => $pendingProofTasksCount
                 ])
-                ->rawColumns(['id', 'user', 'proof_answer', 'proof_answer_full', 'created_at', 'action'])
+                ->rawColumns(['id', 'user', 'proof_answer', 'proof_answer_full', 'created_at', 'checking_expired_time', 'action'])
                 ->make(true);
         }
 
@@ -974,8 +983,12 @@ class TaskController extends Controller implements HasMiddleware
                     ';
                 })
                 ->editColumn('reviewed_count', function ($row) {
-                    $countReviewed = ProofTask::where('post_task_id', $row->id)->where('status', 'Reviewed')->count();
-                    return '<span class="badge bg-warning">Reviewed: ' . $countReviewed . '</span>';
+                    $totalReviewed = ProofTask::where('post_task_id', $row->id)->where('reviewed_at', '!=', null)->count();
+                    $runningReviewed = ProofTask::where('post_task_id', $row->id)->where('status', 'Reviewed')->count();
+                    return '
+                    <span class="badge bg-primary">Total: ' . $totalReviewed . '</span>
+                    <span class="badge bg-success">Running: ' . $runningReviewed . '</span>
+                    ';
                 })
                 ->editColumn('action', function ($row) {
                     $btn = '
@@ -1033,9 +1046,20 @@ class TaskController extends Controller implements HasMiddleware
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->format('d M Y h:i A');
                 })
+                ->editColumn('rejected_at', function ($row) {
+                    return date('d M Y h:i A', strtotime($row->rejected_at));
+                })
                 ->editColumn('reviewed_at', function ($row) {
                     $checked_at = date('d M Y h:i A', strtotime($row->reviewed_at));
                     return $checked_at;
+                })
+                ->editColumn('checking_expired_time', function ($row) {
+                    $submitDate = Carbon::parse($row->reviewed_at);
+                    $endDate = $submitDate->addHours((int) get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time'));
+                    if ($endDate < now()) {
+                        return '<span class="badge bg-danger">Expired</span>';
+                    }
+                    return '<span class="badge bg-primary">' . $endDate->format('d M, Y h:i:s A') . '</span>';
                 })
                 ->addColumn('action', function ($row) {
                     $viewPermission = auth()->user()->can('worked_task.proof_check');
@@ -1057,7 +1081,7 @@ class TaskController extends Controller implements HasMiddleware
                     'reviewedProofTasksCount' => $reviewedProofTasksCount,
                     'reviewedProofTasksCountRunning' => $reviewedProofTasksCountRunning
                 ])
-                ->rawColumns(['id', 'user','status', 'created_at', 'reviewed_at', 'action'])
+                ->rawColumns(['id', 'user','status', 'created_at', 'rejected_at', 'reviewed_at', 'checking_expired_time', 'action'])
                 ->make(true);
         }
 
@@ -1139,5 +1163,41 @@ class TaskController extends Controller implements HasMiddleware
                 'status' => 200,
             ]);
         }
+    }
+
+    public function workedTaskExpiredAllProofTaskApproved($id)
+    {
+        // Retrieve the PostTask Expired ProofTask list
+        $proofTasks = ProofTask::where('post_task_id', $id)
+            ->where('status', 'Pending')
+            ->where('created_at', '<', now()->subHours((int) get_default_settings('posted_task_proof_submit_auto_approved_time')))
+            ->get();
+
+        if ($proofTasks->count() === 0) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'No proof task found to approve.'
+            ]);
+        }
+
+        // Retrieve the PostTask
+        $postTask = PostTask::findOrFail($id);
+
+        // Loop through the ProofTask list
+        foreach ($proofTasks as $proofTask) {
+            $proofTaskUser = User::findOrFail($proofTask->user_id);
+            $proofTaskUser->update([
+                'withdraw_balance' => $proofTaskUser->withdraw_balance + $postTask->income_of_each_worker,
+            ]);
+
+            $proofTask->status = 'Approved';
+            $proofTask->approved_at = now();
+            $proofTask->approved_by = auth()->user()->id;
+            $proofTask->save();
+        }
+
+        return response()->json([
+            'status' => 200,
+        ]);
     }
 }

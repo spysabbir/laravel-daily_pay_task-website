@@ -273,22 +273,22 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Today Report Send Status</h6>
+                    <h6 class="card-title">Total Approved Posted Task Charge</h6>
                 </div>
             </div>
             <div class="card-body">
-                @if ($today_pending_report == 0 && $today_false_report == 0 && $today_received_report == 0)
+                @if ($postTaskChargeWaiting == 0 && $postTaskChargePayment == 0 && $postTaskChargeRefund == 0 && $postTaskChargeHold == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
                         <i data-feather="alert-circle"></i>
                         <h4>No data found!</h4>
                     </div>
                     <p class="mt-3">
-                        No data found for today report status. Please check back later.
+                        No data found for total approved posted task charge. Please check back later.
                     </p>
                 </div>
                 @else
-                <div id="todayReportApexDonut"></div>
+                <div id="totalApprovedPostedTaskChargeApexDonut"></div>
                 @endif
             </div>
         </div>
@@ -601,104 +601,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Total Posted Task Charge Status</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeTotal, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Total</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postRejectedTaskChargeTotal, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-warning">
-                                        <span>Rejected</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWaiting, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-secondary">
-                                        <span>Waiting</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeCanceled, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-danger">
-                                        <span>Canceled</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Total Posted Task Proof Submit Charge Status</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargePending, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-info">
-                                        <span>Pending</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeWorkerPayment + $postTaskChargeSitePayment, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <span>Payment</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeRefund, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-danger">
-                                        <span>Refund</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ round($postTaskChargeHold, 2) }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-warning">
-                                        <span>Hold</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div> <!-- row -->
@@ -914,8 +816,8 @@
     var monthlyWithdrawSeries = {!! json_encode(array_values($monthlyWithdraw)) !!};
     var monthlyDepositeSeries = {!! json_encode(array_values($monthlyDeposite)) !!};
 
-    var todayReportLabels = ['Pending', 'False', 'Received'];
-    var todayReportSeries = [{{ $today_pending_report }}, {{ $today_false_report }}, {{ $today_received_report }}];
+    var todayReportLabels = ['Waiting', 'Payment', 'Refund', 'Hold'];
+    var todayReportSeries = [{{ round($postTaskChargeWaiting, 2) }}, {{ round($postTaskChargePayment, 2) }}, {{ round($postTaskChargeRefund, 2) }}, {{ round($postTaskChargeHold, 2) }}];
 
     const totalTaskProofSubmitChartjsLineData = @json($totalTaskProofSubmitChartjsLineData);
     const totalWorkedTaskApexLineData = @json($totalWorkedTaskApexLineData);

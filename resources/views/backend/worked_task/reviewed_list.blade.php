@@ -80,8 +80,8 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Proof Task List</h3>
-                    <h4>Total Reviewed: <span id="reviewed_proof_tasks_count">0</span></h4>
-                    <h4>Running Reviewed: <span id="running_reviewed_proof_tasks_count">0</span></h4>
+                    <h4 class="text-primary">Total Reviewed: <span id="reviewed_proof_tasks_count">0</span></h4>
+                    <h4 class="text-warning">Running Reviewed: <span id="running_reviewed_proof_tasks_count">0</span></h4>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -108,8 +108,10 @@
                                 <th>Proof Id</th>
                                 <th>User Details</th>
                                 {{-- <th>Proof Answer</th> --}}
-                                <th>Submited Date</th>
+                                {{-- <th>Submited Date</th> --}}
+                                <th>Rejected Date</th>
                                 <th>Reviewed Date</th>
+                                <th>Checking Expired Time</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -191,8 +193,10 @@
                 { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
                 // { data: 'proof_answer', name: 'proof_answer' },
-                { data: 'created_at', name: 'created_at' },
+                // { data: 'created_at', name: 'created_at' },
+                { data: 'rejected_at', name: 'rejected_at' },
                 { data: 'reviewed_at', name: 'reviewed_at' },
+                { data: 'checking_expired_time', name: 'checking_expired_time' },
                 { data: 'action', name: 'action' }
             ]
         });
