@@ -107,6 +107,11 @@ class WorkedTaskController extends Controller
                     ->editColumn('approved_at', function ($row) {
                         return '<span class="badge bg-dark">'.date('d M Y h:i A', strtotime($row->approved_at)).'</span>';
                     })
+                    ->editColumn('work_duration_deadline', function ($row) {
+                        $approvedDate = Carbon::parse($row->approved_at);
+                        $endDate = $approvedDate->addDays((int) $row->work_duration);
+                        return '<span class="badge bg-warning text-dark">' . $endDate->format('d M, Y h:i:s A') . '</span>';
+                    })
                     ->editColumn('action', function ($row) {
                         $action = '
                         <a href="'.route('find_task.details', encrypt($row->id)).'" target="_blank" title="View" class="btn btn-info btn-sm">
@@ -116,7 +121,7 @@ class WorkedTaskController extends Controller
                         return $action;
                     })
                     ->with(['totalTasksCount' => $totalTasksCount])
-                    ->rawColumns(['category_name', 'title', 'worker_needed', 'income_of_each_worker', 'approved_at', 'action'])
+                    ->rawColumns(['category_name', 'title', 'worker_needed', 'income_of_each_worker', 'approved_at', 'work_duration_deadline', 'action'])
                     ->make(true);
             }
 

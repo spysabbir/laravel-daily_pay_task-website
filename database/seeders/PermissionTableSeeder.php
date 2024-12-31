@@ -203,7 +203,7 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'support.reply', 'group_name' => 'SupportManagement', 'guard_name' => 'web'],
             // ContactManagement
             ['name' => 'ContactMenu', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
-            ['name' => 'contact.unred', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
+            ['name' => 'contact.unread', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
             ['name' => 'contact.read', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
             ['name' => 'contact.delete', 'group_name' => 'ContactManagement', 'guard_name' => 'web'],
             // SubscriberManagement

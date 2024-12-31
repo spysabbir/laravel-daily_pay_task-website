@@ -57,7 +57,7 @@ class WithdrawController extends Controller implements HasMiddleware
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
                 ->editColumn('type', function ($row) {
@@ -192,7 +192,7 @@ class WithdrawController extends Controller implements HasMiddleware
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
                 ->editColumn('type', function ($row) {
@@ -288,7 +288,7 @@ class WithdrawController extends Controller implements HasMiddleware
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
                 ->editColumn('type', function ($row) {

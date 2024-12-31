@@ -36,6 +36,7 @@
                                 <th>Sl No</th>
                                 <th>Task ID</th>
                                 <th>User ID</th>
+                                <th>User Name</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
                                 <th>Proof Status</th>
@@ -84,6 +85,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'id', name: 'id' },
                 { data: 'user_id', name: 'user_id' },
+                { data: 'user_name', name: 'user_name' },
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 { data: 'proof_status', name: 'proof_status' },

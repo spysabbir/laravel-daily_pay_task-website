@@ -49,7 +49,7 @@ class DepositController extends Controller implements HasMiddleware
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
                 ->editColumn('method', function ($row) {
@@ -59,11 +59,11 @@ class DepositController extends Controller implements HasMiddleware
                         ';
                     } else if ($row->method == 'Nagad') {
                         $method = '
-                        <span class="badge bg-warning">' . $row->method . '</span>
+                        <span class="badge bg-success">' . $row->method . '</span>
                         ';
                     }else {
                         $method = '
-                        <span class="badge bg-success">' . $row->method . '</span>
+                        <span class="badge bg-info">' . $row->method . '</span>
                         ';
                     }
                     return $method;
@@ -153,7 +153,7 @@ class DepositController extends Controller implements HasMiddleware
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
                 ->editColumn('method', function ($row) {
@@ -163,11 +163,11 @@ class DepositController extends Controller implements HasMiddleware
                         ';
                     } else if ($row->method == 'Nagad') {
                         $method = '
-                        <span class="badge bg-warning">' . $row->method . '</span>
+                        <span class="badge bg-success">' . $row->method . '</span>
                         ';
                     }else {
                         $method = '
-                        <span class="badge bg-success">' . $row->method . '</span>
+                        <span class="badge bg-info">' . $row->method . '</span>
                         ';
                     }
                     return $method;
@@ -212,7 +212,7 @@ class DepositController extends Controller implements HasMiddleware
     public function depositRequestApproved(Request $request)
     {
         if ($request->ajax()) {
-            $query = Deposit::where('status', 'Approved');
+            $query = Deposit::where('status', 'Approved')->whereNot('method', 'Withdraw Balance');
 
             if ($request->method){
                 $query->where('deposits.method', $request->method);
@@ -233,7 +233,7 @@ class DepositController extends Controller implements HasMiddleware
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
                 ->editColumn('method', function ($row) {
@@ -243,34 +243,20 @@ class DepositController extends Controller implements HasMiddleware
                         ';
                     } else if ($row->method == 'Nagad') {
                         $method = '
-                        <span class="badge bg-warning">' . $row->method . '</span>
-                        ';
-                    } else if ($row->method == 'Rocket') {
-                        $method = '
-                        <span class="badge bg-info">' . $row->method . '</span>
+                        <span class="badge bg-success">' . $row->method . '</span>
                         ';
                     } else {
                         $method = '
-                        <span class="badge bg-success">' . $row->method . '</span>
+                        <span class="badge bg-info">' . $row->method . '</span>
                         ';
                     }
                     return $method;
                 })
                 ->editColumn('number', function ($row) {
-                    if ($row->number) {
-                        $number = $row->number;
-                    } else {
-                        $number = 'N/A';
-                    }
-                    return $number;
+                    return $row->number;
                 })
                 ->editColumn('transaction_id', function ($row) {
-                    if ($row->transaction_id) {
-                        $transaction_id = $row->transaction_id;
-                    } else {
-                        $transaction_id = 'N/A';
-                    }
-                    return $transaction_id;
+                    return  $row->transaction_id;
                 })
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
@@ -282,15 +268,9 @@ class DepositController extends Controller implements HasMiddleware
                     return $row->created_at->format('d M Y h:i A');
                 })
                 ->editColumn('approved_by', function ($row) {
-                    if ($row->approvedBy) {
-                        return '
-                            <span class="badge text-dark bg-light">' . $row->approvedBy->name . '</span>'
-                            ;
-                    } else {
-                        return '
-                            <span class="badge text-warning bg-light">N/A</span>'
-                            ;
-                    }
+                    return '
+                        <span class="badge text-dark bg-light">' . $row->approvedBy->name . '</span>'
+                        ;
                 })
                 ->editColumn('approved_at', function ($row) {
                     return '

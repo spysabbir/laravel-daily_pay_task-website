@@ -48,7 +48,7 @@ class VerificationController extends Controller implements HasMiddleware
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
                 ->editColumn('user_email', function ($row) {
@@ -150,6 +150,11 @@ class VerificationController extends Controller implements HasMiddleware
 
             return DataTables::of($rejectedData)
                 ->addIndexColumn()
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
+                })
                 ->editColumn('user_email', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . $row->user->email . '</span>
@@ -179,7 +184,7 @@ class VerificationController extends Controller implements HasMiddleware
 
                     return $deleteBtn;
                 })
-                ->rawColumns(['user_email', 'created_at', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_name', 'user_email', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
@@ -206,7 +211,7 @@ class VerificationController extends Controller implements HasMiddleware
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
                 ->editColumn('user_email', function ($row) {

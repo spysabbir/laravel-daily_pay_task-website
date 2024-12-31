@@ -100,6 +100,234 @@
     <div class="col-md-8">
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">User Deposit Details</h3>
+            </div>
+            <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">User Withdraw Details</h3>
+            </div>
+            <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">User Posted Task Details</h3>
+            </div>
+            <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">User Posted Task Proof Submit Details</h3>
+            </div>
+            <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">User Worked Task Details</h3>
+            </div>
+            <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">User Report Details</h3>
+            </div>
+            <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">0</h4>
+                        <p class="card-text">Total</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">User Status Details</h3>
             </div>
             <div class="card-body">
@@ -137,7 +365,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center text-info">No blocked status found!</td>
+                                <td colspan="50" class="text-center text-info">No blocked status found!</td>
                             </tr>
                             @endforelse
                         </tbody>

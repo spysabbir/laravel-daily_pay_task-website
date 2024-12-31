@@ -30,7 +30,7 @@
                                                 <tr>
                                                     <th>Sl No</th>
                                                     <th>User Id</th>
-                                                    <th>User Email</th>
+                                                    <th>User Name</th>
                                                     <th>Submited At</th>
                                                     <th>Rejected Reason</th>
                                                     <th>Rejected By</th>
@@ -203,7 +203,7 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
-                { data: 'user_email', name: 'user_email' },
+                { data: 'user_name', name: 'user_name' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'rejected_by', name: 'rejected_by' },

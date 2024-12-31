@@ -65,8 +65,10 @@ class TaskController extends Controller implements HasMiddleware
 
             return DataTables::of($pendingRequest)
                 ->addIndexColumn()
-                ->editColumn('user', function ($row) {
-                    return $row->user->name;
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
@@ -81,7 +83,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
                 ])
-                ->rawColumns(['user', 'created_at', 'action'])
+                ->rawColumns(['user_name', 'created_at', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.pending');
@@ -115,8 +117,10 @@ class TaskController extends Controller implements HasMiddleware
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
-                ->editColumn('user', function ($row) {
-                    return $row->user->name;
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
@@ -142,7 +146,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
                 ])
-                ->rawColumns(['user', 'created_at', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_name', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.rejected');
@@ -176,8 +180,10 @@ class TaskController extends Controller implements HasMiddleware
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
-                ->editColumn('user', function ($row) {
-                    return $row->user->name;
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
@@ -237,7 +243,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
                 ])
-                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'approved_at', 'action'])
+                ->rawColumns(['user_name', 'proof_submitted', 'proof_status', 'created_at', 'approved_at', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.running');
@@ -271,8 +277,10 @@ class TaskController extends Controller implements HasMiddleware
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
-                ->editColumn('user', function ($row) {
-                    return $row->user->name;
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
@@ -330,7 +338,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
                 ])
-                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'created_at', 'canceled_at', 'canceled_by', 'action'])
+                ->rawColumns(['user_name', 'proof_submitted', 'proof_status', 'created_at', 'canceled_at', 'canceled_by', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.canceled');
@@ -364,8 +372,10 @@ class TaskController extends Controller implements HasMiddleware
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
-                ->editColumn('user', function ($row) {
-                    return $row->user->name;
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->editColumn('approved_at', function ($row) {
                     return date('d M, Y h:i A', strtotime($row->approved_at));
@@ -429,7 +439,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
                 ])
-                ->rawColumns(['user', 'proof_submitted', 'proof_status', 'approved_at', 'paused_at', 'paused_by', 'action'])
+                ->rawColumns(['user_name', 'proof_submitted', 'proof_status', 'approved_at', 'paused_at', 'paused_by', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.paused');
@@ -463,8 +473,10 @@ class TaskController extends Controller implements HasMiddleware
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
-                ->editColumn('user', function ($row) {
-                    return $row->user->name;
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->editColumn('worker_needed', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
@@ -494,7 +506,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
                 ])
-                ->rawColumns(['user', 'worker_needed', 'approved_at', 'completed_at', 'action'])
+                ->rawColumns(['user_name', 'worker_needed', 'approved_at', 'completed_at', 'action'])
                 ->make(true);
         }
         return view('backend.posted_task.completed');
@@ -684,6 +696,11 @@ class TaskController extends Controller implements HasMiddleware
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
+                })
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                     $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
@@ -708,7 +725,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
                 ])
-                ->rawColumns(['proof_submitted', 'pending_count', 'action'])
+                ->rawColumns(['user_name', 'proof_submitted', 'pending_count', 'action'])
                 ->make(true);
         }
         return view('backend.worked_task.pending');
@@ -742,7 +759,7 @@ class TaskController extends Controller implements HasMiddleware
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
                         <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
-                        <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
                     ';
                     return $user;
@@ -807,6 +824,11 @@ class TaskController extends Controller implements HasMiddleware
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
+                })
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                     $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
@@ -841,7 +863,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
                 ])
-                ->rawColumns(['proof_submitted', 'proof_status', 'action'])
+                ->rawColumns(['user_name', 'proof_submitted', 'proof_status', 'action'])
                 ->make(true);
         }
         return view('backend.worked_task.approved-rejected');
@@ -880,7 +902,7 @@ class TaskController extends Controller implements HasMiddleware
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
                         <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
-                        <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
                     ';
                     return $user;
@@ -971,6 +993,11 @@ class TaskController extends Controller implements HasMiddleware
 
             return DataTables::of($taskList)
                 ->addIndexColumn()
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
+                })
                 ->editColumn('proof_submitted', function ($row) {
                     $proofSubmitted = ProofTask::where('post_task_id', $row->id)->count();
                     $proofStyleWidth = $proofSubmitted != 0 ? round(($proofSubmitted / $row->worker_needed) * 100, 2) : 100;
@@ -999,7 +1026,7 @@ class TaskController extends Controller implements HasMiddleware
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
                 ])
-                ->rawColumns(['proof_submitted', 'reviewed_count', 'action'])
+                ->rawColumns(['user_name', 'proof_submitted', 'reviewed_count', 'action'])
                 ->make(true);
         }
         return view('backend.worked_task.reviewed');
@@ -1034,7 +1061,7 @@ class TaskController extends Controller implements HasMiddleware
                     $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
                         <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
-                        <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
                     ';
                     return $user;

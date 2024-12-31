@@ -33,6 +33,7 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>User Id</th>
+                                <th>User Name</th>
                                 <th>Task Id</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
@@ -100,6 +101,7 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
+                { data: 'user_name', name: 'user_name' },
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'proof_submitted', name: 'proof_submitted' },

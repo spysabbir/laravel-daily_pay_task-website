@@ -11,9 +11,11 @@
                     <h3 class="card-title">Find Tasks</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                 </div>
-                <p class="card-description text-info">
-                    Note: Hi everyone, find the preferred task from the below list to working and will get result from buyers within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours after submitting task proof. You will get automatically payment if the buyer does not approve or reject your Task Proof within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours so work with honesty and perfectly. Alert: Please don’t' try to hassle others and submit false work. Please contact us if you face any problem, Thanks.
-                </p>
+                <div class="card-description">
+                    <p><span class="text-info">Note: </span>Hi everyone, find the preferred task from the below list to working and will get result from buyers within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours after submitting task proof. You will get automatically payment if the buyer does not approve or reject your Task Proof within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours so work with honesty and perfectly.</p>
+                    <p><span class="text-warning">Alert: </span>Please don’t' try to hassle others and submit false work. Please contact us if you face any problem, Thanks.</p>
+                </div>
+
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -43,7 +45,7 @@
                         </div>
                         <div class="col-xl-3 col-lg-2 mb-3">
                             <div class="form-group mt-1">
-                                <button class="btn btn-danger btn-block mt-4" id="clear_filters">Clear Filters</button>
+                                <button class="btn btn-info btn-block mt-4" id="clear_filters">Clear Filters</button>
                             </div>
                         </div>
                     </div>
@@ -57,7 +59,8 @@
                                 <th>Task Title</th>
                                 <th>Worker Earn</th>
                                 <th>Proof Submitted</th>
-                                <th>Approved At</th>
+                                <th>Approved Date</th>
+                                <th>Proof Submit Deadline</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -134,6 +137,7 @@
                 { data: 'income_of_each_worker', name: 'income_of_each_worker' },
                 { data: 'worker_needed', name: 'worker_needed' },
                 { data: 'approved_at', name: 'approved_at' },
+                { data: 'work_duration_deadline', name: 'work_duration_deadline' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

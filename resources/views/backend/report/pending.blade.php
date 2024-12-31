@@ -23,12 +23,6 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="filter_reported_user_id" class="form-label">Reported User Id</label>
-                                <input type="number" id="filter_reported_user_id" class="form-control filter_data" placeholder="Search Reported User Id">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
                                 <label for="filter_type" class="form-label">Type</label>
                                 <select class="form-select filter_data" id="filter_type">
                                     <option value="">-- Select Type --</option>
@@ -48,6 +42,12 @@
                             <div class="form-group">
                                 <label for="filter_proof_task_id" class="form-label">Proof Task Id</label>
                                 <input type="number" id="filter_proof_task_id" class="form-control filter_data" placeholder="Search Proof Task Id">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="filter_reported_user_id" class="form-label">Reported User Id</label>
+                                <input type="number" id="filter_reported_user_id" class="form-control filter_data" placeholder="Search Reported User Id">
                             </div>
                         </div>
                         <div class="col-md-2">

@@ -87,7 +87,7 @@ class ReportController extends Controller implements HasMiddleware
                 })
                 ->editColumn('reported_user_name', function ($row) {
                     return '
-                        <span class="badge bg-dark text-white">'.$row->reported->name.'</span>
+                        <a href="' . route('backend.user.show', encrypt($row->reported->id)) . '" class="text-primary" target="_blank">' . $row->reported->name . '</a>
                     ';
                 })
                 ->editColumn('report_by_user_id', function ($row) {
@@ -97,7 +97,7 @@ class ReportController extends Controller implements HasMiddleware
                 })
                 ->editColumn('report_by_user_name', function ($row) {
                     return '
-                        <span class="badge bg-dark text-white">'.$row->reportedBy->name.'</span>
+                        <a href="' . route('backend.user.show', encrypt($row->reportedBy->id)) . '" class="text-primary" target="_blank">' . $row->reportedBy->name . '</a>
                     ';
                 })
                 ->editColumn('created_at', function ($row) {
@@ -111,7 +111,7 @@ class ReportController extends Controller implements HasMiddleware
                     return $viewBtn;
                 })
                 ->with([
-                    'total_reports_count' => $totalReportsCount,
+                    'totalReportsCount' => $totalReportsCount,
                 ])
                 ->rawColumns(['type', 'post_task_id', 'proof_task_id', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
@@ -232,7 +232,7 @@ class ReportController extends Controller implements HasMiddleware
                 })
                 ->editColumn('reported_user_name', function ($row) {
                     return '
-                        <span class="badge bg-dark text-white">'.$row->reported->name.'</span>
+                        <a href="' . route('backend.user.show', encrypt($row->reported->id)) . '" class="text-primary" target="_blank">' . $row->reported->name . '</a>
                     ';
                 })
                 ->editColumn('report_by_user_id', function ($row) {
@@ -242,7 +242,7 @@ class ReportController extends Controller implements HasMiddleware
                 })
                 ->editColumn('report_by_user_name', function ($row) {
                     return '
-                        <span class="badge bg-dark text-white">'.$row->reportedBy->name.'</span>
+                        <a href="' . route('backend.user.show', encrypt($row->reportedBy->id)) . '" class="text-primary" target="_blank">' . $row->reportedBy->name . '</a>
                     ';
                 })
                 ->editColumn('created_at', function ($row) {
@@ -258,7 +258,7 @@ class ReportController extends Controller implements HasMiddleware
                     return $viewBtn;
                 })
                 ->with([
-                    'total_reports_count' => $totalReportsCount,
+                    'totalReportsCount' => $totalReportsCount,
                 ])
                 ->rawColumns(['type', 'post_task_id', 'proof_task_id', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
@@ -327,7 +327,7 @@ class ReportController extends Controller implements HasMiddleware
                 })
                 ->editColumn('reported_user_name', function ($row) {
                     return '
-                        <span class="badge bg-dark text-white">'.$row->reported->name.'</span>
+                        <a href="' . route('backend.user.show', encrypt($row->reported->id)) . '" class="text-primary" target="_blank">' . $row->reported->name . '</a>
                     ';
                 })
                 ->editColumn('report_by_user_id', function ($row) {
@@ -337,7 +337,7 @@ class ReportController extends Controller implements HasMiddleware
                 })
                 ->editColumn('report_by_user_name', function ($row) {
                     return '
-                        <span class="badge bg-dark text-white">'.$row->reportedBy->name.'</span>
+                        <a href="' . route('backend.user.show', encrypt($row->reportedBy->id)) . '" class="text-primary" target="_blank">' . $row->reportedBy->name . '</a>
                     ';
                 })
                 ->editColumn('created_at', function ($row) {
@@ -353,7 +353,7 @@ class ReportController extends Controller implements HasMiddleware
                     return $viewBtn;
                 })
                 ->with([
-                    'total_reports_count' => $totalReportsCount,
+                    'totalReportsCount' => $totalReportsCount,
                 ])
                 ->rawColumns(['type', 'post_task_id', 'proof_task_id', 'reported_user_id', 'reported_user_name', 'report_by_user_id', 'report_by_user_name', 'status', 'action'])
                 ->make(true);
