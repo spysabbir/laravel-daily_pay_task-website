@@ -11,7 +11,7 @@
                     <h3 class="card-title">Posting Task List - Running</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                     <p class="card-description text-info">
-                        Note: Hi user, below tasks list is your running task. You will can boost and update your task before your task work duration expires. If you cancel your task will get return pending money under our policy wise. Tasks will automatically removed from here when task work duration expires then tasks will move to completed folder. Please contact us if you face any problem.
+                        Note: Hi user, below tasks list is your running task. You will can boost and update your task before your task work duration expires. If you cancel your task will get return pending money under our policy wise. Tasks will automatically removed from here. Task will moving to canceled folder when task work duration expires. If the proof submission is complete, the tasks will move to the Completed folder. Please contact us if you face any problem.
                     </p>
                 </div>
             </div>

@@ -57,6 +57,7 @@ class UserController extends Controller
 
             $amount = Deposit::where('user_id', Auth::id())
                 ->where('status', 'Approved')
+                ->whereNot('method', 'Withdraw Balance')
                 ->whereMonth('created_at', $month->format('m'))
                 ->whereYear('created_at', $month->format('Y'))
                 ->sum('amount');
@@ -65,39 +66,75 @@ class UserController extends Controller
         }
         $monthlyDeposite = array_reverse($monthlyDeposite, true);
 
-        // totalTaskProofSubmitChartjsLineData
-        $totalTaskProofSubmitChartjsLineFixedStatuses = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
-        $totalTaskProofSubmitChartjsLineYears = ProofTask::whereYear('created_at', '<=', date('Y'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y'))->unique()->sort()->values()->toArray();
-        $totalTaskProofSubmitChartjsLineData = [
-            'labels' => $totalTaskProofSubmitChartjsLineYears,
+        // totalBalanceTransferChartjsLineData
+        $totalBalanceTransferChartjsLineFixedStatuses = ['Withdraw Balance', 'Deposit Balance'];
+
+        // Collect all unique years from both models
+        $totalBalanceTransferChartjsLineYears = array_unique(
+            array_merge(
+                Withdraw::where('method', 'Deposit Balance')
+                    ->whereYear('approved_at', '<=', date('Y'))
+                    ->where('user_id', Auth::id())
+                    ->pluck('approved_at')
+                    ->map(fn($date) => Carbon::parse($date)->format('Y'))
+                    ->toArray(),
+                Deposit::where('method', 'Withdraw Balance')
+                    ->whereYear('approved_at', '<=', date('Y'))
+                    ->where('user_id', Auth::id())
+                    ->pluck('approved_at')
+                    ->map(fn($date) => Carbon::parse($date)->format('Y'))
+                    ->toArray()
+            )
+        );
+        sort($totalBalanceTransferChartjsLineYears); // Sort the years
+
+        // Prepare data for the chart
+        $totalBalanceTransferChartjsLineData = [
+            'labels' => $totalBalanceTransferChartjsLineYears,
             'datasets' => []
         ];
-        foreach ($totalTaskProofSubmitChartjsLineFixedStatuses as $status) {
-            $data = [];
-            foreach ($totalTaskProofSubmitChartjsLineYears as $year) {
-                $count = ProofTask::whereYear('created_at', $year)->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', $status)->count();
-                $data[] = $count;
-            }
-            $totalTaskProofSubmitChartjsLineData['datasets'][] = [
-                'label' => $status,
-                'data' => $data
-            ];
-        }
 
-        // totalWorkedTaskApexLineData
-        $totalWorkedTaskApexLineFixedStatuses = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
-        $totalWorkedTaskApexLineYears = ProofTask::whereYear('created_at', '<=', date('Y'))->where('user_id', Auth::id())->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y'))->unique()->sort()->values()->toArray();
-        $totalWorkedTaskApexLineData = [
-            'categories' => $totalWorkedTaskApexLineYears,
+        // Loop through statuses and collect data
+        foreach ($totalBalanceTransferChartjsLineFixedStatuses as $status) {
+            $data = [];
+            foreach ($totalBalanceTransferChartjsLineYears as $year) {
+                if ($status === 'Withdraw Balance') {
+                    $amount = Deposit::whereYear('approved_at', $year)
+                        ->where('user_id', Auth::id())
+                        ->where('method', $status)
+                        ->sum('amount');
+                } elseif ($status === 'Deposit Balance') {
+                    $amount = Withdraw::whereYear('approved_at', $year)
+                        ->where('user_id', Auth::id())
+                        ->where('method', $status)
+                        ->sum('amount');
+                } else {
+                    $amount = 0; // Default to 0 for safety
+                }
+                $data[] = $amount;
+            }
+            $totalBalanceTransferChartjsLineData['datasets'][] = [
+                'label' => $status,
+                'data' => $data,
+            ];
+        };
+
+        // return $totalBalanceTransferChartjsLineData;
+
+        // totalReportSendApexLineData
+        $totalReportSendApexLineFixedStatuses = ['Pending', 'False', 'Received'];
+        $totalReportSendApexLineYears = Report::where('reported_by', Auth::id())->whereYear('created_at', '<=', date('Y'))->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y'))->unique()->sort()->values()->toArray();
+        $totalReportSendApexLineData = [
+            'categories' => $totalReportSendApexLineYears,
             'series' => []
         ];
-        foreach ($totalWorkedTaskApexLineFixedStatuses as $status) {
+        foreach ($totalReportSendApexLineFixedStatuses as $status) {
             $data = [];
-            foreach ($totalWorkedTaskApexLineYears as $year) {
-                $count = ProofTask::whereYear('created_at', $year)->where('user_id', Auth::id())->where('status', $status)->count();
+            foreach ($totalReportSendApexLineYears as $year) {
+                $count = Report::where('reported_by', Auth::id())->whereYear('created_at', $year)->where('status', $status)->count();
                 $data[] = $count;
             }
-            $totalWorkedTaskApexLineData['series'][] = [
+            $totalReportSendApexLineData['series'][] = [
                 'name' => $status,
                 'data' => $data
             ];
@@ -105,139 +142,139 @@ class UserController extends Controller
 
         $userStatus = UserStatus::where('user_id', Auth::id())->latest()->first();
 
-// PostTask Charges
-$postTaskChargeTotal = PostTask::where('user_id', Auth::id())
-    ->whereNotNull('approved_at')
-    ->sum('total_cost');
+        // PostTask Charges
+        $postTaskChargeTotal = PostTask::where('user_id', Auth::id())
+            ->whereNotNull('approved_at')
+            ->sum('total_cost');
 
-$postTasks = PostTask::where('user_id', Auth::id())
-    ->whereNotNull('approved_at')
-    ->with(['proofTasks' => function ($query) {
-        $query->select('id', 'post_task_id', 'status', 'reviewed_at', 'rejected_at');
-    }])
-    ->get();
+        $postTasks = PostTask::where('user_id', Auth::id())
+            ->whereNotNull('approved_at')
+            ->with(['proofTasks' => function ($query) {
+                $query->select('id', 'post_task_id', 'status', 'reviewed_at', 'rejected_at');
+            }])
+            ->get();
 
-$canceledTasks = $postTasks->where('status', 'Canceled');
-$otherTasks = $postTasks->where('status', '!=', 'Canceled');
+        $canceledTasks = $postTasks->where('status', 'Canceled');
+        $otherTasks = $postTasks->where('status', '!=', 'Canceled');
 
-$postTaskChargeWaiting = 0;
-$postTaskChargePayment = 0;
-$postTaskChargeRefund = 0;
-$postTaskChargeHold = 0;
+        $postTaskChargeWaiting = 0;
+        $postTaskChargePayment = 0;
+        $postTaskChargeRefund = 0;
+        $postTaskChargeHold = 0;
 
-// Handle Canceled Tasks
-foreach ($canceledTasks as $task) {
-    $chargePerTask = ($task->sub_cost + $task->site_charge) / $task->worker_needed;
-    $proofCount = $task->proofTasks->count();
-    $postTaskChargeRefund += $chargePerTask * ($task->worker_needed - $proofCount);
-}
+        // Handle Canceled Tasks
+        foreach ($canceledTasks as $task) {
+            $chargePerTask = ($task->sub_cost + $task->site_charge) / $task->worker_needed;
+            $proofCount = $task->proofTasks->count();
+            $postTaskChargeRefund += $chargePerTask * ($task->worker_needed - $proofCount);
+        }
 
-// Handle Other Tasks
-foreach ($otherTasks as $task) {
-    $chargePerTask = ($task->sub_cost + $task->site_charge) / $task->worker_needed;
+        // Handle Other Tasks
+        foreach ($otherTasks as $task) {
+            $chargePerTask = ($task->sub_cost + $task->site_charge) / $task->worker_needed;
 
-    $pendingCount = $task->proofTasks->where('status', 'Pending')->count();
-    $approvedCount = $task->proofTasks->where('status', 'Approved')->count();
-    $rejectedCount = $task->proofTasks->where('status', 'Rejected')
-        ->where(function ($proof) {
-            return is_null($proof->reviewed_at)
-                && $proof->rejected_at <= now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time'))
-                || !is_null($proof->reviewed_at);
-        })->count();
-    $holdTaskCount = $task->proofTasks->where(function ($proof) {
-        return $proof->status === 'Reviewed'
-            || ($proof->status === 'Rejected' && is_null($proof->reviewed_at)
-            && $proof->rejected_at > now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
-    })->count();
+            $pendingCount = $task->proofTasks->where('status', 'Pending')->count();
+            $approvedCount = $task->proofTasks->where('status', 'Approved')->count();
+            $rejectedCount = $task->proofTasks->where('status', 'Rejected')
+                ->where(function ($proof) {
+                    return is_null($proof->reviewed_at)
+                        && $proof->rejected_at <= now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time'))
+                        || !is_null($proof->reviewed_at);
+                })->count();
+            $holdTaskCount = $task->proofTasks->where(function ($proof) {
+                return $proof->status === 'Reviewed'
+                    || ($proof->status === 'Rejected' && is_null($proof->reviewed_at)
+                    && $proof->rejected_at > now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
+            })->count();
 
-    // Add "not submitting charge" calculation
-    $notSubmittingCount = $task->worker_needed - $task->proofTasks->count();
-    $notSubmittingCharge = $chargePerTask * $notSubmittingCount;
+            $notSubmittingCount = $task->worker_needed - $task->proofTasks->count();
+            $notSubmittingCharge = $chargePerTask * $notSubmittingCount;
 
-    $postTaskChargeWaiting += $chargePerTask * $pendingCount + $notSubmittingCharge;
-    $postTaskChargePayment += ($task->income_of_each_worker * $approvedCount)
-        + (($task->site_charge / $task->worker_needed) * $approvedCount
-        + $task->required_proof_photo_charge + $task->boosting_time_charge
-        + $task->work_duration_charge);
-    $postTaskChargeRefund += $chargePerTask * $rejectedCount;
-    $postTaskChargeHold += $chargePerTask * $holdTaskCount;
-}
-
+            $postTaskChargeWaiting += $chargePerTask * $pendingCount + $notSubmittingCharge;
+            $postTaskChargePayment += ($task->income_of_each_worker * $approvedCount)
+                + (($task->site_charge / $task->worker_needed) * $approvedCount
+                + $task->required_proof_photo_charge + $task->boosting_time_charge
+                + $task->work_duration_charge);
+            $postTaskChargeRefund += $chargePerTask * $rejectedCount;
+            $postTaskChargeHold += $chargePerTask * $holdTaskCount;
+        }
 
         return view('frontend/dashboard', [
             // Posted Task .............................................................................................................
             // Today Status
-            'today_pending_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
-            'today_running_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Running')->count(),
-            'today_rejected_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Rejected')->count(),
-            'today_canceled_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Canceled')->count(),
-            'today_paused_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Paused')->count(),
-            'today_completed_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Completed')->count(),
+            'today_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->count(),
+            // 'today_pending_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
+            // 'today_running_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Running')->count(),
+            // 'today_rejected_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Rejected')->count(),
+            // 'today_canceled_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Canceled')->count(),
+            // 'today_paused_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Paused')->count(),
+            // 'today_completed_posted_task' => PostTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Completed')->count(),
             // Monthly Status
             'monthly_posted_task' => PostTask::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
             // Yearly Status
             'yearly_posted_task' => PostTask::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->count(),
             // Total Status
+            'total_posted_task' => PostTask::where('user_id', Auth::id())->count(),
             'total_pending_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Pending')->count(),
             'total_running_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Running')->count(),
             'total_rejected_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Rejected')->count(),
             'total_canceled_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Canceled')->count(),
             'total_paused_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Paused')->count(),
             'total_completed_posted_task' => PostTask::where('user_id', Auth::id())->where('status', 'Completed')->count(),
-            'total_posted_task' => PostTask::where('user_id', Auth::id())->count(),
-            // Task Proof Submit .............................................................................................................
-            'today_pending_task_proof_submit' => ProofTask::where('status', 'Pending')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
-            'today_approved_task_proof_submit' => ProofTask::where('status', 'Approved')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
-            'today_rejected_task_proof_submit' => ProofTask::where('status', 'Rejected')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
-            'today_reviewed_task_proof_submit' => ProofTask::where('status', 'Reviewed')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            // Posted Task Proof Submit .............................................................................................................
+            'today_posted_task_proof_submit' => ProofTask::whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            // 'today_pending_posted_task_proof_submit' => ProofTask::where('status', 'Pending')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            // 'today_approved_posted_task_proof_submit' => ProofTask::where('status', 'Approved')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            // 'today_rejected_posted_task_proof_submit' => ProofTask::where('status', 'Rejected')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            // 'today_reviewed_posted_task_proof_submit' => ProofTask::where('status', 'Reviewed')->whereDate('created_at', date('Y-m-d'))->whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
             // Monthly Status
-            'monthly_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
+            'monthly_posted_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
             // Yearly Status
-            'yearly_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->whereYear('created_at', date('Y'))->count(),
+            'yearly_posted_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->whereYear('created_at', date('Y'))->count(),
             // Total Status
-            'total_pending_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', 'Pending')->count(),
-            'total_approved_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', 'Approved')->count(),
-            'total_rejected_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', 'Rejected')->count(),
-            'total_reviewed_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', 'Reviewed')->count(),
-            'total_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            'total_posted_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->count(),
+            'total_pending_posted_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', 'Pending')->count(),
+            'total_approved_posted_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', 'Approved')->count(),
+            'total_rejected_posted_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', 'Rejected')->count(),
+            'total_reviewed_posted_task_proof_submit' => ProofTask::whereIn('post_task_id', PostTask::where('user_id', Auth::id())->pluck('id'))->where('status', 'Reviewed')->count(),
             // Worked Task .............................................................................................................
             // Today Status
-            'today_pending_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
-            'today_approved_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Approved')->count(),
-            'today_rejected_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Rejected')->count(),
-            'today_reviewed_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Reviewed')->count(),
+            'today_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->count(),
+            // 'today_pending_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
+            // 'today_approved_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Approved')->count(),
+            // 'today_rejected_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Rejected')->count(),
+            // 'today_reviewed_worked_task' => ProofTask::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Reviewed')->count(),
             // Monthly Status
             'monthly_worked_task' => ProofTask::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
             // Yearly Status
             'yearly_worked_task' => ProofTask::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->count(),
             // Total Status
+            'total_worked_task' => ProofTask::where('user_id', Auth::id())->count(),
             'total_pending_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Pending')->count(),
             'total_approved_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Approved')->count(),
             'total_rejected_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Rejected')->count(),
             'total_reviewed_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Reviewed')->count(),
-            'total_worked_task' => ProofTask::where('user_id', Auth::id())->count(),
             // Deposit .............................................................................................................
-            'total_pending_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Pending')->sum('amount'),
-            'total_rejected_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Rejected')->sum('amount'),
-            'total_approved_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
-            'monthly_deposit' => Deposit::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'Approved')->sum('amount'),
-            'yearly_deposit' => Deposit::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->where('status', 'Approved')->sum('amount'),
-            'total_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
+            'total_pending_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Pending')->whereNot('method', 'Withdraw Balance')->sum('amount'),
+            'total_rejected_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Rejected')->whereNot('method', 'Withdraw Balance')->sum('amount'),
+            'total_approved_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
+            'today_deposit' => Deposit::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
+            'monthly_deposit' => Deposit::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
+            'yearly_deposit' => Deposit::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
+            'total_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
             // Withdraw .............................................................................................................
             'total_pending_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Pending')->whereNot('method', 'Deposit Balance')->sum('amount'),
             'total_rejected_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Rejected')->whereNot('method', 'Deposit Balance')->sum('amount'),
             'total_approved_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
+            'today_withdraw' => Withdraw::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->whereNot('method', 'Deposit Balance')->sum('amount'),
             'monthly_withdraw' => Withdraw::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
             'yearly_withdraw' => Withdraw::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
             'total_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
-            // Report .............................................................................................................
-            'today_pending_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Pending')->count(),
-            'today_false_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'False')->count(),
-            'today_received_report' => Report::where('reported_by', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Received')->count(),
-            'monthly_report' => Report::where('reported_by', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
-            'yearly_report' => Report::where('reported_by', Auth::id())->whereYear('created_at', date('Y'))->count(),
-            'total_report' => Report::where('reported_by', Auth::id())->count(),
-        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalTaskProofSubmitChartjsLineData', 'totalWorkedTaskApexLineData', 'userStatus', 'postTaskChargeTotal', 'postTaskChargeWaiting', 'postTaskChargePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
+            // // Report Send ............................................................................................................
+            // 'total_pending_report_send' => Report::where('reported_by', Auth::id())->where('status', 'Pending')->count(),
+            // 'total_false_report_send' => Report::where('reported_by', Auth::id())->where('status', 'False')->count(),
+            // 'total_received_report_send' => Report::where('reported_by', Auth::id())->where('status', 'Received')->count(),
+        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalBalanceTransferChartjsLineData', 'totalReportSendApexLineData', 'userStatus', 'postTaskChargeTotal', 'postTaskChargeWaiting', 'postTaskChargePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
     }
 
     // Profile.............................................................................................................

@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <button type="button" id="addFileBtn" class="btn btn-secondary mb-2">Add More</button>
-                        <small class="text-info d-block">Each file must be in jpg, jpeg, or png format and less than 2MB.</small>
+                        <small class="text-info d-block">Note: Each file must be in jpg, jpeg, or png format and less than 2MB and you can only add up to 10 file inputs.</small>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Reviewed</button>
@@ -73,7 +73,15 @@
 <script>
     $(document).ready(function() {
         // Add new file input field
+        const maxFileInputs = 10;
         $("#addFileBtn").click(function () {
+            const fileInputCount = $("#fileUploadContainer .file-upload-row").length;
+
+            if (fileInputCount >= maxFileInputs) {
+                toastr.warning("You can only add up to 10 file inputs."); // Show toastr warning
+                return; // Prevent adding more file inputs
+            }
+
             const fileInputRow = `
                 <div class="mb-2 file-upload-row">
                     <div class="input-group mb-2">

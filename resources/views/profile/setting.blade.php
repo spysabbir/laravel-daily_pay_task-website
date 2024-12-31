@@ -10,7 +10,7 @@
                 <figure class="overflow-hidden mb-0 d-flex justify-content-center">
                     <img src="{{ asset('template/images/others/profile_cover.jpg') }}" class="rounded-top" alt="profile cover">
                 </figure>
-                <div class="row  w-100 px-2 px-md-4 mt-n4">
+                <div class="row w-100 px-2 px-md-4 mt-n4">
                     <div class="col-xl-5 col-lg-12 my-2 d-flex">
                         <img class="wd-70 rounded-circle" id="userProfilePhotoPreview" src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="profile">
                         <div>
@@ -20,7 +20,7 @@
                             <h5 class="ms-3 text-info">Last Active: {{ date('j F, Y  h:i:s A', strtotime($user->last_login_at)) }}</h5>
                         </div>
                     </div>
-                    <div class="col-xl-7 col-lg-12 my-2 d-flex justify-content-between align-items-center">
+                    <div class="col-xl-7 col-lg-12 my-2 d-flex justify-content-center align-items-center flex-wrap">
                         @php
                             $statusClasses = [
                                 'Active' => 'btn-primary',
@@ -30,21 +30,21 @@
                             $status = $user->status;
                             $buttonClass = $statusClasses[$status] ?? 'btn-danger';
                         @endphp
-                        <button class="btn {{ $buttonClass }} btn-xs mx-2 btn-icon-text">
+                        <button class="btn {{ $buttonClass }} btn-xs m-1 btn-icon-text">
                             Account Status: {{ $status }}
                         </button>
                         @if (Auth::user()->isFrontendUser())
-                            <button class="btn btn-info btn-xs mx-2 btn-icon-text">
+                            <button class="btn btn-info btn-xs m-1 btn-icon-text">
                                 Verification Status: {{ $verification->status ?? 'Not Submitted' }}
                             </button>
                             @if ($user->hasVerification('Approved'))
-                                <button class="btn btn-success btn-xs mx-2 btn-icon-text">
-                                    Rating Given: {{ $ratingGiven->count() }} Task | {{ round($ratingGiven->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
+                                <button class="btn btn-success btn-xs m-1 btn-icon-text">
+                                    Rating Given: Task: {{ $ratingGiven->count() }} | Avg: {{ round($ratingGiven->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
                                 </button>
-                                <button class="btn btn-success btn-xs mx-2 btn-icon-text">
-                                    Rating Received: {{ $ratingReceived->count() }} Task | {{ round($ratingReceived->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
+                                <button class="btn btn-success btn-xs m-1 btn-icon-text">
+                                    Rating Received: Task: {{ $ratingReceived->count() }} | Avg: {{ round($ratingReceived->avg('rating')) ?? 0 }} <i class="fa-solid fa-star text-warning"></i>
                                 </button>
-                                <button class="btn btn-warning btn-xs mx-2 btn-icon-text">
+                                <button class="btn btn-warning btn-xs m-1 btn-icon-text">
                                     Report Received: {{ $reportUserCount }} Profile | {{ $reportPostTaskCount }} Post Task | {{ $reportProofTaskCount }} Proof Task
                                 </button>
                             @endif

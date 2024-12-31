@@ -11,7 +11,7 @@
                     <h3 class="card-title">Posting Task List - Canceled</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                     <p class="card-description text-info">
-                        Note: Hi user, below tasks list is your canceled task. Tasks will removed from below list after 7 days. Please contact us if you face any problem.
+                        Note: Hi user, below tasks list is your canceled task. Tasks will automatically removed from below list after 7 days. Please contact us if you face any problem.
                     </p>
                 </div>
             </div>

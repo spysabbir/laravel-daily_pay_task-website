@@ -3,6 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
+<!-- Verify Account Status -->
 @if (Auth::user()->hasVerification('Pending'))
 <div class="alert alert-info alert-dismissible fade show text-center" role="alert">
     <div class="alert-heading mb-3">
@@ -59,6 +60,7 @@
 </div>
 @endif
 
+<!-- User Account Status -->
 @if (Auth::user()->status == 'Blocked')
 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
 	<div class="alert-heading mb-3">
@@ -80,7 +82,6 @@
     </div>
 </div>
 @endif
-
 @if (Auth::user()->status == 'Banned')
 <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
 	<div class="alert-heading mb-3">
@@ -102,57 +103,7 @@
 </div>
 @endif
 
-<div class="row">
-    <div class="col-xl-6 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Today Posted Task Status</h6>
-                </div>
-            </div>
-            <div class="card-body">
-                @if ($today_pending_posted_task == 0 && $today_running_posted_task == 0 && $today_rejected_posted_task == 0 && $today_canceled_posted_task == 0 && $today_paused_posted_task == 0 && $today_completed_posted_task == 0)
-                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
-                    <div class="alert-heading mb-3">
-                        <i data-feather="alert-circle"></i>
-                        <h4>No data found!</h4>
-                    </div>
-                    <p class="mt-3">
-                        No data found for today posted task status. Please check back later.
-                    </p>
-                </div>
-                @else
-                <canvas id="todayPostedTaskChartjsPie"></canvas>
-                @endif
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Today Posted Task Proof Submit Status</h6>
-                </div>
-            </div>
-            <div class="card-body">
-                @if ($today_pending_task_proof_submit == 0 && $today_approved_task_proof_submit == 0 && $today_rejected_task_proof_submit == 0 && $today_reviewed_task_proof_submit == 0)
-                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
-                    <div class="alert-heading mb-3">
-                        <i data-feather="alert-circle"></i>
-                        <h4>No data found!</h4>
-                    </div>
-                    <p class="mt-3">
-                        No data found for today task proof submit status. Please check back later.
-                    </p>
-                </div>
-                @else
-                <canvas id="todayTaskProofSubmitChartjsDoughnut"></canvas>
-                @endif
-            </div>
-        </div>
-    </div>
-</div><!-- row -->
-
+<!-- Statics -->
 <div class="row">
     <div class="col-12 col-xl-12 stretch-card">
         <div class="row flex-grow-1">
@@ -164,33 +115,40 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                        </div>
                         <div class="row">
-                            <div class="col-md-12 col-xl-4">
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $today_posted_task }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Today - {{ date('l') }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ $monthly_posted_task }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Monthly - {{ date('F') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ $yearly_posted_task }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Yearly - {{ date('Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ $total_posted_task }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                        <span>Total</span>
                                     </p>
                                 </div>
                             </div>
@@ -206,33 +164,40 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                        </div>
                         <div class="row">
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $monthly_task_proof_submit }}</h3>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $today_posted_task_proof_submit }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Today - {{ date('l') }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $monthly_posted_task_proof_submit }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Monthly - {{ date('F') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $yearly_task_proof_submit }}</h3>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $yearly_posted_task_proof_submit }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Yearly - {{ date('Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_task_proof_submit }}</h3>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_posted_task_proof_submit }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                        <span>Total</span>
                                     </p>
                                 </div>
                             </div>
@@ -243,28 +208,182 @@
         </div>
     </div>
 </div> <!-- row -->
-
 <div class="row">
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Today Worked Task Status</h6>
+                    <h6 class="card-title">Total Posted Task Status</h6>
                 </div>
             </div>
             <div class="card-body">
-                @if ($today_pending_worked_task == 0 && $today_approved_worked_task == 0 && $today_rejected_worked_task == 0 && $today_reviewed_worked_task == 0)
+                @if ($total_pending_posted_task == 0 && $total_running_posted_task == 0 && $total_rejected_posted_task == 0 && $total_canceled_posted_task == 0 && $total_paused_posted_task == 0 && $total_completed_posted_task == 0)
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
                         <i data-feather="alert-circle"></i>
                         <h4>No data found!</h4>
                     </div>
                     <p class="mt-3">
-                        No data found for today worked task status. Please check back later.
+                        No data found for total posted task status. Please check back later.
                     </p>
                 </div>
                 @else
-                <div id="todayWorkedTaskApexPie"></div>
+                <canvas id="totalPostedTaskChartjsPie"></canvas>
+                @endif
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Total Posted Task Proof Submit Status</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                @if ($total_pending_posted_task_proof_submit == 0 && $total_approved_posted_task_proof_submit == 0 && $total_rejected_posted_task_proof_submit == 0 && $total_reviewed_posted_task_proof_submit == 0)
+                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                    <div class="alert-heading mb-3">
+                        <i data-feather="alert-circle"></i>
+                        <h4>No data found!</h4>
+                    </div>
+                    <p class="mt-3">
+                        No data found for total posted task proof submit status. Please check back later.
+                    </p>
+                </div>
+                @else
+                <canvas id="totalPostedTaskProofSubmitChartjsDoughnut"></canvas>
+                @endif
+            </div>
+        </div>
+    </div>
+</div><!-- row -->
+
+<div class="row">
+    <div class="col-12 col-xl-12 stretch-card">
+        <div class="row flex-grow-1">
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <h6 class="card-title mb-2">Worked Task Status</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $today_worked_task }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Today - {{ date('l') }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $monthly_worked_task }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Monthly - {{ date('F') }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $yearly_worked_task }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Yearly - {{ date('Y') }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_worked_task }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <h6 class="card-title mb-2">Total Approved Posted Task Charge Status</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $postTaskChargeWaiting }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Waiting</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $postTaskChargePayment }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-success">
+                                        <span>Payment</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $postTaskChargeRefund }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-danger">
+                                        <span>Refund</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $postTaskChargeHold }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-warning">
+                                        <span>Hold</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- row -->
+<div class="row">
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Total Worked Task Status</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                @if ($total_pending_worked_task == 0 && $total_approved_worked_task == 0 && $total_rejected_worked_task == 0 && $total_reviewed_worked_task == 0)
+                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                    <div class="alert-heading mb-3">
+                        <i data-feather="alert-circle"></i>
+                        <h4>No data found!</h4>
+                    </div>
+                    <p class="mt-3">
+                        No data found for total worked task status. Please check back later.
+                    </p>
+                </div>
+                @else
+                <div id="totalWorkedTaskApexPie"></div>
                 @endif
             </div>
         </div>
@@ -298,242 +417,6 @@
 <div class="row">
     <div class="col-12 col-xl-12 stretch-card">
         <div class="row flex-grow-1">
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Worked Task Status</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $monthly_worked_task }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Monthly - {{ date('F') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $yearly_worked_task }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Yearly - {{ date('Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_worked_task }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Report Send Status</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $monthly_report }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Monthly - {{ date('F') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $yearly_report }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Yearly - {{ date('Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-4">
-                                <h3 class="mb-2">{{ $total_report }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> <!-- row -->
-
-<div class="row">
-    <div class="col-xl-6 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Total Posted Task Proof Submit Status</h6>
-                </div>
-            </div>
-            <div class="card-body">
-                @if ($total_task_proof_submit == 0)
-                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
-                    <div class="alert-heading mb-3">
-                        <i data-feather="alert-circle"></i>
-                        <h4>No data found!</h4>
-                    </div>
-                    <p class="mt-3">
-                        No data found for total task proof submit status. Please check back later.
-                    </p>
-                </div>
-                @else
-                <canvas id="totalTaskProofSubmitChartjsLine">
-                @endif
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Total Worked Task Status</h6>
-                </div>
-            </div>
-            <div class="card-body">
-                @if ($total_worked_task == 0)
-                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
-                    <div class="alert-heading mb-3">
-                        <i data-feather="alert-circle"></i>
-                        <h4>No data found!</h4>
-                    </div>
-                    <p class="mt-3">
-                        No data found for total worked task. Please check back later.
-                    </p>
-                </div>
-                @else
-                <div id="totalWorkedTaskApexLine"></div>
-                @endif
-            </div>
-        </div>
-    </div>
-</div><!-- row -->
-
-<div class="row">
-    <div class="col-12 col-xl-12 stretch-card">
-        <div class="row flex-grow-1">
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Total Posted Task Proof Submit Status</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ $total_pending_task_proof_submit }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-info">
-                                        <span>Pending</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ $total_approved_task_proof_submit }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <span>Approved</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ $total_rejected_task_proof_submit }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-danger">
-                                        <span>Rejected</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ $total_reviewed_task_proof_submit }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-warning">
-                                        <span>Reviewed</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-2">Total Worked Task Status</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ $total_pending_worked_task }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-info">
-                                        <span>Pending</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ $total_approved_worked_task }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <span>Approved</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ $total_rejected_worked_task }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-danger">
-                                        <span>Rejected</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-xl-3">
-                                <h3 class="mb-2">{{ $total_reviewed_worked_task }}</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-warning">
-                                        <span>Reviewed</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-header">
@@ -601,9 +484,158 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <h6 class="card-title mb-2">Total Posted Task Proof Submit Status</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_pending_posted_task_proof_submit }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-info">
+                                        <span>Pending</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_approved_posted_task_proof_submit }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-success">
+                                        <span>Approved</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_rejected_posted_task_proof_submit }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-danger">
+                                        <span>Rejected</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_reviewed_posted_task_proof_submit }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-warning">
+                                        <span>Reviewed</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <h6 class="card-title mb-2">Total Worked Task Status</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_pending_worked_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-info">
+                                        <span>Pending</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_approved_worked_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-success">
+                                        <span>Approved</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_rejected_worked_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-danger">
+                                        <span>Rejected</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ $total_reviewed_worked_task }}</h3>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-warning">
+                                        <span>Reviewed</span>
+                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div> <!-- row -->
+
+<div class="row">
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Total Balance Transfer Status</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                @if ($total_posted_task_proof_submit == 0)
+                <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                    <div class="alert-heading mb-3">
+                        <i data-feather="alert-circle"></i>
+                        <h4>No data found!</h4>
+                    </div>
+                    <p class="mt-3">
+                        No data found for total task proof submit status. Please check back later.
+                    </p>
+                </div>
+                @else
+                <canvas id="totalBalanceTransferChartjsLine">
+                @endif
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title">Total Report Send Status</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (empty($totalReportSendApexLineData['categories']))
+                    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                        <div class="alert-heading mb-3">
+                            <i data-feather="alert-circle"></i>
+                            <h4>No data found!</h4>
+                        </div>
+                        <p class="mt-3">
+                            No data found for total report send status. Please check back later.
+                        </p>
+                    </div>
+                @else
+                    <div id="totalReportSendApexLine"></div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div><!-- row -->
 
 <div class="row">
     <div class="col-xl-12 grid-margin stretch-card">
@@ -645,30 +677,39 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12 col-xl-4">
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $monthly_deposit }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Today - {{ date('l') }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $monthly_deposit }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Monthly - {{ date('F') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $yearly_deposit }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Yearly - {{ date('Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_deposit }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                        <span>Total</span>
                                     </p>
                                 </div>
                             </div>
@@ -685,30 +726,39 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12 col-xl-4">
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $monthly_withdraw }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-primary">
+                                        <span>Today - {{ date('l') }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xl-3">
+                                <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $monthly_withdraw }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Monthly - {{ date('F') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $yearly_withdraw }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
                                         <span>Yearly - {{ date('Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-xl-4">
+                            <div class="col-md-12 col-xl-3">
                                 <h3 class="mb-2">{{ get_site_settings('site_currency_symbol') }} {{ $total_withdraw }}</h3>
+                                <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-primary">
-                                        <span>Total - {{ Auth::user()->created_at->format('d M, Y') }}</span>
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
+                                        <span>Total</span>
                                     </p>
                                 </div>
                             </div>
@@ -803,22 +853,22 @@
 
 
 <script>
-    var today_posted_task_labels = ['Pending', 'Running', 'Paused', 'Rejected', 'Canceled', 'Completed'];
-    var today_posted_task_series = [{{ $today_pending_posted_task }}, {{ $today_running_posted_task }}, {{ $today_paused_posted_task }}, {{ $today_rejected_posted_task }}, {{ $today_canceled_posted_task }}, {{ $today_completed_posted_task }}];
+    var total_posted_task_labels = ['Pending', 'Running', 'Paused', 'Rejected', 'Canceled', 'Completed'];
+    var total_posted_task_series = [{{ $total_pending_posted_task }}, {{ $total_running_posted_task }}, {{ $total_paused_posted_task }}, {{ $total_rejected_posted_task }}, {{ $total_canceled_posted_task }}, {{ $total_completed_posted_task }}];
 
-    var today_task_proof_submit_labels = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
-    var today_task_proof_submit_series = [{{ $today_pending_task_proof_submit }}, {{ $today_approved_task_proof_submit }}, {{ $today_rejected_task_proof_submit }}, {{ $today_reviewed_task_proof_submit }}];
+    var total_posted_task_proof_submit_labels = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
+    var total_posted_task_proof_submit_series = [{{ $total_pending_posted_task_proof_submit }}, {{ $total_approved_posted_task_proof_submit }}, {{ $total_rejected_posted_task_proof_submit }}, {{ $total_reviewed_posted_task_proof_submit }}];
 
-    var today_worked_task_labels = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
-    var today_worked_task_series = [{{ $today_pending_worked_task }}, {{ $today_approved_worked_task }}, {{ $today_rejected_worked_task }}, {{ $today_reviewed_worked_task }}];
+    var total_worked_task_labels = ['Pending', 'Approved', 'Rejected', 'Reviewed'];
+    var total_worked_task_series = [{{ $total_pending_worked_task }}, {{ $total_approved_worked_task }}, {{ $total_rejected_worked_task }}, {{ $total_reviewed_worked_task }}];
 
     var monthlyDepositAndWithdrawCategories = {!! json_encode(array_keys($monthlyWithdraw)) !!};
     var monthlyWithdrawSeries = {!! json_encode(array_values($monthlyWithdraw)) !!};
     var monthlyDepositeSeries = {!! json_encode(array_values($monthlyDeposite)) !!};
 
-    var todayReportLabels = ['Waiting', 'Payment', 'Refund', 'Hold'];
-    var todayReportSeries = [{{ round($postTaskChargeWaiting, 2) }}, {{ round($postTaskChargePayment, 2) }}, {{ round($postTaskChargeRefund, 2) }}, {{ round($postTaskChargeHold, 2) }}];
+    var totalPostTaskChargeLabels = ['Waiting', 'Payment', 'Refund', 'Hold'];
+    var totalPostTaskChargeSeries = [{{ round($postTaskChargeWaiting, 2) }}, {{ round($postTaskChargePayment, 2) }}, {{ round($postTaskChargeRefund, 2) }}, {{ round($postTaskChargeHold, 2) }}];
 
-    const totalTaskProofSubmitChartjsLineData = @json($totalTaskProofSubmitChartjsLineData);
-    const totalWorkedTaskApexLineData = @json($totalWorkedTaskApexLineData);
+    const totalBalanceTransferChartjsLineData = @json($totalBalanceTransferChartjsLineData);
+    const totalReportSendApexLineData = @json($totalReportSendApexLineData);
 </script>

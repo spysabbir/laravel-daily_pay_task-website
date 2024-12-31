@@ -18,47 +18,27 @@ $(function() {
 
     var fontFamily = "'Roboto', Helvetica, sans-serif"
 
-    // totalTaskProofSubmitChartjsLine start
-    if($('#totalTaskProofSubmitChartjsLine').length) {
-        new Chart($('#totalTaskProofSubmitChartjsLine'), {
-            type: 'line',
+    // totalBalanceTransferChartjsLine start
+    if($('#totalBalanceTransferChartjsLine').length) {
+        new Chart($('#totalBalanceTransferChartjsLine'), {
+            type: 'bar',
             data: {
-                labels: totalTaskProofSubmitChartjsLineData.labels,
+                labels: totalBalanceTransferChartjsLineData.labels,
                 datasets: [{
-                    data: totalTaskProofSubmitChartjsLineData.datasets[0].data,
-                    label: totalTaskProofSubmitChartjsLineData.datasets[0].label,
+                    data: totalBalanceTransferChartjsLineData.datasets[0].data,
+                    label: totalBalanceTransferChartjsLineData.datasets[0].label,
                     borderColor: colors.info,
-                    backgroundColor: "transparent",
+                    backgroundColor: colors.info,
                     fill: true,
                     pointBackgroundColor: colors.cardBg,
                     pointBorderWidth: 2,
                     pointHoverBorderWidth: 3,
                     tension: .3
                 }, {
-                    data: totalTaskProofSubmitChartjsLineData.datasets[1].data,
-                    label: totalTaskProofSubmitChartjsLineData.datasets[1].label,
-                    borderColor: colors.success,
-                    backgroundColor: "transparent",
-                    fill: true,
-                    pointBackgroundColor: colors.cardBg,
-                    pointBorderWidth: 2,
-                    pointHoverBorderWidth: 3,
-                    tension: .3
-                }, {
-                    data: totalTaskProofSubmitChartjsLineData.datasets[2].data,
-                    label: totalTaskProofSubmitChartjsLineData.datasets[2].label,
-                    borderColor: colors.danger,
-                    backgroundColor: "transparent",
-                    fill: true,
-                    pointBackgroundColor: colors.cardBg,
-                    pointBorderWidth: 2,
-                    pointHoverBorderWidth: 3,
-                    tension: .3
-                }, {
-                    data: totalTaskProofSubmitChartjsLineData.datasets[3].data,
-                    label: totalTaskProofSubmitChartjsLineData.datasets[3].label,
-                    borderColor: colors.warning,
-                    backgroundColor: "transparent",
+                    data: totalBalanceTransferChartjsLineData.datasets[1].data,
+                    label: totalBalanceTransferChartjsLineData.datasets[1].label,
+                    borderColor: colors.primary,
+                    backgroundColor: colors.primary,
                     fill: true,
                     pointBackgroundColor: colors.cardBg,
                     pointBorderWidth: 2,
@@ -111,19 +91,19 @@ $(function() {
             }
         });
     }
-    // totalTaskProofSubmitChartjsLine end
+    // totalBalanceTransferChartjsLine end
 
-    // todayTaskProofSubmitChartjsDoughnut
-    if($('#todayTaskProofSubmitChartjsDoughnut').length) {
-        new Chart($('#todayTaskProofSubmitChartjsDoughnut'), {
+    // totalPostedTaskProofSubmitChartjsDoughnut
+    if($('#totalPostedTaskProofSubmitChartjsDoughnut').length) {
+        new Chart($('#totalPostedTaskProofSubmitChartjsDoughnut'), {
             type: 'doughnut',
             data: {
-                labels: today_task_proof_submit_labels,
+                labels: total_posted_task_proof_submit_labels,
                 datasets: [{
                     label: "Population (millions)",
                     backgroundColor: [colors.primary, colors.success, colors.danger, colors.warning],
                     borderColor: colors.cardBg,
-                    data: today_task_proof_submit_series,
+                    data: total_posted_task_proof_submit_series,
                 }]
             },
             options: {
@@ -143,19 +123,19 @@ $(function() {
             }
         });
     }
-    // todayTaskProofSubmitChartjsDoughnut end
+    // totalPostedTaskProofSubmitChartjsDoughnut end
 
-    // todayPostedTaskChartjsPie start
-    if($('#todayPostedTaskChartjsPie').length) {
-        new Chart($('#todayPostedTaskChartjsPie'), {
+    // totalPostedTaskChartjsPie start
+    if($('#totalPostedTaskChartjsPie').length) {
+        new Chart($('#totalPostedTaskChartjsPie'), {
             type: 'pie',
             data: {
-                labels: today_posted_task_labels,
+                labels: total_posted_task_labels,
                 datasets: [{
                     label: "Population (millions)",
                     backgroundColor: [colors.info, colors.success, colors.primary, colors.warning, colors.danger, colors.secondary],
                     borderColor: colors.cardBg,
-                    data: today_posted_task_series,
+                    data: total_posted_task_series,
                 }]
             },
             options: {
@@ -175,19 +155,19 @@ $(function() {
             }
         });
     }
-    // todayPostedTaskChartjsPie end
+    // totalPostedTaskChartjsPie end
 
-    // todayPostedTaskProofChartjsPie start
-    if($('#todayPostedTaskProofChartjsPie').length) {
-        new Chart($('#todayPostedTaskProofChartjsPie'), {
+    // totalPostedTaskProofChartjsPie start
+    if($('#totalPostedTaskProofChartjsPie').length) {
+        new Chart($('#totalPostedTaskProofChartjsPie'), {
             type: 'bar',
             data: {
-                labels: today_posted_task_proof_labels,
+                labels: total_posted_task_proof_labels,
                 datasets: [{
                     label: "Population (millions)",
                     backgroundColor: [colors.success, colors.danger],
                     borderColor: colors.cardBg,
-                    data: today_posted_task_proof_series,
+                    data: total_posted_task_proof_series,
                 }]
             },
             options: {
@@ -207,5 +187,5 @@ $(function() {
             }
         });
     }
-    // todayPostedTaskProofChartjsPie end
+    // totalPostedTaskProofChartjsPie end
 });

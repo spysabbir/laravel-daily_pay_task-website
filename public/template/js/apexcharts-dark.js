@@ -18,11 +18,11 @@ $(function() {
 
     var fontFamily = "'Roboto', Helvetica, sans-serif"
 
-    // totalWorkedTaskApexLine start
-    if ($('#totalWorkedTaskApexLine').length) {
+    // totalReportSendApexLine start
+    if ($('#totalReportSendApexLine').length) {
         var lineChartOptions = {
             chart: {
-                type: "line",
+                type: "bar",
                 height: '320',
                 parentHeightOffset: 0,
                 foreColor: colors.bodyColor,
@@ -37,7 +37,7 @@ $(function() {
             tooltip: {
                 theme: 'dark'
             },
-            colors: [colors.info, colors.success, colors.danger, colors.warning],
+            colors: [colors.info, colors.danger, colors.success],
             grid: {
                 padding: {
                     bottom: -4
@@ -51,24 +51,20 @@ $(function() {
             },
             series: [
                 {
-                    name: totalWorkedTaskApexLineData.series[0].name,
-                    data: totalWorkedTaskApexLineData.series[0].data
+                    name: totalReportSendApexLineData.series[0].name,
+                    data: totalReportSendApexLineData.series[0].data
                 },
                 {
-                    name: totalWorkedTaskApexLineData.series[1].name,
-                    data: totalWorkedTaskApexLineData.series[1].data
+                    name: totalReportSendApexLineData.series[1].name,
+                    data: totalReportSendApexLineData.series[1].data
                 },
                 {
-                    name: totalWorkedTaskApexLineData.series[2].name,
-                    data: totalWorkedTaskApexLineData.series[2].data
+                    name: totalReportSendApexLineData.series[2].name,
+                    data: totalReportSendApexLineData.series[2].data
                 },
-                {
-                    name: totalWorkedTaskApexLineData.series[3].name,
-                    data: totalWorkedTaskApexLineData.series[3].data
-                }
             ],
             xaxis: {
-                categories: totalWorkedTaskApexLineData.categories,
+                categories: totalReportSendApexLineData.categories,
                 lines: {
                     show: true
                 },
@@ -98,10 +94,10 @@ $(function() {
                 lineCap: "round"
             },
         };
-        var apexLineChart = new ApexCharts(document.querySelector("#totalWorkedTaskApexLine"), lineChartOptions);
+        var apexLineChart = new ApexCharts(document.querySelector("#totalReportSendApexLine"), lineChartOptions);
         apexLineChart.render();
     }
-    // totalWorkedTaskApexLine end
+    // totalReportSendApexLine end
 
 
     // totalApprovedPostedTaskChargeApexDonut start
@@ -125,7 +121,7 @@ $(function() {
             stroke: {
                 colors: ['rgba(0,0,0,0)']
             },
-            labels: todayReportLabels,
+            labels: totalPostTaskChargeLabels,
             colors: [colors.primary, colors.success, colors.danger, colors.warning],
             legend: {
                 show: true,
@@ -140,7 +136,7 @@ $(function() {
             dataLabels: {
                 enabled: false
             },
-            series: todayReportSeries
+            series: totalPostTaskChargeSeries
         };
 
         var chart = new ApexCharts(document.querySelector("#totalApprovedPostedTaskChargeApexDonut"), options);
@@ -149,8 +145,8 @@ $(function() {
     // totalApprovedPostedTaskChargeApexDonut end
 
 
-    // todayWorkedTaskApexPie start
-    if ($('#todayWorkedTaskApexPie').length) {
+    // totalWorkedTaskApexPie start
+    if ($('#totalWorkedTaskApexPie').length) {
         var options = {
             chart: {
                 height: 300,
@@ -167,7 +163,7 @@ $(function() {
             tooltip: {
                 theme: 'dark'
             },
-            labels: today_worked_task_labels,
+            labels: total_worked_task_labels,
             colors: [colors.info, colors.success, colors.danger, colors.warning],
             legend: {
                 show: true,
@@ -185,11 +181,11 @@ $(function() {
             dataLabels: {
                 enabled: false
             },
-            series: today_worked_task_series,
+            series: total_worked_task_series,
         };
 
-        var chart = new ApexCharts(document.querySelector("#todayWorkedTaskApexPie"), options);
+        var chart = new ApexCharts(document.querySelector("#totalWorkedTaskApexPie"), options);
         chart.render();
     }
-    // todayWorkedTaskApexPie end
+    // totalWorkedTaskApexPie end
 });
