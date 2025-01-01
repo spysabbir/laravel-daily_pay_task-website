@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/find_tasks-clear-filters', [WorkedTaskController::class, 'findTasksClearFilters'])->name('find_tasks.clear.filters');
     Route::get('/find_task-details/{id}', [WorkedTaskController::class, 'findTaskDetails'])->name('find_task.details');
     Route::get('/find_task-not-interested/{id}', [WorkedTaskController::class, 'findTaskNotInterested'])->name('find_task.not.interested');
-    Route::get('/find_task-proof-submit-limit-check/{id}', [WorkedTaskController::class, 'findTaskProofSubmitLimitCheck'])->name('find_task.proof.submit.limit.check');
+    Route::get('/find_task-proof-submit-valid-check/{id}', [WorkedTaskController::class, 'findTaskProofSubmitValidCheck'])->name('find_task.proof.submit.valid.check');
     Route::post('/find_task-proof-submit/{id}', [WorkedTaskController::class, 'findTaskProofSubmit'])->name('find_task.proof.submit');
 
     Route::get('/worked_task-list-pending', [WorkedTaskController::class, 'workedTaskListPending'])->name('worked_task.list.pending');

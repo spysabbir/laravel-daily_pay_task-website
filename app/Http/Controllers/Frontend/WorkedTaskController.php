@@ -186,14 +186,27 @@ class WorkedTaskController extends Controller
         return redirect()->route('find_tasks.clear.filters')->with($notification);
     }
 
-    public function findTaskProofSubmitLimitCheck($id)
+    public function findTaskProofSubmitValidCheck($id)
     {
         $id = decrypt($id);
         $proofCount = ProofTask::where('post_task_id', $id)->count();
-        $WorkerNeeded =  PostTask::findOrFail($id)->worker_needed;
+        $postTask =  PostTask::findOrFail($id);
 
-        if ($proofCount >= $WorkerNeeded) {
-            return response()->json(['canSubmit' => false]);
+        if ($proofCount >= $postTask->worker_needed) {
+            return response()->json([
+                'canSubmit' => false,
+                'message' => 'Sorry, the required number of work have already submitted proof for this task.'
+            ]);
+        }
+
+        $approvedDate = Carbon::parse($postTask->approved_at);
+        $endDate = $approvedDate->addDays((int) $postTask->work_duration);
+
+        if ($endDate < now()) {
+            return response()->json([
+                'canSubmit' => false,
+                'message' => 'Sorry, the deadline for submitting proof for this task has expired.'
+            ]);
         }
 
         return response()->json(['canSubmit' => true]);
@@ -235,6 +248,18 @@ class WorkedTaskController extends Controller
         if ($proofCount >= $taskDetails->worker_needed) {
             $notification = array(
                 'message' => 'Sorry, the required number of work have already submitted proof for this task.',
+                'alert-type' => 'error'
+            );
+
+            return back()->with($notification)->withInput();
+        }
+
+        $approvedDate = Carbon::parse($taskDetails->approved_at);
+        $endDate = $approvedDate->addDays((int) $taskDetails->work_duration);
+
+        if ($endDate < now()) {
+            $notification = array(
+                'message' => 'Sorry, the deadline for submitting proof for this task has expired.',
                 'alert-type' => 'error'
             );
 
@@ -296,6 +321,9 @@ class WorkedTaskController extends Controller
 
                 return DataTables::of($taskList)
                     ->addIndexColumn()
+                    ->editColumn('proof_id', function ($row) {
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'-'.$row->id.'</span>';
+                    })
                     ->editColumn('title', function ($row) {
                         return '
                             <a href="'.route('find_task.details', encrypt($row->post_task_id)).'" title="'.$row->postTask->title.'" class="text-info">
@@ -310,7 +338,7 @@ class WorkedTaskController extends Controller
                         return $row->created_at->format('d M Y h:i A');
                     })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['title'])
+                    ->rawColumns(['proof_id', 'title'])
                     ->make(true);
             }
             return view('frontend.worked_task.pending');
@@ -581,8 +609,8 @@ class WorkedTaskController extends Controller
 
                 return DataTables::of($taskList)
                     ->addIndexColumn()
-                    ->editColumn('review_id', function ($row) {
-                        return '<span class="badge bg-primary">'.$row->postTask->id.'#'.$row->id.'</span>';
+                    ->editColumn('proof_id', function ($row) {
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'-'.$row->id.'</span>';
                     })
                     ->editColumn('title', function ($row) {
                         return '
@@ -627,7 +655,7 @@ class WorkedTaskController extends Controller
                         return $action;
                     })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['review_id', 'title', 'income_of_each_worker', 'created_at', 'rejected_at', 'reviewed_reason', 'reviewed_reason_full', 'reviewed_at', 'checking_expired_time', 'action'])
+                    ->rawColumns(['proof_id', 'title', 'income_of_each_worker', 'created_at', 'rejected_at', 'reviewed_reason', 'reviewed_reason_full', 'reviewed_at', 'checking_expired_time', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.reviewed');

@@ -31,6 +31,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
+                                <th>Proof Id</th>
                                 <th>Task Title</th>
                                 <th>Task Rate</th>
                                 <th>Submit Date</th>
@@ -74,6 +75,7 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'proof_id', name: 'proof_id' },
                 { data: 'title', name: 'title' },
                 { data: 'income_of_each_worker', name: 'income_of_each_worker' },
                 { data: 'created_at', name: 'created_at' },

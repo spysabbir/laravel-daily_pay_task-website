@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Posting Task List - Rejected')
+@section('title', 'Posted Task List - Rejected')
 
 @section('content')
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Posting Task List - Rejected</h3>
+                    <h3 class="card-title">Posted Task List - Rejected</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                     <p class="card-description text-info">
                         Note: Hi user, the task list below is your rejected task by admin. The tasks will be automatically removed from the list below after 7 days so the task removal countdown will start automatically. You can edit this task again within this time and resubmit for approval. Please contact us if you encounter any issues, thanks.

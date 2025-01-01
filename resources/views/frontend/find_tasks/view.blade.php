@@ -35,8 +35,8 @@
                         </div>
                         <div>
                             <p><strong class="text-primary">Approved Date:</strong> {{ date('d F, Y  h:i:s A', strtotime($taskDetails->approved_at)) }}</p>
-                            <p><strong class="text-primary">Worker Needed:</strong> {{ $taskDetails->worker_needed }}</p>
-                            <p><strong class="text-primary">Task Duration:</strong> {{ $taskDetails->work_duration }} Days</p>
+                            <p><strong class="text-primary">Worker Needed:</strong> {{ $taskDetails->worker_needed }} Person</p>
+                            <p><strong class="text-primary">Proof Submit Deadline:</strong> {{ \Illuminate\Support\Carbon::parse($taskDetails->approved_at)->addDays((int) $taskDetails->work_duration)->format('d F, Y  h:i:s A') }}</p>
                         </div>
                         @if (!$taskProofExists)
                         <div>
@@ -348,15 +348,18 @@
             submitButton.prop("disabled", true).text("Submitting...");
 
             $.ajax({
-                url: '{{ route("find_task.proof.submit.limit.check", encrypt($taskDetails->id)) }}',
+                url: '{{ route("find_task.proof.submit.valid.check", encrypt($taskDetails->id)) }}',
                 type: 'GET',
                 success: function(response) {
                     if (response.canSubmit) {
                         $('#proofTaskForm')[0].submit();
                     } else {
-                        toastr.error('Sorry! This task has been completed.');
+                        toastr.error(response.message);
                     }
                 },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
             });
         });
 

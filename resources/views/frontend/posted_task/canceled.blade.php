@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Posting Task List - Canceled')
+@section('title', 'Posted Task List - Canceled')
 
 @section('content')
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Posting Task List - Canceled</h3>
+                    <h3 class="card-title">Posted Task List - Canceled</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                     <p class="card-description text-info">
                         Note: Hi user, below tasks list is your canceled task. Tasks will automatically removed from below list after 7 days. Please contact us if you face any problem.

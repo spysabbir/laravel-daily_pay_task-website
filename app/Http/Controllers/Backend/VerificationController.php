@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Bonus;
 use App\Notifications\BonusNotification;
-use App\Notifications\ReferralRegistrationNotification;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -128,7 +127,6 @@ class VerificationController extends Controller implements HasMiddleware
                 ]);
 
                 $referrer->notify(new BonusNotification($referrerBonus));
-                $referrer->notify(new ReferralRegistrationNotification($referrer, $user));
             }
         }
 

@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Posting Task List - Paused')
+@section('title', 'Posted Task List - Paused')
 
 @section('content')
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Posting Task List - Paused</h3>
+                    <h3 class="card-title">Posted Task List - Paused</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                     <p class="card-description text-info">
                         Note: Hi user, below tasks list is your paused task. If you pause the task you can be resume the task but if the task is paused by admin and want to resume the task need to contact us. Tasks will automatically removed from here after task work duration expires and get return pending money under our policy wise then tasks will move to canceled folder. Also If you facing any problems please contact us.

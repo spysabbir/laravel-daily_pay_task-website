@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Posting Task List - Completed')
+@section('title', 'Posted Task List - Completed')
 
 @section('content')
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="text">
-                    <h3 class="card-title">Posting Task List - Completed</h3>
+                    <h3 class="card-title">Posted Task List - Completed</h3>
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                     <p class="card-description text-info">
                         Note: Hi user, below tasks list is your completed task. These tasks will be automatically remove from here after 7 days then you can't see anymore. If you facing any problems please contact with us.
