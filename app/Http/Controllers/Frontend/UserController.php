@@ -1184,12 +1184,21 @@ class UserController extends Controller
         return view('frontend.report.view', compact('report', 'report_reply'));
     }
 
-    public function reportSend(Request $request, $id)
+    public function reportSend(Request $request, $userId)
     {
         $validator = Validator::make($request->all(), [
             'reason' => 'required|string|max:5000',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        $reportExists = Report::where('user_id', $userId)->where('post_task_id', $request->post_task_id)->where('proof_task_id', $request->proof_task_id)->exists();
+
+        if ($reportExists) {
+            return response()->json([
+                'status' => 401,
+                'error' => 'You have already reported this user.'
+            ]);
+        }
 
         if($validator->fails()){
             return response()->json([
@@ -1200,14 +1209,14 @@ class UserController extends Controller
             $photo_name = null;
             if ($request->file('photo')) {
                 $manager = new ImageManager(new Driver());
-                $photo_name = $id."-report_photo-".date('YmdHis').".".$request->file('photo')->getClientOriginalExtension();
+                $photo_name = $userId."-report_photo-".date('YmdHis').".".$request->file('photo')->getClientOriginalExtension();
                 $image = $manager->read($request->file('photo'));
                 $image->toJpeg(80)->save(base_path("public/uploads/report_photo/").$photo_name);
             }
 
             Report::create([
                 'type' => $request->type,
-                'user_id' => $id,
+                'user_id' => $userId,
                 'post_task_id' => $request->post_task_id ?? null,
                 'proof_task_id' => $request->proof_task_id ?? null,
                 'reason' => $request->reason,

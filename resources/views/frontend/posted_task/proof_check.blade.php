@@ -34,16 +34,15 @@
     </div>
     <div class="col-lg-4">
         <div class="mb-3">
-            <h4>Proof Task Information:</h4>
+            <h4 class="mb-2">Proof Information:</h4>
             <div class="mb-2 border p-2">
-                <p><strong>Proof Task Id:</strong> {{ $proofTask->id }}</p>
-                <p><strong>Submited Date:</strong>{{ $proofTask->created_at->format('d M, Y h:i A') }}</p>
+                <p><strong>Proof Id:</strong> {{ $proofTask->id }}</p>
+                <p><strong>Submited Date:</strong> {{ $proofTask->created_at->format('d M, Y h:i A') }}</p>
             </div>
         </div>
         <div class="mb-3">
-            <h4>User Information:</h4>
+            <h4 class="mb-2">User Information:</h4>
             <div class="mt-2 border p-2">
-                <p><strong>User Id:</strong> {{ $proofTask->user->id }}</p>
                 <p><strong>User Name:</strong> {{ $proofTask->user->name }}</p>
                 <p><strong>User Ip:</strong> {{ $proofTask->user->userDetail->ip }}</p>
             </div>
@@ -258,7 +257,9 @@
                     $(document).find('span.error-text').text('');
                 },
                 success: function(response) {
-                    if (response.status === 400) {
+                    if (response.status == 401) {
+                        toastr.error(response.error);
+                    } else if (response.status === 400) {
                         $.each(response.error, function(prefix, val) {
                             $('span.update_' + prefix + '_error').text(val[0]);
                         });

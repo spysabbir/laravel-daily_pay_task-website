@@ -222,7 +222,13 @@
                     <h5>
                     {{-- <p>Name: <a href="{{ route('user.profile', encrypt($taskDetails->user->id)) }}" class="text-info">{{ $taskDetails->user->name }}</a></p> --}}
                     <p>Name: <span class="text-info">{{ $taskDetails->user->name }}</span></p>
-                    <p>Last Active: <span class="text-info">{{ Carbon\Carbon::parse($taskDetails->user->last_login_at)->diffForHumans() }}</span></p>
+                    <p>Active Status:
+                        @if (\Carbon\Carbon::parse($taskDetails->user->last_login_at)->gt(\Carbon\Carbon::now()->subMinutes(5)))
+                        <span class="text-success">Online</span>
+                        @else
+                        <span class="text-info">{{ \Carbon\Carbon::parse($taskDetails->user->last_login_at)->diffForHumans() }}</span>
+                        @endif
+                    </p>
                     <p>Join Date: <span class="text-info">{{ $taskDetails->user->created_at->format('d M, Y') }}</span></p>
                     <hr>
                     <p>Total Posted Task: <span class="text-info">{{ $totalPostedTask }}</span></p>
@@ -353,13 +359,12 @@
                 success: function(response) {
                     if (response.canSubmit) {
                         $('#proofTaskForm')[0].submit();
+                        submitButton.prop("disabled", true).text("Submitted");
                     } else {
                         toastr.error(response.message);
+                        submitButton.prop("disabled", false).text("Submit");
                     }
                 },
-                complete: function() {
-                    submitButton.prop("disabled", false).text("Submit");
-                }
             });
         });
 
@@ -438,20 +443,27 @@
                     form.find('span.error-text').text('');
                 },
                 success: function(response) {
-                    if (response.status === 400) {
-                        $.each(response.error, function(prefix, val) {
-                            form.find('span.' + prefix + '_error').text(val[0]);
-                        });
+                    if (response.status === 401) {
+                        toastr.error(response.error);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
                     } else {
-                        if (form.is('#reportForm')) {
-                            $('.reportModal').modal('hide');
-                            toastr.success('User reported successfully.');
-                        } else if (form.is('#reportPostTaskForm')) {
-                            $('.reportPostTaskModal').modal('hide');
-                            toastr.success('Post Task reported successfully.');
+                        if (response.status === 400) {
+                            $.each(response.error, function(prefix, val) {
+                                form.find('span.' + prefix + '_error').text(val[0]);
+                            });
+                        } else {
+                            if (form.is('#reportForm')) {
+                                $('.reportModal').modal('hide');
+                                toastr.success('User reported successfully.');
+                            } else if (form.is('#reportPostTaskForm')) {
+                                $('.reportPostTaskModal').modal('hide');
+                                toastr.success('Post Task reported successfully.');
+                            }
+                            form[0].reset();
+                            location.reload();
                         }
-                        form[0].reset();
-                        location.reload();
                     }
                 },
                 complete: function() {

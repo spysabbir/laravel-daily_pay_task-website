@@ -379,11 +379,18 @@ class PostedTaskController extends Controller
         }
     }
 
-    public function runningPostedTaskCanceled(Request $request, $id)
+    public function postedTaskCanceled(Request $request, $id)
     {
         $postTask = PostTask::findOrFail($id);
 
         $proofTasks = ProofTask::where('post_task_id', $id)->whereIn('status', ['Pending'])->count();
+
+        if ($postTask->status == 'Canceled') {
+            return response()->json([
+                'status' => 400,
+                'error' => 'This task is already canceled.'
+            ]);
+        }
 
         if ($proofTasks > 0) {
             return response()->json([
@@ -582,7 +589,7 @@ class PostedTaskController extends Controller
         }
     }
 
-    public function runningPostedTaskEdit(string $id)
+    public function postedTaskEdit(string $id)
     {
 
         $postTask = PostTask::where('id', $id)->first();
@@ -592,7 +599,7 @@ class PostedTaskController extends Controller
             $workDurationDays = $postTask->work_duration; // Duration in days
 
             // Calculate the end time by adding work duration to the start time
-            $endTime = Carbon::parse($startTime)->addDays($workDurationDays);
+            $endTime = Carbon::parse($startTime)->addDays( (int) $workDurationDays);
 
             $now = now();
             $remainingTimeMinutes = $endTime->greaterThan($now)
@@ -606,7 +613,7 @@ class PostedTaskController extends Controller
         }
     }
 
-    public function runningPostedTaskUpdate(Request $request, string $id)
+    public function postedTaskUpdate(Request $request, string $id)
     {
         $postTask = PostTask::findOrFail($id);
 
@@ -703,7 +710,6 @@ class PostedTaskController extends Controller
                 })
                 ->editColumn('user', function ($row) {
                     return '
-                        <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
                         <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
                         <span class="badge bg-dark">Ip: ' . $row->user->userDetail->ip . '</span>
                     ';
@@ -911,6 +917,14 @@ class PostedTaskController extends Controller
             'rejected_reason_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+        $proofTask = ProofTask::findOrFail($id);
+        if ($proofTask->status != 'Pending') {
+            return response()->json([
+                'status' => 401,
+                'error' => 'This proof task is already ' . $proofTask->status . '.'
+            ]);
+        }
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
@@ -989,7 +1003,7 @@ class PostedTaskController extends Controller
         }
     }
 
-    public function runningPostedTaskPausedResume($id)
+    public function postedTaskPausedResume($id)
     {
         $postTask = PostTask::findOrFail($id);
 

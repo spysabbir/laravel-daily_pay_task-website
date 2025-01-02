@@ -189,10 +189,25 @@ class WorkedTaskController extends Controller
     public function findTaskProofSubmitValidCheck($id)
     {
         $id = decrypt($id);
-        $proofCount = ProofTask::where('post_task_id', $id)->count();
         $postTask =  PostTask::findOrFail($id);
+        $ProofTask = ProofTask::where('post_task_id', $id)->count();
 
-        if ($proofCount >= $postTask->worker_needed) {
+        if ($postTask->status != 'Running') {
+            return response()->json([
+                'canSubmit' => false,
+                'message' => 'Sorry, this task is ' . $postTask->status . ' now. You can not submit proof for this task.'
+            ]);
+        }
+
+        $userExists = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->exists();
+        if ($userExists) {
+            return response()->json([
+                'canSubmit' => false,
+                'message' => 'Sorry, you have already submitted proof for this task.'
+            ]);
+        }
+
+        if ($ProofTask >= $postTask->worker_needed) {
             return response()->json([
                 'canSubmit' => false,
                 'message' => 'Sorry, the required number of work have already submitted proof for this task.'
@@ -201,7 +216,6 @@ class WorkedTaskController extends Controller
 
         $approvedDate = Carbon::parse($postTask->approved_at);
         $endDate = $approvedDate->addDays((int) $postTask->work_duration);
-
         if ($endDate < now()) {
             return response()->json([
                 'canSubmit' => false,
@@ -244,6 +258,25 @@ class WorkedTaskController extends Controller
         }
 
         $proofCount = ProofTask::where('post_task_id', $id)->count();
+
+        if ($taskDetails->status != 'Running') {
+            $notification = array(
+                'message' => 'Sorry, this task is ' . $taskDetails->status . ' now. You can not submit proof for this task.',
+                'alert-type' => 'error'
+            );
+
+            return back()->with($notification)->withInput();
+        }
+
+        $userExists = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->exists();
+        if ($userExists) {
+            $notification = array(
+                'message' => 'Sorry, you have already submitted proof for this task.',
+                'alert-type' => 'error'
+            );
+
+            return back()->with($notification)->withInput();
+        }
 
         if ($proofCount >= $taskDetails->worker_needed) {
             $notification = array(
@@ -545,6 +578,15 @@ class WorkedTaskController extends Controller
             return response()->json(['status' => 400, 'error' => $formattedErrors]);
         }
 
+        $proofTask = ProofTask::findOrFail($id);
+
+        if ($proofTask->status == 'Reviewed') {
+            return response()->json([
+                'status' => 401,
+                'error' => 'This proof has already been reviewed.'
+            ]);
+        }
+
         // Deduct balance logic
         if ($request->user()->withdraw_balance < get_default_settings('rejected_worked_task_review_charge')) {
             return response()->json([
@@ -568,7 +610,6 @@ class WorkedTaskController extends Controller
             }
         }
 
-        $proofTask = ProofTask::findOrFail($id);
         $proofTask->update([
             'status' => 'Reviewed',
             'reviewed_reason' => $request->reviewed_reason,

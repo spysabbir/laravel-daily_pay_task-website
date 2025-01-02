@@ -42,7 +42,7 @@ Schedule::call(function () {
 
     foreach ($userStatuses as $userStatus) {
 
-        $activeTime = Carbon::parse($userStatus->created_at)->addHours($userStatus->blocked_duration);
+        $activeTime = Carbon::parse($userStatus->created_at)->addHours((int) $userStatus->blocked_duration);
 
         if ($now->isSameMinute($activeTime)) {
             $userStatus->update(['blocked_resolved' => $now]);
@@ -68,7 +68,7 @@ Schedule::call(function () {
     $proofTasks = ProofTask::where('status', 'Pending')->get();
 
     foreach ($proofTasks as $proofTask) {
-        $approvalTime = Carbon::parse($proofTask->created_at)->addHours($autoApproveTimeInHours);
+        $approvalTime = Carbon::parse($proofTask->created_at)->addHours((int) $autoApproveTimeInHours);
 
         if ($now->isSameMinute($approvalTime)) {
             $proofTask->update([
@@ -106,7 +106,7 @@ Schedule::call(function () {
     $postTasks = PostTask::where('status', 'Running')->get();
 
     foreach ($postTasks as $postTask) {
-        $canceledTime = Carbon::parse($postTask->approved_at)->addDays($postTask->work_duration);
+        $canceledTime = Carbon::parse($postTask->approved_at)->addDays((int) $postTask->work_duration);
 
         if (now()->isSameMinute($canceledTime)) {
             $postTask->update([
@@ -135,7 +135,7 @@ Schedule::call(function () {
     $proofTasks = ProofTask::where('status', 'Rejected')->where('reviewed_at', null)->get();
 
     foreach ($proofTasks as $proofTask) {
-        $refundTime = Carbon::parse($proofTask->rejected_at)->addHours($autoRefundTimeInHours);
+        $refundTime = Carbon::parse($proofTask->rejected_at)->addHours((int) $autoRefundTimeInHours);
 
         if ($now->isSameMinute($refundTime)) {
             $postTask = PostTask::find($proofTask->post_task_id);

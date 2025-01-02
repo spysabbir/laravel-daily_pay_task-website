@@ -244,7 +244,7 @@
                         </div>
                         <div class="col-xl-2 col-lg-6 col-md-6">
                             <div class="form-group m-1">
-                                <button class="btn btn-danger btn-block" id="clear_filters">Clear Filters</button>
+                                <button class="btn btn-info btn-block" id="clear_filters">Clear Filters</button>
                             </div>
                         </div>
                     </div>
@@ -1042,15 +1042,22 @@
                     $(document).find('span.error-text').text('');
                 },
                 success: function(response) {
-                    if (response.status === 400) {
-                        $.each(response.error, function(prefix, val) {
-                            $('span.' + prefix + '_error').text(val[0]);
-                        });
+                    if (response.status === 401) {
+                        toastr.error(response.error);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
                     } else {
-                        $('.reportProofTaskModal').modal('hide'); // Hide Report Proof Task modal
-                        toastr.success('Proof Task reported successfully.');
-                        $('#allDataTable').DataTable().ajax.reload();
-                        $('#reportProofTaskForm')[0].reset();
+                        if (response.status === 400) {
+                            $.each(response.error, function(prefix, val) {
+                                $('span.' + prefix + '_error').text(val[0]);
+                            });
+                        } else {
+                            $('.reportProofTaskModal').modal('hide'); // Hide Report Proof Task modal
+                            toastr.success('Proof Task reported successfully.');
+                            $('#allDataTable').DataTable().ajax.reload();
+                            $('#reportProofTaskForm')[0].reset();
+                        }
                     }
                 },
                 complete: function() {

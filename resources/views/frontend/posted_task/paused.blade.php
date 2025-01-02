@@ -208,7 +208,7 @@
         // Resume Data
         $(document).on('click', '.resumeBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('running.posted_task.paused.resume', ":id") }}";
+            var url = "{{ route('posted_task.paused.resume', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -236,7 +236,7 @@
         $(document).on('click', '.canceledBtn', function(){
 
             var id = $(this).data('id');
-            var url = "{{ route('running.posted_task.canceled', ":id") }}";
+            var url = "{{ route('posted_task.canceled', ":id") }}";
             url = url.replace(':id', id);
 
             $.ajax({

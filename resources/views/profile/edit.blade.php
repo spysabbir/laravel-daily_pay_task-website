@@ -17,7 +17,13 @@
                             <h4 class="ms-3 text-info">Name: {{ $user->name }}</h4>
                             <h5 class="ms-3 text-info">Email: {{ $user->email }}</h5>
                             <h5 class="ms-3 text-info">Joined: {{ $user->created_at->format('j F, Y  h:i:s A') }}</h5>
-                            <h5 class="ms-3 text-info">Last Active: {{ date('j F, Y  h:i:s A', strtotime($user->last_login_at)) }}</h5>
+                            <h5 class="ms-3 text-info">Active Status:
+                                @if (\Carbon\Carbon::parse($user->last_login_at)->gt(\Carbon\Carbon::now()->subMinutes(5)))
+                                <span class="text-success">Online</span>
+                                @else
+                                <span class="text-info">{{ \Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}</span>
+                                @endif
+                            </h5>
                         </div>
                     </div>
                     <div class="col-xl-7 col-lg-12 my-2 d-flex justify-content-center align-items-center flex-wrap">

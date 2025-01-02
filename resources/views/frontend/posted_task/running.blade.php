@@ -224,7 +224,7 @@
         // Paused Data
         $(document).on('click', '.pausedBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('running.posted_task.paused.resume', ":id") }}";
+            var url = "{{ route('posted_task.paused.resume', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -251,7 +251,7 @@
         // Canceled Data
         $(document).on('click', '.canceledBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('running.posted_task.canceled', ":id") }}";
+            var url = "{{ route('posted_task.canceled', ":id") }}";
             url = url.replace(':id', id);
 
             $.ajax({
@@ -309,7 +309,7 @@
         // Edit Data
         $(document).on('click', '.editBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('running.posted_task.edit', ":id") }}";
+            var url = "{{ route('posted_task.edit', ":id") }}";
             url = url.replace(':id', id);
 
             $.ajax({
@@ -317,27 +317,27 @@
                 type: "GET",
                 success: function (response) {
                     updateBoostingTimeOptions(response.remainingTimeMinutes);
-                    $('#post_task_id').val(response.id);
-                    $('#income_of_each_worker').text(response.income_of_each_worker);
+                    $('#post_task_id').val(response.postTask.id);
+                    $('#income_of_each_worker').text(response.postTask.income_of_each_worker);
 
                     // Calculate boosting end time
-                    let endTime = new Date(response.boosting_start_at);
-                    endTime.setMinutes(endTime.getMinutes() + parseInt(response.boosting_time, 10));
+                    let endTime = new Date(response.postTask.boosting_start_at);
+                    endTime.setMinutes(endTime.getMinutes() + parseInt(response.postTask.boosting_time, 10));
                     let currentTime = new Date();
                     if (currentTime < endTime) {
                         // Boosting is active
                         $('#boosting_time_input_div').hide();
                         $('#boosting_time_countdown_div').html(`
                             <h4 class="text-info mb-2">Boosting Time</h4>
-                            <p>Boosting Time: ${response.boosting_time} Minutes</p>
-                            <p>Boosting Start At: ${formatDate(new Date(response.boosting_start_at))}</p>
+                            <p>Boosting Time: ${response.postTask.boosting_time} Minutes</p>
+                            <p>Boosting Start At: ${formatDate(new Date(response.postTask.boosting_start_at))}</p>
                             <p>Boosting End At: ${formatDate(endTime)}</p>
-                            <p class="text-primary" id="countdown-${response.id}" data-end-time="${endTime.toISOString()}"></p>
+                            <p class="text-primary" id="countdown-${response.postTask.id}" data-end-time="${endTime.toISOString()}"></p>
                             <p class="text-info">You can again boost after the current boosting time ends.</p>
                         `).show();
 
                         // Pass the unique element ID to startCountdown
-                        startCountdown(endTime, `#countdown-${response.id}`);
+                        startCountdown(endTime, `#countdown-${response.postTask.id}`);
                     } else {
                         $('#boosting_time_countdown_div').hide();
                         $('#boosting_time_input_div').show();
@@ -425,7 +425,7 @@
             submitButton.prop("disabled", true).text("Updating...");
 
             var id = $('#post_task_id').val();
-            var url = "{{ route('running.posted_task.update', ":id") }}";
+            var url = "{{ route('posted_task.update', ":id") }}";
             url = url.replace(':id', id)
 
             $.ajax({

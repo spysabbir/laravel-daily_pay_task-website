@@ -15,7 +15,13 @@
                         <img class="wd-70 rounded-circle" id="userProfilePhotoPreview" src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="profile">
                         <div>
                             <h4 class="ms-3 text-dark">Name: {{ $user->name }}</h4>
-                            <p class="ms-3 text-info">Last Active: {{ Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}</p>
+                            <p class="ms-3 text-info">Active Status:
+                                @if (\Carbon\Carbon::parse($user->last_login_at)->gt(\Carbon\Carbon::now()->subMinutes(5)))
+                                <span class="text-success">Online</span>
+                                @else
+                                <span class="text-info">{{ \Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}</span>
+                                @endif
+                            </p>
                         </div>
                     </div>
                 </div>
