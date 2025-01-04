@@ -76,6 +76,18 @@
                             <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="filter_number" class="form-label">Number</label>
+                            <input type="number" id="filter_number" class="form-control filter_data" placeholder="Search Number">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="filter_transaction_id" class="form-label">Transaction Id</label>
+                            <input type="text" id="filter_transaction_id" class="form-control filter_data" placeholder="Search Transaction Id">
+                        </div>
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table id="pendingDataTable" class="table">
@@ -140,6 +152,8 @@
                 data: function (e) {
                     e.method = $('#filter_method').val();
                     e.user_id = $('#filter_user_id').val();
+                    e.number = $('#filter_number').val();
+                    e.transaction_id = $('#filter_transaction_id').val();
                 },
                 dataSrc: function (json) {
                     // Update total deposit count

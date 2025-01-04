@@ -14,6 +14,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\PostTask;
 use App\Models\ProofTask;
+use App\Models\Report;
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -86,10 +87,16 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . number_format($postTaskChargeHold, 2) . '</span>
                     ';
                 })
+                ->editColumn('report_count', function ($row) {
+                    $report_count = Report::where('user_id', $row->id)->where('status', 'Received')->count();
+                    return '
+                        <span class="badge bg-warning text-dark">' . $report_count . ' time' . ($report_count > 1 ? 's' : '') . '</span>
+                        ';
+                })
                 ->editColumn('block_count', function ($row) {
                     $block_count = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->count();
                     return '
-                        <span class="badge bg-warning">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
+                        <span class="badge bg-warning text-dark">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
                         ';
                 })
                 ->editColumn('last_login', function ($row) {
@@ -118,7 +125,7 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
                     return $btn;
                 })
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'block_count', 'last_login', 'created_at', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -223,10 +230,16 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . number_format($postTaskChargeHold, 2) . '</span>
                     ';
                 })
+                ->editColumn('report_count', function ($row) {
+                    $report_count = Report::where('user_id', $row->id)->where('status', 'Received')->count();
+                    return '
+                        <span class="badge bg-warning text-dark">' . $report_count . ' time' . ($report_count > 1 ? 's' : '') . '</span>
+                        ';
+                })
                 ->editColumn('block_count', function ($row) {
                     $block_count = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->count();
                     return '
-                        <span class="badge bg-warning">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
+                        <span class="badge bg-warning text-dark">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
                         ';
                 })
                 ->editColumn('last_login', function ($row) {
@@ -255,7 +268,7 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
                     return $btn;
                 })
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'block_count', 'last_login', 'created_at', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -316,10 +329,16 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . number_format($postTaskChargeHold, 2) . '</span>
                     ';
                 })
+                ->editColumn('report_count', function ($row) {
+                    $report_count = Report::where('user_id', $row->id)->where('status', 'Received')->count();
+                    return '
+                        <span class="badge bg-warning text-dark">' . $report_count . ' time' . ($report_count > 1 ? 's' : '') . '</span>
+                        ';
+                })
                 ->editColumn('block_count', function ($row) {
                     $block_count = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->count();
                     return '
-                        <span class="badge bg-warning">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
+                        <span class="badge bg-warning text-dark">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
                         ';
                 })
                 ->editColumn('banned_at', function ($row) {
@@ -354,7 +373,7 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
                     return $btn;
                 })
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'block_count', 'banned_at', 'last_login', 'created_at', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'banned_at', 'last_login', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -364,7 +383,7 @@ class UserController extends Controller implements HasMiddleware
     public function userView(string $id)
     {
         $id = decrypt($id);
-        $user = User::where('id', $id)->first();
+        $user = User::withTrashed()->where('id', $id)->first();
         $userStatuses = UserStatus::where('user_id', $id)->get();
         $userDetails = UserDetail::where('user_id', $id)->get();
         return view('backend.user.show', compact('user', 'userStatuses', 'userDetails'));
@@ -436,6 +455,7 @@ class UserController extends Controller implements HasMiddleware
                     $restorePermission = auth()->user()->can('user.restore');
                     $deletePermission = auth()->user()->can('user.delete');
 
+                    $viewBtn = '<a href="' . route('backend.user.show', encrypt($row->id)) . '" class="btn btn-primary btn-xs">View</a>';
                     $restoreBtn = $restorePermission
                         ? '<button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>'
                         : '';
@@ -443,7 +463,7 @@ class UserController extends Controller implements HasMiddleware
                         ? '<button type="button" data-id="'.$row->id.'" class="btn bg-danger btn-xs forceDeleteBtn">Delete</button>'
                         : '';
 
-                    $btn = $restoreBtn . ' ' . $deleteBtn;
+                    $btn = $restoreBtn . ' ' . $deleteBtn . ' ' . $viewBtn;
                     return $btn;
                 })
                 ->rawColumns(['action'])

@@ -6,14 +6,14 @@
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header">
                 <div class="text">
                     <h3 class="card-title">Deposit List</h3>
                     <p class="mb-0">Note: You can deposit money by using Bkash, Nagad, Rocket. After depositing money, you have to submit a deposit request with the transaction id. Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}. After submitting the deposit request then admin will verify your request and add the money to your account. Also, you will can instantly add balance to your deposit balance from your withdrawal balance by extra charge. If you have any problem, please contact with us.</p>
                 </div>
-                <div class="action-btn d-flex">
+                <div class="action-btn d-flex align-items-center justify-content-end flex-wrap">
                     <!-- Withdraw Balance To Deposit Modal -->
-                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target=".depositBalanceFromWithdrawBalanceModel">Deposit Balance From Withdraw Balance</button>
+                    <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".depositBalanceFromWithdrawBalanceModel">Deposit Balance From Withdraw Balance</button>
                     <div class="modal fade depositBalanceFromWithdrawBalanceModel" tabindex="-1" aria-labelledby="depositBalanceFromWithdrawBalanceModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                     <!-- Normal Deposit Modal -->
-                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target=".createModel">Deposit <i data-feather="plus-circle"></i></button>
+                    <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Deposit <i data-feather="plus-circle"></i></button>
                     <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">

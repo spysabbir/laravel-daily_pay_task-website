@@ -31,6 +31,7 @@
                                 <th>Deposit Balance</th>
                                 <th>Withdraw Balance</th>
                                 <th>Hold Balance</th>
+                                <th>Total Report</th>
                                 <th>Total Block</th>
                                 <th>Join Date</th>
                                 <th>Last Login</th>
@@ -94,6 +95,7 @@
                 { data: 'deposit_balance', name: 'deposit_balance' },
                 { data: 'withdraw_balance', name: 'withdraw_balance' },
                 { data: 'hold_balance', name: 'hold_balance' },
+                { data: 'report_count', name: 'report_count' },
                 { data: 'block_count', name: 'block_count' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'last_login', name: 'last_login' },

@@ -6,14 +6,14 @@
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header">
                 <div class="text">
                     <h3 class="card-title">Withdraw List</h3>
                     <p class="mb-0">Note: You can Withdraw money by using Bkash, Nagad, Rocket. Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}. Withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }} %. Instant withdraw charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}. After submitting the withdraw request, the admin will verify your request then send the money to your account number. Also, you will can instantly add balance to your withdraw balance from your deposited balance by extra charge. If you have any problem, please contact with us.</p>
                 </div>
-                <div class="action-btn d-flex">
+                <div class="action-btn d-flex align-items-center justify-content-end flex-wrap">
                     <!-- Withdraw Balance From Deposit Balance Modal -->
-                    <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target=".withdrawBalanceFromDepositBalanceModel">Withdraw Balance From Deposit Balance</button>
+                    <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".withdrawBalanceFromDepositBalanceModel">Withdraw Balance From Deposit Balance</button>
                     <div class="modal fade withdrawBalanceFromDepositBalanceModel" tabindex="-1" aria-labelledby="withdrawBalanceFromDepositBalanceModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel">Withdraw <i data-feather="plus-circle"></i></button>
+                    <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Withdraw <i data-feather="plus-circle"></i></button>
                     <!-- Normal Withdraw Modal -->
                     <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">

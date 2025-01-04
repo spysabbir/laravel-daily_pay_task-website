@@ -92,9 +92,9 @@
             var report_id = $('input[name="report_id"]').val();
 
             if ($(this).val() == 'False') {
-                $('#reply').val('Hi, We are reviewing your report but the report has been regard false so please check carefully before sending it to us. Alert: If your report over and over false your account will suspended so do not send false evidence to us for checking, Thanks. (Report ID: ' + report_id + ')');
+                $('#reply').val('Hi, We are reviewing your report but the report has been regard false so please check carefully before sending it to us. Alert: If your report over and over false your account will suspended so do not send false evidence to us for checking, Thanks.');
             } else {
-                $('#reply').val('Hi, we are reviewing your report. We received your report. We will investigate and take necessary actions, thank you. (Report ID: ' + report_id + ')');
+                $('#reply').val('Hi, we are reviewing your report. We received your report. We will investigate and take necessary actions, thank you.');
             }
         });
     });

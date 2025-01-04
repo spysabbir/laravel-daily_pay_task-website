@@ -72,9 +72,9 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_method" class="form-label">Deposit Method</label>
+                                <label for="filter_method" class="form-label">Withdraw Method</label>
                                 <select class="form-select filter_data" id="filter_method">
-                                    <option value="">-- Select Deposit Method --</option>
+                                    <option value="">-- Select Withdraw Method --</option>
                                     <option value="Bkash">Bkash</option>
                                     <option value="Nagad">Nagad</option>
                                     <option value="Rocket">Rocket</option>
@@ -85,6 +85,12 @@
                             <div class="form-group">
                                 <label for="filter_user_id" class="form-label">User Id</label>
                                 <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_number" class="form-label">Number</label>
+                                <input type="number" id="filter_number" class="form-control filter_data" placeholder="Search Number">
                             </div>
                         </div>
                     </div>
@@ -153,6 +159,8 @@
                 data: function (e) {
                     e.method = $('#filter_method').val();
                     e.type = $('#filter_type').val();
+                    e.user_id = $('#filter_user_id').val();
+                    e.number = $('#filter_number').val();
                 },
                 dataSrc: function (json) {
                     // Update total deposit count

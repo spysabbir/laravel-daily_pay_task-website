@@ -237,14 +237,14 @@
                 </a>
                 <div class="collapse" id="UserMenu">
                     <ul class="nav sub-menu">
-                        @can('user.active')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.user.active') }}" class="nav-link">Active</a>
-                        </li>
-                        @endcan
                         @can('user.inactive')
                         <li class="nav-item">
                             <a href="{{ route('backend.user.inactive') }}" class="nav-link">Inactive</a>
+                        </li>
+                        @endcan
+                        @can('user.active')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.user.active') }}" class="nav-link">Active</a>
                         </li>
                         @endcan
                         @can('user.blocked')

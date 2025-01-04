@@ -10,9 +10,14 @@
                 <div>
                     <h3 class="card-title">Working Task List - Rejected</h3>
                     <h3>Total: <span id="total_proofs_count">0</span></h3>
-                    <p class="card-description text-info">
-                        Note: Hi user, Below tasks list has been rejected by buyer or admin panel. If buyer rejects your proof you can send us to review your proof within {{ get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') }} hours the {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('rejected_worked_task_review_charge') }} will be deducted from your withdrawal balance. If you send the task proof to us for review, we will check your task proof. You will be notified after we check your review. If your review proof is correct then you will get refund of review cost in your withdrawal balance but if your review proof is not correct then you will not get refund of review cost. Tasks will be removed from the below list after 7 days. Please contact us if you face any problems.
-                    </p>
+                    <div class="card-description">
+                        <p class="text-info">
+                            Note: Hi user, Below tasks list has been rejected by buyer or admin panel. If buyer rejects your proof you can send us to review your proof within {{ get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time') }} hours the {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('rejected_worked_task_review_charge') }} will be deducted from your withdrawal balance. If you send the task proof to us for review, we will check your task proof. You will be notified after we check your review. If your review proof is correct then you will get refund of review cost in your withdrawal balance but if your review proof is not correct then you will not get refund of review cost. Please check your proof carefully before sending it to us.
+                        </p>
+                        <p class="text-warning">
+                            Alert: If your review over and over false your account will suspended so do not send false evidence to us for checking. Tasks will be removed from the below list after 7 days. Please contact us if you face any problems.
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="card-body">

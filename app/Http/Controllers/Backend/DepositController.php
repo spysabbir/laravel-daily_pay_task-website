@@ -38,6 +38,14 @@ class DepositController extends Controller implements HasMiddleware
                 $query->where('deposits.user_id', $request->user_id);
             }
 
+            if ($request->number){
+                $query->where('deposits.number', $request->number);
+            }
+
+            if ($request->transaction_id){
+                $query->where('deposits.transaction_id', $request->transaction_id);
+            }
+
             $query->select('deposits.*')->orderBy('created_at', 'desc');
 
             // Clone the query for counts
@@ -220,6 +228,14 @@ class DepositController extends Controller implements HasMiddleware
 
             if ($request->user_id){
                 $query->where('deposits.user_id', $request->user_id);
+            }
+
+            if ($request->number){
+                $query->where('deposits.number', $request->number);
+            }
+
+            if ($request->transaction_id){
+                $query->where('deposits.transaction_id', $request->transaction_id);
             }
 
             $query->select('deposits.*')->orderBy('approved_at', 'desc');

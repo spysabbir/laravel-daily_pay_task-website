@@ -562,6 +562,15 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
+            $checkDeposit = Deposit::whereNot('status', 'Rejected')->where('method', $request->method)->where('number', $request->number)->where('transaction_id', $request->transaction_id)->first();
+
+            if ($checkDeposit) {
+                return response()->json([
+                    'status' => 401,
+                    'error'=> 'This transaction is already exist.'
+                ]);
+            }
+
             Deposit::create([
                 'user_id' => $request->user()->id,
                 'amount' => $request->amount,

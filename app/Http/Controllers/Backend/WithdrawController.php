@@ -46,6 +46,10 @@ class WithdrawController extends Controller implements HasMiddleware
                 $query->where('withdraws.user_id', $request->user_id);
             }
 
+            if ($request->number){
+                $query->where('withdraws.number', $request->number);
+            }
+
             $query->select('withdraws.*')->orderBy('type', 'desc')->orderBy('created_at', 'desc');
 
             // Clone the query for counts
@@ -275,6 +279,10 @@ class WithdrawController extends Controller implements HasMiddleware
 
             if ($request->user_id){
                 $query->where('withdraws.user_id', $request->user_id);
+            }
+
+            if ($request->number){
+                $query->where('withdraws.number', $request->number);
             }
 
             $query->select('withdraws.*')->orderBy('approved_at', 'desc');
