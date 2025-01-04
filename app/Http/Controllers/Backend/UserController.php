@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Deposit;
+use App\Models\Verification;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -15,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\PostTask;
 use App\Models\ProofTask;
 use App\Models\Report;
+use App\Models\Withdraw;
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -384,9 +387,30 @@ class UserController extends Controller implements HasMiddleware
     {
         $id = decrypt($id);
         $user = User::withTrashed()->where('id', $id)->first();
+        $userVerification = Verification::where('user_id', $id)->first();
         $userStatuses = UserStatus::where('user_id', $id)->get();
         $userDetails = UserDetail::where('user_id', $id)->get();
-        return view('backend.user.show', compact('user', 'userStatuses', 'userDetails'));
+        // Deposit
+        $depositBalance = $user->deposit_balance;
+        $pendingDeposit = Deposit::where('user_id', $id)->where('status', 'Pending')->sum('amount');
+        $approvedDeposit = Deposit::where('user_id', $id)->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount');
+        $rejectedDeposit = Deposit::where('user_id', $id)->where('status', 'Rejected')->sum('amount');
+        $transferDeposit = Deposit::where('user_id', $id)->where('status', 'Approved')->where('method', 'Withdraw Balance')->sum('amount');
+        // Withdraw
+        $withdrawBalance = $user->withdraw_balance;
+        $pendingWithdraw = Withdraw::where('user_id', $id)->where('status', 'Pending')->sum('amount');
+        $approvedWithdraw = Withdraw::where('user_id', $id)->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount');
+        $rejectedWithdraw = Withdraw::where('user_id', $id)->where('status', 'Rejected')->sum('amount');
+        $transferWithdraw = Withdraw::where('user_id', $id)->where('status', 'Approved')->where('method', 'Deposit Balance')->sum('amount');
+        // Posted Task
+        $pendingPostedTask = PostTask::where('user_id', $id)->where('status', 'Pending')->count();
+        $runningPostedTask = PostTask::where('user_id', $id)->where('status', 'Running')->count();
+        $rejectedPostedTask = PostTask::where('user_id', $id)->where('status', 'Rejected')->count();
+        $canceledPostedTask = PostTask::where('user_id', $id)->where('status', 'Canceled')->count();
+        $pausedPostedTask = PostTask::where('user_id', $id)->where('status', 'Paused')->count();
+        $completedPostedTask = PostTask::where('user_id', $id)->where('status', 'Completed')->count();
+        // Posted Task Proof Submit
+        return view('backend.user.show', compact('user', 'userStatuses', 'userDetails', 'userVerification' , 'depositBalance', 'pendingDeposit', 'approvedDeposit', 'rejectedDeposit', 'transferDeposit', 'withdrawBalance', 'pendingWithdraw', 'approvedWithdraw', 'rejectedWithdraw', 'transferWithdraw'));
     }
 
     public function userStatus(string $id)

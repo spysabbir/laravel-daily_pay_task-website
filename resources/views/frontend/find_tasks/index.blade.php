@@ -12,10 +12,9 @@
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                 </div>
                 <div class="card-description">
-                    <p><span class="text-info">Note: </span>Hi everyone, find the preferred task from the below list to working and will get result from buyers within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours after submitting task proof. You will get automatically payment if the buyer does not approve or reject your Task Proof within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours so work with honesty and perfectly.</p>
-                    <p><span class="text-warning">Alert: </span>Please don’t' try to hassle others and submit false work. Please contact us if you face any problem, Thanks.</p>
+                    <p class="text-info"><strong>Note: </strong>Hi everyone, find the preferred task from the below list to working and will get result from buyers within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours after submitting task proof. You will get automatically payment if the buyer does not approve or reject your Task Proof within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours so work with honesty and perfectly. Please contact us if you face any problem, Thanks.</p>
+                    <p class="text-warning"><strong>Alert: </strong>Please don’t' try to hassle others and submit false work. </p>
                 </div>
-
             </div>
             <div class="card-body">
                 <div class="filter mb-3">

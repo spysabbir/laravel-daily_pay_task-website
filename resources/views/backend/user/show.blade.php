@@ -6,8 +6,30 @@
 <div class="row">
     <div class="col-md-4">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header">
                 <h3 class="card-title">User Profile Details</h3>
+                <div class="text-center">
+                    @if ($user->status == 'Active')
+                        <span class="badge bg-success">Account Status: Active</span>
+                    @elseif ($user->status == 'Inactive')
+                        <span class="badge bg-info">Account Status: Inactive</span>
+                    @elseif ($user->status == 'Blocked')
+                        <span class="badge bg-warning">Account Status: Blocked</span>
+                    @else
+                        <span class="badge bg-danger">Account Status: Banned</span>
+                    @endif
+                </div>
+                @if ($userVerification)
+                <div class="text-center">
+                    @if ($userVerification->status == 'Approved')
+                        <span class="badge bg-success">Id Verification Status: Approved</span>
+                    @elseif ($userVerification->status == 'Rejected')
+                        <span class="badge bg-danger">Id Verification Status: Rejected</span>
+                    @else
+                        <span class="badge bg-primary">Id Verification Status: Pending</span>
+                    @endif
+                </div>
+                @endif
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -16,7 +38,7 @@
                             <tr>
                                 <th>Profile Photo</th>
                                 <th>
-                                    <img src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="Profile Photo" class="img-thumbnail" width="100">
+                                    <img src="{{ asset('uploads/profile_photo') }}/{{ $user->profile_photo }}" alt="Profile Photo" class="img-thumbnail" width="120">
                                 </th>
                             </tr>
                         </thead>
@@ -50,20 +72,6 @@
                                 <td>{{ $user->address ?? 'N/A' }}</td>
                             </tr>
                             <tr>
-                                <td>Status</td>
-                                <td>
-                                    @if ($user->status == 'Active')
-                                        <span class="badge bg-success">Active</span>
-                                    @elseif ($user->status == 'Inactive')
-                                        <span class="badge bg-dark">Inactive</span>
-                                    @elseif ($user->status == 'Blocked')
-                                        <span class="badge bg-warning">Blocked</span>
-                                    @else
-                                        <span class="badge bg-danger">Banned</span>
-                                    @endif
-                                </td>
-                            </tr>
-                            <tr>
                                 <td>Bio</td>
                                 <td>{{ $user->bio ?? 'N/A' }}</td>
                             </tr>
@@ -91,6 +99,14 @@
                                 <td>Updated At</td>
                                 <td>{{ $user->updated_at->format('d M, Y h:i:s A') }}</td>
                             </tr>
+                            <tr>
+                                <td>Deleted By</td>
+                                <td>{{ $user->deleted_by ? $user->deletedBy->name : 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <td>Deleted At</td>
+                                <td>{{ $user->deleted_at ? date('d M, Y  h:i:s A', strtotime($user->deleted_at)) : 'N/A' }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -100,74 +116,74 @@
     <div class="col-md-8">
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">User Deposit Details</h3>
+                <h3 class="card-title">User Total Deposit Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                <div class="card bg-primary">
+                    <div class="card-body text-dark">
+                        <h4 class="card-title">{{ $depositBalance }}</h4>
+                        <p class="card-text">Balance</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-warning text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $pendingDeposit }}</h4>
+                        <p class="card-text">Pending</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-success text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $approvedDeposit }}</h4>
+                        <p class="card-text">Approved</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-danger text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $rejectedDeposit }}</h4>
+                        <p class="card-text">Rejected</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-info text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $transferDeposit }}</h4>
+                        <p class="card-text">Transfer</p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">User Withdraw Details</h3>
+                <h3 class="card-title">User Total Withdraw Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                <div class="card bg-primary">
+                    <div class="card-body text-dark">
+                        <h4 class="card-title">{{ $withdrawBalance }}</h4>
+                        <p class="card-text">Balance</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-warning text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $pendingWithdraw }}</h4>
+                        <p class="card-text">Pending</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-success text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $approvedWithdraw }}</h4>
+                        <p class="card-text">Approved</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-danger text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $rejectedWithdraw }}</h4>
+                        <p class="card-text">Rejected</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-info text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $transferWithdraw }}</h4>
+                        <p class="card-text">Transfer</p>
                     </div>
                 </div>
             </div>
@@ -179,38 +195,38 @@
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $pendingPostedTask }}</h4>
+                        <p class="card-text">Pending</p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $runningPostedTask }}</h4>
+                        <p class="card-text">Running</p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $rejectedPostedTask }}</h4>
+                        <p class="card-text">Rejected</p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $canceledPostedTask }}</h4>
+                        <p class="card-text">Canceled</p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $pausedPostedTask }}</h4>
+                        <p class="card-text">Paused</p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $completedPostedTask }}</h4>
+                        <p class="card-text">Completed</p>
                     </div>
                 </div>
                 <div class="card">

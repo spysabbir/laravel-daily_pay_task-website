@@ -930,11 +930,15 @@ class UserController extends Controller
                         return $bonus_by;
                     })
                     ->editColumn('for_user', function ($row) {
-                        $for_user = '
-                        <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
-                            '.$row->bonusBy->name.'
-                        </a>
-                        ';
+                        if ($row->bonusBy->deleted_at == null) {
+                            $for_user = '
+                            <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
+                                '.$row->bonusBy->name.'
+                            </a>
+                            ';
+                        } else {
+                            $for_user = '<span class="badge bg-primary">' . $row->bonusBy->name . '</span>';
+                        }
                         return $for_user;
                     })
                     ->editColumn('amount', function ($row) {
@@ -1062,11 +1066,16 @@ class UserController extends Controller
                 return DataTables::of($blockedList)
                     ->addIndexColumn()
                     ->editColumn('user', function ($row) {
-                        return '
+                        if ($row->blocked->deleted_at == null) {
+                            $blocked = '
                             <a href="'.route('user.profile', encrypt($row->blocked->id)).'" title="'.$row->blocked->name.'" class="text-info">
                                 '.$row->blocked->name.'
                             </a>
-                        ';
+                            ';
+                        } else {
+                            $blocked = '<span class="badge bg-primary">' . $row->blocked->name . '</span>';
+                        }
+                        return $blocked;
                     })
                     ->editColumn('blocked_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->blocked_at));
@@ -1160,7 +1169,16 @@ class UserController extends Controller
                         return $type;
                     })
                     ->editColumn('user', function ($row) {
-                        return '<a href="' . route('user.profile', encrypt($row->reported->id)) . '" title="' . $row->reported->name . '" class="text-info">' . $row->reported->name . '</a>';
+                        if ($row->reported->deleted_at == null) {
+                            $reported = '
+                            <a href="'.route('user.profile', encrypt($row->reported->id)).'" title="'.$row->reported->name.'" class="text-info">
+                                '.$row->reported->name.'
+                            </a>
+                            ';
+                        } else {
+                            $reported = '<span class="badge bg-primary">' . $row->reported->name . '</span>';
+                        }
+                        return $reported;
                     })
                     ->editColumn('created_at', function ($row) {
                         return date('d M Y h:i A', strtotime($row->created_at));

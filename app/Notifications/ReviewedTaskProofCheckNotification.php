@@ -36,7 +36,7 @@ class ReviewedTaskProofCheckNotification extends Notification implements ShouldQ
         }
 
         return [
-            'title' => 'Your reviewed working task id ' . $this->proofTask['id'] . ' is ' . $this->proofTask['status'] . ' finally.',
+            'title' => 'Your reviewed working proof id ' . $this->proofTask['id'] . ' is ' . $this->proofTask['status'] . ' finally.',
             'message' => $message,
         ];
     }
@@ -55,7 +55,7 @@ class ReviewedTaskProofCheckNotification extends Notification implements ShouldQ
         return (new MailMessage)
                     ->subject('Task Proof Reviewed Resolved')
                     ->greeting('Hello ' . $notifiable->name . ',')
-                    ->line('Your reviewed working task id ' . $this->proofTask['id'] . ' is ' . $this->proofTask['status'] . ' finally.')
+                    ->line('Your reviewed working proof id ' . $this->proofTask['id'] . ' is ' . $this->proofTask['status'] . ' finally.')
                     ->line( $message )
                     ->line('Updated on: ' . Carbon::parse($this->proofTask['updated_at'])->format('d M, Y h:i:s A'))
                     ->line('Thank you for using our application!');

@@ -11,165 +11,165 @@
                     <h3 class="card-title">Withdraw List</h3>
                     <p class="mb-0">Note: You can Withdraw money by using Bkash, Nagad, Rocket. Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}. Withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }} %. Instant withdraw charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}. After submitting the withdraw request, the admin will verify your request then send the money to your account number. Also, you will can instantly add balance to your withdraw balance from your deposited balance by extra charge. If you have any problem, please contact with us.</p>
                 </div>
-                <div class="action-btn d-flex align-items-center justify-content-end flex-wrap">
-                    <!-- Withdraw Balance From Deposit Balance Modal -->
-                    <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".withdrawBalanceFromDepositBalanceModel">Withdraw Balance From Deposit Balance</button>
-                    <div class="modal fade withdrawBalanceFromDepositBalanceModel" tabindex="-1" aria-labelledby="withdrawBalanceFromDepositBalanceModelLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="withdrawBalanceFromDepositBalanceModelLabel">Withdraw Balance From Deposit Balance</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-lg-8">
-                                            <div class="mb-3">
-                                                <div class="alert alert-info" role="alert" id="totalWithdrawBalanceFromDepositBalance">
-                                                    <h4 class="alert-heading text-center">
-                                                        <i class="link-icon" data-feather="credit-card"></i>
-                                                        Total Withdraw Balance From Deposit Balance Amount: <strong>{{ get_site_settings('site_currency_symbol') }} {{ $withdrawBalanceFromDepositBalance }}</strong>
-                                                    </h4>
-                                                </div>
-                                            </div>
-                                            <div class="table-responsive">
-                                                <table id="withdrawBalanceFromDepositBalanceDataTable" class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Sl No</th>
-                                                            <th>Withdraw Amount</th>
-                                                            <th>Payable Amount</th>
-                                                            <th>Submitted Date</th>
-                                                            <th>Approved Date</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <form class="forms-sample" id="withdrawBalanceFromDepositBalanceForm">
-                                                @csrf
-                                                <div class="mb-3">
-                                                    <label for="deposit_balance" class="form-label">Deposit Balance</label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="deposit_balance" value="{{ Auth::user()->deposit_balance }}" disabled>
-                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="withdraw_balance" class="form-label">Withdraw Balance <span class="text-danger">*</span></label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="withdraw_balance" name="withdraw_balance" placeholder="Withdraw Balance" required>
-                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                    </div>
-                                                    <small class="text-info d-block">Note: Minimum withdraw balance is {{ get_site_settings('site_currency_symbol') }} 1.</small>
-                                                    <span class="text-danger error-text withdraw_balance_error"></span>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="withdraw_balance_from_deposit_balance_charge_percentage" class="form-label">Withdraw Balance From Deposit Balance Charge Percentage</label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="withdraw_balance_from_deposit_balance_charge_percentage" value="{{ get_default_settings('withdraw_balance_from_deposit_balance_charge_percentage') }}" disabled>
-                                                        <span class="input-group-text input-group-addon">%</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="payable_withdraw_balance" class="form-label">Payable Withdraw Balance</label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="payable_withdraw_balance" value="0" placeholder="Payable Withdraw Balance" disabled>
-                                                        <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                    </div>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </form>
-                                        </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="action-btn d-flex align-items-center justify-content-center flex-wrap mb-2 alert-info">
+                        <!-- Withdraw Balance From Deposit Balance Modal -->
+                        <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".withdrawBalanceFromDepositBalanceModel">Withdraw Balance From Deposit Balance</button>
+                        <div class="modal fade withdrawBalanceFromDepositBalanceModel" tabindex="-1" aria-labelledby="withdrawBalanceFromDepositBalanceModelLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="withdrawBalanceFromDepositBalanceModelLabel">Withdraw Balance From Deposit Balance</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Withdraw <i data-feather="plus-circle"></i></button>
-                    <!-- Normal Withdraw Modal -->
-                    <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-md">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="createModelLabel">Withdraw</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                </div>
-                                <form class="forms-sample" id="createForm">
-                                    @csrf
                                     <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="type" class="form-label">Withdraw Type <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="type" name="type" required>
-                                                <option value="">-- Select Withdraw Type --</option>
-                                                <option value="Ragular">Ragular</option>
-                                                <option value="Instant">Instant</option>
-                                            </select>
-                                            <small class="text-info d-block">
-                                                <strong id="ragular">Note: Withdraw request will be processed within 24 hours.</strong>
-                                                <strong id="instant">Note: Withdraw request will be processed in 30 minutes. But you will be charged an extra {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}.</strong>
-                                            </small>
-                                            <span class="text-danger error-text type_error"></span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="method" class="form-label">Withdraw Method <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="method" name="method" required>
-                                                <option value="">-- Select Withdraw Method --</option>
-                                                <option value="Bkash">Bkash</option>
-                                                <option value="Nagad">Nagad</option>
-                                                <option value="Rocket">Rocket</option>
-                                            </select>
-                                            <span class="text-danger error-text method_error"></span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="number" class="form-label">Withdraw Number <span class="text-danger">*</span></label>
-                                            <input type="number" class="form-control" id="number" name="number" placeholder="Withdraw Number" required>
-                                            <small class="text-info d-block">Note: The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small>
-                                            <span class="text-danger error-text number_error"></span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="amount" class="form-label">Withdraw Amount <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_withdraw_amount') }}" max="{{ get_default_settings('max_withdraw_amount') }}" placeholder="Withdraw Amount" required>
-                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <div class="mb-3">
+                                                    <div class="alert alert-info" role="alert" id="totalWithdrawBalanceFromDepositBalance">
+                                                        <h4 class="alert-heading text-center">
+                                                            <i class="link-icon" data-feather="credit-card"></i>
+                                                            Total Withdraw Balance From Deposit Balance Amount: <strong>{{ get_site_settings('site_currency_symbol') }} {{ $withdrawBalanceFromDepositBalance }}</strong>
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table id="withdrawBalanceFromDepositBalanceDataTable" class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sl No</th>
+                                                                <th>Withdraw Amount</th>
+                                                                <th>Payable Amount</th>
+                                                                <th>Submitted Date</th>
+                                                                <th>Approved Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
-                                            <small class="text-info d-block">Note: Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
-                                            <span class="text-danger error-text amount_error"></span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Withdraw Charge Percentage</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" value="{{ get_default_settings('withdraw_charge_percentage') }}" disabled>
-                                                <span class="input-group-text input-group-addon">%</span>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Payable Withdraw Amount</label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="payable_withdraw_amount" value="0" placeholder="Payable Withdraw Amount" disabled>
-                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            <div class="col-lg-4">
+                                                <form class="forms-sample" id="withdrawBalanceFromDepositBalanceForm">
+                                                    @csrf
+                                                    <div class="mb-3">
+                                                        <label for="deposit_balance" class="form-label">Deposit Balance</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="deposit_balance" value="{{ Auth::user()->deposit_balance }}" disabled>
+                                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="withdraw_balance" class="form-label">Withdraw Balance <span class="text-danger">*</span></label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="withdraw_balance" name="withdraw_balance" placeholder="Withdraw Balance" required>
+                                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                        </div>
+                                                        <small class="text-info d-block">Note: Minimum withdraw balance is {{ get_site_settings('site_currency_symbol') }} 1.</small>
+                                                        <span class="text-danger error-text withdraw_balance_error"></span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="withdraw_balance_from_deposit_balance_charge_percentage" class="form-label">Withdraw Balance From Deposit Balance Charge Percentage</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="withdraw_balance_from_deposit_balance_charge_percentage" value="{{ get_default_settings('withdraw_balance_from_deposit_balance_charge_percentage') }}" disabled>
+                                                            <span class="input-group-text input-group-addon">%</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="payable_withdraw_balance" class="form-label">Payable Withdraw Balance</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="payable_withdraw_balance" value="0" placeholder="Payable Withdraw Balance" disabled>
+                                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Withdraw</button>
                                     </div>
-                                </form>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Withdraw <i data-feather="plus-circle"></i></button>
+                        <!-- Normal Withdraw Modal -->
+                        <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-md">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="createModelLabel">Withdraw</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                    </div>
+                                    <form class="forms-sample" id="createForm">
+                                        @csrf
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="type" class="form-label">Withdraw Type <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="type" name="type" required>
+                                                    <option value="">-- Select Withdraw Type --</option>
+                                                    <option value="Ragular">Ragular</option>
+                                                    <option value="Instant">Instant</option>
+                                                </select>
+                                                <small class="text-info d-block">
+                                                    <strong id="ragular">Note: Withdraw request will be processed within 24 hours.</strong>
+                                                    <strong id="instant">Note: Withdraw request will be processed in 30 minutes. But you will be charged an extra {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}.</strong>
+                                                </small>
+                                                <span class="text-danger error-text type_error"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="method" class="form-label">Withdraw Method <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="method" name="method" required>
+                                                    <option value="">-- Select Withdraw Method --</option>
+                                                    <option value="Bkash">Bkash</option>
+                                                    <option value="Nagad">Nagad</option>
+                                                    <option value="Rocket">Rocket</option>
+                                                </select>
+                                                <span class="text-danger error-text method_error"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="number" class="form-label">Withdraw Number <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" id="number" name="number" placeholder="Withdraw Number" required>
+                                                <small class="text-info d-block">Note: The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small>
+                                                <span class="text-danger error-text number_error"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="amount" class="form-label">Withdraw Amount <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="amount" name="amount" min="{{ get_default_settings('min_withdraw_amount') }}" max="{{ get_default_settings('max_withdraw_amount') }}" placeholder="Withdraw Amount" required>
+                                                    <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                </div>
+                                                <small class="text-info d-block">Note: Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}</small>
+                                                <span class="text-danger error-text amount_error"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Withdraw Charge Percentage</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" value="{{ get_default_settings('withdraw_charge_percentage') }}" disabled>
+                                                    <span class="input-group-text input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Payable Withdraw Amount</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="payable_withdraw_amount" value="0" placeholder="Payable Withdraw Amount" disabled>
+                                                    <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Withdraw</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
                     <div class="alert alert-info" role="alert" id="total_withdraw_div">
                         <h4 class="alert-heading text-center">
                             <i class="link-icon" data-feather="credit-card"></i>

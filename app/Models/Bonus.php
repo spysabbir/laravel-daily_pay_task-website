@@ -13,11 +13,11 @@ class Bonus extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function bonusBy()
     {
-        return $this->belongsTo(User::class, 'bonus_by');
+        return $this->belongsTo(User::class, 'bonus_by')->withTrashed();
     }
 }

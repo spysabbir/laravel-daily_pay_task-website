@@ -195,7 +195,7 @@ class WorkedTaskController extends Controller
         if ($postTask->status != 'Running') {
             return response()->json([
                 'canSubmit' => false,
-                'message' => 'Sorry, this task is ' . $postTask->status . ' now. You can not submit proof for this task.'
+                'message' => 'Sorry, Currently, this task is ' . $postTask->status . ' now. So you can not submit proof for this task.'
             ]);
         }
 
