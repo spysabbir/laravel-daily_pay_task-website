@@ -7,7 +7,7 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">User Profile Details</h3>
+                <h3 class="card-title">User Profile Details - Id: {{ $user->id }}</h3>
                 <div class="text-center">
                     @if ($user->status == 'Active')
                         <span class="badge bg-success">Account Status: Active</span>
@@ -119,8 +119,8 @@
                 <h3 class="card-title">User Total Deposit Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card bg-primary">
-                    <div class="card-body text-dark">
+                <div class="card bg-primary text-dark">
+                    <div class="card-body">
                         <h4 class="card-title">{{ $depositBalance }}</h4>
                         <p class="card-text">Balance</p>
                     </div>
@@ -156,8 +156,8 @@
                 <h3 class="card-title">User Total Withdraw Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card bg-primary">
-                    <div class="card-body text-dark">
+                <div class="card bg-primary text-dark">
+                    <div class="card-body">
                         <h4 class="card-title">{{ $withdrawBalance }}</h4>
                         <p class="card-text">Balance</p>
                     </div>
@@ -193,46 +193,40 @@
                 <h3 class="card-title">User Posted Task Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card">
+                <div class="card bg-info text-dark">
                     <div class="card-body">
                         <h4 class="card-title">{{ $pendingPostedTask }}</h4>
                         <p class="card-text">Pending</p>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body bg-success text-dark">
                         <h4 class="card-title">{{ $runningPostedTask }}</h4>
                         <p class="card-text">Running</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-warning text-dark">
                     <div class="card-body">
                         <h4 class="card-title">{{ $rejectedPostedTask }}</h4>
                         <p class="card-text">Rejected</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-danger text-dark">
                     <div class="card-body">
                         <h4 class="card-title">{{ $canceledPostedTask }}</h4>
                         <p class="card-text">Canceled</p>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body bg-primary text-dark">
                         <h4 class="card-title">{{ $pausedPostedTask }}</h4>
                         <p class="card-text">Paused</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-secondary text-dark">
                     <div class="card-body">
                         <h4 class="card-title">{{ $completedPostedTask }}</h4>
                         <p class="card-text">Completed</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
                     </div>
                 </div>
             </div>

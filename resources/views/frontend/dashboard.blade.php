@@ -74,7 +74,7 @@
     <div>
         <strong>Blocked Reason: {{ $userStatus->reason }}</strong><br>
         <strong>Blocked Duration: {{ $userStatus->blocked_duration }} hours</strong><br>
-        <strong>Blocked At: {{ date('d M, Y h:i A', strtotime($userStatus->created_at)) }}</strong>
+        <strong>Blocked Time: {{ date('d M, Y h:i A', strtotime($userStatus->created_at)) }}</strong>
     </div>
 	<hr>
 	<div class="mb-0">
@@ -89,12 +89,12 @@
         <h4> Your account is banned!</h4>
     </div>
 	<p class="mt-3">
-        Your account is banned by admin. You can't access your account. Please contact with us to unban your account. We are always ready to help you.
+        Your account is banned by admin. You can't access your account. Please contact with us to unbanned your account. We are always ready to help you.
     </p>
 	<hr>
     <div>
         <strong>Banned Reason: {{ $userStatus->reason }}</strong><br>
-        <strong>Banned At: {{ date('d M, Y h:i A', strtotime($userStatus->created_at)) }}</strong>
+        <strong>Banned Time: {{ date('d M, Y h:i A', strtotime($userStatus->created_at)) }}</strong>
     </div>
 	<hr>
 	<div class="mb-0">

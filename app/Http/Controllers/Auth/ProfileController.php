@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PostTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -73,6 +74,17 @@ class ProfileController extends Controller
             'account_password.current_password' => 'The password is incorrect.',
             'account_password.regex' => 'The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
         ]);
+
+        $runningPostedTask = PostTask::where('user_id', Auth::id())->where('status', 'running')->count();
+
+        if ($runningPostedTask > 0) {
+            $notification = array(
+                'message' => 'Currently, your some posted tasks is running. So, you can not delete your account now until all of your posted tasks is completed or canceled.',
+                'alert-type' => 'error'
+            );
+
+            return back()->with($notification);
+        }
 
         $user = $request->user();
 

@@ -57,7 +57,16 @@
     <div class="col-lg-4">
         @can('withdraw.request.check')
         <div class="alert alert-warning mb-3">
-            <strong>Warning!</strong> Till now {{ $reportsPending }} reports are pending this user.
+            <strong>Warning!</strong> Till now <span class="badge bg-{{ $reportsPending > 0 ? 'danger' : 'primary' }}">{{ $reportsPending }}</span> reports are pending this user. Check <a href="{{ route('backend.report.pending') }}" class="text-primary" target="_blank">report</a> panel for more details.
+        </div>
+        <div class="alert alert-warning mb-3">
+            <strong>Warning!</strong> Same number users details:
+            <br>
+            @forelse ($sameNumberUserIds as $user)
+                <a href="{{ route('backend.user.show', encrypt($user->id)) }}" class="badge bg-danger" target="_blank">Id: {{ $user->id }} - Name: {{ $user->name }}</a> <br>
+            @empty
+                <span class="badge bg-primary">No user found</span>
+            @endforelse
         </div>
         <div class="card">
             <div class="card-header">

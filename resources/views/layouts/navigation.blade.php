@@ -353,71 +353,6 @@
             </li>
         @endcan
 
-        <li class="nav-item nav-category">Service Agent</li>
-        @can('SupportMenu')
-            @can('support.index')
-            <li class="nav-item">
-                <a href="{{ route('backend.support') }}" class="nav-link">
-                    <i class="link-icon" data-feather="message-circle"></i>
-                    <span class="link-title">Support <span class="badge bg-primary">{{ $supportsCount }}</span></span>
-                </a>
-            </li>
-            @endcan
-        @endcan
-
-        @can('ContactMenu')
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#ContactMenu" role="button" aria-expanded="false" aria-controls="ContactMenu">
-                    <i class="link-icon" data-feather="phone"></i>
-                    <span class="link-title">Contact <span class="badge bg-primary">{{ $contact }}</span></span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="ContactMenu">
-                    <ul class="nav sub-menu">
-                        @can('contact.unread')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.contact.unread') }}" class="nav-link">Unread</a>
-                        </li>
-                        @endcan
-                        @can('contact.read')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.contact.read') }}" class="nav-link">Read</a>
-                        </li>
-                        @endcan
-                    </ul>
-                </div>
-            </li>
-        @endcan
-
-        @can('ReportMenu')
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#ReportMenu" role="button" aria-expanded="false" aria-controls="ReportMenu">
-                    <i class="link-icon" data-feather="alert-triangle"></i>
-                    <span class="link-title">Report <span class="badge bg-primary">{{ $report }}</span></span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="ReportMenu">
-                    <ul class="nav sub-menu">
-                        @can('report.pending')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.report.pending') }}" class="nav-link">Pending</a>
-                        </li>
-                        @endcan
-                        @can('report.false')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.report.false') }}" class="nav-link">False</a>
-                        </li>
-                        @endcan
-                        @can('report.received')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.report.received') }}" class="nav-link">Received</a>
-                        </li>
-                        @endcan
-                    </ul>
-                </div>
-            </li>
-        @endcan
-
         <li class="nav-item nav-category">Moderator</li>
         @can('VerificationMenu')
             <li class="nav-item">
@@ -462,6 +397,11 @@
                             <a href="{{ route('backend.deposit.request.approved') }}" class="nav-link">Approved</a>
                         </li>
                         @endcan
+                        @can('deposit.transfer.approved')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.deposit.transfer.approved') }}" class="nav-link">Transfer</a>
+                        </li>
+                        @endcan
                     </ul>
                 </div>
             </li>
@@ -484,6 +424,11 @@
                         @can('withdraw.request.approved')
                         <li class="nav-item">
                             <a href="{{ route('backend.withdraw.request.approved') }}" class="nav-link">Approved</a>
+                        </li>
+                        @endcan
+                        @can('withdraw.transfer.approved')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.withdraw.transfer.approved') }}" class="nav-link">Transfer</a>
                         </li>
                         @endcan
                     </ul>
@@ -562,6 +507,71 @@
                     </ul>
                 </div>
             </li>
+        @endcan
+
+        @can('ReportMenu')
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ReportMenu" role="button" aria-expanded="false" aria-controls="ReportMenu">
+                    <i class="link-icon" data-feather="alert-triangle"></i>
+                    <span class="link-title">Report <span class="badge bg-primary">{{ $report }}</span></span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="ReportMenu">
+                    <ul class="nav sub-menu">
+                        @can('report.pending')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.report.pending') }}" class="nav-link">Pending</a>
+                        </li>
+                        @endcan
+                        @can('report.false')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.report.false') }}" class="nav-link">False</a>
+                        </li>
+                        @endcan
+                        @can('report.received')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.report.received') }}" class="nav-link">Received</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
+
+        <li class="nav-item nav-category">Service Agent</li>
+        @can('ContactMenu')
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ContactMenu" role="button" aria-expanded="false" aria-controls="ContactMenu">
+                    <i class="link-icon" data-feather="phone"></i>
+                    <span class="link-title">Contact <span class="badge bg-primary">{{ $contact }}</span></span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="ContactMenu">
+                    <ul class="nav sub-menu">
+                        @can('contact.unread')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.contact.unread') }}" class="nav-link">Unread</a>
+                        </li>
+                        @endcan
+                        @can('contact.read')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.contact.read') }}" class="nav-link">Read</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
+        
+        @can('SupportMenu')
+            @can('support.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.support') }}" class="nav-link">
+                    <i class="link-icon" data-feather="message-circle"></i>
+                    <span class="link-title">Support <span class="badge bg-primary">{{ $supportsCount }}</span></span>
+                </a>
+            </li>
+            @endcan
         @endcan
     @else
         <li class="nav-item nav-category">User</li>

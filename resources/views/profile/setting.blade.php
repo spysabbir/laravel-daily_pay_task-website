@@ -122,9 +122,9 @@
                             @forelse ($blockedStatuses as $blockedStatus)
                             <tr>
                                 <td>{{ $blockedStatus->reason }}</td>
-                                <td>{{ $blockedStatus->created_at->format('d M, Y h:i A') }}</td>
+                                <td>{{ date('j M, Y  h:i:s A', strtotime($blockedStatus->created_at)) }}</td>
                                 <td>{{ $blockedStatus->blocked_duration }} Hours</td>
-                                <td>{{ $blockedStatus->blocked_resolved->format('d M, Y h:i A') }}</td>
+                                <td>{{ $blockedStatus->blocked_resolved ? date('j M, Y  h:i:s A', strtotime($blockedStatus->blocked_resolved)) : 'Not Resolved' }}</td>
                             </tr>
                             @empty
                             <tr>
@@ -146,6 +146,12 @@
                 </h2>
             </div>
             <div class="card-body">
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <form method="post" action="{{ route('profile.destroy') }}">
                     @csrf
                     @method('delete')

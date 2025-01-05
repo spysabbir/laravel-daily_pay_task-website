@@ -22,9 +22,11 @@ class WithdrawController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request') , only:['withdrawRequest']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.send') , only:['withdrawRequestSend']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.check') , only:['withdrawRequestShow', 'withdrawRequestStatusChange']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.rejected'), only:['withdrawRequestRejected']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.approved') , only:['withdrawRequestApproved']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.transfer.approved') , only:['withdrawTransferApproved']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.delete') , only:['withdrawRequestDelete']),
         ];
     }
@@ -116,14 +118,20 @@ class WithdrawController extends Controller implements HasMiddleware
                 ->make(true);
         }
 
-        return view('backend.withdraw.index');
+        $users = User::where('user_type', 'Frontend')->whereIn('status', ['Active', 'Blocked'])->get();
+        return view('backend.withdraw.index', compact('users'));
     }
 
     public function withdrawRequestShow(string $id)
     {
         $withdraw = Withdraw::where('id', $id)->first();
         $reportsPending = Report::where('user_id', Auth::id())->where('status', 'Pending')->count();
-        return view('backend.withdraw.show', compact('withdraw', 'reportsPending'));
+
+        $withdrawNumber = Withdraw::where('user_id', $withdraw->user_id)->whereNot('method', 'Deposit Balance')->groupBy('number')->pluck('number')->toArray();
+        $sameNumberUserIds = Withdraw::whereNot('user_id', $withdraw->user_id)->whereNot('method', 'Deposit Balance')->whereIn('number', $withdrawNumber)->groupBy('user_id')->pluck('user_id')->toArray();
+        $sameNumberUserIds = User::whereIn('id', $sameNumberUserIds)->whereIn('status', ['Active', 'Blocked'])->get();
+
+        return view('backend.withdraw.show', compact('withdraw', 'reportsPending', 'sameNumberUserIds'));
     }
 
     public function withdrawRequestStatusChange(Request $request, string $id)
@@ -358,10 +366,113 @@ class WithdrawController extends Controller implements HasMiddleware
         return view('backend.withdraw.approved');
     }
 
+    public function withdrawRequestSend(Request $request)
+    {
+        $currencySymbol = get_site_settings('site_currency_symbol');
+        $withdrawChargePercentage = get_default_settings('withdraw_charge_percentage');
+        $instantWithdrawCharge = get_default_settings('instant_withdraw_charge');
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'type' => 'required|in:Ragular,Instant',
+            'amount' => "required|numeric|min:25",
+            'method' => 'required|in:Bkash,Nagad,Rocket',
+            'number' => ['required', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+        ],
+        [
+            'number.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'error' => $validator->errors()->toArray()
+            ]);
+        }
+
+        $user = User::findOrFail($request->user_id);
+
+        if ($request->amount > $user->withdraw_balance) {
+            return response()->json([
+                'status' => 402,
+                'error' => 'Insufficient balance in this user account to withdraw ' . $currencySymbol . $request->amount .
+                        '. Your current balance is ' . $currencySymbol . $user->withdraw_balance
+            ]);
+        }
+
+        $payableAmount = $request->amount - ($request->amount * $withdrawChargePercentage / 100);
+        if ($request->type == 'Instant') {
+            $payableAmount -= $instantWithdrawCharge;
+        }
+
+        Withdraw::create([
+            'user_id' => $user->id,
+            'type' => $request->type,
+            'method' => $request->method,
+            'number' => $request->number,
+            'amount' => $request->amount,
+            'payable_amount' => $payableAmount,
+            'status' => 'Pending',
+        ]);
+
+        return response()->json([
+            'status' => 200,
+        ]);
+    }
+
     public function withdrawRequestDelete(string $id)
     {
         $withdraw = Withdraw::findOrFail($id);
 
         $withdraw->delete();
+    }
+
+    public function withdrawTransferApproved(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Withdraw::where('method', 'Deposit Balance');
+
+            if ($request->user_id){
+                $query->where('withdraws.user_id', $request->user_id);
+            }
+
+            $query->select('withdraws.*')->orderBy('approved_at', 'desc');
+
+            // Clone the query for counts
+            $totalWithdrawsCount = (clone $query)->count();
+
+            $approvedData = $query->get();
+
+            return DataTables::of($approvedData)
+                ->addIndexColumn()
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
+                })
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
+                        ';
+                })
+                ->editColumn('approved_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
+                        ';
+                })
+                ->with([
+                    'totalWithdrawsCount' => $totalWithdrawsCount,
+                ])
+                ->rawColumns(['user_name', 'amount', 'payable_amount', 'created_at', 'approved_at'])
+                ->make(true);
+        }
+
+        return view('backend.withdraw.transfer');
     }
 }

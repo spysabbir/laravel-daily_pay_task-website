@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class LoginRequest extends FormRequest
 {
@@ -57,7 +59,14 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // Get the user's email and password
+        $credentials = $this->only('email', 'password');
+
+        // Attempt to authenticate the user manually
+        $user = User::where('email', $credentials['email'])->withTrashed()->first();
+
+        // Check if user exists
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -65,13 +74,24 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        if(Auth::user()->status == 'blocked') {
-            Auth::logout();
+        // Check if the user is soft-deleted
+        if ($user->trashed()) {
             throw ValidationException::withMessages([
-                'email' => trans('auth.blocked'),
+                'email' => trans('auth.deleted'),
             ]);
         }
 
+        // Check if the user is Backend and their status is Inactive
+        if ($user->user_type === 'Backend' && $user->status === 'Inactive') {
+            throw ValidationException::withMessages([
+                'email' => trans('auth.inactive'),
+            ]);
+        }
+
+        // If not soft-deleted and status is not inactive, proceed with the login process
+        Auth::login($user, $this->boolean('remember'));
+
+        // Clear the rate limiter
         RateLimiter::clear($this->throttleKey());
     }
 

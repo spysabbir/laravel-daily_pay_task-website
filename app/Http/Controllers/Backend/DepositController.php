@@ -18,9 +18,11 @@ class DepositController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request') , only:['depositRequest']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.send') , only:['depositRequestSend']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.check') , only:['depositRequestShow', 'depositRequestStatusChange']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.rejected'), only:['depositRequestRejected']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.approved') , only:['depositRequestApproved']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.transfer.approved') , only:['depositTransferApproved']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.delete') , only:['depositRequestDelete']),
         ];
     }
@@ -100,7 +102,8 @@ class DepositController extends Controller implements HasMiddleware
                 ->make(true);
         }
 
-        return view('backend.deposit.index');
+        $users = User::where('user_type', 'Frontend')->whereIn('status', ['Active', 'Blocked'])->get();
+        return view('backend.deposit.index' , compact('users'));
     }
 
     public function depositRequestShow(string $id)
@@ -303,10 +306,101 @@ class DepositController extends Controller implements HasMiddleware
         return view('backend.deposit.approved');
     }
 
+    public function depositRequestSend(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'method' => 'required|in:Bkash,Nagad,Rocket',
+            'number' => ['required', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+            'transaction_id' => 'required|string|max:255',
+            'amount' => "required|numeric|min:20",
+        ],
+        [
+            'number.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            $checkDeposit = Deposit::whereNot('status', 'Rejected')->where('method', $request->method)->where('number', $request->number)->where('transaction_id', $request->transaction_id)->first();
+
+            if ($checkDeposit) {
+                return response()->json([
+                    'status' => 401,
+                    'error'=> 'This transaction is already exist.'
+                ]);
+            }
+
+            Deposit::create([
+                'user_id' => $request->user_id,
+                'method' => $request->method,
+                'number' => $request->number,
+                'transaction_id' => $request->transaction_id,
+                'amount' => $request->amount,
+                'payable_amount' => $request->amount,
+                'status' => 'Pending',
+            ]);
+
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
+    }
+
     public function depositRequestDelete(string $id)
     {
         $deposit = Deposit::findOrFail($id);
 
         $deposit->delete();
+    }
+
+    public function depositTransferApproved(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Deposit::where('method', 'Withdraw Balance');
+
+            if ($request->user_id){
+                $query->where('deposits.user_id', $request->user_id);
+            }
+
+            $query->select('deposits.*')->orderBy('approved_at', 'desc');
+
+            // Clone the query for counts
+            $totalDepositsCount = (clone $query)->count();
+
+            $approvedData = $query->get();
+
+            return DataTables::of($approvedData)
+                ->addIndexColumn()
+                ->editColumn('user_name', function ($row) {
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
+                })
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->format('d M Y h:i A');
+                })
+                ->editColumn('approved_at', function ($row) {
+                    return '
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
+                        ';
+                })
+                ->with([
+                    'totalDepositsCount' => $totalDepositsCount,
+                ])
+                ->rawColumns(['user_name', 'amount','payable_amount', 'approved_at'])
+                ->make(true);
+        }
+
+        return view('backend.deposit.transfer');
     }
 }

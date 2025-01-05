@@ -142,18 +142,22 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::delete('verification-request-delete/{id}', [VerificationController::class, 'verificationRequestDelete'])->name('verification.request.delete');
     // Deposit
     Route::get('deposit-request', [DepositController::class, 'depositRequest'])->name('deposit.request');
+    Route::post('deposit-request-send', [DepositController::class, 'depositRequestSend'])->name('deposit.request.send');
     Route::get('deposit-request/{id}', [DepositController::class, 'depositRequestShow'])->name('deposit.request.show');
     Route::put('deposit-request-status-change/{id}', [DepositController::class, 'depositRequestStatusChange'])->name('deposit.request.status.change');
     Route::get('deposit-request-rejected', [DepositController::class, 'depositRequestRejected'])->name('deposit.request.rejected');
     Route::get('deposit-request-approved', [DepositController::class, 'depositRequestApproved'])->name('deposit.request.approved');
     Route::delete('deposit-request-delete/{id}', [DepositController::class, 'depositRequestDelete'])->name('deposit.request.delete');
+    Route::get('deposit-transfer-approved', [DepositController::class, 'depositTransferApproved'])->name('deposit.transfer.approved');
     // Withdraw
     Route::get('withdraw-request', [WithdrawController::class, 'withdrawRequest'])->name('withdraw.request');
+    Route::post('withdraw-request-send', [WithdrawController::class, 'withdrawRequestSend'])->name('withdraw.request.send');
     Route::get('withdraw-request/{id}', [WithdrawController::class, 'withdrawRequestShow'])->name('withdraw.request.show');
     Route::put('withdraw-request-status-change/{id}', [WithdrawController::class, 'withdrawRequestStatusChange'])->name('withdraw.request.status.change');
     Route::get('withdraw-request-rejected', [WithdrawController::class, 'withdrawRequestRejected'])->name('withdraw.request.rejected');
     Route::get('withdraw-request-approved', [WithdrawController::class, 'withdrawRequestApproved'])->name('withdraw.request.approved');
     Route::delete('withdraw-request-delete/{id}', [WithdrawController::class, 'withdrawRequestDelete'])->name('withdraw.request.delete');
+    Route::get('withdraw-transfer-approved', [WithdrawController::class, 'withdrawTransferApproved'])->name('withdraw.transfer.approved');
     // Posted Task
     Route::get('posted_task_list-pending', [TaskController::class, 'postedTaskListPending'])->name('posted_task_list.pending');
     Route::get('pending-posted_task_view/{id}', [TaskController::class, 'pendingPostedTaskView'])->name('pending.posted_task_view');

@@ -55,6 +55,74 @@
                             </div>
                         </div>
                     </div>
+                    @can('deposit.request.send')
+                    <!-- Normal Deposit Modal -->
+                    <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Deposit <i data-feather="plus-circle"></i></button>
+                    @endcan
+                    <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="createModelLabel">Deposit</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                </div>
+                                <form class="forms-sample" id="createForm">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="user_id" class="form-label">User Name <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="user_id" name="user_id" required>
+                                                <option value="">-- Select User --</option>
+                                                @foreach ($users as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->id }})</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger error-text user_id_error"></span>
+                                        </div>
+                                        {{-- <div class="mb-3">
+                                            <label for="user_id" class="form-label">User Id <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" id="user_id" name="user_id" placeholder="User Id" required>
+                                            <span class="text-danger error-text user_id_error"></span>
+                                        </div> --}}
+                                        <div class="mb-3">
+                                            <label for="method" class="form-label">Deposit Method <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="method" name="method" required>
+                                                <option value="">-- Select Deposit Method --</option>
+                                                <option value="Bkash">Bkash</option>
+                                                <option value="Nagad">Nagad</option>
+                                                <option value="Rocket">Rocket</option>
+                                            </select>
+                                            <span class="text-danger error-text method_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="number" class="form-label">Deposit Number <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" id="number" name="number" placeholder="Deposit Number" required>
+                                            <small class="text-info d-block">Note: The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small>
+                                            <span class="text-danger error-text number_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="transaction_id" class="form-label">Transaction Id <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="transaction_id" name="transaction_id" placeholder="Transaction Id" required>
+                                            <span class="text-danger error-text transaction_id_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="amount" name="amount" min="20" placeholder="Deposit Amount" required>
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
+                                            <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} 20.</small>
+                                            <span class="text-danger error-text amount_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Deposit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -182,6 +250,45 @@
         // Filter Data
         $('.filter_data').keyup(function(){
             $('#pendingDataTable').DataTable().ajax.reload();
+        });
+
+        // Store Data
+        $('#createForm').submit(function(event) {
+            event.preventDefault();
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: "{{ route('backend.deposit.request.send') }}",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                beforeSend:function(){
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+                    if (response.status == 400) {
+                        $.each(response.error, function(prefix, val){
+                            $('span.'+prefix+'_error').text(val[0]);
+                        })
+                    }else{
+                        if (response.status == 401) {
+                            toastr.error(response.error);
+                        }else{
+                            $('.createModel').modal('hide');
+                            $('#createForm')[0].reset();
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            toastr.success('Deposit request sent successfully.');
+                        }
+                    }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
+            });
         });
 
         // View Data

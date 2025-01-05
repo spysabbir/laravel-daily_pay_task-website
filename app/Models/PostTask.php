@@ -14,7 +14,7 @@ class PostTask extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function category()
@@ -34,22 +34,22 @@ class PostTask extends Model
 
     public function approvedBy()
     {
-        return $this->belongsTo(User::class, 'approved_by');
+        return $this->belongsTo(User::class, 'approved_by')->withTrashed();
     }
 
     public function rejectedBy()
     {
-        return $this->belongsTo(User::class, 'rejected_by');
+        return $this->belongsTo(User::class, 'rejected_by')->withTrashed();
     }
 
     public function pausedBy()
     {
-        return $this->belongsTo(User::class, 'paused_by');
+        return $this->belongsTo(User::class, 'paused_by')->withTrashed();
     }
 
     public function canceledBy()
     {
-        return $this->belongsTo(User::class, 'canceled_by');
+        return $this->belongsTo(User::class, 'canceled_by')->withTrashed();
     }
 
     public function proofTasks()

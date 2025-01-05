@@ -55,6 +55,96 @@
                             </div>
                         </div>
                     </div>
+                    @can('withdraw.request.send')
+                    <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Withdraw <i data-feather="plus-circle"></i></button>
+                    @endcan
+                    <!-- Normal Withdraw Modal -->
+                    <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="createModelLabel">Withdraw</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                </div>
+                                <form class="forms-sample" id="createForm">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="user_id" class="form-label">User Name <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="user_id" name="user_id" required>
+                                                <option value="">-- Select User --</option>
+                                                @foreach ($users as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->id }})</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger error-text user_id_error"></span>
+                                        </div>
+                                        {{-- <div class="mb-3">
+                                            <label for="user_id" class="form-label">User Id <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" id="user_id" name="user_id" placeholder="User Id" required>
+                                            <span class="text-danger error-text user_id_error"></span>
+                                        </div> --}}
+                                        <div class="mb-3">
+                                            <label for="type" class="form-label">Withdraw Type <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="type" name="type" required>
+                                                <option value="">-- Select Withdraw Type --</option>
+                                                <option value="Ragular">Ragular</option>
+                                                <option value="Instant">Instant</option>
+                                            </select>
+                                            <small class="text-info d-block">
+                                                <strong id="ragular">Note: Withdraw request will be processed within 24 hours.</strong>
+                                                <strong id="instant">Note: Withdraw request will be processed in 30 minutes. But you will be charged an extra {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}.</strong>
+                                            </small>
+                                            <span class="text-danger error-text type_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="method" class="form-label">Withdraw Method <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="method" name="method" required>
+                                                <option value="">-- Select Withdraw Method --</option>
+                                                <option value="Bkash">Bkash</option>
+                                                <option value="Nagad">Nagad</option>
+                                                <option value="Rocket">Rocket</option>
+                                            </select>
+                                            <span class="text-danger error-text method_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="number" class="form-label">Withdraw Number <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" id="number" name="number" placeholder="Withdraw Number" required>
+                                            <small class="text-info d-block">Note: The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small>
+                                            <span class="text-danger error-text number_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="amount" class="form-label">Withdraw Amount <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="amount" name="amount" min="25" placeholder="Withdraw Amount" required>
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
+                                            <small class="text-info d-block">Note: Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} 25.</small>
+                                            <span class="text-danger error-text amount_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Withdraw Charge Percentage</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" value="{{ get_default_settings('withdraw_charge_percentage') }}" disabled>
+                                                <span class="input-group-text input-group-addon">%</span>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Payable Withdraw Amount</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="payable_withdraw_amount" value="0" placeholder="Payable Withdraw Amount" disabled>
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Withdraw</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -190,6 +280,90 @@
         // Filter Data
         $('.filter_data').keyup(function(){
             $('#pendingDataTable').DataTable().ajax.reload();
+        });
+
+        $('#ragular').hide();
+        $('#instant').hide();
+        $('#type').change(function(){
+            if ($('#type').val() == 'Ragular') {
+                $('#ragular').show();
+                $('#instant').hide();
+                var amount = $('#amount').val();
+                var charge = {{ get_default_settings('withdraw_charge_percentage') }};
+                var payable_amount = amount - (amount * charge / 100);
+                $('#payable_withdraw_amount').val(payable_amount);
+            }else if ($('#type').val() == 'Instant') {
+                $('#ragular').hide();
+                $('#instant').show();
+                var amount = $('#amount').val();
+                var charge = {{ get_default_settings('withdraw_charge_percentage') }};
+                var instant_withdraw_charge = {{ get_default_settings('instant_withdraw_charge') }};
+                var payable_amount = amount - (amount * charge / 100);
+                if(amount == ''){
+                    $('#payable_withdraw_amount').val(payable_amount);
+                }else{
+                    $('#payable_withdraw_amount').val(payable_amount - instant_withdraw_charge);
+                }
+            }else{
+                $('#ragular').hide();
+                $('#instant').hide();
+            }
+        });
+
+        // Calculate Payable Amount
+        $('#amount, #type').on('keyup change', function(){
+            var amount = $('#amount').val();
+            var instant_withdraw_charge = {{ get_default_settings('instant_withdraw_charge') }};
+            var charge = {{ get_default_settings('withdraw_charge_percentage') }};
+            var payable_amount = amount - (amount * charge / 100);
+
+            if ($('#type').val() == 'Instant') {
+                if(amount == ''){
+                    $('#payable_withdraw_amount').val(payable_amount);
+                } else {
+                    $('#payable_withdraw_amount').val(payable_amount - instant_withdraw_charge);
+                }
+            } else {
+                $('#payable_withdraw_amount').val(payable_amount);
+            }
+        });
+
+        // Store Data
+        $('#createForm').submit(function(event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
+            $.ajax({
+                url: "{{ route('backend.withdraw.request.send') }}",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                beforeSend:function(){
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+                    if (response.status == 400) {
+                        $.each(response.error, function(prefix, val){
+                            $('span.'+prefix+'_error').text(val[0]);
+                        })
+                    }else{
+                        if (response.status == 200) {
+                            $('.createModel').modal('hide');
+                            $('#createForm')[0].reset();
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            toastr.success('Withdraw request sent successfully.');
+                        }else{
+                            toastr.error(response.error);
+                        }
+                    }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
+            });
         });
 
         // View Data

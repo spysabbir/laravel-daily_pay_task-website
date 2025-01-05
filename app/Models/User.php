@@ -71,12 +71,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function referrals()
     {
-        return $this->hasMany(User::class, 'referred_by', 'id');
+        return $this->hasMany(User::class, 'referred_by', 'id')->withTrashed();
     }
 
     public function referrer()
     {
-        return $this->belongsTo(User::class, 'referred_by', 'id');
+        return $this->belongsTo(User::class, 'referred_by', 'id')->withTrashed();
     }
 
     public function hasVerification($status)
@@ -91,21 +91,21 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by', 'id');
+        return $this->belongsTo(User::class, 'created_by', 'id')->withTrashed();
     }
 
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by', 'id');
+        return $this->belongsTo(User::class, 'updated_by', 'id')->withTrashed();
     }
 
     public function deletedBy()
     {
-        return $this->belongsTo(User::class, 'deleted_by', 'id');
+        return $this->belongsTo(User::class, 'deleted_by', 'id')->withTrashed();
     }
 
     public function userDetail()
     {
-        return $this->hasOne(UserDetail::class, 'user_id', 'id');
+        return $this->hasOne(UserDetail::class, 'user_id', 'id')->withTrashed();
     }
 }

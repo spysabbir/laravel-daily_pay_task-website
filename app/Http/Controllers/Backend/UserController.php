@@ -410,14 +410,20 @@ class UserController extends Controller implements HasMiddleware
         $pausedPostedTask = PostTask::where('user_id', $id)->where('status', 'Paused')->count();
         $completedPostedTask = PostTask::where('user_id', $id)->where('status', 'Completed')->count();
         // Posted Task Proof Submit
-        return view('backend.user.show', compact('user', 'userStatuses', 'userDetails', 'userVerification' , 'depositBalance', 'pendingDeposit', 'approvedDeposit', 'rejectedDeposit', 'transferDeposit', 'withdrawBalance', 'pendingWithdraw', 'approvedWithdraw', 'rejectedWithdraw', 'transferWithdraw'));
+        return view('backend.user.show', compact('user', 'userStatuses', 'userDetails', 'userVerification' , 'depositBalance', 'pendingDeposit', 'approvedDeposit', 'rejectedDeposit', 'transferDeposit', 'withdrawBalance', 'pendingWithdraw', 'approvedWithdraw', 'rejectedWithdraw', 'transferWithdraw', 'pendingPostedTask', 'runningPostedTask', 'rejectedPostedTask', 'canceledPostedTask', 'pausedPostedTask', 'completedPostedTask'));
     }
 
     public function userStatus(string $id)
     {
         $user = User::where('id', $id)->first();
         $userStatuses = UserStatus::where('user_id', $id)->get();
-        return view('backend.user.status', compact('user', 'userStatuses'));
+        $depositRequests = Deposit::where('user_id', $id)->where('status', 'Pending')->count();
+        $withdrawRequests = Withdraw::where('user_id', $id)->where('status', 'Pending')->count();
+        $postedTasksRequests = PostTask::where('user_id', $id)->where('status', 'Pending')->count();
+        $workedTasksRequests = ProofTask::where('user_id', $id)->where('status', 'Reviewed')->count();
+        $reportRequestsPending = ProofTask::where('user_id', $id)->where('status', 'Pending')->count();
+        $reportsReceived = ProofTask::where('user_id', $id)->where('status', 'Received')->count();
+        return view('backend.user.status', compact('user', 'userStatuses', 'depositRequests', 'withdrawRequests', 'postedTasksRequests' , 'workedTasksRequests', 'reportRequestsPending', 'reportsReceived'));
     }
 
     public function userStatusUpdate(Request $request, string $id)
@@ -479,7 +485,7 @@ class UserController extends Controller implements HasMiddleware
                     $restorePermission = auth()->user()->can('user.restore');
                     $deletePermission = auth()->user()->can('user.delete');
 
-                    $viewBtn = '<a href="' . route('backend.user.show', encrypt($row->id)) . '" class="btn btn-primary btn-xs">View</a>';
+                    $viewBtn = '<a href="' . route('backend.user.show', encrypt($row->id)) . '" class="btn btn-primary btn-xs" target="_blank">View</a>';
                     $restoreBtn = $restorePermission
                         ? '<button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>'
                         : '';
