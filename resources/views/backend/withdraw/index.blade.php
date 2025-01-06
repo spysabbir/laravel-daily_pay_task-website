@@ -59,7 +59,7 @@
                     <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Withdraw <i data-feather="plus-circle"></i></button>
                     @endcan
                     <!-- Normal Withdraw Modal -->
-                    <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
+                    <div class="modal fade createModel select2Model" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -71,19 +71,14 @@
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="user_id" class="form-label">User Name <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="user_id" name="user_id" required>
+                                            <select class="form-select js-select2-single" id="user_id" name="user_id" required data-width="100%">
                                                 <option value="">-- Select User --</option>
                                                 @foreach ($users as $user)
-                                                    <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->id }})</option>
+                                                    <option value="{{ $user->id }}">{{ $user->id }} - {{ $user->name }}</option>
                                                 @endforeach
                                             </select>
                                             <span class="text-danger error-text user_id_error"></span>
                                         </div>
-                                        {{-- <div class="mb-3">
-                                            <label for="user_id" class="form-label">User Id <span class="text-danger">*</span></label>
-                                            <input type="number" class="form-control" id="user_id" name="user_id" placeholder="User Id" required>
-                                            <span class="text-danger error-text user_id_error"></span>
-                                        </div> --}}
                                         <div class="mb-3">
                                             <label for="type" class="form-label">Withdraw Type <span class="text-danger">*</span></label>
                                             <select class="form-select" id="type" name="type" required>

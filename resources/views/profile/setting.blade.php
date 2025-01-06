@@ -84,11 +84,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($userDetails as $userDetail)
+                            @foreach ($userDevices as $userDevice)
                             <tr>
-                                <td>{{ $userDetail->ip }}</td>
-                                <td>{{ $userDetail->device_type }}</td>
-                                <td>{{ date('j M, Y  h:i:s A', strtotime($userDetail->updated_at)) }}</td>
+                                <td>{{ $userDevice->ip }}</td>
+                                <td>{{ $userDevice->device_type }}</td>
+                                <td>{{ date('j M, Y  h:i:s A', strtotime($userDevice->updated_at)) }}</td>
                             </tr>
                             @endforeach
                         </tbody>

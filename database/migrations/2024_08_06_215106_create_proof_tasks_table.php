@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('post_task_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('user_ip');
             $table->text('proof_answer');
             $table->json('proof_photos');
             $table->enum('status', ['Pending', 'Approved', 'Rejected', 'Reviewed'])->default('Pending');

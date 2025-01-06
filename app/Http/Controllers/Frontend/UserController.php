@@ -21,7 +21,7 @@ use App\Models\Support;
 use App\Models\PostTask;
 use App\Models\ProofTask;
 use App\Models\UserStatus;
-use App\Models\UserDetail;
+use App\Models\UserDevice;
 use App\Models\Rating;
 use App\Events\SupportEvent;
 use Carbon\Carbon;
@@ -294,7 +294,7 @@ class UserController extends Controller
     public function profileSetting(Request $request)
     {
         $user = $request->user();
-        $userDetails = UserDetail::where('user_id', $user->id)->latest()->take(5)->get();
+        $userDevices = UserDevice::where('user_id', $user->id)->latest()->take(5)->get();
         $verification = Verification::where('user_id', $user->id)->first();
         $ratingGiven = Rating::where('rated_by', $user->id)->get();
         $ratingReceived  = Rating::where('user_id', $user->id)->get();
@@ -302,7 +302,7 @@ class UserController extends Controller
         $reportUserCount = Report::where('user_id', $user->id)->where('type', 'User')->where('status', 'Received')->count();
         $reportPostTaskCount = Report::where('user_id', $user->id)->where('type', 'Post Task')->where('status', 'Received')->count();
         $reportProofTaskCount = Report::where('user_id', $user->id)->where('type', 'Proof Task')->where('status', 'Received')->count();
-        return view('profile.setting', compact('user', 'userDetails', 'verification', 'ratingGiven', 'ratingReceived', 'blockedStatuses', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
+        return view('profile.setting', compact('user', 'userDevices', 'verification', 'ratingGiven', 'ratingReceived', 'blockedStatuses', 'reportUserCount', 'reportPostTaskCount', 'reportProofTaskCount'));
     }
 
     public function userProfile($id)
@@ -436,7 +436,7 @@ class UserController extends Controller
             return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
-                $query = Deposit::where('user_id', Auth::id());
+                $query = Deposit::where('user_id', Auth::id())->whereNot('method', 'Withdraw Balance');
 
                 if ($request->status) {
                     $query->where('deposits.status', $request->status);
@@ -537,7 +537,9 @@ class UserController extends Controller
 
             $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
 
-            return view('frontend.deposit.index', compact('total_deposit'));
+            $depositBalanceFromWithdrawBalance = Deposit::where('user_id', $request->user()->id)->where('method', 'Withdraw Balance')->sum('amount');
+
+            return view('frontend.deposit.index', compact('total_deposit', 'depositBalanceFromWithdrawBalance'));
         }
     }
 
@@ -579,6 +581,7 @@ class UserController extends Controller
                 'number' => $request->number,
                 'transaction_id' => $request->transaction_id,
                 'status' => 'Pending',
+                'created_by' => $request->user()->id,
             ]);
 
             return response()->json([
@@ -618,6 +621,7 @@ class UserController extends Controller
                     'payable_amount' => $payable_amount,
                     'approved_at' => now(),
                     'status' => 'Approved',
+                    'created_by' => $request->user()->id,
                 ]);
 
                 $request->user()->decrement('withdraw_balance', $request->deposit_amount);
@@ -802,6 +806,7 @@ class UserController extends Controller
             'number' => $request->number,
             'payable_amount' => $payableAmount,
             'status' => 'Pending',
+            'created_by' => $request->user()->id,
         ]);
 
         $request->user()->decrement('withdraw_balance', $request->amount);
@@ -874,6 +879,7 @@ class UserController extends Controller
                     'payable_amount' => $payable_amount,
                     'approved_at' => now(),
                     'status' => 'Approved',
+                    'created_by' => $request->user()->id,
                 ]);
 
                 $request->user()->decrement('deposit_balance', $request->withdraw_balance);

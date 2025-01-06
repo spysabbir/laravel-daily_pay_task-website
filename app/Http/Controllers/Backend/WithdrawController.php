@@ -413,6 +413,7 @@ class WithdrawController extends Controller implements HasMiddleware
             'amount' => $request->amount,
             'payable_amount' => $payableAmount,
             'status' => 'Pending',
+            'created_by' => auth()->user()->id,
         ]);
 
         return response()->json([

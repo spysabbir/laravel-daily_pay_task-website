@@ -122,7 +122,8 @@ class EmployeeController extends Controller implements HasMiddleware
 
     public function show(string $id)
     {
-        $employee = User::where('id', $id)->first();
+        $id = decrypt($id);
+        $employee = User::where('id', $id)->withTrashed()->first();
         return view('backend.employee.show', compact('employee'));
     }
 
@@ -196,6 +197,7 @@ class EmployeeController extends Controller implements HasMiddleware
                     $restorePermission = auth()->user()->can('employee.restore');
                     $deletePermission = auth()->user()->can('employee.delete');
 
+                    $viewBtn = '<a href="' . route('backend.employee.show', encrypt($row->id)) . '" class="btn btn-primary btn-xs" target="_blank">View</a>';
                     $restoreBtn = $restorePermission
                         ? '<button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>'
                         : '';
@@ -203,7 +205,7 @@ class EmployeeController extends Controller implements HasMiddleware
                         ? '<button type="button" data-id="'.$row->id.'" class="btn bg-danger btn-xs forceDeleteBtn">Delete</button>'
                         : '';
 
-                    $btn = $restoreBtn . ' ' . $deleteBtn;
+                    $btn = $restoreBtn . ' ' . $deleteBtn . ' ' . $viewBtn;
                     return $btn;
                 })
                 ->rawColumns(['roles', 'action'])

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('deposits', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('method');
             $table->string('number')->nullable();
             $table->string('transaction_id')->nullable();
@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignId('rejected_by')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
+            $table->integer('created_by');
             $table->timestamps();
         });
     }

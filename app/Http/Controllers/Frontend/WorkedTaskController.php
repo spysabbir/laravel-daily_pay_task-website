@@ -310,9 +310,12 @@ class WorkedTaskController extends Controller
             }
         }
 
+        $userIp = $request->ip();
+
         ProofTask::create([
             'post_task_id' => $id,
             'user_id' => $request->user()->id,
+            'user_ip' => $userIp,
             'proof_answer' => $request->proof_answer,
             'proof_photos' => json_encode($proof_photos),
             'status' => 'Pending',

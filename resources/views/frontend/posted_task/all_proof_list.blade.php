@@ -406,7 +406,7 @@
                                         <div class="mb-2 border p-2">
                                             <strong>User Id:</strong> ${proofTask.user_id},
                                             <strong>User Name:</strong> ${proofTask.user.name},
-                                            <strong>User Ip:</strong> ${proofTask.user_detail.ip}
+                                            <strong>User Ip:</strong> ${proofTask.user_ip}
                                         </div>
                                         <h4>Proof Answer:</h4>
                                         <div class="mb-2 border p-2">

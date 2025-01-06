@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Models\UserDetail;
+use App\Models\UserDevice;
 use Stevebauman\Location\Facades\Location;
 
 class CheckUserType
@@ -56,8 +56,8 @@ class CheckUserType
         $latitude = $location->latitude ?? null;
         $longitude = $location->longitude ?? null;
 
-        // Efficiently update or create user details
-        UserDetail::updateOrCreate(
+        // Efficiently update or create user Devices
+        UserDevice::updateOrCreate(
             ['user_id' => $user->id, 'ip' => $userIp],
             [
                 'device_type' => $deviceType,

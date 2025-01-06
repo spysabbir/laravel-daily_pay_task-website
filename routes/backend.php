@@ -85,6 +85,7 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     // User
     Route::get('user/active', [UserController::class, 'userActiveList'])->name('user.active');
     Route::get('user/show/{id}', [UserController::class, 'userView'])->name('user.show');
+    Route::get('user/device/{id}', [UserController::class, 'userDevice'])->name('user.device');
     Route::get('user/status/{id}', [UserController::class, 'userStatus'])->name('user.status');
     Route::post('user/status/update/{id}', [UserController::class, 'userStatusUpdate'])->name('user.status.update');
     Route::delete('user/destroy/{id}', [UserController::class, 'userDestroy'])->name('user.destroy');

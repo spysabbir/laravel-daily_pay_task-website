@@ -42,7 +42,7 @@
             <div class="mt-2 border p-2">
                 <p><strong>User Id:</strong> {{ $proofTask->user->id }}</p>
                 <p><strong>User Name:</strong> {{ $proofTask->user->name }}</p>
-                <p><strong>User Ip:</strong> {{ $proofTask->user->userDetail->ip }}</p>
+                <p><strong>User Ip:</strong> {{ $proofTask->user_ip }}</p>
             </div>
         </div>
         @if ($proofTask->status == 'Pending')

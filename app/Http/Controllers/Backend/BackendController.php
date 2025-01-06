@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\PostTask;
 use App\Models\Withdraw;
-use App\Models\UserDetail;
+use App\Models\UserDevice;
 
 class BackendController extends Controller
 {
@@ -37,8 +37,8 @@ class BackendController extends Controller
     public function profileEdit(Request $request)
     {
         $user = $request->user();
-        $userDetails = UserDetail::where('user_id', $user->id)->latest()->take(5)->get();
-        return view('profile.edit', compact('user', 'userDetails'));
+        $userDevices = UserDevice::where('user_id', $user->id)->latest()->take(5)->get();
+        return view('profile.edit', compact('user', 'userDevices'));
     }
 
     public function profileSetting(Request $request)

@@ -342,6 +342,7 @@ class DepositController extends Controller implements HasMiddleware
                 'amount' => $request->amount,
                 'payable_amount' => $request->amount,
                 'status' => 'Pending',
+                'created_by' => auth()->user()->id,
             ]);
 
             return response()->json([

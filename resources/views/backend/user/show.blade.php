@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">User Profile Details - Id: {{ $user->id }}</h3>
-                <div class="text-center">
+                <div class="text-center mb-2">
                     @if ($user->status == 'Active')
                         <span class="badge bg-success">Account Status: Active</span>
                     @elseif ($user->status == 'Inactive')
@@ -20,7 +20,7 @@
                     @endif
                 </div>
                 @if ($userVerification)
-                <div class="text-center">
+                <div class="text-center mb-2">
                     @if ($userVerification->status == 'Approved')
                         <span class="badge bg-success">Id Verification Status: Approved</span>
                     @elseif ($userVerification->status == 'Rejected')
@@ -30,6 +30,14 @@
                     @endif
                 </div>
                 @endif
+                <div class="d-flex justify-content-center align-items-center flex-wrap mb-2">
+                    <span class="badge bg-primary m-1">Deposit Balance: {{ $depositBalance }}</span>
+                    <span class="badge bg-primary m-1">Withdraw Balance: {{ $withdrawBalance }}</span>
+                    <span class="badge bg-warning text-dark m-1">Hold Balance: {{ $holdBalance }}</span>
+                </div>
+                <div class="text-center mb-2">
+                    <span class="badge bg-danger">Report Received: {{ $reportsReceived }}</span>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -119,12 +127,6 @@
                 <h3 class="card-title">User Total Deposit Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card bg-primary text-dark">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ $depositBalance }}</h4>
-                        <p class="card-text">Balance</p>
-                    </div>
-                </div>
                 <div class="card bg-warning text-dark">
                     <div class="card-body">
                         <h4 class="card-title">{{ $pendingDeposit }}</h4>
@@ -156,12 +158,6 @@
                 <h3 class="card-title">User Total Withdraw Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card bg-primary text-dark">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ $withdrawBalance }}</h4>
-                        <p class="card-text">Balance</p>
-                    </div>
-                </div>
                 <div class="card bg-warning text-dark">
                     <div class="card-body">
                         <h4 class="card-title">{{ $pendingWithdraw }}</h4>
@@ -199,8 +195,8 @@
                         <p class="card-text">Pending</p>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-body bg-success text-dark">
+                <div class="card bg-success text-dark">
+                    <div class="card-body">
                         <h4 class="card-title">{{ $runningPostedTask }}</h4>
                         <p class="card-text">Running</p>
                     </div>
@@ -217,8 +213,8 @@
                         <p class="card-text">Canceled</p>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-body bg-primary text-dark">
+                <div class="card bg-primary text-dark">
+                    <div class="card-body">
                         <h4 class="card-title">{{ $pausedPostedTask }}</h4>
                         <p class="card-text">Paused</p>
                     </div>
@@ -236,34 +232,28 @@
                 <h3 class="card-title">User Posted Task Proof Submit Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card">
+                <div class="card bg-primary text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $pendingPostedTaskProofSubmit }}</h4>
+                        <p class="card-text">Pending</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-success text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $approvedPostedTaskProofSubmit }}</h4>
+                        <p class="card-text">Approved</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-danger text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $rejectedPostedTaskProofSubmit }}</h4>
+                        <p class="card-text">Rejected</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-warning text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $reviewedPostedTaskProofSubmit }}</h4>
+                        <p class="card-text">Reviewed</p>
                     </div>
                 </div>
             </div>
@@ -273,72 +263,62 @@
                 <h3 class="card-title">User Worked Task Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card">
+                <div class="card bg-primary text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $pendingWorkedTask }}</h4>
+                        <p class="card-text">Pending</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-success text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $approvedWorkedTask }}</h4>
+                        <p class="card-text">Approved</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-danger text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $rejectedWorkedTask }}</h4>
+                        <p class="card-text">Rejected</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-warning text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $reviewedWorkedTask }}</h4>
+                        <p class="card-text">Reviewed</p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">User Report Details</h3>
+                <h3 class="card-title">User Report Send Details</h3>
             </div>
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                <div class="card">
+                <div class="card bg-info text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $reportsSendPending }}</h4>
+                        <p class="card-text">Pending</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-danger text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $reportsSendFalse }}</h4>
+                        <p class="card-text">False</p>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card bg-success text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">0</h4>
-                        <p class="card-text">Total</p>
+                        <h4 class="card-title">{{ $reportsSendReceived }}</h4>
+                        <p class="card-text">Received</p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card mb-3">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-between flex-wrap">
                 <h3 class="card-title">User Status Details</h3>
+                <span>Total Blocked: {{ $userStatuses->where('status', 'Blocked')->count() }}</span>
+                <span>Total Banned: {{ $userStatuses->where('status', 'Banned')->count() }}</span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -384,8 +364,9 @@
             </div>
         </div>
         <div class="card mb-3">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-between flex-wrap">
                 <h3 class="card-title">User Device Details</h3>
+                <span>Total Ip: {{ $userDevices->count() }}</span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -398,11 +379,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($userDetails as $userDetail)
+                            @foreach ($userDevices as $userDevice)
                             <tr>
-                                <td>{{ $userDetail->ip }}</td>
-                                <td>{{ $userDetail->device_type }}</td>
-                                <td>{{ date('j M, Y  h:i:s A', strtotime($userDetail->updated_at)) }}</td>
+                                <td>{{ $userDevice->ip }}</td>
+                                <td>{{ $userDevice->device_type }}</td>
+                                <td>{{ date('j M, Y  h:i:s A', strtotime($userDevice->updated_at)) }}</td>
                             </tr>
                             @endforeach
                         </tbody>

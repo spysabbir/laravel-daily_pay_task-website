@@ -711,7 +711,7 @@ class PostedTaskController extends Controller
                 ->editColumn('user', function ($row) {
                     return '
                         <span class="badge bg-dark">Name: ' . $row->user->name . '</span>
-                        <span class="badge bg-dark">Ip: ' . $row->user->userDetail->ip . '</span>
+                        <span class="badge bg-dark">Ip: ' . $row->user_ip . '</span>
                     ';
                 })
                 ->editColumn('proof_answer', function ($row) {
@@ -894,7 +894,7 @@ class PostedTaskController extends Controller
 
     public function proofTaskAllPendingCheck($id)
     {
-        $proofTaskListPending = ProofTask::where('post_task_id', $id)->where('status', 'Pending')->with('user', 'user_detail')->get();
+        $proofTaskListPending = ProofTask::where('post_task_id', $id)->where('status', 'Pending')->with('user')->get();
 
         $responseData = $proofTaskListPending->map(function ($task) {
             $task->formatted_created_at = Carbon::parse($task->created_at)->format('d M, Y h:i A');

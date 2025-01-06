@@ -104,8 +104,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(User::class, 'deleted_by', 'id')->withTrashed();
     }
 
-    public function userDetail()
+    public function userDevice()
     {
-        return $this->hasOne(UserDetail::class, 'user_id', 'id')->withTrashed();
+        return $this->hasOne(UserDevice::class, 'user_id', 'id')->withTrashed();
     }
 }

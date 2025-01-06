@@ -18,51 +18,81 @@
                         <!-- Withdraw Balance To Deposit Modal -->
                         <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".depositBalanceFromWithdrawBalanceModel">Deposit Balance From Withdraw Balance</button>
                         <div class="modal fade depositBalanceFromWithdrawBalanceModel" tabindex="-1" aria-labelledby="depositBalanceFromWithdrawBalanceModelLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-md">
+                            <div class="modal-dialog modal-xl">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="depositBalanceFromWithdrawBalanceModelLabel">Deposit Balance From Withdraw Balance</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                     </div>
-                                    <form class="forms-sample" id="depositBalanceFromWithdrawBalanceForm">
-                                        @csrf
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="withdraw_balance" class="form-label">Withdraw Balance</label>
-                                                <div class="input-group">
-                                                    <input type="number" class="form-control" id="withdraw_balance" value="{{ Auth::user()->withdraw_balance }}" disabled>
-                                                    <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <div class="mb-3">
+                                                    <div class="alert alert-info" role="alert" id="totalDepositBalanceFromWithdrawBalance">
+                                                        <h4 class="alert-heading text-center">
+                                                            <i class="link-icon" data-feather="credit-card"></i>
+                                                            Total Deposit Balance From Withdraw Balance Amount: <strong>{{ get_site_settings('site_currency_symbol') }} {{ $depositBalanceFromWithdrawBalance }}</strong>
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table id="depositBalanceFromWithdrawBalanceDataTable" class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sl No</th>
+                                                                <th>Deposit Amount</th>
+                                                                <th>Payable Amount</th>
+                                                                <th>Submitted Date</th>
+                                                                <th>Approved Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="deposit_amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" placeholder="Deposit Amount" required>
-                                                    <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                </div>
-                                                <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} 1.</small>
-                                                <span class="text-danger error-text deposit_amount_error"></span>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="deposit_balance_from_withdraw_balance_charge_percentage" class="form-label">Deposit Balance From Withdraw Balance Charge Percentage</label>
-                                                <div class="input-group">
-                                                    <input type="number" class="form-control" id="deposit_balance_from_withdraw_balance_charge_percentage" value="{{ get_default_settings('deposit_balance_from_withdraw_balance_charge_percentage') }}" disabled>
-                                                    <span class="input-group-text input-group-addon">%</span>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="payable_deposit_balance" class="form-label">Payable Deposit Balance</label>
-                                                <div class="input-group">
-                                                    <input type="number" class="form-control" id="payable_deposit_balance" value="0" placeholder="Payable Deposit Balance" disabled>
-                                                    <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                </div>
+                                            <div class="col-lg-4">
+                                                <form class="forms-sample" id="depositBalanceFromWithdrawBalanceForm">
+                                                    @csrf
+                                                    <div class="mb-3">
+                                                        <label for="withdraw_balance" class="form-label">Withdraw Balance</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="withdraw_balance" value="{{ Auth::user()->withdraw_balance }}" disabled>
+                                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="deposit_amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" placeholder="Deposit Amount" required>
+                                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                        </div>
+                                                        <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} 1.</small>
+                                                        <span class="text-danger error-text deposit_amount_error"></span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="deposit_balance_from_withdraw_balance_charge_percentage" class="form-label">Deposit Balance From Withdraw Balance Charge Percentage</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="deposit_balance_from_withdraw_balance_charge_percentage" value="{{ get_default_settings('deposit_balance_from_withdraw_balance_charge_percentage') }}" disabled>
+                                                            <span class="input-group-text input-group-addon">%</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="payable_deposit_balance" class="form-label">Payable Deposit Balance</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="payable_deposit_balance" value="0" placeholder="Payable Deposit Balance" disabled>
+                                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Deposit</button>
+                                                </form>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Deposit</button>
-                                        </div>
-                                    </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

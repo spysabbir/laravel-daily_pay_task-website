@@ -88,6 +88,7 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'user.blocked', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.banned', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.status', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
+            ['name' => 'user.device', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.destroy', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.trash', 'group_name' => 'UserManagement', 'guard_name' => 'web'],
             ['name' => 'user.restore', 'group_name' => 'UserManagement', 'guard_name' => 'web'],

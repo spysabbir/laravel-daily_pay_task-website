@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Models\User;
-use App\Models\UserDetail;
+use App\Models\UserDevice;
 use App\Models\UserStatus;
 use App\Notifications\UserStatusNotification;
 use Yajra\DataTables\Facades\DataTables;
@@ -29,6 +29,7 @@ class UserController extends Controller implements HasMiddleware
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('user.blocked') , only:['userBlockedList', 'userView']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('user.banned') , only:['userBannedList', 'userView']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('user.status') , only:['userStatus', 'userStatusUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('user.device') , only:['userDevice']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('user.destroy'), only:['userDestroy']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('user.trash') , only:['userTrash']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('user.restore') , only:['userRestore']),
@@ -116,6 +117,7 @@ class UserController extends Controller implements HasMiddleware
                 ->addColumn('action', function ($row) {
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
+                    $devicePermission = auth()->user()->can('user.device');
 
                     $viewBtn = '<a href="' . route('backend.user.show', encrypt($row->id)) . '" class="btn btn-primary btn-xs">View</a>';
                     $deleteBtn = $deletePermission
@@ -124,8 +126,11 @@ class UserController extends Controller implements HasMiddleware
                     $statusBtn = $statusPermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>'
                         : '';
+                    $deviceBtn = $devicePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs deviceBtn" data-bs-toggle="modal" data-bs-target=".deviceModal">Device Details</button>'
+                        : '';
 
-                    $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
+                    $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
                     return $btn;
                 })
                 ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'action'])
@@ -259,6 +264,7 @@ class UserController extends Controller implements HasMiddleware
                 ->addColumn('action', function ($row) {
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
+                    $devicePermission = auth()->user()->can('user.device');
 
                     $viewBtn = '<a href="' . route('backend.user.show', encrypt($row->id)) . '" class="btn btn-primary btn-xs">View</a>';
                     $deleteBtn = $deletePermission
@@ -267,8 +273,11 @@ class UserController extends Controller implements HasMiddleware
                     $statusBtn = $statusPermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>'
                         : '';
+                    $deviceBtn = $devicePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs deviceBtn" data-bs-toggle="modal" data-bs-target=".deviceModal">Device Details</button>'
+                        : '';
 
-                    $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
+                    $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
                     return $btn;
                 })
                 ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'action'])
@@ -364,6 +373,7 @@ class UserController extends Controller implements HasMiddleware
                 ->addColumn('action', function ($row) {
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
+                    $devicePermission = auth()->user()->can('user.device');
 
                     $viewBtn = '<a href="' . route('backend.user.show', encrypt($row->id)) . '" class="btn btn-primary btn-xs">View</a>';
                     $deleteBtn = $deletePermission
@@ -372,8 +382,11 @@ class UserController extends Controller implements HasMiddleware
                     $statusBtn = $statusPermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>'
                         : '';
+                    $deviceBtn = $devicePermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs deviceBtn" data-bs-toggle="modal" data-bs-target=".deviceModal">Device Details</button>'
+                        : '';
 
-                    $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn;
+                    $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
                     return $btn;
                 })
                 ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'banned_at', 'last_login', 'created_at', 'action'])
@@ -389,15 +402,38 @@ class UserController extends Controller implements HasMiddleware
         $user = User::withTrashed()->where('id', $id)->first();
         $userVerification = Verification::where('user_id', $id)->first();
         $userStatuses = UserStatus::where('user_id', $id)->get();
-        $userDetails = UserDetail::where('user_id', $id)->get();
-        // Deposit
+        $userDevices = UserDevice::where('user_id', $id)->get();
         $depositBalance = $user->deposit_balance;
+        $withdrawBalance = $user->withdraw_balance;
+
+        $holdBalance = 0;
+        $validPostTasks = PostTask::where('user_id', $id)
+            ->whereNotIn('status', ['Pending', 'Rejected'])
+            ->with(['proofTasks' => function ($query) {
+                $query->where(function ($query) {
+                    $query->where('status', 'Reviewed')
+                        ->orWhere(function ($query) {
+                            $query->where('status', 'Rejected')
+                                    ->whereNull('reviewed_at')
+                                    ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
+                        });
+                });
+            }])
+            ->get();
+            // Calculate the hold balance
+            foreach ($validPostTasks as $postTask) {
+                $chargePerTask = ($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed;
+                $reviewedCount = $postTask->proofTasks->count();
+                $holdBalance += $chargePerTask * $reviewedCount;
+            }
+
+        $reportsReceived = Report::where('user_id', $id)->where('status', 'Received')->count();
+        // Deposit
         $pendingDeposit = Deposit::where('user_id', $id)->where('status', 'Pending')->sum('amount');
         $approvedDeposit = Deposit::where('user_id', $id)->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount');
         $rejectedDeposit = Deposit::where('user_id', $id)->where('status', 'Rejected')->sum('amount');
         $transferDeposit = Deposit::where('user_id', $id)->where('status', 'Approved')->where('method', 'Withdraw Balance')->sum('amount');
         // Withdraw
-        $withdrawBalance = $user->withdraw_balance;
         $pendingWithdraw = Withdraw::where('user_id', $id)->where('status', 'Pending')->sum('amount');
         $approvedWithdraw = Withdraw::where('user_id', $id)->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount');
         $rejectedWithdraw = Withdraw::where('user_id', $id)->where('status', 'Rejected')->sum('amount');
@@ -410,7 +446,21 @@ class UserController extends Controller implements HasMiddleware
         $pausedPostedTask = PostTask::where('user_id', $id)->where('status', 'Paused')->count();
         $completedPostedTask = PostTask::where('user_id', $id)->where('status', 'Completed')->count();
         // Posted Task Proof Submit
-        return view('backend.user.show', compact('user', 'userStatuses', 'userDetails', 'userVerification' , 'depositBalance', 'pendingDeposit', 'approvedDeposit', 'rejectedDeposit', 'transferDeposit', 'withdrawBalance', 'pendingWithdraw', 'approvedWithdraw', 'rejectedWithdraw', 'transferWithdraw', 'pendingPostedTask', 'runningPostedTask', 'rejectedPostedTask', 'canceledPostedTask', 'pausedPostedTask', 'completedPostedTask'));
+        $postedTaskIds = PostTask::where('user_id', $id)->pluck('id');
+        $pendingPostedTaskProofSubmit = ProofTask::whereIn('post_task_id', $postedTaskIds)->where('status', 'Pending')->count();
+        $approvedPostedTaskProofSubmit = ProofTask::whereIn('post_task_id', $postedTaskIds)->where('status', 'Approved')->count();
+        $rejectedPostedTaskProofSubmit = ProofTask::whereIn('post_task_id', $postedTaskIds)->where('status', 'Rejected')->count();
+        $reviewedPostedTaskProofSubmit = ProofTask::whereIn('post_task_id', $postedTaskIds)->where('status', 'Reviewed')->count();
+        // Worked Task
+        $pendingWorkedTask = ProofTask::where('user_id', 'id')->where('status', 'Pending')->count();
+        $approvedWorkedTask = ProofTask::where('user_id', 'id')->where('status', 'Approved')->count();
+        $rejectedWorkedTask = ProofTask::where('user_id', 'id')->where('status', 'Rejected')->count();
+        $reviewedWorkedTask = ProofTask::where('user_id', 'id')->where('status', 'Reviewed')->count();
+        // Report
+        $reportsSendPending = Report::where('reported_by', $id)->where('status', 'Pending')->count();
+        $reportsSendFalse = Report::where('reported_by', $id)->where('status', 'False')->count();
+        $reportsSendReceived = Report::where('reported_by', $id)->where('status', 'Received')->count();
+        return view('backend.user.show', compact('user', 'userStatuses', 'userDevices', 'userVerification' , 'depositBalance', 'pendingDeposit', 'approvedDeposit', 'rejectedDeposit', 'transferDeposit', 'withdrawBalance', 'pendingWithdraw', 'approvedWithdraw', 'rejectedWithdraw', 'transferWithdraw', 'pendingPostedTask', 'runningPostedTask', 'rejectedPostedTask', 'canceledPostedTask', 'pausedPostedTask', 'completedPostedTask', 'pendingPostedTaskProofSubmit', 'approvedPostedTaskProofSubmit', 'rejectedPostedTaskProofSubmit', 'reviewedPostedTaskProofSubmit', 'pendingWorkedTask', 'approvedWorkedTask', 'rejectedWorkedTask', 'reviewedWorkedTask', 'reportsSendPending', 'reportsSendFalse', 'reportsSendReceived', 'reportsReceived', 'holdBalance'));
     }
 
     public function userStatus(string $id)
@@ -424,6 +474,13 @@ class UserController extends Controller implements HasMiddleware
         $reportRequestsPending = ProofTask::where('user_id', $id)->where('status', 'Pending')->count();
         $reportsReceived = ProofTask::where('user_id', $id)->where('status', 'Received')->count();
         return view('backend.user.status', compact('user', 'userStatuses', 'depositRequests', 'withdrawRequests', 'postedTasksRequests' , 'workedTasksRequests', 'reportRequestsPending', 'reportsReceived'));
+    }
+
+    public function userDevice(string $id)
+    {
+        $user = User::where('id', $id)->first();
+        $userDevices = UserDevice::where('user_id', $id)->get();
+        return view('backend.user.device', compact('user', 'userDevices'));
     }
 
     public function userStatusUpdate(Request $request, string $id)

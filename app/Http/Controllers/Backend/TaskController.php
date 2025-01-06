@@ -10,7 +10,7 @@ use App\Notifications\PostTaskCheckNotification;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
-use App\Models\UserDetail;
+use App\Models\UserDevice;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Notifications\ReviewedTaskProofCheckNotification;
@@ -756,11 +756,10 @@ class TaskController extends Controller implements HasMiddleware
                     return '<span class="badge bg-primary">' . $row->id . '</span>';
                 })
                 ->editColumn('user', function ($row) {
-                    $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
                         <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
                         <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
-                        <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
+                        <span class="badge bg-dark">Ip: ' . $row->user_ip . '</span>
                     ';
                     return $user;
                 })
@@ -899,11 +898,10 @@ class TaskController extends Controller implements HasMiddleware
                     return '<span class="badge bg-primary">' . $row->id . '</span>';
                 })
                 ->editColumn('user', function ($row) {
-                    $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
                         <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
                         <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
-                        <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
+                        <span class="badge bg-dark">Ip: ' . $row->user_ip . '</span>
                     ';
                     return $user;
                 })
@@ -1058,11 +1056,10 @@ class TaskController extends Controller implements HasMiddleware
                     return '<span class="badge bg-primary">' . $row->id . '</span>';
                 })
                 ->editColumn('user', function ($row) {
-                    $userDetail = UserDetail::where('user_id', $row->user_id)->first();
                     $user = '
                         <span class="badge bg-dark">Id: ' . $row->user->id . '</span>
                         <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
-                        <span class="badge bg-dark">Ip: ' . $userDetail->ip . '</span>
+                        <span class="badge bg-dark">Ip: ' . $row->user_ip . '</span>
                     ';
                     return $user;
                 })
