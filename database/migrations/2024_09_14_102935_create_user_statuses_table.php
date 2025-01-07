@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -19,6 +18,7 @@ return new class extends Migration
             $table->text('reason');
             $table->integer('blocked_duration')->nullable(); // in hours
             $table->timestamp('blocked_resolved')->nullable();
+            $table->decimal('blocked_resolved_charge', 8, 2)->nullable();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamp('created_at')->useCurrent();
         });

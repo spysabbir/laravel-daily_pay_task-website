@@ -40,7 +40,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="media">
-                                <i class="flaticon-group align-self-top mr-3"></i>
+                                <i class="flaticon-website align-self-top mr-3"></i>
                                 <div class="media-body">
                                     <h5 class="mt-0">Flexibility</h5>
                                     <p>Work on your own schedule and complete tasks whenever it’s convenient for you.</p>
@@ -60,7 +60,7 @@
 
                         <div class="col-sm-6">
                             <div class="media">
-                                <i class="flaticon-discussion align-self-top mr-3"></i>
+                                <i class="flaticon-accounting align-self-top mr-3"></i>
                                 <div class="media-body">
                                     <h5 class="mt-0">Quick Earnings</h5>
                                     <p>Start earning money immediately with fast payouts for completed tasks.</p>
@@ -70,7 +70,7 @@
 
                         <div class="col-sm-6">
                             <div class="media">
-                                <i class="flaticon-recruitment align-self-top mr-3"></i>
+                                <i class="flaticon-discussion align-self-top mr-3"></i>
                                 <div class="media-body">
                                     <h5 class="mt-0">Community Support</h5>
                                     <p>Join a vibrant community of earners and share tips to maximize your profits.</p>
@@ -244,7 +244,7 @@
             <div class="col-md-6">
                 <div class="looking-job">
                     <div class="media">
-                        <i class='flaticon-group align-self-start mr-3'></i>
+                        <i class='flaticon-research align-self-start mr-3'></i>
                         <div class="media-body">
                             <h5 class="mt-0">Looking For a Task</h5>
                             <p>Browse our diverse selection of tasks tailored to your skills. Start earning extra income easily and conveniently today!</p>
@@ -285,28 +285,28 @@
         <div class="row counter-area">
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
-                    <i class="flaticon-resume"></i>
+                    <i class="flaticon-results"></i>
                     <h2><span>{{ $totalPostTask }}</span></h2>
                     <p>Total Posted Task</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
-                    <i class="flaticon-recruitment"></i>
+                    <i class="flaticon-research"></i>
                     <h2><span>{{ $runningPostTasks }}</span></h2>
                     <p>Running Task</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
-                    <i class="flaticon-employee"></i>
+                    <i class="flaticon-group"></i>
                     <h2><span>{{ $totalUser }}</span></h2>
                     <p>Total User</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
-                    <i class="flaticon-portfolio"></i>
+                    <i class="flaticon-accounting"></i>
                     <h2><span>{{ $totalWithdraw }}</span></h2>
                     <p>Total Withdraw</p>
                 </div>

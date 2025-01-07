@@ -49,12 +49,15 @@
     <div class="col-lg-4">
         <div class="mb-3 text-center">
             <div class="alert alert-warning" role="alert">
+                <strong>Deposit Balance:</strong> {{ $depositBalance }}<br>
+                <strong>Withdraw Balance:</strong> {{ $withdrawBalance }}<br>
+                <strong>Hold Balance:</strong> {{ $holdBalance }}<br>
                 <strong>Deposit Requests - Pending:</strong> {{ $depositRequests }}<br>
                 <strong>Withdraw Requests - Pending:</strong> {{ $withdrawRequests }}<br>
                 <strong>Posted Tasks Requests - Pending:</strong> {{ $postedTasksRequests }}<br>
+                <strong>Posted Tasks Proof Submit Requests - Pending & Reviewed:</strong> {{ $postedTasksProofSubmitRequests }}<br>
                 <strong>Worked Tasks Requests - Reviewed:</strong> {{ $workedTasksRequests }}<br>
                 <strong>Report Requests - Pending:</strong> {{ $reportRequestsPending }}<br>
-                <strong>Report - Received:</strong> {{ $reportsReceived }}<br>
             </div>
         </div>
         <form class="forms-sample" id="statusForm">

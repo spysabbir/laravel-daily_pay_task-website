@@ -55,6 +55,16 @@
                                 <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_duplicate_device_check" class="form-label">Duplicate Device Check</label>
+                                <select class="form-select filter_data" id="filter_duplicate_device_check">
+                                    <option value="">-- Duplicate Device Check --</option>
+                                    <option value="Matched">Matched</option>
+                                    <option value="Not Matched">Not Matched</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -72,6 +82,7 @@
                                 <th>Total Block</th>
                                 <th>Join Date</th>
                                 <th>Last Login</th>
+                                <th>Duplicate Device Check</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -139,6 +150,7 @@
                 type: 'GET',
                 data: function (d) {
                     d.user_id = $('#filter_user_id').val();
+                    d.duplicate_device_check = $('#filter_duplicate_device_check').val();
                 }
             },
             columns: [
@@ -153,10 +165,15 @@
                 { data: 'block_count', name: 'block_count' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'last_login', name: 'last_login' },
+                { data: 'duplicate_device_check', name: 'duplicate_device_check' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#allDataTable').DataTable().ajax.reload();
+        });
         // Filter Data
         $('.filter_data').keyup(function() {
             $('#allDataTable').DataTable().ajax.reload();
@@ -214,10 +231,14 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('#statusForm')[0].reset();
-                        $(".statusModal").modal('hide');
-                        $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('User status update successfully.');
+                        if (response.status == 401) {
+                            toastr.error('User has reached the maximum limit of blocked status. Now you can change the status to Banned.')
+                        } else {
+                            $('#statusForm')[0].reset();
+                            $(".statusModal").modal('hide');
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.success('User status update successfully.');
+                        }
                     }
                 },
                 complete: function() {

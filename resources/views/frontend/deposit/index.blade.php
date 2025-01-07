@@ -63,13 +63,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="deposit_amount" class="form-label">Deposit Amount <span class="text-danger">*</span></label>
+                                                        <label for="deposit_balance_amount" class="form-label">Deposit Balance Amount <span class="text-danger">*</span></label>
                                                         <div class="input-group">
-                                                            <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" placeholder="Deposit Amount" required>
+                                                            <input type="number" class="form-control" id="deposit_balance_amount" name="deposit_balance_amount" placeholder="Deposit Balance Amount" required>
                                                             <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                                         </div>
-                                                        <small class="text-info d-block">Note: Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} 1.</small>
-                                                        <span class="text-danger error-text deposit_amount_error"></span>
+                                                        <small class="text-info d-block">Note: Minimum deposit balance amount is {{ get_site_settings('site_currency_symbol') }} 1.</small>
+                                                        <span class="text-danger error-text deposit_balance_amount_error"></span>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="deposit_balance_from_withdraw_balance_charge_percentage" class="form-label">Deposit Balance From Withdraw Balance Charge Percentage</label>
@@ -173,7 +173,6 @@
                                     <option value="Bkash">Bkash</option>
                                     <option value="Nagad">Nagad</option>
                                     <option value="Rocket">Rocket</option>
-                                    <option value="Withdraw Balance">Withdraw Balance</option>
                                 </select>
                             </div>
                         </div>
@@ -327,7 +326,7 @@
         });
 
         // Deposit Balance From Withdraw Balance
-        $('#deposit_amount').on('input', function () {
+        $('#deposit_balance_amount').on('input', function () {
             var depositAmount = parseFloat($(this).val()) || 0;
             var chargePercentage = parseFloat($('#deposit_balance_from_withdraw_balance_charge_percentage').val()) || 0;
 
@@ -339,6 +338,23 @@
             } else {
                 $('#payable_deposit_balance').val('0');
             }
+        });
+
+        // Deposit Balance From Withdraw Balance DataTable
+        $('#depositBalanceFromWithdrawBalanceDataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            searching: true,
+            ajax: {
+                url: "{{ route('deposit.balance.from.withdraw.balance') }}",
+            },
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'amount', name: 'amount' },
+                { data: 'payable_amount', name: 'payable_amount' },
+                { data: 'created_at', name: 'created_at' },
+                { data: 'approved_at', name: 'approved_at' },
+            ]
         });
 
         // Store Deposit Balance From Withdraw Balance
@@ -369,10 +385,10 @@
                         }else{
                             $('.depositBalanceFromWithdrawBalanceModel').modal('hide');
                             $('#depositBalanceFromWithdrawBalanceForm')[0].reset();
-                            $('#allDataTable').DataTable().ajax.reload();
+                            $('#depositBalanceFromWithdrawBalanceDataTable').DataTable().ajax.reload();
                             $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                             $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
-                            $("#total_deposit_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.total_deposit);
+                            $("#totalDepositBalanceFromWithdrawBalance strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.totalDepositBalanceFromWithdrawBalance);
                             $("#withdraw_balance").val(response.withdraw_balance);
                             toastr.success('Deposit Balance From Withdraw Balance request sent successfully.');
                         }

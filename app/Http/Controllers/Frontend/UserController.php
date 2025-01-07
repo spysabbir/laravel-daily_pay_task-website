@@ -465,34 +465,20 @@ class UserController extends Controller
                             ';
                         } else if ($row->method == 'Nagad') {
                             $method = '
-                            <span class="badge bg-warning">' . $row->method . '</span>
-                            ';
-                        } else if ($row->method == 'Rocket') {
-                            $method = '
                             <span class="badge bg-info">' . $row->method . '</span>
                             ';
                         } else {
                             $method = '
-                            <span class="badge bg-success">' . $row->method . '</span>
+                            <span class="badge bg-secondary">' . $row->method . '</span>
                             ';
                         }
                         return $method;
                     })
                     ->editColumn('number', function ($row) {
-                        if ($row->number) {
-                            $number = $row->number;
-                        } else {
-                            $number = 'N/A';
-                        }
-                        return $number;
+                        return $row->number;
                     })
                     ->editColumn('transaction_id', function ($row) {
-                        if ($row->transaction_id) {
-                            $transaction_id = $row->transaction_id;
-                        } else {
-                            $transaction_id = 'N/A';
-                        }
-                        return $transaction_id;
+                        return $row->transaction_id;
                     })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
@@ -535,10 +521,9 @@ class UserController extends Controller
                     ->make(true);
             }
 
-            $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
+            $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount');
 
             $depositBalanceFromWithdrawBalance = Deposit::where('user_id', $request->user()->id)->where('method', 'Withdraw Balance')->sum('amount');
-
             return view('frontend.deposit.index', compact('total_deposit', 'depositBalanceFromWithdrawBalance'));
         }
     }
@@ -590,13 +575,43 @@ class UserController extends Controller
         }
     }
 
+    public function depositBalanceFromWithdrawBalance(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Deposit::where('user_id', Auth::id())->where('method', 'Withdraw Balance');
+
+            $query->select('deposits.*')->orderBy('created_at', 'desc');
+
+            $deposits = $query->get();
+
+            return DataTables::of($deposits)
+                ->addIndexColumn()
+                ->editColumn('amount', function ($row) {
+                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
+                })
+                ->editColumn('payable_amount', function ($row) {
+                    return '<span class="badge bg-dark">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->format('d M Y h:i A');
+                })
+                ->addColumn('approved_at', function ($row) {
+                    return date('d M Y h:i A', strtotime($row->approved_at));
+                })
+                ->rawColumns(['amount', 'payable_amount', 'created_at', 'approved_at'])
+                ->make(true);
+        }
+
+        return view('frontend.deposit.index');
+    }
+
     public function depositBalanceFromWithdrawBalanceStore(Request $request)
     {
         $currencySymbol = get_site_settings('site_currency_symbol');
         $chargePercentage = get_default_settings('deposit_balance_from_withdraw_balance_charge_percentage');
 
         $validator = Validator::make($request->all(), [
-            'deposit_amount' => "required|numeric|min:1",
+            'deposit_balance_amount' => "required|numeric|min:1",
         ]);
 
         if($validator->fails()){
@@ -605,34 +620,34 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            if ($request->deposit_amount > $request->user()->withdraw_balance) {
+            if ($request->deposit_balance_amount > $request->user()->withdraw_balance) {
                 return response()->json([
                     'status' => 401,
-                    'error'=> 'Insufficient balance in your account to deposit ' . $currencySymbol .' '. $request->deposit_amount .
+                    'error'=> 'Insufficient balance in your account to deposit ' . $currencySymbol .' '. $request->deposit_balance_amount .
                             '. Your current balance is ' . $currencySymbol .' '. $request->user()->withdraw_balance
                 ]);
             }else {
-                $payable_amount = $request->deposit_amount - ($request->deposit_amount * $chargePercentage / 100);
+                $payable_amount = $request->deposit_balance_amount - ($request->deposit_balance_amount * $chargePercentage / 100);
 
                 Deposit::create([
                     'user_id' => $request->user()->id,
                     'method' => 'Withdraw Balance',
-                    'amount' => $request->deposit_amount,
+                    'amount' => $request->deposit_balance_amount,
                     'payable_amount' => $payable_amount,
                     'approved_at' => now(),
                     'status' => 'Approved',
                     'created_by' => $request->user()->id,
                 ]);
 
-                $request->user()->decrement('withdraw_balance', $request->deposit_amount);
+                $request->user()->decrement('withdraw_balance', $request->deposit_balance_amount);
                 $request->user()->increment('deposit_balance', $payable_amount);
-                $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
+                $totalDepositBalanceFromWithdrawBalance = Deposit::where('user_id', $request->user()->id)->where('method', 'Withdraw Balance')->sum('amount');
 
                 return response()->json([
                     'status' => 200,
                     'deposit_balance' => number_format($request->user()->deposit_balance, 2, '.', ''),
                     'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
-                    'total_deposit' => $total_deposit,
+                    'totalDepositBalanceFromWithdrawBalance' => $totalDepositBalanceFromWithdrawBalance,
                 ]);
             }
         }
@@ -696,7 +711,7 @@ class UserController extends Controller
                             ';
                         } else if ($row->method == 'Nagad') {
                             $method = '
-                            <span class="badge bg-success">' . $row->method . '</span>
+                            <span class="badge bg-secondary">' . $row->method . '</span>
                             ';
                         } else {
                             $method = '
@@ -754,8 +769,8 @@ class UserController extends Controller
             }
 
             $total_withdraw = Withdraw::where('user_id', $request->user()->id)->whereNot('method', 'Deposit Balance')->where('status', 'Approved')->sum('amount');
-            $withdrawBalanceFromDepositBalance = Withdraw::where('user_id', $request->user()->id)->where('method', 'Deposit Balance')->sum('amount');
 
+            $withdrawBalanceFromDepositBalance = Withdraw::where('user_id', $request->user()->id)->where('method', 'Deposit Balance')->sum('amount');
             return view('frontend.withdraw.index', compact('total_withdraw', 'withdrawBalanceFromDepositBalance'));
         }
     }
@@ -853,7 +868,7 @@ class UserController extends Controller
         $chargePercentage = get_default_settings('withdraw_balance_from_deposit_balance_charge_percentage');
 
         $validator = Validator::make($request->all(), [
-            'withdraw_balance' => "required|numeric|min:1",
+            'withdraw_balance_amount' => "required|numeric|min:1",
         ]);
 
         if($validator->fails()){
@@ -862,27 +877,27 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            if ($request->withdraw_balance > $request->user()->deposit_balance) {
+            if ($request->withdraw_balance_amount > $request->user()->deposit_balance) {
                 return response()->json([
                     'status' => 401,
-                    'error'=> 'Insufficient balance in your account to withdraw balance ' . $currencySymbol .' '. $request->withdraw_balance .
+                    'error'=> 'Insufficient balance in your account to withdraw balance ' . $currencySymbol .' '. $request->withdraw_balance_amount .
                             '. Your current balance is ' . $currencySymbol .' '. $request->user()->deposit_balance
                 ]);
             }else {
-                $payable_amount = $request->withdraw_balance - ($request->withdraw_balance * $chargePercentage / 100);
+                $payable_amount = $request->withdraw_balance_amount - ($request->withdraw_balance_amount * $chargePercentage / 100);
 
                 Withdraw::create([
                     'user_id' => $request->user()->id,
                     'type' => 'Instant',
                     'method' => 'Deposit Balance',
-                    'amount' => $request->withdraw_balance,
+                    'amount' => $request->withdraw_balance_amount,
                     'payable_amount' => $payable_amount,
                     'approved_at' => now(),
                     'status' => 'Approved',
                     'created_by' => $request->user()->id,
                 ]);
 
-                $request->user()->decrement('deposit_balance', $request->withdraw_balance);
+                $request->user()->decrement('deposit_balance', $request->withdraw_balance_amount);
                 $request->user()->increment('withdraw_balance', $payable_amount);
                 $totalWithdrawBalanceFromDepositBalance = Withdraw::where('user_id', $request->user()->id)->where('method', 'Deposit Balance')->sum('amount');
 

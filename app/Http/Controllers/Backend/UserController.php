@@ -46,9 +46,49 @@ class UserController extends Controller implements HasMiddleware
                 $query->where('id', $request->user_id);
             }
 
+            if ($request->duplicate_device_check) {
+                $userIps = UserDevice::groupBy('ip')->pluck('ip')->toArray();
+                $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                    ->groupBy('user_id')
+                    ->pluck('user_id')
+                    ->toArray();
+
+                $query->whereIn('id', $sameIpUserIds);
+            }
+
             $query->select('users.*')->orderBy('created_at', 'desc');
 
             $allUser = $query->get();
+
+            if ($request->duplicate_device_check === 'Matched') {
+                $allUser = $allUser->filter(function ($user) {
+                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip')->pluck('ip')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                        ->where('user_id', '!=', $user->id)
+                        ->groupBy('user_id')
+                        ->pluck('user_id')
+                        ->toArray();
+
+                    return User::whereIn('id', $sameIpUserIds)
+                        ->whereIn('status', ['Active', 'Blocked'])
+                        ->where('user_type', 'Frontend')
+                        ->exists();
+                });
+            } elseif ($request->duplicate_device_check === 'Not Matched') {
+                $allUser = $allUser->filter(function ($user) {
+                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip')->pluck('ip')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                        ->where('user_id', '!=', $user->id)
+                        ->groupBy('user_id')
+                        ->pluck('user_id')
+                        ->toArray();
+
+                    return !User::whereIn('id', $sameIpUserIds)
+                        ->whereIn('status', ['Active', 'Blocked'])
+                        ->where('user_type', 'Frontend')
+                        ->exists();
+                });
+            }
 
             return DataTables::of($allUser)
                 ->addIndexColumn()
@@ -114,6 +154,22 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
+                ->editColumn('duplicate_device_check', function ($row) {
+                    $userIps = UserDevice::where('user_id', $row->id)->groupBy('ip')->pluck('ip')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                        ->where('user_id', '!=', $row->id)
+                        ->groupBy('user_id')
+                        ->pluck('user_id')
+                        ->toArray();
+                    $sameIpUsers = User::whereIn('id', $sameIpUserIds)
+                        ->whereIn('status', ['Active', 'Blocked'])
+                        ->where('user_type', 'Frontend')
+                        ->get();
+
+                        return $sameIpUsers->count() > 0
+                        ? '<span class="badge bg-danger">Matched</span>'
+                        : '<span class="badge bg-success">Not Matched</span>';
+                })
                 ->addColumn('action', function ($row) {
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
@@ -133,7 +189,7 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
                     return $btn;
                 })
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'action'])
                 ->make(true);
         }
 
@@ -193,9 +249,49 @@ class UserController extends Controller implements HasMiddleware
                 $query->where('id', $request->user_id);
             }
 
+            if ($request->duplicate_device_check) {
+                $userIps = UserDevice::groupBy('ip')->pluck('ip')->toArray();
+                $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                    ->groupBy('user_id')
+                    ->pluck('user_id')
+                    ->toArray();
+
+                $query->whereIn('id', $sameIpUserIds);
+            }
+
             $query->select('users.*')->orderBy('created_at', 'desc');
 
             $allUser = $query->get();
+
+            if ($request->duplicate_device_check === 'Matched') {
+                $allUser = $allUser->filter(function ($user) {
+                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip')->pluck('ip')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                        ->where('user_id', '!=', $user->id)
+                        ->groupBy('user_id')
+                        ->pluck('user_id')
+                        ->toArray();
+
+                    return User::whereIn('id', $sameIpUserIds)
+                        ->whereIn('status', ['Active', 'Blocked'])
+                        ->where('user_type', 'Frontend')
+                        ->exists();
+                });
+            } elseif ($request->duplicate_device_check === 'Not Matched') {
+                $allUser = $allUser->filter(function ($user) {
+                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip')->pluck('ip')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                        ->where('user_id', '!=', $user->id)
+                        ->groupBy('user_id')
+                        ->pluck('user_id')
+                        ->toArray();
+
+                    return !User::whereIn('id', $sameIpUserIds)
+                        ->whereIn('status', ['Active', 'Blocked'])
+                        ->where('user_type', 'Frontend')
+                        ->exists();
+                });
+            }
 
             return DataTables::of($allUser)
                 ->addIndexColumn()
@@ -261,6 +357,22 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge text-info bg-dark">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
+                ->editColumn('duplicate_device_check', function ($row) {
+                    $userIps = UserDevice::where('user_id', $row->id)->groupBy('ip')->pluck('ip')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                        ->where('user_id', '!=', $row->id)
+                        ->groupBy('user_id')
+                        ->pluck('user_id')
+                        ->toArray();
+                    $sameIpUsers = User::whereIn('id', $sameIpUserIds)
+                        ->whereIn('status', ['Active', 'Blocked'])
+                        ->where('user_type', 'Frontend')
+                        ->get();
+
+                        return $sameIpUsers->count() > 0
+                        ? '<span class="badge bg-danger">Matched</span>'
+                        : '<span class="badge bg-success">Not Matched</span>';
+                })
                 ->addColumn('action', function ($row) {
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
@@ -280,7 +392,7 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
                     return $btn;
                 })
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'action'])
                 ->make(true);
         }
 
@@ -466,14 +578,38 @@ class UserController extends Controller implements HasMiddleware
     public function userStatus(string $id)
     {
         $user = User::where('id', $id)->first();
+        $withdrawBalance = $user->withdraw_balance;
+        $depositBalance = $user->deposit_balance;
+        $holdBalance = 0;
+        $validPostTasks = PostTask::where('user_id', $id)
+            ->whereNotIn('status', ['Pending', 'Rejected'])
+            ->with(['proofTasks' => function ($query) {
+                $query->where(function ($query) {
+                    $query->where('status', 'Reviewed')
+                        ->orWhere(function ($query) {
+                            $query->where('status', 'Rejected')
+                                    ->whereNull('reviewed_at')
+                                    ->where('rejected_at', '>', now()->subHours(get_default_settings('posted_task_proof_submit_rejected_charge_auto_refund_time')));
+                        });
+                });
+            }])
+            ->get();
+            // Calculate the hold balance
+            foreach ($validPostTasks as $postTask) {
+                $chargePerTask = ($postTask->sub_cost + $postTask->site_charge) / $postTask->worker_needed;
+                $reviewedCount = $postTask->proofTasks->count();
+                $holdBalance += $chargePerTask * $reviewedCount;
+            }
+
         $userStatuses = UserStatus::where('user_id', $id)->get();
         $depositRequests = Deposit::where('user_id', $id)->where('status', 'Pending')->count();
         $withdrawRequests = Withdraw::where('user_id', $id)->where('status', 'Pending')->count();
         $postedTasksRequests = PostTask::where('user_id', $id)->where('status', 'Pending')->count();
+        $postedTaskIds = PostTask::where('user_id', $id)->pluck('id');
+        $postedTasksProofSubmitRequests = ProofTask::whereIn('post_task_id', $postedTaskIds)->whereIn('status', ['Pending', 'Reviewed'])->count();
         $workedTasksRequests = ProofTask::where('user_id', $id)->where('status', 'Reviewed')->count();
         $reportRequestsPending = ProofTask::where('user_id', $id)->where('status', 'Pending')->count();
-        $reportsReceived = ProofTask::where('user_id', $id)->where('status', 'Received')->count();
-        return view('backend.user.status', compact('user', 'userStatuses', 'depositRequests', 'withdrawRequests', 'postedTasksRequests' , 'workedTasksRequests', 'reportRequestsPending', 'reportsReceived'));
+        return view('backend.user.status', compact('user', 'userStatuses', 'depositRequests', 'withdrawRequests', 'postedTasksRequests', 'postedTasksProofSubmitRequests', 'workedTasksRequests', 'reportRequestsPending', 'depositBalance', 'withdrawBalance', 'holdBalance'));
     }
 
     public function userDevice(string $id)
@@ -498,6 +634,23 @@ class UserController extends Controller implements HasMiddleware
 
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
+        }
+
+        $depositRequests = Deposit::where('user_id', $id)->where('status', 'Pending')->count();
+        $withdrawRequests = Withdraw::where('user_id', $id)->where('status', 'Pending')->count();
+        $postedTasksRequests = PostTask::where('user_id', $id)->where('status', 'Pending')->count();
+        $postedTaskIds = PostTask::where('user_id', $id)->pluck('id');
+        $postedTasksProofSubmitRequests = ProofTask::whereIn('post_task_id', $postedTaskIds)->whereIn('status', ['Pending', 'Reviewed'])->count();
+        $workedTasksRequests = ProofTask::where('user_id', $id)->where('status', 'Reviewed')->count();
+        $reportRequestsPending = ProofTask::where('user_id', $id)->where('status', 'Pending')->count();
+
+        if ($depositRequests > 0 || $withdrawRequests > 0 || $postedTasksRequests > 0 || $postedTasksProofSubmitRequests > 0 || $workedTasksRequests > 0 || $reportRequestsPending > 0) {
+            return response()->json(['status' => 401, 'error' => 'User has pending requests. Please complete or cancel all requests before changing the status.']);
+        }
+
+        $blockedStatusCount = UserStatus::where('user_id', $id)->where('status', 'Blocked')->count();
+        if ($blockedStatusCount === get_default_settings('user_max_blocked_time_for_banned')) {
+            return response()->json(['status' => 401]);
         }
 
         $userStatus = UserStatus::create([

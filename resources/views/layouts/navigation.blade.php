@@ -264,36 +264,32 @@
 
         <li class="nav-item nav-category">Editor</li>
         @can('CategoryMenu')
-            @can('category.index')
             <li class="nav-item">
-                <a href="{{ route('backend.category.index') }}" class="nav-link">
-                    <i class="link-icon" data-feather="file"></i>
-                    <span class="link-title">Category</span>
-                </a>
-            </li>
-            @endcan
-        @endcan
-
-        @can('SubCategoryMenu')
-            @can('sub_category.index')
-            <li class="nav-item">
-                <a href="{{ route('backend.sub_category.index') }}" class="nav-link">
+                <a class="nav-link" data-bs-toggle="collapse" href="#CategoryMenu" role="button" aria-expanded="false" aria-controls="CategoryMenu">
                     <i class="link-icon" data-feather="folder"></i>
-                    <span class="link-title">Sub Category</span>
+                    <span class="link-title">Category</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
+                <div class="collapse" id="CategoryMenu">
+                    <ul class="nav sub-menu">
+                        @can('category.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.category.index') }}" class="nav-link">Main Category</a>
+                        </li>
+                        @endcan
+                        @can('sub_category.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.sub_category.index') }}" class="nav-link">Sub Category</a>
+                        </li>
+                        @endcan
+                        @can('child_category.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.child_category.index') }}" class="nav-link">Child Category</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
             </li>
-            @endcan
-        @endcan
-
-        @can('ChildCategoryMenu')
-            @can('child_category.index')
-            <li class="nav-item">
-                <a href="{{ route('backend.child_category.index') }}" class="nav-link">
-                    <i class="link-icon" data-feather="folder-plus"></i>
-                    <span class="link-title">Child Category</span>
-                </a>
-            </li>
-            @endcan
         @endcan
 
         @can('TaskPostChargeMenu')
@@ -562,7 +558,7 @@
                 </div>
             </li>
         @endcan
-        
+
         @can('SupportMenu')
             @can('support.index')
             <li class="nav-item">

@@ -63,13 +63,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="withdraw_balance" class="form-label">Withdraw Balance <span class="text-danger">*</span></label>
+                                                        <label for="withdraw_balance_amount" class="form-label">Withdraw Balance Amount<span class="text-danger">*</span></label>
                                                         <div class="input-group">
-                                                            <input type="number" class="form-control" id="withdraw_balance" name="withdraw_balance" placeholder="Withdraw Balance" required>
+                                                            <input type="number" class="form-control" id="withdraw_balance_amount" name="withdraw_balance_amount" placeholder="Withdraw Balance Amount" required>
                                                             <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                                         </div>
-                                                        <small class="text-info d-block">Note: Minimum withdraw balance is {{ get_site_settings('site_currency_symbol') }} 1.</small>
-                                                        <span class="text-danger error-text withdraw_balance_error"></span>
+                                                        <small class="text-info d-block">Note: Minimum withdraw balance amount is {{ get_site_settings('site_currency_symbol') }} 1.</small>
+                                                        <span class="text-danger error-text withdraw_balance_amount_error"></span>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="withdraw_balance_from_deposit_balance_charge_percentage" class="form-label">Withdraw Balance From Deposit Balance Charge Percentage</label>
@@ -85,7 +85,7 @@
                                                             <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                                         </div>
                                                     </div>
-                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                    <button type="submit" class="btn btn-primary">Withdraw</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -381,7 +381,7 @@
         });
 
         // Withdraw Balance From Deposit Balance
-        $('#withdraw_balance').on('input', function () {
+        $('#withdraw_balance_amount').on('input', function () {
             var withdrawAmount = parseFloat($(this).val()) || 0;
             var chargePercentage = parseFloat($('#withdraw_balance_from_deposit_balance_charge_percentage').val()) || 0;
 

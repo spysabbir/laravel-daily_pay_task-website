@@ -37,6 +37,7 @@ class DefaultSettingTableSeeder extends Seeder
             'posted_task_proof_submit_rejected_charge_auto_refund_time' => 24, // hours
             'rejected_worked_task_review_charge' => 0.25, // every review
             'user_max_blocked_time_for_banned' => 3, // every banned
+            'user_blocked_resolved_charge' => 20, // every blocked
         ];
 
         DefaultSetting::create($setting);

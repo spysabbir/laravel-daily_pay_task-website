@@ -39,7 +39,7 @@
             <div class="col-lg-4 col-sm-6">
                 <div class="use-text">
                     <span>1</span>
-                    <i class='flaticon-website'></i>
+                    <i class='flaticon-login'></i>
                     <h3>Simple Registration</h3>
                     <p>Quickly create your account with an easy sign-up process to start exploring tasks.</p>
                 </div>
@@ -48,7 +48,7 @@
             <div class="col-lg-4 col-sm-6">
                 <div class="use-text">
                     <span>2</span>
-                    <i class='flaticon-recruitment'></i>
+                    <i class='flaticon-consultation'></i>
                     <h3>Intuitive Navigation</h3>
                     <p>Effortlessly browse and filter tasks by category or popularity to find what suits you best.</p>
                 </div>
@@ -57,7 +57,7 @@
             <div class="col-lg-4 col-sm-6 offset-sm-3 offset-lg-0">
                 <div class="use-text">
                     <span>3</span>
-                    <i class='flaticon-login'></i>
+                    <i class='flaticon-computer'></i>
                     <h3>Fast Completion and Payout</h3>
                     <p>Complete tasks at your own pace and enjoy prompt payouts for your efforts.</p>
                 </div>
@@ -78,7 +78,7 @@
         <div class="row">
             <div class="col-lg-4 col-sm-6">
                 <div class="choose-card">
-                    <i class="flaticon-resume"></i>
+                    <i class="flaticon-discussion"></i>
                     <h3>User-Friendly Experience</h3>
                     <p>Our platform is designed for simplicity, making it easy for users to find and complete tasks quickly. A seamless interface ensures you spend less time navigating and more time earning.</p>
                 </div>
@@ -86,7 +86,7 @@
 
             <div class="col-lg-4 col-sm-6">
                 <div class="choose-card">
-                    <i class="flaticon-recruitment"></i>
+                    <i class="flaticon-website"></i>
                     <h3>Diverse Opportunities</h3>
                     <p>We offer a wide range of tasks tailored to different skills and interests, from surveys and data entry to content moderation. This variety keeps your earning potential high and your experience engaging.</p>
                 </div>
@@ -94,7 +94,7 @@
 
             <div class="col-lg-4 col-sm-6 offset-sm-3 offset-lg-0">
                 <div class="choose-card">
-                    <i class="flaticon-employee"></i>
+                    <i class="flaticon-computer"></i>
                     <h3>Quick Payouts</h3>
                     <p>At Daily Micro Tasks, we prioritize timely payments. Enjoy hassle-free earnings with fast payout options, ensuring you receive your rewards as soon as possible, making your efforts truly worthwhile.</p>
                 </div>
@@ -140,28 +140,28 @@
         <div class="row counter-area">
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
-                    <i class="flaticon-resume"></i>
+                    <i class="flaticon-results"></i>
                     <h2><span>{{ $totalPostTask }}</span></h2>
                     <p>Total Post Task</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
-                    <i class="flaticon-recruitment"></i>
+                    <i class="flaticon-research"></i>
                     <h2><span>{{ $runningPostTask }}</span></h2>
                     <p>Running Task</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
-                    <i class="flaticon-employee"></i>
+                    <i class="flaticon-group"></i>
                     <h2><span>{{ $totalUser }}</span></h2>
                     <p>Total User</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="counter-text">
-                    <i class="flaticon-portfolio"></i>
+                    <i class="flaticon-accounting"></i>
                     <h2><span>{{ $totalWithdraw }}</span></h2>
                     <p>Total Withdraw</p>
                 </div>

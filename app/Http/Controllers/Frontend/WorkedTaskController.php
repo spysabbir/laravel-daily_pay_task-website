@@ -192,18 +192,18 @@ class WorkedTaskController extends Controller
         $postTask =  PostTask::findOrFail($id);
         $ProofTask = ProofTask::where('post_task_id', $id)->count();
 
-        if ($postTask->status != 'Running') {
-            return response()->json([
-                'canSubmit' => false,
-                'message' => 'Sorry, Currently, this task is ' . $postTask->status . ' now. So you can not submit proof for this task.'
-            ]);
-        }
-
         $userExists = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->exists();
         if ($userExists) {
             return response()->json([
                 'canSubmit' => false,
                 'message' => 'Sorry, you have already submitted proof for this task.'
+            ]);
+        }
+
+        if ($postTask->status != 'Running') {
+            return response()->json([
+                'canSubmit' => false,
+                'message' => 'Sorry, Currently, this task is ' . $postTask->status . ' now. So you can not submit proof for this task.'
             ]);
         }
 
@@ -259,19 +259,19 @@ class WorkedTaskController extends Controller
 
         $proofCount = ProofTask::where('post_task_id', $id)->count();
 
-        if ($taskDetails->status != 'Running') {
+        $userExists = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->exists();
+        if ($userExists) {
             $notification = array(
-                'message' => 'Sorry, this task is ' . $taskDetails->status . ' now. You can not submit proof for this task.',
+                'message' => 'Sorry, you have already submitted proof for this task.',
                 'alert-type' => 'error'
             );
 
             return back()->with($notification)->withInput();
         }
-
-        $userExists = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->exists();
-        if ($userExists) {
+        
+        if ($taskDetails->status != 'Running') {
             $notification = array(
-                'message' => 'Sorry, you have already submitted proof for this task.',
+                'message' => 'Sorry, this task is ' . $taskDetails->status . ' now. You can not submit proof for this task.',
                 'alert-type' => 'error'
             );
 

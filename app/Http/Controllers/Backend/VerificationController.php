@@ -13,6 +13,7 @@ use App\Models\Bonus;
 use App\Notifications\BonusNotification;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use App\Models\UserDevice;
 
 class VerificationController extends Controller implements HasMiddleware
 {
@@ -79,7 +80,19 @@ class VerificationController extends Controller implements HasMiddleware
     public function verificationRequestShow(string $id)
     {
         $verification = Verification::where('id', $id)->first();
-        return view('backend.verification.show', compact('verification'));
+
+        $userIps = UserDevice::where('user_id', $verification->user_id)->groupBy('ip')->pluck('ip')->toArray();
+        $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+            ->where('user_id', '!=', $verification->id)
+            ->groupBy('user_id')
+            ->pluck('user_id')
+            ->toArray();
+        $sameIpUsers = User::whereIn('id', $sameIpUserIds)
+            ->whereIn('status', ['Active', 'Blocked'])
+            ->where('user_type', 'Frontend')
+            ->get();
+
+        return view('backend.verification.show', compact('verification', 'sameIpUsers'));
     }
 
     public function verificationRequestStatusChange(Request $request, string $id)

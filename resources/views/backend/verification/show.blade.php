@@ -104,6 +104,22 @@
             @endif
         </div>
         @can('verification.request.check')
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4 class="card-title">
+                    Same IP Users
+                </h4>
+            </div>
+            <div class="card-body">
+                @forelse ($sameIpUsers as $sameIpUser)
+                    <a href="{{ route('backend.user.show', encrypt($sameIpUser->id)) }}" class="text-danger" target="_blank">
+                        {{ $sameIpUser->id }} - {{ $sameIpUser->name }}
+                    </a> <br>
+                @empty
+                    <p class="text-success">No same IP users found!</p>
+                @endforelse
+            </div>
+        </div>
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
