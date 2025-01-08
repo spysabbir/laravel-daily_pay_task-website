@@ -108,11 +108,8 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="filter_sub_category_id" class="form-label">Sub Category</label>
-                                <select class="form-select filter_data" id="filter_sub_category_id">
-                                    <option value="">-- Select Sub Category --</option>
-                                    @foreach ($sub_categories as $sub_category)
-                                        <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
-                                    @endforeach
+                                <select class="form-select get_filter_sub_categories filter_data" id="filter_sub_category_id">
+                                    <option value="">-- Select Category First --</option>
                                 </select>
                             </div>
                         </div>
@@ -155,8 +152,8 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="child_category_id">
                                                 <div class="mb-3">
-                                                    <label for="category_id" class="form-label">Category</label>
-                                                    <select class="form-select category_id" id="category_id" name="category_id">
+                                                    <label for="edit_category_id" class="form-label">Category</label>
+                                                    <select class="form-select" id="edit_category_id" name="category_id">
                                                         <option value="">-- Select Category --</option>
                                                         @foreach ($categories as $category)
                                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -165,16 +162,13 @@
                                                     <span class="text-danger error-text update_category_id_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="sub_category_id" class="form-label">Sub Category</label>
-                                                    <select class="form-select sub_category_id get_sub_categories" id="sub_category_id" name="sub_category_id">
+                                                    <label for="edit_sub_category_id" class="form-label">Sub Category</label>
+                                                    <select class="form-select get_edit_sub_categories" id="edit_sub_category_id" name="sub_category_id">
                                                         <option value="">-- Select Category First --</option>
                                                         @foreach ($sub_categories as $sub_category)
                                                             <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
                                                         @endforeach
                                                     </select>
-                                                    <div id="sub-category-options">
-                                                        <!-- Sub-category radio buttons will be loaded here -->
-                                                    </div>
                                                     <span class="text-danger error-text update_sub_category_id_error"></span>
                                                 </div>
                                                 <div class="mb-3">
@@ -272,6 +266,13 @@
             });
         });
 
+        // Load sub-categories when a category is selected in the filter
+        $(document).on('change', '#filter_category_id', function () {
+            $('#filter_sub_category_id').val(null).trigger('change');
+            var category_id = $(this).val();
+            loadSubCategories(category_id, '.get_filter_sub_categories');
+        });
+
         // Load sub-categories when a category is selected in the create form
         $(document).on('change', '#category_id', function () {
             var category_id = $(this).val();
@@ -279,9 +280,9 @@
         });
 
         // Load sub-categories when a category is selected in the edit form
-        $(document).on('change', '.category_id', function () {
+        $(document).on('change', '#edit_category_id', function () {
             var category_id = $(this).val();
-            loadSubCategories(category_id, '.sub_category_id');
+            loadSubCategories(category_id, '.get_edit_sub_categories');
         });
 
         // Load sub-categories when a category is selected
@@ -310,13 +311,12 @@
                 type: "GET",
                 success: function (response) {
                     $('#child_category_id').val(response.id);
-                    $('.category_id').val(response.category_id).change();
-                    loadSubCategories(response.category_id, '.sub_category_id', response.sub_category_id);
+                    $('#edit_category_id').val(response.category_id).change();
+                    loadSubCategories(response.category_id, '#edit_sub_category_id', response.sub_category_id);
                     $('#child_category_name').val(response.name);
                 },
             });
         });
-
 
         // Update Data
         $('#editForm').submit(function (event) {

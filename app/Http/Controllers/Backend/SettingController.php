@@ -78,7 +78,7 @@ class SettingController extends Controller implements HasMiddleware
             'posted_task_proof_submit_rejected_charge_auto_refund_time' => 'required',
             'rejected_worked_task_review_charge' => 'required',
             'user_max_blocked_time_for_banned' => 'required',
-            'user_blocked_resolved_charge' => 'required',
+            'user_blocked_instant_resolved_charge' => 'required',
         ],
         [
             'deposit_bkash_account.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
@@ -112,7 +112,7 @@ class SettingController extends Controller implements HasMiddleware
             'posted_task_proof_submit_rejected_charge_auto_refund_time' => $request->posted_task_proof_submit_rejected_charge_auto_refund_time,
             'rejected_worked_task_review_charge' => $request->rejected_worked_task_review_charge,
             'user_max_blocked_time_for_banned' => $request->user_max_blocked_time_for_banned,
-            'user_blocked_resolved_charge' => $request->user_blocked_resolved_charge,
+            'user_blocked_instant_resolved_charge' => $request->user_blocked_instant_resolved_charge,
         ]);
 
         $notification = array(

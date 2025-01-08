@@ -293,6 +293,18 @@ class UserController extends Controller implements HasMiddleware
                 });
             }
 
+            if ($request->instant_unblocked_check) {
+                $allUser = $allUser->filter(function ($user) use ($request) {
+                    $userStatus = UserStatus::where('user_id', $user->id)
+                        ->where('status', 'Blocked')
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+
+                    $isRequested = $userStatus && $userStatus->created_by == $userStatus->user_id;
+                    return $request->instant_unblocked_check === 'Requested' ? $isRequested : !$isRequested;
+                });
+            }
+
             return DataTables::of($allUser)
                 ->addIndexColumn()
                 ->editColumn('deposit_balance', function ($row) {
@@ -373,6 +385,14 @@ class UserController extends Controller implements HasMiddleware
                         ? '<span class="badge bg-danger">Matched</span>'
                         : '<span class="badge bg-success">Not Matched</span>';
                 })
+                ->editColumn('instant_unblocked_check', function ($row) {
+                    $userStatus = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->orderBy('created_at', 'desc')->first();
+                    if ($userStatus->created_by == $userStatus->user_id) {
+                        return '<span class="badge bg-danger">Requested</span>';
+                    } else {
+                        return '<span class="badge bg-success">Not Requested</span>';
+                    }
+                })
                 ->addColumn('action', function ($row) {
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
@@ -392,7 +412,7 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
                     return $btn;
                 })
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'instant_unblocked_check', 'action'])
                 ->make(true);
         }
 

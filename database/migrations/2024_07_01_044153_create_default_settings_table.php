@@ -36,7 +36,7 @@ return new class extends Migration
             $table->integer('posted_task_proof_submit_rejected_charge_auto_refund_time')->nullable();
             $table->decimal('rejected_worked_task_review_charge', 10, 2)->nullable();
             $table->integer('user_max_blocked_time_for_banned')->nullable();
-            $table->integer('user_blocked_resolved_charge')->nullable();
+            $table->decimal('user_blocked_instant_resolved_charge', 10, 2)->nullable();
             $table->timestamps();
         });
     }

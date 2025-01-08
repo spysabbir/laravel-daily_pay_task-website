@@ -28,6 +28,16 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_instant_unblocked_check" class="form-label">Instant Unblocked Check</label>
+                                <select class="form-select filter_data" id="filter_instant_unblocked_check">
+                                    <option value="">-- Instant Unblocked Check --</option>
+                                    <option value="Requested">Requested</option>
+                                    <option value="Not Requested">Not Requested</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -46,6 +56,7 @@
                                 <th>Join Date</th>
                                 <th>Last Login</th>
                                 <th>Duplicate Device Check</th>
+                                <th>Instant Unblocked Check</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -60,6 +71,23 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                                         </div>
                                         <div class="modal-body" id="statusModalBody">
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Device Modal -->
+                            <div class="modal fade deviceModal" tabindex="-1" aria-labelledby="deviceModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deviceModalLabel">Device</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                        </div>
+                                        <div class="modal-body" id="deviceModalBody">
 
                                         </div>
                                         <div class="modal-footer">
@@ -97,6 +125,7 @@
                 data: function (d) {
                     d.user_id = $('#filter_user_id').val();
                     d.duplicate_device_check = $('#filter_duplicate_device_check').val();
+                    d.instant_unblocked_check = $('#filter_instant_unblocked_check').val();
                 }
             },
             columns: [
@@ -112,6 +141,7 @@
                 { data: 'created_at', name: 'created_at' },
                 { data: 'last_login', name: 'last_login' },
                 { data: 'duplicate_device_check', name: 'duplicate_device_check' },
+                { data: 'instant_unblocked_check', name: 'instant_unblocked_check' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
@@ -123,6 +153,20 @@
         // Filter Data
         $('.filter_data').keyup(function() {
             $('#allDataTable').DataTable().ajax.reload();
+        });
+
+        // Device Data
+        $(document).on('click', '.deviceBtn', function () {
+            var id = $(this).data('id');
+            var url = "{{ route('backend.user.device', ":id") }}";
+            url = url.replace(':id', id)
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    $('#deviceModalBody').html(response);
+                },
+            });
         });
 
         // Status Data
@@ -202,7 +246,6 @@
                 }
             })
         })
-
     });
 </script>
 @endsection

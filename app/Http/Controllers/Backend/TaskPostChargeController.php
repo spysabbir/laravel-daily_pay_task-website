@@ -61,7 +61,7 @@ class TaskPostChargeController extends Controller implements HasMiddleware
                     return $row->subCategory->name ?? 'N/A';
                 })
                 ->editColumn('child_category_name', function ($row) {
-                    return $row->childCategory->name ?? 'N/A';
+                    return $row->childCategory->name ?? '<span class="text-danger">-</span>';
                 })
                 ->editColumn('status', function ($row) {
                     $canChangeStatus = auth()->user()->can('task_post_charge.status');
@@ -122,6 +122,16 @@ class TaskPostChargeController extends Controller implements HasMiddleware
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
+            // Check if the task post charge already exists
+            $taskPostChargeExist = TaskPostCharge::where('category_id', $request->category_id)->where('sub_category_id', $request->sub_category_id)->where('child_category_id', $request->child_category_id)->exists();
+
+            if ($taskPostChargeExist) {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'This task post charge already exists.'
+                ]);
+            }
+
             TaskPostCharge::create([
                 'category_id' => $request->category_id,
                 'sub_category_id' => $request->sub_category_id,
@@ -159,6 +169,16 @@ class TaskPostChargeController extends Controller implements HasMiddleware
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
+            // Check if the task post charge already exists
+            $taskPostChargeExist = TaskPostCharge::where('category_id', $request->category_id)->where('sub_category_id', $request->sub_category_id)->where('child_category_id', $request->child_category_id)->where('id', '!=', $id)->exists();
+
+            if ($taskPostChargeExist) {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'This task post charge already exists.'
+                ]);
+            }
+
             TaskPostCharge::where('id', $id)->update([
                 'category_id' => $request->category_id,
                 'sub_category_id' => $request->sub_category_id,
@@ -205,7 +225,7 @@ class TaskPostChargeController extends Controller implements HasMiddleware
                     return $row->subCategory->name ?? 'N/A';
                 })
                 ->editColumn('child_category_name', function ($row) {
-                    return $row->childCategory->name ?? 'N/A';
+                    return $row->childCategory->name ?? '<span class="text-danger">-</span>';
                 })
                 ->addColumn('action', function ($row) {
                     $restorePermission = auth()->user()->can('task_post_charge.restore');

@@ -423,6 +423,61 @@ class UserController extends Controller
         return back()->with($notification);
     }
 
+    // Instant Unblocked
+    public function instantUnblockedRequest(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'payment_method' => 'required|in:Deposit Balance,Withdraw Balance',
+            'reason' => 'required|string',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            $user = User::findOrFail(Auth::id());
+            $userStatus = UserStatus::where('user_id', $user->id)->latest()->first();
+            $user_blocked_instant_resolved_charge = get_default_settings('user_blocked_instant_resolved_charge');
+
+            if ($request->payment_method == 'Deposit Balance') {
+                if ($user->deposit_balance >= $user_blocked_instant_resolved_charge) {
+                    $user->update([
+                        'deposit_balance' => $user->deposit_balance - $user_blocked_instant_resolved_charge,
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => 401,
+                        'message' => 'You do not have enough balance in your deposit balance.',
+                    ]);
+                }
+            } else if ($request->payment_method == 'Withdraw Balance') {
+                if ($user->withdraw_balance >= $user_blocked_instant_resolved_charge) {
+                    $user->update([
+                        'withdraw_balance' => $user->withdraw_balance - $user_blocked_instant_resolved_charge,
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => 401,
+                        'message' => 'You do not have enough balance in your withdraw balance.',
+                    ]);
+                }
+            }
+
+            $userStatus->update([
+                'reason' => $request->reason,
+                'blocked_resolved_charge' => $user_blocked_instant_resolved_charge,
+                'created_by' => Auth::id(),
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Instant Unblocked request submitted successfully.',
+            ]);
+        }
+    }
+
     // Deposit.............................................................................................................
 
     public function deposit(Request $request)

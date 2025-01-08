@@ -235,9 +235,9 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="user_blocked_resolved_charge" class="form-label">User Blocked Resolved Charge</label>
-                            <input type="number" class="form-control" id="user_blocked_resolved_charge" name="user_blocked_resolved_charge" value="{{ old('user_blocked_resolved_charge', $defaultSetting->user_blocked_resolved_charge) }}" placeholder="User Blocked Resolved Charge">
-                            @error('user_blocked_resolved_charge')
+                            <label for="user_blocked_instant_resolved_charge" class="form-label">User Blocked Instant Resolved Charge</label>
+                            <input type="number" class="form-control" id="user_blocked_instant_resolved_charge" name="user_blocked_instant_resolved_charge" value="{{ old('user_blocked_instant_resolved_charge', $defaultSetting->user_blocked_instant_resolved_charge) }}" placeholder="User Blocked Instant Resolved Charge">
+                            @error('user_blocked_instant_resolved_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

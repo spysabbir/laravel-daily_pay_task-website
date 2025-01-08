@@ -45,11 +45,17 @@ Schedule::call(function () {
         $activeTime = Carbon::parse($userStatus->created_at)->addHours((int) $userStatus->blocked_duration);
 
         if ($now->isSameMinute($activeTime)) {
-            $userStatus->update(['blocked_resolved' => $now]);
+            $userStatus->update([
+                'blocked_resolved' => $now,
+                'blocked_resolved_charge' => null,
+            ]);
 
             $user = User::find($userStatus->user_id);
             if ($user) {
-                $user->update(['status' => 'Active']);
+                $user->update([
+                    'status' => 'Active',
+                    'withdraw_balance' => $userStatus->blocked_resolved_charge ? $user->withdraw_balance + $userStatus->blocked_resolved_charge : $user->withdraw_balance,
+                ]);
                 $user->notify(new UserStatusNotification([
                     'status' => 'Active',
                     'reason' => 'Your account has been unblocked successfully!',

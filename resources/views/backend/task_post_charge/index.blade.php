@@ -128,22 +128,16 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="filter_sub_category_id" class="form-label">Sub Category</label>
-                                <select class="form-select filter_data" id="filter_sub_category_id">
-                                    <option value="">-- Select Sub Category --</option>
-                                    @foreach ($sub_categories as $sub_category)
-                                        <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
-                                    @endforeach
+                                <select class="form-select get_filter_sub_categories filter_data" id="filter_sub_category_id">
+                                    <option value="">-- Select Category First --</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="filter_child_category_id" class="form-label">Child Category</label>
-                                <select class="form-select filter_data" id="filter_child_category_id">
-                                    <option value="">-- Select Child Category --</option>
-                                    @foreach ($child_categories as $child_category)
-                                        <option value="{{ $child_category->id }}">{{ $child_category->name }}</option>
-                                    @endforeach
+                                <select class="form-select get_filter_child_categories filter_data" id="filter_child_category_id">
+                                    <option value="">-- Select Sub Category First --</option>
                                 </select>
                             </div>
                         </div>
@@ -335,10 +329,14 @@
                         $('span.' + prefix + '_error').text(val[0]);
                     });
                 } else {
-                    $('.createModel').modal('hide');
-                    $('#createForm')[0].reset();
-                    table.ajax.reload();
-                    toastr.success('Task Post Charge created successfully.');
+                    if (response.status === 401) {
+                        toastr.error(response.error);
+                    } else {
+                        $('.createModel').modal('hide');
+                        $('#createForm')[0].reset();
+                        table.ajax.reload();
+                        toastr.success('Task Post Charge created successfully.');
+                    }
                 }
             },
             complete: function() {
@@ -384,9 +382,13 @@
                         $('span.update_' + prefix + '_error').text(val[0]);
                     });
                 } else {
-                    $(".editModal").modal('hide');
-                    table.ajax.reload();
-                    toastr.success('Task Post Charge updated successfully.');
+                    if (response.status === 401) {
+                        toastr.error(response.error);
+                    } else {
+                        $(".editModal").modal('hide');
+                        table.ajax.reload();
+                        toastr.success('Task Post Charge updated successfully.');
+                    }
                 }
             },
             complete: function() {
@@ -504,17 +506,32 @@
         });
     });
 
+    // Load subcategories and child categories on category change in filter form
+    $(document).on('change', '#filter_category_id', function() {
+        $('#filter_sub_category_id').val(null).trigger('change');
+        var category_id = $(this).val();
+        loadSubCategories(category_id, '.get_filter_sub_categories');
+        $('.get_filter_child_categories').html('<option value="">-- Select Sub Category First --</option>');
+    });
+
+    $(document).on('change', '#filter_sub_category_id', function() {
+        $('#filter_child_category_id').val(null).trigger('change');
+        var category_id = $('#filter_category_id').val();
+        var sub_category_id = $(this).val();
+        loadChildCategories(category_id, sub_category_id, '.get_filter_child_categories');
+    });
+
     // Load subcategories and child categories on category change in create form
     $(document).on('change', '#category_id', function() {
         var category_id = $(this).val();
-        loadSubCategories(category_id, '#sub_category_id');
-        $('#child_category_id').html('<option value="">-- Select Sub Category First --</option>');
+        loadSubCategories(category_id, '.get_sub_categories');
+        $('.get_child_categories').html('<option value="">-- Select Sub Category First --</option>');
     });
 
     $(document).on('change', '#sub_category_id', function() {
         var category_id = $('#category_id').val();
         var sub_category_id = $(this).val();
-        loadChildCategories(category_id, sub_category_id, '#child_category_id');
+        loadChildCategories(category_id, sub_category_id, '.get_child_categories');
     });
 
     // Load subcategories and child categories on category change in edit form

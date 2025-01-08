@@ -68,17 +68,70 @@
         <h4> Your account is blocked!</h4>
     </div>
 	<p class="mt-3">
-        Your account is blocked by admin. You can't access your account. Please contact with us to unblock your account. We are always ready to help you.
+        Your account is blocked by admin. You can't access your account. Please wait for the unblock! If you think this is a mistake, please contact us! We are always ready to help you.
     </p>
     <hr>
+    @if ($userStatus->created_by == Auth::user()->id)
+        <span class="text-success mt-2">
+            Already send Iinstant unblock request to admin. Please wait for the admin response. If your account is not unblocked within 1 hour, please contact us.
+        </span><br>
+        <span class="text-info mt-2">
+            Note: If your account is automatically unblocked before the admin response, you will get an unblock charge refund on your withdraw balance.
+        </span>
+    @else
     <div>
         <strong>Blocked Reason: {{ $userStatus->reason }}</strong><br>
+        <strong>Blocked Time: {{ date('d M, Y h:i A', strtotime($userStatus->created_at)) }}</strong><br>
         <strong>Blocked Duration: {{ $userStatus->blocked_duration }} hours</strong><br>
-        <strong>Blocked Time: {{ date('d M, Y h:i A', strtotime($userStatus->created_at)) }}</strong>
+        <strong>Unblocked Time: {{ date('d M, Y h:i A', strtotime($userStatus->created_at) + $userStatus->blocked_duration * 60 * 60) }}</strong> <br>
+        <span class="text-info">
+            If you want to unblock your account before the unblocked time, you can pay the unblock charge. The unblock charge is <strong>{{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('user_blocked_instant_resolved_charge') }}</strong>.<br>
+        </span>
+        <span class="text-info mt-2">
+            Note: If your account is automatically unblocked before the admin response, you will get an unblock charge refund on your withdraw balance.
+        </span>
     </div>
+    @endif
 	<hr>
-	<div class="mb-0">
-        <a href="{{ route('support') }}" class="btn btn-danger btn-sm">Contact Us</a>
+	<div class="mb-0 d-flex justify-content-center align-items-center flex-wrap">
+        <a href="{{ route('support') }}" class="btn btn-danger btn-xs mx-2">Contact Us</a>
+        @if ($userStatus->created_by != Auth::user()->id)
+            <button type="button" class="btn btn-primary btn-xs mx-2" data-bs-toggle="modal" data-bs-target=".instantUnblockedModel">Instant Unblocked</button>
+        @endif
+        <!-- Normal Withdraw Modal -->
+        <div class="modal fade instantUnblockedModel" tabindex="-1" aria-labelledby="instantUnblockedModelLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="instantUnblockedModelLabel">Instant Unblocked</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                    </div>
+                    <form class="forms-sample" id="instantUnblockedModelForm">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="payment_method" class="form-label">Payment Method <span class="text-danger">*</span></label>
+                                <select class="form-select" id="payment_method" name="payment_method" required>
+                                    <option value="">-- Select Payment Method --</option>
+                                    <option value="Deposit Balance">Deposit Balance</option>
+                                    <option value="Withdraw Balance">Withdraw Balance</option>
+                                </select>
+                                <span class="text-danger error-text payment_method_error"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Enter reason" required></textarea>
+                                <span class="text-danger error-text reason_error"></span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endif
@@ -89,7 +142,7 @@
         <h4> Your account is banned!</h4>
     </div>
 	<p class="mt-3">
-        Your account is banned by admin. You can't access your account. Please contact with us to unbanned your account. We are always ready to help you.
+        Your account is banned by admin. You can't access your account. If you think this is a mistake, please contact us! We are always ready to help you.
     </p>
 	<hr>
     <div>
@@ -852,6 +905,58 @@
 @endsection
 
 
+@section('script')
+<script>
+    $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // instantUnblocked Data
+        $('#instantUnblockedModelForm').submit(function(event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
+            $.ajax({
+                url: "{{ route('instant.unblocked.request') }}",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                beforeSend:function(){
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+                    if (response.status == 400) {
+                        $.each(response.error, function(prefix, val){
+                            $('span.'+prefix+'_error').text(val[0]);
+                        })
+                    }else{
+                        if (response.status == 200) {
+                            $('.instantUnblockedModel').modal('hide');
+                            $('#instantUnblockedModelForm')[0].reset();
+                            toastr.success('Withdraw request sent successfully.');
+
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
+                        }else{
+                            toastr.error(response.message);
+                        }
+                    }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
+            });
+        });
+    });
+</script>
+@endsection
 <script>
     var total_posted_task_labels = ['Pending', 'Running', 'Paused', 'Rejected', 'Canceled', 'Completed'];
     var total_posted_task_series = [{{ $total_pending_posted_task }}, {{ $total_running_posted_task }}, {{ $total_paused_posted_task }}, {{ $total_rejected_posted_task }}, {{ $total_canceled_posted_task }}, {{ $total_completed_posted_task }}];
