@@ -509,6 +509,7 @@
     // Load subcategories and child categories on category change in filter form
     $(document).on('change', '#filter_category_id', function() {
         $('#filter_sub_category_id').val(null).trigger('change');
+        $('#filter_child_category_id').val(null).trigger('change');
         var category_id = $(this).val();
         loadSubCategories(category_id, '.get_filter_sub_categories');
         $('.get_filter_child_categories').html('<option value="">-- Select Sub Category First --</option>');

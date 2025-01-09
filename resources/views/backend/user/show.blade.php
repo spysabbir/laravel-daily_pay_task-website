@@ -351,7 +351,7 @@
                                 <td>{{ $userStatuse->blocked_duration ? $userStatuse->blocked_duration . ' hours' : 'N/A' }}</td>
                                 <td>{{ $userStatuse->created_by ? $userStatuse->createdBy->name : 'N/A' }}</td>
                                 <td>{{ date('j M, Y  h:i:s A', strtotime($userStatuse->created_at)) }}</td>
-                                <td>{{ $userStatuse->blocked_resolved ? date('j M, Y  h:i:s A', strtotime($userStatuse->blocked_resolved)) : 'N/A' }}</td>
+                                <td>{{ $userStatuse->blocked_resolved_request_at ? date('j M, Y  h:i:s A', strtotime($userStatuse->blocked_resolved_request_at)) : 'N/A' }}</td>
                             </tr>
                             @empty
                             <tr>

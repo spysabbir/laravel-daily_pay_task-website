@@ -71,7 +71,7 @@
         Your account is blocked by admin. You can't access your account. Please wait for the unblock! If you think this is a mistake, please contact us! We are always ready to help you.
     </p>
     <hr>
-    @if ($userStatus->created_by == Auth::user()->id)
+    @if ($userStatus->blocked_resolved_request_at != null)
         <span class="text-success mt-2">
             Already send Iinstant unblock request to admin. Please wait for the admin response. If your account is not unblocked within 1 hour, please contact us.
         </span><br>
@@ -95,7 +95,7 @@
 	<hr>
 	<div class="mb-0 d-flex justify-content-center align-items-center flex-wrap">
         <a href="{{ route('support') }}" class="btn btn-danger btn-xs mx-2">Contact Us</a>
-        @if ($userStatus->created_by != Auth::user()->id)
+        @if ($userStatus->blocked_resolved_request_at == null)
             <button type="button" class="btn btn-primary btn-xs mx-2" data-bs-toggle="modal" data-bs-target=".instantUnblockedModel">Instant Unblocked</button>
         @endif
         <!-- Normal Withdraw Modal -->
@@ -118,11 +118,9 @@
                                 </select>
                                 <span class="text-danger error-text payment_method_error"></span>
                             </div>
-                            <div class="mb-3">
-                                <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Enter reason" required></textarea>
-                                <span class="text-danger error-text reason_error"></span>
-                            </div>
+                            <span class="text-info">
+                                Note: The unblock charge is <strong>{{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('user_blocked_instant_resolved_charge') }}</strong>. Contact us if your account does not have a balance.
+                            </span>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

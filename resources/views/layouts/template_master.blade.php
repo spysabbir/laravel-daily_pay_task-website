@@ -92,7 +92,8 @@
             $report = App\Models\Report::where('status', 'Pending')->count();
             $contact = App\Models\Contact::where('status', 'Unread')->count();
             $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', 1)->get();
-            $instantUnblock = App\Models\UserStatus::where('status', 'Blocked')->whereColumn('user_id', 'created_by')->count();
+            $blockedUserIds = App\Models\User::where('status', 'Blocked')->pluck('id')->toArray();
+            $instantUnblock = App\Models\UserStatus::where('status', 'Blocked')->whereIn('user_id', $blockedUserIds)->whereNot('blocked_resolved_request_at', null)->where('resolved_at', null)->count();
             $supportsCount = $supports->count();
             $backend_notification = ($verification > 0 ? 1 : 0) + ($deposit > 0 ? 1 : 0) + ($withdraw > 0 ? 1 : 0) + ($postTask > 0 ? 1 : 0) + ($proofTask > 0 ? 1 : 0) + ($report > 0 ? 1 : 0) + ($contact > 0 ? 1 : 0) + ($supportsCount > 0 ? 1 : 0) + ($instantUnblock > 0 ? 1 : 0);
         @endphp
@@ -117,7 +118,6 @@
 
         <!-- main -->
         <div class="page-wrapper">
-
             <!-- navbar -->
             <nav class="navbar">
                 <a href="#" class="sidebar-toggler">
@@ -125,6 +125,8 @@
                 </a>
                 <div class="navbar-content">
                     <div class="search-form">
+            instantUnblock {{ $instantUnblock }}
+
 						{{-- <form action="" method="GET">
                             <div class="input-group">
                                 <div class="input-group-text">

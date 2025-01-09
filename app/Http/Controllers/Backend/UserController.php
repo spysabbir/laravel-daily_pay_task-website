@@ -297,10 +297,10 @@ class UserController extends Controller implements HasMiddleware
                 $allUser = $allUser->filter(function ($user) use ($request) {
                     $userStatus = UserStatus::where('user_id', $user->id)
                         ->where('status', 'Blocked')
-                        ->orderBy('created_at', 'desc')
+                        ->latest()
                         ->first();
 
-                    $isRequested = $userStatus && $userStatus->created_by == $userStatus->user_id;
+                    $isRequested = $userStatus && $userStatus->blocked_resolved_request_at != null;
                     return $request->instant_unblocked_check === 'Requested' ? $isRequested : !$isRequested;
                 });
             }
@@ -386,8 +386,8 @@ class UserController extends Controller implements HasMiddleware
                         : '<span class="badge bg-success">Not Matched</span>';
                 })
                 ->editColumn('instant_unblocked_check', function ($row) {
-                    $userStatus = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->orderBy('created_at', 'desc')->first();
-                    if ($userStatus->created_by == $userStatus->user_id) {
+                    $userStatus = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->latest()->first();
+                    if ($userStatus->blocked_resolved_request_at != null) {
                         return '<span class="badge bg-danger">Requested</span>';
                     } else {
                         return '<span class="badge bg-success">Not Requested</span>';
@@ -669,8 +669,15 @@ class UserController extends Controller implements HasMiddleware
         }
 
         $blockedStatusCount = UserStatus::where('user_id', $id)->where('status', 'Blocked')->count();
-        if ($blockedStatusCount === get_default_settings('user_max_blocked_time_for_banned')) {
+        if ($blockedStatusCount === get_default_settings('user_max_blocked_time_for_banned') && $request->status == 'Blocked') {
             return response()->json(['status' => 401]);
+        }
+
+        $userStatus = UserStatus::where('user_id', $id)->latest()->first();
+        if ($request->status == 'Active') {
+            $userStatus->update([
+                'resolved_at' => now(),
+            ]);
         }
 
         $userStatus = UserStatus::create([
@@ -678,7 +685,7 @@ class UserController extends Controller implements HasMiddleware
             'status' => $request->status,
             'reason' => $request->reason,
             'blocked_duration' => $request->blocked_duration ?? null,
-            'blocked_resolved' => $request->status == 'Active' ? now() : null,
+            'resolved_at' => $request->status == 'Active' ? now() : null,
             'created_by' => auth()->user()->id,
             'created_at' => now(),
         ]);

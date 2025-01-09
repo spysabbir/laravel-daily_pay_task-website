@@ -36,8 +36,10 @@ Schedule::call(function () {
 // Unblock users after blocked duration
 Schedule::call(function () {
     $now = now();
+    $blockeduserIds = User::where('status', 'Blocked')->pluck('id')->toArray();
     $userStatuses = UserStatus::where('status', 'Blocked')
-        ->where('blocked_resolved', null)
+        ->whereIn('user_id', $blockeduserIds)
+        ->where('resolved_at', null)
         ->get();
 
     foreach ($userStatuses as $userStatus) {
@@ -45,24 +47,36 @@ Schedule::call(function () {
         $activeTime = Carbon::parse($userStatus->created_at)->addHours((int) $userStatus->blocked_duration);
 
         if ($now->isSameMinute($activeTime)) {
-            $userStatus->update([
-                'blocked_resolved' => $now,
-                'blocked_resolved_charge' => null,
+            $user = User::find($userStatus->user_id);
+
+            if ($userStatus->blocked_resolved_charge) {
+                $user->update([
+                    'withdraw_balance' => $user->withdraw_balance + $userStatus->blocked_resolved_charge
+                ]);
+
+                $userStatus->update([
+                    'blocked_resolved_charge' => null,
+                ]);
+            }
+
+            $user->update([
+                'status' => 'Active',
             ]);
 
-            $user = User::find($userStatus->user_id);
-            if ($user) {
-                $user->update([
-                    'status' => 'Active',
-                    'withdraw_balance' => $userStatus->blocked_resolved_charge ? $user->withdraw_balance + $userStatus->blocked_resolved_charge : $user->withdraw_balance,
-                ]);
-                $user->notify(new UserStatusNotification([
-                    'status' => 'Active',
-                    'reason' => 'Your account has been unblocked successfully!',
-                    'blocked_duration' => null,
-                    'created_at' => $now,
-                ]));
-            }
+            $userStatus->update([
+                'resolved_at' => $now,
+            ]);
+
+            $userStatus = UserStatus::create([
+                'user_id' => $user->id,
+                'status' => 'Active',
+                'reason' => 'Your account has been unblocked successfully!',
+                'resolved_at' => $now,
+                'created_by' => 1,
+                'created_at' => $now,
+            ]);
+
+            $user->notify(new UserStatusNotification($userStatus));
         }
     }
 })->everyMinute();

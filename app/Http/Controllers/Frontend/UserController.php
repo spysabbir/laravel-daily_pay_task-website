@@ -428,7 +428,6 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'payment_method' => 'required|in:Deposit Balance,Withdraw Balance',
-            'reason' => 'required|string',
         ]);
 
         if($validator->fails()){
@@ -466,9 +465,8 @@ class UserController extends Controller
             }
 
             $userStatus->update([
-                'reason' => $request->reason,
                 'blocked_resolved_charge' => $user_blocked_instant_resolved_charge,
-                'created_by' => Auth::id(),
+                'blocked_resolved_request_at' => now(),
             ]);
 
             return response()->json([

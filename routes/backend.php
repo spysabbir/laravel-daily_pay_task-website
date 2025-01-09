@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\EmployeeController;
 use App\Http\Controllers\Backend\ExpenseCategoryController;
 use App\Http\Controllers\Backend\ExpenseController;
 use App\Http\Controllers\Backend\FaqController;
+use App\Http\Controllers\Backend\NotificationController;
 use App\Http\Controllers\Backend\TaskController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\ReportController;
@@ -83,7 +84,7 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('employee/delete/{id}', [EmployeeController::class, 'delete'])->name('employee.delete');
     Route::get('employee/status/{id}', [EmployeeController::class, 'status'])->name('employee.status');
     // User
-    Route::get('user/active', [UserController::class, 'userActiveList'])->name('user.active');
+    Route::get('user-active', [UserController::class, 'userActiveList'])->name('user.active');
     Route::get('user/show/{id}', [UserController::class, 'userView'])->name('user.show');
     Route::get('user/device/{id}', [UserController::class, 'userDevice'])->name('user.device');
     Route::get('user/status/{id}', [UserController::class, 'userStatus'])->name('user.status');
@@ -92,9 +93,12 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('user/trash', [UserController::class, 'userTrash'])->name('user.trash');
     Route::get('user/restore/{id}', [UserController::class, 'userRestore'])->name('user.restore');
     Route::get('user/delete/{id}', [UserController::class, 'userDelete'])->name('user.delete');
-    Route::get('user/inactive', [UserController::class, 'userInactiveList'])->name('user.inactive');
-    Route::get('user/blocked', [UserController::class, 'userBlockedList'])->name('user.blocked');
-    Route::get('user/banned', [UserController::class, 'userBannedList'])->name('user.banned');
+    Route::get('user-inactive', [UserController::class, 'userInactiveList'])->name('user.inactive');
+    Route::get('user-blocked', [UserController::class, 'userBlockedList'])->name('user.blocked');
+    Route::get('user-banned', [UserController::class, 'userBannedList'])->name('user.banned');
+    // Notification
+    Route::get('notification', [NotificationController::class, 'index'])->name('notification.index');
+    Route::post('send-notification', [NotificationController::class, 'sendNotification'])->name('send.notification');
     // Category
     Route::resource('category', CategoryController::class);
     Route::get('category-trash', [CategoryController::class, 'trash'])->name('category.trash');

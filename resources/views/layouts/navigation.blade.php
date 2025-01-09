@@ -262,6 +262,17 @@
             </li>
         @endcan
 
+        @can('NotificationMenu')
+            @can('notification.index')
+            <li class="nav-item">
+                <a href="{{ route('backend.notification.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="bell"></i>
+                    <span class="link-title">Notification</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
         <li class="nav-item nav-category">Editor</li>
         @can('CategoryMenu')
             <li class="nav-item">

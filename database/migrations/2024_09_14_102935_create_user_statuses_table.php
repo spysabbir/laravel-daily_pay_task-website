@@ -17,10 +17,12 @@ return new class extends Migration
             $table->enum('status', ['Active', 'Blocked', 'Banned']);
             $table->text('reason');
             $table->integer('blocked_duration')->nullable(); // in hours
-            $table->timestamp('blocked_resolved')->nullable();
-            $table->decimal('blocked_resolved_charge', 10, 2)->nullable();
-            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('blocked_resolved_request_at')->nullable();
+            $table->float('blocked_resolved_charge')->nullable();
+            $table->timestamp('resolved_at')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
+            $table->timestamps();
         });
     }
 
