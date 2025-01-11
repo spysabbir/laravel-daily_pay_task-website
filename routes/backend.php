@@ -33,6 +33,10 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('dashboard', [BackendController::class, 'dashboard'])->name('dashboard');
     Route::get('profile/edit', [BackendController::class, 'profileEdit'])->name('profile.edit');
     Route::get('profile/setting', [BackendController::class, 'profileSetting'])->name('profile.setting');
+    // Notification
+    Route::get('notification', [BackendController::class, 'notification'])->name('notification');
+    Route::get('notification-read/{id}', [BackendController::class, 'notificationRead'])->name('notification.read');
+    Route::get('notification-read-all', [BackendController::class, 'notificationReadAll'])->name('notification.read.all');
     // Role & Permission
     Route::resource('role', RoleController::class);
     Route::resource('permission', PermissionController::class);
@@ -96,9 +100,11 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('user-inactive', [UserController::class, 'userInactiveList'])->name('user.inactive');
     Route::get('user-blocked', [UserController::class, 'userBlockedList'])->name('user.blocked');
     Route::get('user-banned', [UserController::class, 'userBannedList'])->name('user.banned');
-    // Notification
-    Route::get('notification', [NotificationController::class, 'index'])->name('notification.index');
-    Route::post('send-notification', [NotificationController::class, 'sendNotification'])->name('send.notification');
+    // Send Notification
+    Route::get('send-notification', [NotificationController::class, 'sendNotification'])->name('send.notification');
+    Route::post('send-notification-store', [NotificationController::class, 'sendNotificationStore'])->name('send.notification.store');
+    Route::get('send-notification-show/{id}', [NotificationController::class, 'sendNotificationShow'])->name('send.notification.show');
+
     // Category
     Route::resource('category', CategoryController::class);
     Route::get('category-trash', [CategoryController::class, 'trash'])->name('category.trash');

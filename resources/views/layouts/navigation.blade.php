@@ -262,17 +262,6 @@
             </li>
         @endcan
 
-        @can('NotificationMenu')
-            @can('notification.index')
-            <li class="nav-item">
-                <a href="{{ route('backend.notification.index') }}" class="nav-link">
-                    <i class="link-icon" data-feather="bell"></i>
-                    <span class="link-title">Notification</span>
-                </a>
-            </li>
-            @endcan
-        @endcan
-
         <li class="nav-item nav-category">Editor</li>
         @can('CategoryMenu')
             <li class="nav-item">
@@ -580,6 +569,17 @@
             </li>
             @endcan
         @endcan
+
+        @can('SendNotificationMenu')
+            @can('send.notification')
+            <li class="nav-item">
+                <a href="{{ route('backend.send.notification') }}" class="nav-link">
+                    <i class="link-icon" data-feather="bell"></i>
+                    <span class="link-title">Send Notification</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
     @else
         <li class="nav-item nav-category">User</li>
         @if (!Auth::user()->hasVerification('Approved'))
@@ -590,8 +590,8 @@
             </a>
         </li>
         @endif
-        <li class="nav-item">
-            <a href="{{ route('find_tasks.clear.filters') }}" class="nav-link">
+        <li class="nav-item {{ Route::is('find_tasks') ? 'active' : '' }}">
+            <a href="{{ route('find_tasks.clear.filters') }}" class="nav-link {{ Route::is('find_tasks') ? 'active' : '' }}">
                 <i class="link-icon" data-feather="search"></i>
                 <span class="link-title">Find Tasks</span>
             </a>

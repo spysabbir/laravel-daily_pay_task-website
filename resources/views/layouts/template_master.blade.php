@@ -95,7 +95,7 @@
             $blockedUserIds = App\Models\User::where('status', 'Blocked')->pluck('id')->toArray();
             $instantUnblock = App\Models\UserStatus::where('status', 'Blocked')->whereIn('user_id', $blockedUserIds)->whereNot('blocked_resolved_request_at', null)->where('resolved_at', null)->count();
             $supportsCount = $supports->count();
-            $backend_notification = ($verification > 0 ? 1 : 0) + ($deposit > 0 ? 1 : 0) + ($withdraw > 0 ? 1 : 0) + ($postTask > 0 ? 1 : 0) + ($proofTask > 0 ? 1 : 0) + ($report > 0 ? 1 : 0) + ($contact > 0 ? 1 : 0) + ($supportsCount > 0 ? 1 : 0) + ($instantUnblock > 0 ? 1 : 0);
+            $backend_request = ($verification > 0 ? 1 : 0) + ($deposit > 0 ? 1 : 0) + ($withdraw > 0 ? 1 : 0) + ($postTask > 0 ? 1 : 0) + ($proofTask > 0 ? 1 : 0) + ($report > 0 ? 1 : 0) + ($contact > 0 ? 1 : 0) + ($supportsCount > 0 ? 1 : 0) + ($instantUnblock > 0 ? 1 : 0);
         @endphp
 
         <!-- sidebar -->
@@ -125,8 +125,6 @@
                 </a>
                 <div class="navbar-content">
                     <div class="search-form">
-            instantUnblock {{ $instantUnblock }}
-
 						{{-- <form action="" method="GET">
                             <div class="input-group">
                                 <div class="input-group-text">
@@ -205,7 +203,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i data-feather="bell"></i>
-                                @if ((Auth::user()->isFrontendUser() && Auth::user()->unreadNotifications->count() > 0) || (!Auth::user()->isFrontendUser() && $backend_notification > 0))
+                                @if (Auth::user()->unreadNotifications->count() > 0)
                                 <div class="indicator">
                                     <div class="circle"></div>
                                 </div>
@@ -251,7 +249,53 @@
                                 </div>
                                 @else
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
-                                    <p class="text-info mx-2">{{ $backend_notification }} New Notifications</p>
+                                    <p class="text-info mx-2">{{ Auth::user()->unreadNotifications->count() }} New Notifications</p>
+                                    <a href="{{ route('backend.notification.read.all') }}" class="text-warning mx-2">Clear all</a>
+                                </div>
+                                <div class="p-1">
+                                    @if (Auth::user()->unreadNotifications->count() > 0)
+                                        <div style="max-height: 500px; overflow-y: auto;">
+                                            @foreach (Auth::user()->unreadNotifications as $notification)
+                                                <a href="{{ route('backend.notification.read', $notification->id) }}" class="dropdown-item d-flex align-items-center py-2">
+                                                    <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
+                                                        <i class="icon-sm text-white" data-feather="info"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1 me-2">
+                                                        <p>
+                                                            <strong>{{ $notification->data['title'] }}</strong>
+                                                        </p>
+                                                        <p class="tx-12 text-muted">{{ $notification->created_at->diffForHumans() }}</p>
+                                                    </div>
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
+                                            <div class="flex-grow-1 me-2">
+                                                <p class="text-center">No new notifications</p>
+                                            </div>
+                                        </a>
+                                    @endif
+                                </div>
+                                <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
+                                    <a href="{{ route('backend.notification') }}">View all</a>
+                                </div>
+                                @endif
+                            </div>
+                        </li>
+                        @if (!Auth::user()->isFrontendUser())
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="requestDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i data-feather="clock"></i>
+                                @if ($backend_request > 0)
+                                <div class="indicator">
+                                    <div class="circle"></div>
+                                </div>
+                                @endif
+                            </a>
+                            <div class="dropdown-menu p-0" aria-labelledby="requestDropdown">
+                                <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
+                                    <p class="text-info mx-2">{{ $backend_request }} New Request</p>
                                 </div>
                                 <div class="p-1">
                                     @if ($verification > 0)
@@ -371,17 +415,17 @@
                                         </div>
                                     </a>
                                     @endif
-                                    @if ($backend_notification === 0)
+                                    @if ($backend_request === 0)
                                     <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
                                         <div class="flex-grow-1 me-2">
-                                            <p class="text-center">No new notifications</p>
+                                            <p class="text-center">No new request</p>
                                         </div>
                                     </a>
                                     @endif
                                 </div>
-                                @endif
                             </div>
                         </li>
+                        @endif
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="wd-30 ht-30 rounded-circle" src="{{ asset('uploads/profile_photo') }}/{{ Auth::user()->profile_photo }}" alt="profile">
@@ -409,6 +453,14 @@
                                             <span>Profile Setting</span>
                                         </a>
                                     </li>
+                                    @if (Auth::user()->user_type === 'Backend')
+                                    <li class="dropdown-item p-0">
+                                        <a href="{{ route('backend.notification') }}" class="text-body ms-0 d-block p-2">
+                                            <i class="me-2 icon-md" data-feather="bell"></i>
+                                            <span>Notification</span>
+                                        </a>
+                                    </li>
+                                    @endif
                                     <li class="dropdown-item p-0">
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
