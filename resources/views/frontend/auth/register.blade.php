@@ -98,7 +98,7 @@
                     <div class="form-group text-center">
                         <input type="checkbox" class="form-check-input" id="termsConditions" name="terms_conditions" required>
                         <label class="form-check-label" for="termsConditions">
-                            I agree to the <a href="{{ route('terms.and.conditions') }}" class="text-primary">terms and conditions.</a>
+                            I agree to the <a href="{{ route('terms.and.conditions') }}" class="text-primary" target="_blank">Terms and Conditions</a>
                         </label>
                         @error('terms_conditions')
                             <span class="text-danger d-block">{{ $message }}</span>

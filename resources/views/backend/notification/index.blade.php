@@ -11,7 +11,7 @@
                     <h3 class="card-title">Notification List</h3>
                     <h3>Read: <span id="read_notifications_count">0</span>, Unread: <span id="unread_notifications_count">0</span></h3>
                 </div>
-                <a href="{{ route('backend.notification.read.all') }}" class="text-info m-3">Read all notification</a>
+                <a href="{{ route('backend.notification.read.all') }}" class="text-warning m-3">Read all notification</a>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">

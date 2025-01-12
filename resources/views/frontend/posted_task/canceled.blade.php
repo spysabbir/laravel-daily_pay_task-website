@@ -28,12 +28,12 @@
                                 <th>Proof Submitted</th>
                                 {{-- <th>Proof Status</th> --}}
                                 {{-- <th>Cost Status</th> --}}
+                                <th>Canceled At</th>
                                 <th>
                                     <!-- Header Button for Expand/Collapse All -->
                                     <i id="toggleAllRows" class="fas fa-plus-circle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
                                     Cancellation Reason
                                 </th>
-                                <th>Canceled At</th>
                                 <th>Canceled By</th>
                                 <th>Action</th>
                             </tr>
@@ -97,6 +97,7 @@
                 { data: 'proof_submitted', name: 'proof_submitted' },
                 // { data: 'proof_status', name: 'proof_status' },
                 // { data: 'charge_status', name: 'charge_status' },
+                { data: 'canceled_at', name: 'canceled_at' },
                 {
                     data: 'cancellation_reason',
                     orderable: false,
@@ -108,7 +109,6 @@
                         `;
                     }
                 },
-                { data: 'canceled_at', name: 'canceled_at' },
                 { data: 'canceled_by', name: 'canceled_by' },
                 { data: 'action', name: 'action' },
             ]

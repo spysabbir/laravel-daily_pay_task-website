@@ -81,23 +81,17 @@ class SubscriberController extends Controller implements HasMiddleware
             if ($request->status) {
                 $query->where('status', $request->status);
             }
-            if ($request->mail_type) {
-                $query->where('mail_type', $request->mail_type);
-            }
 
             $newsletterList = $query->orderByDesc('created_at')->get();
 
             return DataTables::of($newsletterList)
                 ->addIndexColumn()
-                ->editColumn('mail_type', fn($row) => $row->mail_type == 'Subscriber'
-                    ? '<span class="badge bg-info text-white">Subscriber</span>'
-                    : '<span class="badge bg-primary text-white">User</span>')
                 ->editColumn('created_at', fn($row) => date('d M Y h:i A', strtotime($row->created_at)))
                 ->editColumn('status', fn($row) => $row->status == 'Sent'
                     ? '<span class="badge bg-success text-white">Sent</span>'
                     : '<span class="badge bg-warning text-white">Draft</span>')
                 ->addColumn('action', function ($row) {
-                    $action = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
+                    $action = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>';
 
                     if ($row->status == 'Draft') {
                         $deletePermission = auth()->user()->can('subscriber.newsletter.delete');
@@ -108,7 +102,7 @@ class SubscriberController extends Controller implements HasMiddleware
 
                     return $action;
                 })
-                ->rawColumns(['mail_type', 'created_at', 'status', 'action'])
+                ->rawColumns(['created_at', 'status', 'action'])
                 ->make(true);
         }
 
@@ -119,7 +113,6 @@ class SubscriberController extends Controller implements HasMiddleware
     {
         // Validation rules for both 'Draft' and 'Sent'
         $rules = [
-            'mail_type' => 'required|in:Subscriber,User',
             'subject' => 'required|string|max:255',
             'content' => 'required',
             'status' => 'required|in:Draft,Sent',
@@ -136,11 +129,17 @@ class SubscriberController extends Controller implements HasMiddleware
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         }
 
+        $recipients = Subscriber::where('status', 'Active')->get(['id', 'email']);
+
+        // If no active subscribers found, return error
+        if ($recipients->isEmpty()) {
+            return response()->json(['status' => 401, 'message' => 'No active subscribers found']);
+        }
+
         $sent_at = $request->status == 'Sent' ? now() : $request->sent_at;
 
         // Create and save the newsletter
         $newsletter = Newsletter::create([
-            'mail_type' => $request->mail_type,
             'subject' => $request->subject,
             'content' => $request->content,
             'status' => $request->status,
@@ -150,12 +149,8 @@ class SubscriberController extends Controller implements HasMiddleware
 
         // Queue emails if the status is 'Sent'
         if ($request->status == 'Sent') {
-            $recipients = $request->mail_type == 'Subscriber'
-                ? Subscriber::where('status', 'Active')->pluck('email')
-                : User::where('status', 'Active')->pluck('email');
-
-            foreach ($recipients as $email) {
-                Mail::to($email)->queue(new NewsletterMail($newsletter));
+            foreach ($recipients as $recipient) {
+                Mail::to($recipient->email)->queue(new NewsletterMail($newsletter, $recipient->id));
             }
         }
 

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('newsletters', function (Blueprint $table) {
             $table->id();
-            $table->enum('mail_type', ['Subscriber', 'User'])->default('Subscriber');
             $table->string('subject');
             $table->text('content');
             $table->enum('status', ['Draft', 'Sent'])->default('Draft');

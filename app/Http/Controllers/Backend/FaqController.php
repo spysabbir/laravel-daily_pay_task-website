@@ -64,13 +64,14 @@ class FaqController extends Controller implements HasMiddleware
                     $deletePermission = auth()->user()->can('faq.destroy');
 
                     $editBtn = $editPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn">Edit</button>'
                         : '';
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs viewBtn">View</button>';
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';
 
-                    $btn = $editBtn . ' ' . $deleteBtn;
+                    $btn = $viewBtn . ' ' . $editBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
                 ->rawColumns(['status', 'action'])
@@ -103,6 +104,12 @@ class FaqController extends Controller implements HasMiddleware
                 'status' => 200,
             ]);
         }
+    }
+
+    public function show(string $id)
+    {
+        $faq = Faq::withTrashed()->where('id', $id)->first();
+        return view('backend.faq.show', compact('faq'));
     }
 
     public function edit(string $id)

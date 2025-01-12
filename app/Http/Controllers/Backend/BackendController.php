@@ -39,14 +39,14 @@ class BackendController extends Controller
     public function profileEdit(Request $request)
     {
         $user = $request->user();
-        $userDevices = UserDevice::where('user_id', $user->id)->latest()->take(5)->get();
-        return view('profile.edit', compact('user', 'userDevices'));
+        return view('profile.edit', compact('user'));
     }
 
     public function profileSetting(Request $request)
     {
         $user = $request->user();
-        return view('profile.setting', compact('user'));
+        $userDevices = UserDevice::where('user_id', $user->id)->latest()->take(5)->get();
+        return view('profile.setting', compact('user', 'userDevices'));
     }
 
     public function notification(Request $request)

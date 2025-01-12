@@ -213,6 +213,8 @@
                 success: function (response) {
                     $('#expense_category_id').val(response.id);
                     $('#expense_category_name').val(response.name);
+
+                    $('.editModal').modal('show');
                 },
             });
         });

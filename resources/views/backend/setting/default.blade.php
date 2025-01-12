@@ -75,22 +75,22 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="deposit_balance_from_withdraw_balance_charge_percentage" class="form-label">Deposit Balance From Withdraw Balance Charge Percentage</label>
+                            <label for="deposit_from_withdraw_balance_charge_percentage" class="form-label">Deposit From Withdraw Balance Charge Percentage</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="deposit_balance_from_withdraw_balance_charge_percentage" name="deposit_balance_from_withdraw_balance_charge_percentage" value="{{ old('deposit_balance_from_withdraw_balance_charge_percentage', $defaultSetting->deposit_balance_from_withdraw_balance_charge_percentage) }}" placeholder="Deposit Balance From Withdraw Balance Charge Percentage">
+                                <input type="number" class="form-control" id="deposit_from_withdraw_balance_charge_percentage" name="deposit_from_withdraw_balance_charge_percentage" value="{{ old('deposit_from_withdraw_balance_charge_percentage', $defaultSetting->deposit_from_withdraw_balance_charge_percentage) }}" placeholder="Deposit From Withdraw Balance Charge Percentage">
                                 <span class="input-group-text input-group-addon">%</span>
                             </div>
-                            @error('deposit_balance_from_withdraw_balance_charge_percentage')
+                            @error('deposit_from_withdraw_balance_charge_percentage')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
-                            <label for="withdraw_balance_from_deposit_balance_charge_percentage" class="form-label">Withdraw Balance From Deposit Balance Charge Percentage</label>
+                            <label for="withdraw_from_deposit_balance_charge_percentage" class="form-label">Withdraw From Deposit Balance Charge Percentage</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="withdraw_balance_from_deposit_balance_charge_percentage" name="withdraw_balance_from_deposit_balance_charge_percentage" value="{{ old('withdraw_balance_from_deposit_balance_charge_percentage', $defaultSetting->withdraw_balance_from_deposit_balance_charge_percentage) }}" placeholder="Withdraw Balance From Deposit Balance Charge Percentage">
+                                <input type="number" class="form-control" id="withdraw_from_deposit_balance_charge_percentage" name="withdraw_from_deposit_balance_charge_percentage" value="{{ old('withdraw_from_deposit_balance_charge_percentage', $defaultSetting->withdraw_from_deposit_balance_charge_percentage) }}" placeholder="Withdraw From Deposit Balance Charge Percentage">
                                 <span class="input-group-text input-group-addon">%</span>
                             </div>
-                            @error('withdraw_balance_from_deposit_balance_charge_percentage')
+                            @error('withdraw_from_deposit_balance_charge_percentage')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

@@ -68,7 +68,6 @@ class ProfileController extends Controller
     {
         $request->validate([
             'account_password' => ['required', 'string', 'min:8', 'max:20', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/', 'current_password'],
-
         ],
         [
             'account_password.current_password' => 'The password is incorrect.',

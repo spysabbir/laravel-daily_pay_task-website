@@ -42,6 +42,9 @@ class EmployeeController extends Controller implements HasMiddleware
                 $query->where('id',  $request->user_id);
             }
 
+            // Clone the query for counts
+            $totalUsersCount = (clone $query)->count();
+            
             $allEmployee = $query->orderBy('created_at', 'desc')->get();
 
             return DataTables::of($allEmployee)
@@ -80,6 +83,9 @@ class EmployeeController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $statusBtn . ' ' . $editBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
+                ->with([
+                    'totalUsersCount' => $totalUsersCount,
+                ])
                 ->rawColumns(['phone', 'last_login', 'created_at', 'roles', 'action'])
                 ->make(true);
         }
@@ -257,6 +263,9 @@ class EmployeeController extends Controller implements HasMiddleware
                 $query->where('id',  $request->user_id);
             }
 
+            // Clone the query for counts
+            $totalUsersCount = (clone $query)->count();
+
             $allEmployee = $query->orderBy('created_at', 'desc')->get();
 
             return DataTables::of($allEmployee)
@@ -291,6 +300,9 @@ class EmployeeController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $statusBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
+                ->with([
+                    'totalUsersCount' => $totalUsersCount,
+                ])
                 ->rawColumns(['phone', 'last_login', 'created_at', 'roles', 'action'])
                 ->make(true);
         }

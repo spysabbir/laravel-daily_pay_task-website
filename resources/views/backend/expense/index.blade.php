@@ -313,6 +313,8 @@
                 type: "GET",
                 success: function (response) {
                     $('#viewBody').html(response);
+
+                    $('.viewModal').modal('show');
                 },
             });
         });
@@ -332,6 +334,8 @@
                     $('#update_description').val(response.description);
                     $('#update_amount').val(response.amount);
                     $('#update_expense_date').val(response.expense_date);
+
+                    $('.editModal').modal('show');
                 },
             });
         });
@@ -478,6 +482,11 @@
                 },
             });
         });
+
+        // expense_date future date disable
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById("expense_date").setAttribute('max', today);
+        document.getElementById("update_expense_date").setAttribute('max', today);
     });
 </script>
 @endsection

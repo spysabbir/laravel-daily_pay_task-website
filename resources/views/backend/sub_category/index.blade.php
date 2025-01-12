@@ -249,6 +249,8 @@
                     $('#sub_category_id').val(response.id);
                     $('.category_id').val(response.category_id);
                     $('#sub_category_name').val(response.name);
+
+                    $('.editModal').modal('show');
                 },
             });
         });

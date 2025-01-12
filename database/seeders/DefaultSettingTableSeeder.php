@@ -21,8 +21,8 @@ class DefaultSettingTableSeeder extends Seeder
             'deposit_nagad_account' => '01900000000',
             'min_deposit_amount' => 100.00, // every deposit
             'max_deposit_amount' => 10000.00, // every deposit
-            'deposit_balance_from_withdraw_balance_charge_percentage' => 2.00, // every deposit
-            'withdraw_balance_from_deposit_balance_charge_percentage' => 2.00, // every withdraw
+            'deposit_from_withdraw_balance_charge_percentage' => 2.00, // every deposit
+            'withdraw_from_deposit_balance_charge_percentage' => 2.00, // every withdraw
             'instant_withdraw_charge' => 10.00, // every withdraw
             'withdraw_charge_percentage' => 20.00, // every withdraw
             'min_withdraw_amount' => 500.00, // every withdraw

@@ -14,15 +14,17 @@ class NewsletterMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $newsletter;
+    public $userId;
 
     /**
      * Create a new message instance.
      *
      * @param $newsletter
      */
-    public function __construct($newsletter)
+    public function __construct($newsletter, $userId)
     {
         $this->newsletter = $newsletter;
+        $this->userId = $userId;
     }
 
     /**
@@ -41,10 +43,11 @@ class NewsletterMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.newsletter',  // Assuming 'emails.newsletter' is the view name
+            view: 'emails.newsletter',
             with: [
-                'newsletter' => $this->newsletter,  // Pass the newsletter data to the view
-            ],
+                'newsletter' => $this->newsletter,
+                'userId' => $this->userId,
+            ]
         );
     }
 }

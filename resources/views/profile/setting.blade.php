@@ -67,7 +67,7 @@
 </div>
 
 <div class="row profile-body justify-content-center">
-    <div class="col-xl-9 col-lg-12 grid-margin">
+    <div class="col-lg-12 grid-margin">
         <div class="card rounded mb-3">
             <div class="card-header">
                 <h6 class="card-title mb-0">Ip Address Statuses</h6>
@@ -98,37 +98,44 @@
         </div>
     </div>
     @if (Auth::user()->isFrontendUser())
-    <div class="col-xl-9 col-lg-12 grid-margin">
+    <div class="col-lg-12 grid-margin">
         <div class="card rounded mb-3">
             <div class="card-header">
-                <h6 class="card-title">Blocked Statuses</h6>
+                <h6 class="card-title">Account Statuses</h6>
                 <p class="text-info">
                     Note: If your account is blocked maximum {{ get_default_settings('user_max_blocked_time_for_banned') }} times, eventually your account will be permanently banned.
                 </p>
+                <div class="d-flex justify-content-center align-items-center flex-wrap mt-2">
+                    <h4 class="text-warning mb-2 mx-2">Total Blocked: {{ $userStatuses->where('status', 'Blocked')->count() }}</h4>
+                    <h4 class="text-danger mb-2 mx-2">Total Banned: {{ $userStatuses->where('status', 'Banned')->count() }}</h4>
+                </div>
             </div>
             <div class="card-body">
-                <h3 class="text-danger text-center mb-2">Total Blocked: {{ $blockedStatuses->count() }}</h3>
                 <div class="table-responsive">
                     <table class="table align-middle text-center">
                         <thead>
                             <tr>
+                                <th>Status</th>
                                 <th>Reason</th>
                                 <th>Blocked Time</th>
                                 <th>Duration</th>
+                                <th>Resolved Request Time</th>
                                 <th>Resolved Time</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($blockedStatuses as $blockedStatus)
+                            @forelse ($userStatuses as $status)
                             <tr>
-                                <td>{{ $blockedStatus->reason }}</td>
-                                <td>{{ date('j M, Y  h:i:s A', strtotime($blockedStatus->created_at)) }}</td>
-                                <td>{{ $blockedStatus->blocked_duration }} Hours</td>
-                                <td>{{ $blockedStatus->blocked_resolved_request_at ? date('j M, Y  h:i:s A', strtotime($blockedStatus->blocked_resolved_request_at)) : 'Not Resolved' }}</td>
+                                <td>{{ $status->status }}</td>
+                                <td>{{ $status->reason }}</td>
+                                <td>{{ date('j M, Y  h:i:s A', strtotime($status->created_at)) }}</td>
+                                <td>{{ $status->blocked_duration }} Hours</td>
+                                <td>{{ $status->blocked_resolved_request_at ? date('j M, Y  h:i:s A', strtotime($status->blocked_resolved_request_at)) : 'Not Request' }}</td>
+                                <td>{{ $status->resolved_at ? date('j M, Y  h:i:s A', strtotime($status->resolved_at)) : 'Not Resolved' }}</td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center text-info">No blocked status found!</td>
+                                <td colspan="50" class="text-center text-info">No status found!</td>
                             </tr>
                             @endforelse
                         </tbody>

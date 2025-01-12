@@ -85,8 +85,9 @@
                     @csrf
                     @method('patch')
                     <div class="mb-3">
-                        <label for="userProfilePhoto" class="form-label">Profile Photo <small class="text-info">* Profile photo must be a valid image file (jpeg, jpg, png) and the file size must be less than 2MB.</small></label>
+                        <label for="userProfilePhoto" class="form-label">Profile Photo</label>
                         <input type="file" class="form-control" id="userProfilePhoto" name="profile_photo" accept=".jpg, .jpeg, .png">
+                        <small class="text-info d-block mt-2">* Profile photo must be a valid image file (jpeg, jpg, png) and the file size must be less than 2MB.</small>
                         <span class="text-danger" id="userProfilePhotoError"></span>
                         @error('profile_photo')
                             <span class="text-danger">{{ $message }}</span>
@@ -100,15 +101,17 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="userName" class="form-label">Username <small class="text-info">* Username must be unique. The username can only contain lowercase letters and numbers.</small></label>
+                        <label for="userName" class="form-label">Username</label>
                         <input type="text" class="form-control" id="userName" name="username" value="{{ old('username', $user->username) }}" placeholder="Username">
+                        <small class="text-info d-block mt-2">* Username must be unique. The username can only contain lowercase letters and numbers.</small>
                         @error('username')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="userPhone" class="form-label">Phone Number <small class="text-info">* The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small></label>
+                        <label for="userPhone" class="form-label">Phone Number</label>
                         <input type="number" class="form-control" id="userPhone" name="phone" value="{{ old('phone', $user->phone) }}" placeholder="Phone Number">
+                        <small class="text-info d-block mt-2">* The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).</small>
                         @error('phone')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

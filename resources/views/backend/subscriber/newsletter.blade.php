@@ -6,11 +6,11 @@
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
                 <h3 class="card-title">Newsletter List</h3>
                 <div class="action-btn">
                     @can('subscriber.newsletter.send')
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="plus-circle"></i></button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".createModel"><i data-feather="send" class="feather-icon"></i> Send Newsletter</button>
                     @endcan
                     <!-- Create Modal -->
                     <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
@@ -24,15 +24,6 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-xl-4 col-lg-6 mb-3">
-                                                <label for="mail_type" class="form-label">Mail Type</label>
-                                                <select class="form-select" name="mail_type" id="mail_type">
-                                                    <option value="">-- Select Mail Type --</option>
-                                                    <option value="Subscriber">Subscriber</option>
-                                                    <option value="User">User</option>
-                                                </select>
-                                                <span class="text-danger error-text mail_type_error"></span>
-                                            </div>
                                             <div class="col-xl-4 col-lg-6 mb-3">
                                                 <label for="status" class="form-label">Status</label>
                                                 <select class="form-select" name="status" id="status">
@@ -74,16 +65,6 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_mail_type" class="form-label">Mail Type</label>
-                                <select class="form-select filter_data" id="filter_mail_type">
-                                    <option value="">-- Select Mail Type --</option>
-                                    <option value="Subscriber">Subscriber</option>
-                                    <option value="User">User</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
                                 <label for="filter_status" class="form-label">Status</label>
                                 <select class="form-select filter_data" id="filter_status">
                                     <option value="">-- Select Status --</option>
@@ -99,7 +80,6 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Mail Type</th>
                                 <th>Subject</th>
                                 <th>Status</th>
                                 <th>Submit Date</th>
@@ -151,12 +131,10 @@
                 url: "{{ route('backend.subscriber.newsletter') }}",
                 data: function (e) {
                     e.status = $('#filter_status').val();
-                    e.mail_type = $('#filter_mail_type').val();
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'mail_type', name: 'mail_type' },
                 { data: 'subject', name: 'subject' },
                 { data: 'status', name: 'status' },
                 { data: 'created_at', name: 'created_at' },
@@ -203,10 +181,14 @@
                             $('span.'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('.createModel').modal('hide');
-                        $('#createForm')[0].reset();
-                        $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('Newsletter Send Successfully');
+                        if (response.status == 401) {
+                            toastr.error(response.message);
+                        } else {
+                            $('.createModel').modal('hide');
+                            $('#createForm')[0].reset();
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.success('Newsletter Send Successfully');
+                        }
                     }
                 },
                 complete: function(){
@@ -225,6 +207,8 @@
                 method: 'GET',
                 success: function(response) {
                     $('#viewData').html(response);
+
+                    $('.viewModal').modal('show');
                 }
             });
         });

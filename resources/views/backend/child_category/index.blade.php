@@ -314,6 +314,8 @@
                     $('#edit_category_id').val(response.category_id).change();
                     loadSubCategories(response.category_id, '#edit_sub_category_id', response.sub_category_id);
                     $('#child_category_name').val(response.name);
+
+                    $(".editModal").modal('show');
                 },
             });
         });

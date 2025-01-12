@@ -29,13 +29,13 @@
                                 <th>Work Duration Expire</th>
                                 {{-- <th>Proof Status</th> --}}
                                 {{-- <th>Cost Status</th> --}}
+                                <th>Approved At</th>
+                                <th>Paused At</th>
                                 <th>
                                     <!-- Header Button for Expand/Collapse All -->
                                     <i id="toggleAllRows" class="fas fa-plus-circle text-primary" style="cursor: pointer; margin-right: 5px;"></i>
                                     Pausing Reason
                                 </th>
-                                <th>Approved At</th>
-                                <th>Paused At</th>
                                 <th>Paused By</th>
                                 <th>Action</th>
                             </tr>
@@ -100,6 +100,8 @@
                 { data: 'work_duration', name: 'work_duration' },
                 // { data: 'proof_status', name: 'proof_status' },
                 // { data: 'charge_status', name: 'charge_status' },
+                { data: 'approved_at', name: 'approved_at' },
+                { data: 'paused_at', name: 'paused_at' },
                 {
                     data: 'pausing_reason',
                     orderable: false,
@@ -111,8 +113,6 @@
                         `;
                     }
                 },
-                { data: 'approved_at', name: 'approved_at' },
-                { data: 'paused_at', name: 'paused_at' },
                 { data: 'paused_by', name: 'paused_by' },
                 { data: 'action', name: 'action' },
             ]

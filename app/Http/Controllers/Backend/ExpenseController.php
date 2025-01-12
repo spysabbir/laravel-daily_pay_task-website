@@ -82,9 +82,9 @@ class ExpenseController extends Controller implements HasMiddleware
                     $deletePermission = auth()->user()->can('expense.destroy');
 
                     $editBtn = $editPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn">Edit</button>'
                         : '';
-                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">View</button>';
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs viewBtn">View</button>';
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';

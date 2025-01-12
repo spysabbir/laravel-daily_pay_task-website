@@ -14,7 +14,7 @@
                         Hi user, You will can see here all notifications. Please contact us if you face any problem.
                     </p>
                 </div>
-                <a href="{{ route('notification.read.all') }}" class="text-info m-3">Read all notification</a>
+                <a href="{{ route('notification.read.all') }}" class="text-warning m-3">Read all notification</a>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">

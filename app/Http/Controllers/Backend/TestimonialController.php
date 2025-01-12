@@ -67,13 +67,14 @@ class TestimonialController extends Controller implements HasMiddleware
                     $deletePermission = auth()->user()->can('testimonial.destroy');
 
                     $editBtn = $editPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn">Edit</button>'
                         : '';
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs viewBtn">View</button>';
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';
 
-                    $btn = $editBtn . ' ' . $deleteBtn;
+                    $btn = $viewBtn . ' ' . $editBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
                 ->rawColumns(['status', 'action'])
@@ -116,6 +117,12 @@ class TestimonialController extends Controller implements HasMiddleware
                 'status' => 200,
             ]);
         }
+    }
+
+    public function show(string $id)
+    {
+        $testimonial = Testimonial::withTrashed()->where('id', $id)->first();
+        return view('backend.testimonial.show', compact('testimonial'));
     }
 
     public function edit(string $id)

@@ -90,6 +90,9 @@ class UserController extends Controller implements HasMiddleware
                 });
             }
 
+            // Clone the query for counts
+            $totalUsersCount = (clone $allUser)->count();
+
             return DataTables::of($allUser)
                 ->addIndexColumn()
                 ->editColumn('deposit_balance', function ($row) {
@@ -189,6 +192,9 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
                     return $btn;
                 })
+                ->with([
+                    'totalUsersCount' => $totalUsersCount,
+                ])
                 ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'action'])
                 ->make(true);
         }
@@ -206,6 +212,9 @@ class UserController extends Controller implements HasMiddleware
             }
 
             $query->select('users.*')->orderBy('created_at', 'desc');
+
+            // Clone the query for counts
+            $totalUsersCount = (clone $query)->count();
 
             $allUser = $query->get();
 
@@ -233,6 +242,9 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
+                ->with([
+                    'totalUsersCount' => $totalUsersCount,
+                ])
                 ->rawColumns(['last_login', 'created_at', 'action'])
                 ->make(true);
         }
@@ -304,6 +316,9 @@ class UserController extends Controller implements HasMiddleware
                     return $request->instant_unblocked_check === 'Requested' ? $isRequested : !$isRequested;
                 });
             }
+
+            // Clone the query for counts
+            $totalUsersCount = (clone $allUser)->count();
 
             return DataTables::of($allUser)
                 ->addIndexColumn()
@@ -412,6 +427,9 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
                     return $btn;
                 })
+                ->with([
+                    'totalUsersCount' => $totalUsersCount,
+                ])
                 ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'instant_unblocked_check', 'action'])
                 ->make(true);
         }
@@ -429,6 +447,9 @@ class UserController extends Controller implements HasMiddleware
             }
 
             $query->select('users.*')->orderBy('created_at', 'desc');
+
+            // Clone the query for counts
+            $totalUsersCount = (clone $query)->count();
 
             $allUser = $query->get();
 
@@ -521,6 +542,9 @@ class UserController extends Controller implements HasMiddleware
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
                     return $btn;
                 })
+                ->with([
+                    'totalUsersCount' => $totalUsersCount,
+                ])
                 ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'banned_at', 'last_login', 'created_at', 'action'])
                 ->make(true);
         }

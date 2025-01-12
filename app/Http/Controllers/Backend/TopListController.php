@@ -37,10 +37,11 @@ class TopListController extends Controller implements HasMiddleware
             // Base query for user totals grouped by status
             $baseQuery = Deposit::select(
                 'deposits.user_id',
-                DB::raw('SUM(CASE WHEN deposits.status = "Pending" THEN deposits.amount ELSE 0 END) as pending_amount'),
-                DB::raw('SUM(CASE WHEN deposits.status = "Rejected" THEN deposits.amount ELSE 0 END) as rejected_amount'),
-                DB::raw('SUM(CASE WHEN deposits.status = "Approved" THEN deposits.amount ELSE 0 END) as approved_amount'),
-                DB::raw('SUM(deposits.amount) as total_amount')
+                DB::raw('SUM(CASE WHEN deposits.status = "Pending" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as pending_amount'),
+                DB::raw('SUM(CASE WHEN deposits.status = "Rejected" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as rejected_amount'),
+                DB::raw('SUM(CASE WHEN deposits.status = "Approved" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as approved_amount'),
+                DB::raw('SUM(deposits.amount) as total_amount'),
+                DB::raw('SUM(CASE WHEN deposits.method = "Withdraw Balance" THEN deposits.amount ELSE 0 END) as transfer_amount') // Include only Withdraw Balance
             );
 
             // Apply date filters
@@ -59,10 +60,11 @@ class TopListController extends Controller implements HasMiddleware
 
             // Query to calculate overall totals for all users
             $totalsQuery = Deposit::select(
-                DB::raw('SUM(CASE WHEN deposits.status = "Pending" THEN deposits.amount ELSE 0 END) as total_pending'),
-                DB::raw('SUM(CASE WHEN deposits.status = "Rejected" THEN deposits.amount ELSE 0 END) as total_rejected'),
-                DB::raw('SUM(CASE WHEN deposits.status = "Approved" THEN deposits.amount ELSE 0 END) as total_approved'),
-                DB::raw('SUM(deposits.amount) as grand_total')
+                DB::raw('SUM(CASE WHEN deposits.status = "Pending" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as total_pending'),
+                DB::raw('SUM(CASE WHEN deposits.status = "Rejected" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as total_rejected'),
+                DB::raw('SUM(CASE WHEN deposits.status = "Approved" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as total_approved'),
+                DB::raw('SUM(deposits.amount) as grand_total'), // Includes all rows
+                DB::raw('SUM(CASE WHEN deposits.method = "Withdraw Balance" THEN deposits.amount ELSE 0 END) as total_transfer') // Includes only Withdraw Balance rows
             );
 
             // Apply the same date filters to totals query
@@ -83,7 +85,9 @@ class TopListController extends Controller implements HasMiddleware
                     return '<span class="badge bg-primary">' . $row->user_id . '</span>';
                 })
                 ->editColumn('user_name', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->user->name . '</span>';
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->addColumn('pending_amount', function ($row) {
                     return '<span class="badge bg-warning">' . get_site_settings('site_currency_symbol') . ' ' . $row->pending_amount . '</span>';
@@ -94,6 +98,9 @@ class TopListController extends Controller implements HasMiddleware
                 ->addColumn('approved_amount', function ($row) {
                     return '<span class="badge bg-success">' . get_site_settings('site_currency_symbol') . ' ' . $row->approved_amount . '</span>';
                 })
+                ->addColumn('transfer_amount', function ($row) {
+                    return '<span class="badge bg-success">' . get_site_settings('site_currency_symbol') . ' ' . $row->transfer_amount . '</span>';
+                })
                 ->addColumn('total_amount', function ($row) {
                     return '<span class="badge bg-info">' . get_site_settings('site_currency_symbol') . ' ' . $row->total_amount . '</span>';
                 })
@@ -101,9 +108,10 @@ class TopListController extends Controller implements HasMiddleware
                     'total_pending' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_pending,
                     'total_rejected' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_rejected,
                     'total_approved' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_approved,
+                    'total_transfer' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_transfer,
                     'grand_total' => get_site_settings('site_currency_symbol') . ' ' . $totals->grand_total,
                 ])
-                ->rawColumns(['user_id', 'user_name', 'pending_amount', 'rejected_amount', 'approved_amount', 'total_amount'])
+                ->rawColumns(['user_id', 'user_name', 'pending_amount', 'rejected_amount', 'approved_amount', 'transfer_amount', 'total_amount'])
                 ->make(true);
         }
 
@@ -166,7 +174,9 @@ class TopListController extends Controller implements HasMiddleware
                     return '<span class="badge bg-primary">' . $row->user_id . '</span>';
                 })
                 ->editColumn('user_name', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->user->name . '</span>';
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->addColumn('pending_amount', function ($row) {
                     return '<span class="badge bg-warning">' . get_site_settings('site_currency_symbol') . ' ' . $row->pending_amount . '</span>';
@@ -255,7 +265,9 @@ class TopListController extends Controller implements HasMiddleware
                     return '<span class="badge bg-primary">' . $row->user_id . '</span>';
                 })
                 ->editColumn('user_name', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->user->name . '</span>';
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->addColumn('pending_count', function ($row) {
                     return '<span class="badge bg-warning">' . $row->pending_count . '</span>';
@@ -353,7 +365,9 @@ class TopListController extends Controller implements HasMiddleware
                     return '<span class="badge bg-primary">' . $row->user_id . '</span>';
                 })
                 ->editColumn('user_name', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->user->name . '</span>';
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
+                        ';
                 })
                 ->addColumn('pending_count', function ($row) {
                     return '<span class="badge bg-warning">' . $row->total_pending . '</span>';
@@ -447,7 +461,9 @@ class TopListController extends Controller implements HasMiddleware
                     return '<span class="badge bg-primary">' . $row->id . '</span>';
                 })
                 ->addColumn('user_name', function ($row) {
-                    return '<span class="badge bg-primary">' . $row->name . '</span>';
+                    return '
+                        <a href="' . route('backend.user.show', encrypt($row->id)) . '" class="text-primary" target="_blank">' . $row->name . '</a>
+                        ';
                 })
                 ->addColumn('active_count', function ($row) {
                     return '<span class="badge bg-success">' . $row->active_count . '</span>';

@@ -65,7 +65,7 @@ class CategoryController extends Controller implements HasMiddleware
                     $deletePermission = auth()->user()->can('category.destroy');
 
                     $editBtn = $editPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn" data-bs-toggle="modal" data-bs-target=".editModal">Edit</button>'
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs editBtn">Edit</button>'
                         : '';
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'

@@ -16,6 +16,7 @@ Route::get('/privacy-policy', [FrontendController::class, 'privacyPolicy'])->nam
 Route::get('/terms-and-conditions', [FrontendController::class, 'termsAndConditions'])->name('terms.and.conditions');
 
 Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('subscribe');
+Route::get('/un-subscribe/{id}', [FrontendController::class, 'unSubscribe'])->name('unsubscribe');
 Route::post('/contact-store', [FrontendController::class, 'contactStore'])->name('contact.store');
 
 Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(function () {

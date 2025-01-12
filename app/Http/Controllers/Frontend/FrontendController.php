@@ -98,6 +98,19 @@ class FrontendController extends Controller
         }
     }
 
+    public function unSubscribe(string $id)
+    {
+        $id = decrypt($id);
+        $subscriber = Subscriber::where('id', $id)->first();
+        if ($subscriber) {
+            $subscriber->update(['status' => 'Inactive']);
+
+            return response()->json(['status' => 200, 'message' => 'You have successfully unsubscribed']);
+        }
+
+        return response()->json(['status' => 400, 'message' => 'Invalid email address']);
+    }
+
     public function contactStore(Request $request)
     {
         $validator = Validator::make($request->all(), [

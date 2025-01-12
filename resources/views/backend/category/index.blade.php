@@ -213,6 +213,8 @@
                 success: function (response) {
                     $('#category_id').val(response.id);
                     $('#category_name').val(response.name);
+
+                    $('.editModal').modal('show');
                 },
             });
         });

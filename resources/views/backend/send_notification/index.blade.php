@@ -107,8 +107,8 @@
                         </div>
                         <div class="col-md-3 mb-3">
                             <div class="form-group">
-                                <label for="filter_user_id" class="form-label">User Id</label>
-                                <input type="number" class="form-control filter_data" id="filter_user_id" placeholder="User Id">
+                                <label for="filter_user_id" class="form-label">User or Employee Id</label>
+                                <input type="number" class="form-control filter_data" id="filter_user_id" placeholder="User or Employee Id">
                             </div>
                         </div>
                     </div>

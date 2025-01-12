@@ -6,8 +6,9 @@
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
                 <h3 class="card-title">User List - Active</h3>
+                <h3>Total: <span id="total_users_count">0</span></h3>
                 <div class="action-btn">
                     @can('user.trash')
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target=".trashModel"><i data-feather="trash-2"></i></button>
@@ -151,6 +152,11 @@
                 data: function (d) {
                     d.user_id = $('#filter_user_id').val();
                     d.duplicate_device_check = $('#filter_duplicate_device_check').val();
+                },
+                dataSrc: function (json) {
+                    // Update total deposit count
+                    $('#total_users_count').text(json.totalUsersCount);
+                    return json.data;
                 }
             },
             columns: [

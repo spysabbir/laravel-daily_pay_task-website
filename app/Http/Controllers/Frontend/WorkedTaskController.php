@@ -268,7 +268,7 @@ class WorkedTaskController extends Controller
 
             return back()->with($notification)->withInput();
         }
-        
+
         if ($taskDetails->status != 'Running') {
             $notification = array(
                 'message' => 'Sorry, this task is ' . $taskDetails->status . ' now. You can not submit proof for this task.',
@@ -408,6 +408,9 @@ class WorkedTaskController extends Controller
 
                 return DataTables::of($taskList)
                     ->addIndexColumn()
+                    ->editColumn('proof_id', function ($row) {
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'-'.$row->id.'</span>';
+                    })
                     ->editColumn('title', function ($row) {
                         return '
                             <a href="'.route('find_task.details', encrypt($row->post_task_id)).'" title="'.$row->postTask->title.'" class="text-info">
@@ -446,7 +449,7 @@ class WorkedTaskController extends Controller
                         return $action;
                     })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['title', 'rating', 'bonus', 'approved_by', 'action'])
+                    ->rawColumns(['proof_id', 'title', 'rating', 'bonus', 'approved_by', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.approved');
@@ -487,6 +490,9 @@ class WorkedTaskController extends Controller
 
                 return DataTables::of($taskList)
                     ->addIndexColumn()
+                    ->editColumn('proof_id', function ($row) {
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'-'.$row->id.'</span>';
+                    })
                     ->editColumn('title', function ($row) {
                         return '
                             <a href="'.route('find_task.details', encrypt($row->post_task_id)).'" title="'.$row->postTask->title.'" class="text-info">
@@ -536,7 +542,7 @@ class WorkedTaskController extends Controller
                         return $action;
                     })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['title', 'income_of_each_worker', 'rejected_reason', 'rejected_reason_full', 'rejected_by', 'review_send_expired', 'action'])
+                    ->rawColumns(['proof_id', 'title', 'income_of_each_worker', 'rejected_reason', 'rejected_reason_full', 'rejected_by', 'review_send_expired', 'action'])
                     ->make(true);
             }
             return view('frontend.worked_task.rejected');

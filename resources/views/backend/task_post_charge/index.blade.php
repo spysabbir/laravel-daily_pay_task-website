@@ -357,6 +357,8 @@
             $('#min_charge').val(response.min_charge);
             $('#max_charge').val(response.max_charge);
         });
+
+        $('.editModal').modal('show');
     });
 
     // Update form submission

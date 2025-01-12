@@ -34,6 +34,7 @@
                                 <th>Pending Amount</th>
                                 <th>Rejected Amount</th>
                                 <th>Approved Amount</th>
+                                <th>Transfer Amount</th>
                                 <th>Total Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                             </tr>
                         </thead>
@@ -48,6 +49,7 @@
                                 <th id="total_pending"></th>
                                 <th id="total_rejected"></th>
                                 <th id="total_approved"></th>
+                                <th id="total_transfer"></th>
                                 <th id="grand_total"></th>
                             </tr>
                         </tfoot>
@@ -92,6 +94,7 @@
                 { data: 'pending_amount', name: 'pending_amount' },
                 { data: 'rejected_amount', name: 'rejected_amount' },
                 { data: 'approved_amount', name: 'approved_amount' },
+                { data: 'transfer_amount', name: 'transfer_amount' },
                 { data: 'total_amount', name: 'total_amount' },
             ],
             drawCallback: function(settings) {
@@ -100,6 +103,7 @@
                 $('#total_pending').html(response.total_pending);
                 $('#total_rejected').html(response.total_rejected);
                 $('#total_approved').html(response.total_approved);
+                $('#total_transfer').html(response.total_transfer);
                 $('#grand_total').html(response.grand_total);
             },
             initComplete: function() {
