@@ -12,7 +12,7 @@
                 <div class="action-btn">
                     @can('deposit.request.rejected')
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".rejectedData">
-                        Rejected Request
+                        Rejected Data
                     </button>
                     @endcan
                     <!-- Deposit Request (Reject) Modal -->
@@ -35,7 +35,6 @@
                                                     <th>Number</th>
                                                     <th>Transaction Id</th>
                                                     <th>Amount</th>
-                                                    <th>Payable Amount</th>
                                                     <th>Submitted Date</th>
                                                     <th>Rejected Reason</th>
                                                     <th>Rejected By</th>
@@ -162,8 +161,7 @@
                                 <th>Method</th>
                                 <th>Number</th>
                                 <th>Transaction Id</th>
-                                <th>Deposit Amount</th>
-                                <th>Payable Amount</th>
+                                <th>Amount</th>
                                 <th>Submitted Date</th>
                                 <th>Action</th>
                             </tr>
@@ -232,7 +230,6 @@
                 { data: 'number', name: 'number' },
                 { data: 'transaction_id', name: 'transaction_id' },
                 { data: 'amount', name: 'amount' },
-                { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
@@ -357,7 +354,6 @@
                 { data: 'number', name: 'number' },
                 { data: 'transaction_id', name: 'transaction_id' },
                 { data: 'amount', name: 'amount' },
-                { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'rejected_reason', name: 'rejected_reason' },
                 { data: 'rejected_by', name: 'rejected_by' },

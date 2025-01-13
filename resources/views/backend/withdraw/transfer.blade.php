@@ -1,14 +1,14 @@
 @extends('layouts.template_master')
 
-@section('title', 'Withdraw Transfer (Approved)')
+@section('title', 'Withdraw Balance Transfer')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Withdraw Transfer (Approved)</h3>
-                <h3>Total: <span id="total_withdraws_count">0</span></h3>
+                <h3 class="card-title">Withdraw Balance Transfer</h3>
+                <h3>Total Transfer: <span id="totalWithdrawBalanceTransferAmount">0</span></h3>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -28,10 +28,9 @@
                                 <th>Sl No</th>
                                 <th>User Id</th>
                                 <th>User Name</th>
-                                <th>Withdraw Amount</th>
+                                <th>Amount</th>
                                 <th>Payable Amount</th>
                                 <th>Submitted Date</th>
-                                <th>Approved At</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,8 +64,8 @@
                     e.user_id = $('#filter_user_id').val();
                 },
                 dataSrc: function (json) {
-                    // Update total deposit count
-                    $('#total_withdraws_count').text(json.totalWithdrawsCount);
+                    // Update total withdraw balance transfer amount
+                    $('#totalWithdrawBalanceTransferAmount').text(json.totalWithdrawBalanceTransferAmount);
                     return json.data;
                 }
             },
@@ -77,7 +76,6 @@
                 { data: 'amount', name: 'amount' },
                 { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'approved_at', name: 'approved_at' },
             ]
         });
 

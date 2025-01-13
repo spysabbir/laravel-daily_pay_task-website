@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Deposit;
 use App\Models\User;
+use App\Models\BalanceTransfer;
 use App\Notifications\DepositNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -81,9 +82,6 @@ class DepositController extends Controller implements HasMiddleware
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
                 })
-                ->editColumn('payable_amount', function ($row) {
-                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
-                })
                 ->editColumn('created_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
@@ -98,7 +96,7 @@ class DepositController extends Controller implements HasMiddleware
                 ->with([
                     'totalDepositsCount' => $totalDepositsCount,
                 ])
-                ->rawColumns(['user_name', 'method', 'amount', 'payable_amount', 'created_at', 'action'])
+                ->rawColumns(['user_name', 'method', 'amount', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -186,9 +184,6 @@ class DepositController extends Controller implements HasMiddleware
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
                 })
-                ->editColumn('payable_amount', function ($row) {
-                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
-                })
                 ->editColumn('created_at', function ($row) {
                     return '
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
@@ -213,7 +208,7 @@ class DepositController extends Controller implements HasMiddleware
 
                     return $deleteBtn;
                 })
-                ->rawColumns(['user_name', 'method', 'amount', 'payable_amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
+                ->rawColumns(['user_name', 'method', 'amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
@@ -223,7 +218,7 @@ class DepositController extends Controller implements HasMiddleware
     public function depositRequestApproved(Request $request)
     {
         if ($request->ajax()) {
-            $query = Deposit::where('status', 'Approved')->whereNot('method', 'Withdraw Balance');
+            $query = Deposit::where('status', 'Approved');
 
             if ($request->method){
                 $query->where('deposits.method', $request->method);
@@ -280,9 +275,6 @@ class DepositController extends Controller implements HasMiddleware
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
                 })
-                ->editColumn('payable_amount', function ($row) {
-                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
-                })
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->format('d M Y h:i A');
                 })
@@ -299,7 +291,7 @@ class DepositController extends Controller implements HasMiddleware
                 ->with([
                     'totalDepositsCount' => $totalDepositsCount,
                 ])
-                ->rawColumns(['user_name', 'method', 'number', 'transaction_id', 'amount','payable_amount', 'approved_by', 'approved_at'])
+                ->rawColumns(['user_name', 'method', 'number', 'transaction_id', 'amount', 'approved_by', 'approved_at'])
                 ->make(true);
         }
 
@@ -340,7 +332,6 @@ class DepositController extends Controller implements HasMiddleware
                 'number' => $request->number,
                 'transaction_id' => $request->transaction_id,
                 'amount' => $request->amount,
-                'payable_amount' => $request->amount,
                 'status' => 'Pending',
                 'created_by' => auth()->user()->id,
             ]);
@@ -361,16 +352,16 @@ class DepositController extends Controller implements HasMiddleware
     public function depositTransferApproved(Request $request)
     {
         if ($request->ajax()) {
-            $query = Deposit::where('method', 'Withdraw Balance');
+            $query = BalanceTransfer::where('send', 'Deposit Balance');
 
             if ($request->user_id){
-                $query->where('deposits.user_id', $request->user_id);
+                $query->where('balance_transfers.user_id', $request->user_id);
             }
 
-            $query->select('deposits.*')->orderBy('approved_at', 'desc');
+            $query->select('balance_transfers.*')->orderBy('created_at', 'desc');
 
-            // Clone the query for counts
-            $totalDepositsCount = (clone $query)->count();
+            // sum of total deposit balance transfers
+            $totalDepositBalanceTransferAmount = (clone $query)->sum('amount');
 
             $approvedData = $query->get();
 
@@ -388,17 +379,14 @@ class DepositController extends Controller implements HasMiddleware
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
                 })
                 ->editColumn('created_at', function ($row) {
-                    return $row->created_at->format('d M Y h:i A');
-                })
-                ->editColumn('approved_at', function ($row) {
                     return '
-                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
+                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
                 ->with([
-                    'totalDepositsCount' => $totalDepositsCount,
+                    'totalDepositBalanceTransferAmount' => $totalDepositBalanceTransferAmount,
                 ])
-                ->rawColumns(['user_name', 'amount','payable_amount', 'approved_at'])
+                ->rawColumns(['user_name', 'amount', 'payable_amount', 'created_at'])
                 ->make(true);
         }
 

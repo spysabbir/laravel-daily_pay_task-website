@@ -646,14 +646,14 @@
                 </div>
             </div>
             <div class="card-body">
-                @if ($total_posted_task_proof_submit == 0)
+                @if (empty($totalBalanceTransferChartjsLineData['labels']))
                 <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                     <div class="alert-heading mb-3">
                         <i data-feather="alert-circle"></i>
                         <h4>No data found!</h4>
                     </div>
                     <p class="mt-3">
-                        No data found for total task proof submit status. Please check back later.
+                        No data found for total balance transfer status. Please check back later.
                     </p>
                 </div>
                 @else

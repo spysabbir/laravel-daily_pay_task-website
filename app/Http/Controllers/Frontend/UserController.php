@@ -23,6 +23,7 @@ use App\Models\ProofTask;
 use App\Models\UserStatus;
 use App\Models\UserDevice;
 use App\Models\Rating;
+use App\Models\BalanceTransfer;
 use App\Events\SupportEvent;
 use Carbon\Carbon;
 
@@ -39,7 +40,6 @@ class UserController extends Controller
 
             $amount = Withdraw::where('user_id', Auth::id())
                 ->where('status', 'Approved')
-                ->whereNot('method', 'Deposit Balance')
                 ->whereMonth('created_at', $month->format('m'))
                 ->whereYear('created_at', $month->format('Y'))
                 ->sum('amount');
@@ -57,7 +57,6 @@ class UserController extends Controller
 
             $amount = Deposit::where('user_id', Auth::id())
                 ->where('status', 'Approved')
-                ->whereNot('method', 'Withdraw Balance')
                 ->whereMonth('created_at', $month->format('m'))
                 ->whereYear('created_at', $month->format('Y'))
                 ->sum('amount');
@@ -66,60 +65,41 @@ class UserController extends Controller
         }
         $monthlyDeposite = array_reverse($monthlyDeposite, true);
 
-        // totalBalanceTransferChartjsLineData
+        // Fixed statuses for the chart
         $totalBalanceTransferChartjsLineFixedStatuses = ['Withdraw Balance', 'Deposit Balance'];
 
-        // Collect all unique years from both models
-        $totalBalanceTransferChartjsLineYears = array_unique(
-            array_merge(
-                Withdraw::where('method', 'Deposit Balance')
-                    ->whereYear('approved_at', '<=', date('Y'))
-                    ->where('user_id', Auth::id())
-                    ->pluck('approved_at')
-                    ->map(fn($date) => Carbon::parse($date)->format('Y'))
-                    ->toArray(),
-                Deposit::where('method', 'Withdraw Balance')
-                    ->whereYear('approved_at', '<=', date('Y'))
-                    ->where('user_id', Auth::id())
-                    ->pluck('approved_at')
-                    ->map(fn($date) => Carbon::parse($date)->format('Y'))
-                    ->toArray()
-            )
-        );
+        // Collect all unique years from the `BalanceTransfer` model
+        $totalBalanceTransferChartjsLineYears = BalanceTransfer::where('user_id', Auth::id())
+            ->selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->pluck('year')
+            ->toArray();
         sort($totalBalanceTransferChartjsLineYears); // Sort the years
 
-        // Prepare data for the chart
+        // Prepare data structure for the chart
         $totalBalanceTransferChartjsLineData = [
             'labels' => $totalBalanceTransferChartjsLineYears,
             'datasets' => []
         ];
 
-        // Loop through statuses and collect data
+        // Loop through fixed statuses and collect data
         foreach ($totalBalanceTransferChartjsLineFixedStatuses as $status) {
             $data = [];
             foreach ($totalBalanceTransferChartjsLineYears as $year) {
-                if ($status === 'Withdraw Balance') {
-                    $amount = Deposit::whereYear('approved_at', $year)
-                        ->where('user_id', Auth::id())
-                        ->where('method', $status)
-                        ->sum('amount');
-                } elseif ($status === 'Deposit Balance') {
-                    $amount = Withdraw::whereYear('approved_at', $year)
-                        ->where('user_id', Auth::id())
-                        ->where('method', $status)
-                        ->sum('amount');
-                } else {
-                    $amount = 0; // Default to 0 for safety
-                }
+                // Calculate the total amount for each status and year
+                $amount = BalanceTransfer::whereYear('created_at', $year)
+                    ->where('user_id', Auth::id())
+                    ->where('send', $status)
+                    ->sum('amount');
                 $data[] = $amount;
             }
+
+            // Add dataset for the current status
             $totalBalanceTransferChartjsLineData['datasets'][] = [
                 'label' => $status,
                 'data' => $data,
             ];
-        };
-
-        // return $totalBalanceTransferChartjsLineData;
+        }
 
         // totalReportSendApexLineData
         $totalReportSendApexLineFixedStatuses = ['Pending', 'False', 'Received'];
@@ -139,6 +119,8 @@ class UserController extends Controller
                 'data' => $data
             ];
         }
+
+        // return $totalReportSendApexLineData;
 
         $userStatus = UserStatus::where('user_id', Auth::id())->latest()->first();
 
@@ -255,21 +237,21 @@ class UserController extends Controller
             'total_rejected_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Rejected')->count(),
             'total_reviewed_worked_task' => ProofTask::where('user_id', Auth::id())->where('status', 'Reviewed')->count(),
             // Deposit .............................................................................................................
-            'total_pending_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Pending')->whereNot('method', 'Withdraw Balance')->sum('amount'),
-            'total_rejected_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Rejected')->whereNot('method', 'Withdraw Balance')->sum('amount'),
-            'total_approved_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
-            'today_deposit' => Deposit::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
-            'monthly_deposit' => Deposit::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
-            'yearly_deposit' => Deposit::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
-            'total_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount'),
+            'total_pending_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Pending')->sum('amount'),
+            'total_rejected_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Rejected')->sum('amount'),
+            'total_approved_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
+            'today_deposit' => Deposit::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->where('status', 'Approved')->sum('amount'),
+            'monthly_deposit' => Deposit::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'Approved')->sum('amount'),
+            'yearly_deposit' => Deposit::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->where('status', 'Approved')->sum('amount'),
+            'total_deposit' => Deposit::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
             // Withdraw .............................................................................................................
-            'total_pending_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Pending')->whereNot('method', 'Deposit Balance')->sum('amount'),
-            'total_rejected_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Rejected')->whereNot('method', 'Deposit Balance')->sum('amount'),
-            'total_approved_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
-            'today_withdraw' => Withdraw::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->whereNot('method', 'Deposit Balance')->sum('amount'),
-            'monthly_withdraw' => Withdraw::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
-            'yearly_withdraw' => Withdraw::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
-            'total_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount'),
+            'total_pending_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Pending')->sum('amount'),
+            'total_rejected_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Rejected')->sum('amount'),
+            'total_approved_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
+            'today_withdraw' => Withdraw::where('user_id', Auth::id())->whereDate('created_at', date('Y-m-d'))->sum('amount'),
+            'monthly_withdraw' => Withdraw::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'Approved')->sum('amount'),
+            'yearly_withdraw' => Withdraw::where('user_id', Auth::id())->whereYear('created_at', date('Y'))->where('status', 'Approved')->sum('amount'),
+            'total_withdraw' => Withdraw::where('user_id', Auth::id())->where('status', 'Approved')->sum('amount'),
             // // Report Send ............................................................................................................
             // 'total_pending_report_send' => Report::where('reported_by', Auth::id())->where('status', 'Pending')->count(),
             // 'total_false_report_send' => Report::where('reported_by', Auth::id())->where('status', 'False')->count(),
@@ -501,15 +483,14 @@ class UserController extends Controller
 
                 $query->select('deposits.*')->orderBy('created_at', 'desc');
 
+                $totalDepositAmount = (clone $query)->sum('amount');
+
                 $deposits = $query->get();
 
                 return DataTables::of($deposits)
                     ->addIndexColumn()
                     ->editColumn('amount', function ($row) {
                         return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
-                    })
-                    ->editColumn('payable_amount', function ($row) {
-                        return '<span class="badge bg-dark">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
                     })
                     ->editColumn('method', function ($row) {
                         if ($row->method == 'Bkash') {
@@ -520,33 +501,25 @@ class UserController extends Controller
                             $method = '
                             <span class="badge bg-info">' . $row->method . '</span>
                             ';
-                        } else if ($row->method == 'Rocket') {
-                            $method = '
-                            <span class="badge bg-secondary">' . $row->method . '</span>
-                            ';
                         } else {
                             $method = '
-                            <span class="badge bg-success">' . $row->method . '</span>
+                            <span class="badge bg-secondary">' . $row->method . '</span>
                             ';
                         }
                         return $method;
                     })
                     ->editColumn('number', function ($row) {
-                        return $row->number ?? 'N/A';
+                        return $row->number;
                     })
                     ->editColumn('transaction_id', function ($row) {
-                        return $row->transaction_id ?? 'N/A';
+                        return $row->transaction_id;
                     })
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
                     ->addColumn('approved_or_rejected_at', function ($row) {
                         if ($row->status == 'Approved') {
-                            if ($row->method == 'Withdraw Balance') {
-                                $date = date('d M Y h:i A', strtotime($row->created_at));
-                            } else {
-                                $date = date('d M Y h:i A', strtotime($row->approved_at));
-                            }
+                            $date = date('d M Y h:i A', strtotime($row->approved_at));
                         } else if ($row->status == 'Rejected') {
                             $date = date('d M Y h:i A', strtotime($row->rejected_at));
                         } else {
@@ -574,40 +547,28 @@ class UserController extends Controller
                         }
                         return $status;
                     })
-                    ->rawColumns(['method', 'number', 'amount', 'payable_amount', 'created_at', 'approved_or_rejected_at', 'status'])
+                    ->with(['totalDepositAmount' => $totalDepositAmount])
+                    ->rawColumns(['method', 'number', 'amount', 'created_at', 'approved_or_rejected_at', 'status'])
                     ->make(true);
             }
 
-            $total_deposit = Deposit::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
-
-            return view('frontend.deposit.index', compact('total_deposit'));
+            return view('frontend.deposit.index');
         }
     }
 
     public function depositStore(Request $request)
     {
-        $currencySymbol = get_site_settings('site_currency_symbol');
         $minDepositAmount = get_default_settings('min_deposit_amount');
         $maxDepositAmount = get_default_settings('max_deposit_amount');
-        // $chargePercentage = get_default_settings('deposit_from_withdraw_balance_charge_percentage');
-        $chargePercentage = 2;
 
         $validator = Validator::make($request->all(), [
-            'method' => 'required|in:Bkash,Nagad,Rocket,Withdraw Balance',
-            'number' => ['string', 'nullable', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
-            'transaction_id' => 'string|nullable|max:255',
+            'method' => 'required|in:Bkash,Nagad,Rocket',
+            'number' => ['string', 'required', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+            'transaction_id' => 'string|required|max:255',
             'amount' => "required|numeric|min:$minDepositAmount|max:$maxDepositAmount",
         ], [
             'number.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
         ]);
-
-        $validator->sometimes('number', 'required', function ($input) {
-            return $input->method !== 'Withdraw Balance';
-        });
-
-        $validator->sometimes('transaction_id', 'required', function ($input) {
-            return $input->method !== 'Withdraw Balance';
-        });
 
         if($validator->fails()){
             return response()->json([
@@ -615,35 +576,12 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            if ($request->method == 'Withdraw Balance') {
-                if ($request->amount > $request->user()->withdraw_balance) {
-                    return response()->json([
-                        'status' => 401,
-                        'error'=> 'Insufficient balance in your account to deposit ' . $currencySymbol .' '. $request->amount .
-                                '. Your current balance is ' . $currencySymbol .' '. $request->user()->withdraw_balance
-                    ]);
-                }
-
-                $payable_amount = $request->amount - ($request->amount * $chargePercentage / 100);
-                $request->user()->decrement('withdraw_balance', $request->amount);
-                $request->user()->increment('deposit_balance', $payable_amount);
-
-                $status = 'Approved';
-                $approved_by = 1;
-                $approved_at = now();
-            } else {
-                $payable_amount = $request->amount;
-                $status = 'Pending';
-                $approved_by = null;
-                $approved_at = null;
-            }
-
             $checkDeposit = Deposit::whereNot('status', 'Rejected')->where('method', $request->method)->where('number', $request->number)->where('transaction_id', $request->transaction_id)->first();
 
             if ($checkDeposit) {
                 return response()->json([
                     'status' => 401,
-                    'error'=> 'This transaction is already exist.'
+                    'error'=> 'This transaction is already exist. Please try another transaction.',
                 ]);
             }
 
@@ -653,17 +591,12 @@ class UserController extends Controller
                 'number' => $request->number,
                 'transaction_id' => $request->transaction_id,
                 'amount' => $request->amount,
-                'payable_amount' => $payable_amount,
-                'status' => $status,
+                'status' => 'Pending',
                 'created_by' => $request->user()->id,
-                'approved_by' => $approved_by,
-                'approved_at' => $approved_at,
             ]);
 
             return response()->json([
                 'status' => 200,
-                'deposit_balance' => number_format($request->user()->deposit_balance, 2, '.', ''),
-                'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
             ]);
         }
     }
@@ -681,7 +614,7 @@ class UserController extends Controller
             return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
-                $query = Withdraw::where('user_id', Auth::id())->whereNot('method', 'Deposit Balance');
+                $query = Withdraw::where('user_id', Auth::id());
 
                 if ($request->status) {
                     $query->where('withdraws.status', $request->status);
@@ -696,6 +629,8 @@ class UserController extends Controller
                 }
 
                 $query->select('withdraws.*')->orderBy('created_at', 'desc');
+
+                $totalWithdrawAmount = (clone $query)->sum('amount');
 
                 $withdraws = $query->get();
 
@@ -779,14 +714,14 @@ class UserController extends Controller
                         }
                         return $status;
                     })
+                    ->with(['totalWithdrawAmount' => $totalWithdrawAmount])
                     ->rawColumns(['type', 'method', 'amount', 'payable_amount', 'created_at', 'number', 'approved_or_rejected_at', 'status'])
                     ->make(true);
             }
 
-            $total_withdraw = Withdraw::where('user_id', $request->user()->id)->whereNot('method', 'Deposit Balance')->where('status', 'Approved')->sum('amount');
+            $total_withdraw = Withdraw::where('user_id', $request->user()->id)->where('status', 'Approved')->sum('amount');
 
-            $withdrawBalanceFromDepositBalance = Withdraw::where('user_id', $request->user()->id)->where('method', 'Deposit Balance')->sum('amount');
-            return view('frontend.withdraw.index', compact('total_withdraw', 'withdrawBalanceFromDepositBalance'));
+            return view('frontend.withdraw.index', compact('total_withdraw'));
         }
     }
 
@@ -800,9 +735,9 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:Ragular,Instant',
-            'amount' => "required|numeric|min:$minWithdrawAmount|max:$maxWithdrawAmount",
             'method' => 'required|in:Bkash,Nagad,Rocket',
             'number' => ['required', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+            'amount' => "required|numeric|min:$minWithdrawAmount|max:$maxWithdrawAmount",
         ],
         [
             'number.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
@@ -831,9 +766,9 @@ class UserController extends Controller
         Withdraw::create([
             'type' => $request->type,
             'user_id' => $request->user()->id,
-            'amount' => $request->amount,
             'method' => $request->method,
             'number' => $request->number,
+            'amount' => $request->amount,
             'payable_amount' => $payableAmount,
             'status' => 'Pending',
             'created_by' => $request->user()->id,
@@ -847,17 +782,42 @@ class UserController extends Controller
         ]);
     }
 
-    public function withdrawBalanceFromDepositBalance(Request $request)
+    // Transfer.............................................................................................................
+
+    public function transfer(Request $request)
     {
         if ($request->ajax()) {
-            $query = Withdraw::where('user_id', Auth::id())->where('method', 'Deposit Balance');
+            $query = BalanceTransfer::where('user_id', Auth::id());
 
-            $query->select('withdraws.*')->orderBy('created_at', 'desc');
+            $query->select('balance_transfers.*')->orderBy('created_at', 'desc');
 
-            $withdraws = $query->get();
+            if ($request->method) {
+                $query->where('balance_transfers.send', $request->method);
+            }
 
-            return DataTables::of($withdraws)
+            $totalDepositBalanceAmount = (clone $query)->where('send', 'Deposit Balance')->sum('amount');
+            $totalWithdrawBalanceAmount = (clone $query)->where('send', 'Withdraw Balance')->sum('amount');
+
+            $balance_transfers = $query->get();
+
+            return DataTables::of($balance_transfers)
                 ->addIndexColumn()
+                ->editColumn('send', function ($row) {
+                    if ($row->send == 'Deposit Balance') {
+                        $send = '<span class="badge bg-info">' . $row->send . '</span>';
+                    } else {
+                        $send = '<span class="badge bg-primary">' . $row->send . '</span>';
+                    }
+                    return $send;
+                })
+                ->editColumn('receive', function ($row) {
+                    if ($row->receive == 'Deposit Balance') {
+                        $receive = '<span class="badge bg-info">' . $row->receive . '</span>';
+                    } else {
+                        $receive = '<span class="badge bg-primary">' . $row->receive . '</span>';
+                    }
+                    return $receive;
+                })
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
                 })
@@ -870,20 +830,24 @@ class UserController extends Controller
                 ->addColumn('approved_at', function ($row) {
                     return date('d M Y h:i A', strtotime($row->approved_at));
                 })
-                ->rawColumns(['amount', 'payable_amount', 'created_at', 'approved_at'])
+                ->with(['totalDepositBalanceAmount' => $totalDepositBalanceAmount, 'totalWithdrawBalanceAmount' => $totalWithdrawBalanceAmount])
+                ->rawColumns(['send', 'receive', 'amount', 'payable_amount', 'created_at', 'approved_at'])
                 ->make(true);
         }
 
-        return view('frontend.withdraw.index');
+        return view('frontend.transfer.index');
     }
 
-    public function withdrawBalanceFromDepositBalanceStore(Request $request)
+    public function transferStore(Request $request)
     {
         $currencySymbol = get_site_settings('site_currency_symbol');
-        $chargePercentage = get_default_settings('withdraw_balance_from_deposit_balance_charge_percentage');
+        $depositChargePercentage = get_default_settings('deposit_balance_transfer_charge_percentage');
+        $withdrawChargePercentage = get_default_settings('withdraw_balance_transfer_charge_percentage');
 
         $validator = Validator::make($request->all(), [
-            'withdraw_balance_amount' => "required|numeric|min:1",
+            'send' => 'required|in:Deposit Balance,Withdraw Balance',
+            'receive' => 'required|in:Deposit Balance,Withdraw Balance',
+            'amount' => 'required|numeric|min:1|max:10000',
         ]);
 
         if($validator->fails()){
@@ -892,37 +856,47 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            if ($request->withdraw_balance_amount > $request->user()->deposit_balance) {
-                return response()->json([
-                    'status' => 401,
-                    'error'=> 'Insufficient balance in your account to withdraw balance ' . $currencySymbol .' '. $request->withdraw_balance_amount .
-                            '. Your current balance is ' . $currencySymbol .' '. $request->user()->deposit_balance
-                ]);
-            }else {
-                $payable_amount = $request->withdraw_balance_amount - ($request->withdraw_balance_amount * $chargePercentage / 100);
+            if ($request->send == 'Deposit Balance') {
+                if ($request->amount > $request->user()->deposit_balance) {
+                    return response()->json([
+                        'status' => 401,
+                        'error'=> 'Insufficient balance in your account to transfer balance ' . $currencySymbol .' '. $request->amount .
+                                '. Your current balance is ' . $currencySymbol .' '. $request->user()->deposit_balance
+                    ]);
+                } else {
+                    $payable_amount = $request->amount - ($request->amount * $depositChargePercentage / 100);
 
-                Withdraw::create([
-                    'user_id' => $request->user()->id,
-                    'type' => 'Instant',
-                    'method' => 'Deposit Balance',
-                    'amount' => $request->withdraw_balance_amount,
-                    'payable_amount' => $payable_amount,
-                    'approved_at' => now(),
-                    'status' => 'Approved',
-                    'created_by' => $request->user()->id,
-                ]);
+                    $request->user()->decrement('deposit_balance', $request->amount);
+                    $request->user()->increment('withdraw_balance', $payable_amount);
+                }
+            } else {
+                if ($request->amount > $request->user()->withdraw_balance) {
+                    return response()->json([
+                        'status' => 401,
+                        'error'=> 'Insufficient balance in your account to transfer balance ' . $currencySymbol .' '. $request->amount .
+                                '. Your current balance is ' . $currencySymbol .' '. $request->user()->withdraw_balance
+                    ]);
+                } else {
+                    $payable_amount = $request->amount - ($request->amount * $withdrawChargePercentage / 100);
 
-                $request->user()->decrement('deposit_balance', $request->withdraw_balance_amount);
-                $request->user()->increment('withdraw_balance', $payable_amount);
-                $totalWithdrawBalanceFromDepositBalance = Withdraw::where('user_id', $request->user()->id)->where('method', 'Deposit Balance')->sum('amount');
-
-                return response()->json([
-                    'status' => 200,
-                    'deposit_balance' => number_format($request->user()->deposit_balance, 2, '.', ''),
-                    'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
-                    'totalWithdrawBalanceFromDepositBalance' => $totalWithdrawBalanceFromDepositBalance,
-                ]);
+                    $request->user()->decrement('withdraw_balance', $request->amount);
+                    $request->user()->increment('deposit_balance', $payable_amount);
+                }
             }
+
+            BalanceTransfer::create([
+                'user_id' => $request->user()->id,
+                'send' => $request->send,
+                'receive' => $request->receive,
+                'amount' => $request->amount,
+                'payable_amount' => $payable_amount,
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'deposit_balance' => number_format($request->user()->deposit_balance, 2, '.', ''),
+                'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
+            ]);
         }
     }
 

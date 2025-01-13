@@ -15,17 +15,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('method');
-            $table->string('number')->nullable();
-            $table->string('transaction_id')->nullable();
-            $table->decimal('amount', 10, 2);
+            $table->string('number');
+            $table->string('transaction_id');
             $table->decimal('payable_amount', 10, 2);
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
             $table->text('rejected_reason')->nullable();
-            $table->foreignId('approved_by')->nullable();
-            $table->foreignId('rejected_by')->nullable();
+            $table->integer('created_by');
+            $table->integer('approved_by')->nullable();
+            $table->integer('rejected_by')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
-            $table->integer('created_by');
             $table->timestamps();
         });
     }

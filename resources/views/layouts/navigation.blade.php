@@ -673,6 +673,9 @@
                     <li class="nav-item">
                         <a href="{{ route('bonus') }}" class="nav-link">Bonus</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('transfer') }}" class="nav-link">Transfer</a>
+                    </li>
                 </ul>
             </div>
         </li>

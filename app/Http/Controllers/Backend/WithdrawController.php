@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Withdraw;
 use App\Models\Report;
+use App\Models\BalanceTransfer;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\WithdrawNotification;
 use Illuminate\Support\Facades\Validator;
@@ -34,7 +35,7 @@ class WithdrawController extends Controller implements HasMiddleware
     public function withdrawRequest(Request $request)
     {
         if ($request->ajax()) {
-            $query = Withdraw::where('status', 'Pending')->whereNot('method', 'Deposit Balance');
+            $query = Withdraw::where('status', 'Pending');
 
             if ($request->method){
                 $query->where('withdraws.method', $request->method);
@@ -275,7 +276,7 @@ class WithdrawController extends Controller implements HasMiddleware
     public function withdrawRequestApproved(Request $request)
     {
         if ($request->ajax()) {
-            $query = Withdraw::where('status', 'Approved')->whereNot('method', 'Deposit Balance');
+            $query = Withdraw::where('status', 'Approved');
 
             if ($request->method){
                 $query->where('withdraws.method', $request->method);
@@ -431,16 +432,16 @@ class WithdrawController extends Controller implements HasMiddleware
     public function withdrawTransferApproved(Request $request)
     {
         if ($request->ajax()) {
-            $query = Withdraw::where('method', 'Deposit Balance');
+            $query = BalanceTransfer::where('send', 'Withdraw Balance');
 
             if ($request->user_id){
-                $query->where('withdraws.user_id', $request->user_id);
+                $query->where('balance_transfers.user_id', $request->user_id);
             }
 
-            $query->select('withdraws.*')->orderBy('approved_at', 'desc');
+            $query->select('balance_transfers.*')->orderBy('created_at', 'desc');
 
-            // Clone the query for counts
-            $totalWithdrawsCount = (clone $query)->count();
+            // sum of total withdraw balance transfers
+            $totalWithdrawBalanceTransferAmount = (clone $query)->sum('amount');
 
             $approvedData = $query->get();
 
@@ -462,15 +463,10 @@ class WithdrawController extends Controller implements HasMiddleware
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
                         ';
                 })
-                ->editColumn('approved_at', function ($row) {
-                    return '
-                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
-                        ';
-                })
                 ->with([
-                    'totalWithdrawsCount' => $totalWithdrawsCount,
+                    'totalWithdrawBalanceTransferAmount' => $totalWithdrawBalanceTransferAmount,
                 ])
-                ->rawColumns(['user_name', 'amount', 'payable_amount', 'created_at', 'approved_at'])
+                ->rawColumns(['user_name', 'amount', 'payable_amount', 'created_at'])
                 ->make(true);
         }
 

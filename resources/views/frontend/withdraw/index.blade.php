@@ -9,95 +9,12 @@
             <div class="card-header">
                 <div class="text">
                     <h3 class="card-title">Withdraw List</h3>
-                    <p class="mb-0">Note: You can Withdraw money by using Bkash, Nagad, Rocket. Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}. Withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }} %. Instant withdraw charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}. After submitting the withdraw request, the admin will verify your request then send the money to your account number. Also, you will can instantly add balance to your withdraw balance from your deposited balance by extra charge. If you have any problem, please contact with us.</p>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <div class="action-btn d-flex align-items-center justify-content-center flex-wrap mb-2 alert-info">
-                        <!-- Withdraw Balance From Deposit Balance Modal -->
-                        <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".withdrawBalanceFromDepositBalanceModel">Withdraw Balance From Deposit Balance</button>
-                        <div class="modal fade withdrawBalanceFromDepositBalanceModel" tabindex="-1" aria-labelledby="withdrawBalanceFromDepositBalanceModelLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-xl">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="withdrawBalanceFromDepositBalanceModelLabel">Withdraw Balance From Deposit Balance</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-lg-8">
-                                                <div class="mb-3">
-                                                    <div class="alert alert-info" role="alert" id="totalWithdrawBalanceFromDepositBalance">
-                                                        <h4 class="alert-heading text-center">
-                                                            <i class="link-icon" data-feather="credit-card"></i>
-                                                            Total Withdraw Balance From Deposit Balance Amount: <strong>{{ get_site_settings('site_currency_symbol') }} {{ $withdrawBalanceFromDepositBalance }}</strong>
-                                                        </h4>
-                                                    </div>
-                                                </div>
-                                                <div class="table-responsive">
-                                                    <table id="withdrawBalanceFromDepositBalanceDataTable" class="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Sl No</th>
-                                                                <th>Withdraw Amount</th>
-                                                                <th>Payable Amount</th>
-                                                                <th>Submitted Date</th>
-                                                                <th>Approved Date</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <form class="forms-sample" id="withdrawBalanceFromDepositBalanceForm">
-                                                    @csrf
-                                                    <div class="mb-3">
-                                                        <label for="deposit_balance" class="form-label">Deposit Balance</label>
-                                                        <div class="input-group">
-                                                            <input type="number" class="form-control" id="deposit_balance" value="{{ Auth::user()->deposit_balance }}" disabled>
-                                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="withdraw_balance_amount" class="form-label">Withdraw Balance Amount<span class="text-danger">*</span></label>
-                                                        <div class="input-group">
-                                                            <input type="number" class="form-control" id="withdraw_balance_amount" name="withdraw_balance_amount" placeholder="Withdraw Balance Amount" required>
-                                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                        </div>
-                                                        <small class="text-info d-block">Note: Minimum withdraw balance amount is {{ get_site_settings('site_currency_symbol') }} 1.</small>
-                                                        <span class="text-danger error-text withdraw_balance_amount_error"></span>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="withdraw_balance_from_deposit_balance_charge_percentage" class="form-label">Withdraw Balance From Deposit Balance Charge Percentage</label>
-                                                        <div class="input-group">
-                                                            <input type="number" class="form-control" id="withdraw_balance_from_deposit_balance_charge_percentage" value="{{ get_default_settings('withdraw_balance_from_deposit_balance_charge_percentage') }}" disabled>
-                                                            <span class="input-group-text input-group-addon">%</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="payable_withdraw_balance" class="form-label">Payable Withdraw Balance</label>
-                                                        <div class="input-group">
-                                                            <input type="number" class="form-control" id="payable_withdraw_balance" value="0" placeholder="Payable Withdraw Balance" disabled>
-                                                            <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                                                        </div>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-primary">Withdraw</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Withdraw <i data-feather="plus-circle"></i></button>
-                        <!-- Normal Withdraw Modal -->
+                    <p class="mb-0">Note: You can Withdraw money by using Bkash, Nagad, Rocket. Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}. Withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }} %. Instant withdraw charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}. After submitting the withdraw request, the admin will verify your request then send the money to your account number. If you have any problem, please contact with us.</p>
+                    <div class="action-btn d-flex align-items-center justify-content-end flex-wrap my-2">
+                        <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">
+                            Withdraw <i data-feather="dollar-sign"></i>
+                        </button>
+                        <!-- Withdraw Modal -->
                         <div class="modal fade createModel" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
                             <div class="modal-dialog modal-md">
                                 <div class="modal-content">
@@ -170,10 +87,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="alert alert-info" role="alert" id="total_withdraw_div">
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="alert alert-info" role="alert">
                         <h4 class="alert-heading text-center">
                             <i class="link-icon" data-feather="credit-card"></i>
-                            Total Approved Withdraw Amount: <strong>{{ get_site_settings('site_currency_symbol') }} {{ $total_withdraw }}</strong>
+                            Total Withdraw Amount: <span id="total_withdraw_amount">0</span>
                         </h4>
                     </div>
                 </div>
@@ -287,6 +208,11 @@
                     e.status = $('#filter_status').val();
                     e.method = $('#filter_method').val();
                     e.type = $('#filter_type').val();
+                },
+                dataSrc: function (json) {
+                    var currencySymbol = '{{ get_site_settings('site_currency_symbol') }}';
+                    $('#total_withdraw_amount').text(currencySymbol + ' ' + json.totalWithdrawAmount);
+                    return json.data;
                 }
             },
             columns: [
@@ -305,22 +231,6 @@
         // Filter Data
         $('.filter_data').change(function(){
             $('#allDataTable').DataTable().ajax.reload();
-        });
-
-        $('#withdrawBalanceFromDepositBalanceDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            searching: true,
-            ajax: {
-                url: "{{ route('withdraw.balance.from.deposit.balance') }}",
-            },
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'amount', name: 'amount' },
-                { data: 'payable_amount', name: 'payable_amount' },
-                { data: 'created_at', name: 'created_at' },
-                { data: 'approved_at', name: 'approved_at' },
-            ]
         });
 
         // Calculate Payable Amount
@@ -371,64 +281,6 @@
                             toastr.success('Withdraw request sent successfully.');
                         }else{
                             toastr.error(response.error);
-                        }
-                    }
-                },
-                complete: function() {
-                    submitButton.prop("disabled", false).text("Submit");
-                }
-            });
-        });
-
-        // Withdraw Balance From Deposit Balance
-        $('#withdraw_balance_amount').on('input', function () {
-            var withdrawAmount = parseFloat($(this).val()) || 0;
-            var chargePercentage = parseFloat($('#withdraw_balance_from_deposit_balance_charge_percentage').val()) || 0;
-
-            if (withdrawAmount > 0 && chargePercentage >= 0) {
-                var chargeAmount = (withdrawAmount * chargePercentage) / 100;
-                var payableBalance = withdrawAmount - chargeAmount;
-
-                $('#payable_withdraw_balance').val(payableBalance.toFixed(2));
-            } else {
-                $('#payable_withdraw_balance').val('0');
-            }
-        });
-
-        // Store Withdraw Balance From Deposit Balance
-        $('#withdrawBalanceFromDepositBalanceForm').submit(function(event) {
-            event.preventDefault();
-
-            var submitButton = $(this).find("button[type='submit']");
-            submitButton.prop("disabled", true).text("Submitting...");
-
-            var formData = $(this).serialize();
-
-            $.ajax({
-                url: "{{ route('withdraw.balance.from.deposit.balance.store') }}",
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                beforeSend:function(){
-                    $(document).find('span.error-text').text('');
-                },
-                success: function(response) {
-                    if (response.status == 400) {
-                        $.each(response.error, function(prefix, val){
-                            $('span.'+prefix+'_error').text(val[0]);
-                        })
-                    }else{
-                        if (response.status == 401) {
-                            toastr.error(response.error);
-                        }else{
-                            $('.withdrawBalanceFromDepositBalanceModel').modal('hide');
-                            $('#withdrawBalanceFromDepositBalanceForm')[0].reset();
-                            $('#withdrawBalanceFromDepositBalanceDataTable').DataTable().ajax.reload();
-                            $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
-                            $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
-                            $("#totalWithdrawBalanceFromDepositBalance strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.totalWithdrawBalanceFromDepositBalance);
-                            $("#deposit_balance").val(response.deposit_balance);
-                            toastr.success('Withdraw Balance From Deposit Balance request sent successfully.');
                         }
                     }
                 },

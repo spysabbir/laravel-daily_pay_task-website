@@ -1,14 +1,14 @@
 @extends('layouts.template_master')
 
-@section('title', 'Deposit Transfer (Approved)')
+@section('title', 'Deposit Balance Transfer')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Deposit Transfer (Approved)</h3>
-                <h3>Total: <span id="total_deposits_count">0</span></h3>
+                <h3 class="card-title">Deposit Balance Transfer</h3>
+                <h3>Total Transfer: <span id="totalDepositBalanceTransferAmount">0</span></h3>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -31,7 +31,6 @@
                                 <th>Amount</th>
                                 <th>Payable Amount</th>
                                 <th>Submitted Date</th>
-                                <th>Approved At</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,8 +64,8 @@
                     e.user_id = $('#filter_user_id').val();
                 },
                 dataSrc: function (json) {
-                    // Update total deposit count
-                    $('#total_deposits_count').text(json.totalDepositsCount);
+                    // Update total deposit balance transfer amount
+                    $('#totalDepositBalanceTransferAmount').text(json.totalDepositBalanceTransferAmount);
                     return json.data;
                 }
             },
@@ -77,7 +76,6 @@
                 { data: 'amount', name: 'amount' },
                 { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'approved_at', name: 'approved_at' },
             ]
         });
 
