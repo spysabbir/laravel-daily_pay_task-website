@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\BackendController;
+use App\Http\Controllers\Backend\BalanceTransferController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ChildCategoryController;
 use App\Http\Controllers\Backend\ContactController;
@@ -159,7 +160,6 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('deposit-request-rejected', [DepositController::class, 'depositRequestRejected'])->name('deposit.request.rejected');
     Route::get('deposit-request-approved', [DepositController::class, 'depositRequestApproved'])->name('deposit.request.approved');
     Route::delete('deposit-request-delete/{id}', [DepositController::class, 'depositRequestDelete'])->name('deposit.request.delete');
-    Route::get('deposit-transfer-approved', [DepositController::class, 'depositTransferApproved'])->name('deposit.transfer.approved');
     // Withdraw
     Route::get('withdraw-request', [WithdrawController::class, 'withdrawRequest'])->name('withdraw.request');
     Route::post('withdraw-request-send', [WithdrawController::class, 'withdrawRequestSend'])->name('withdraw.request.send');
@@ -168,7 +168,8 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('withdraw-request-rejected', [WithdrawController::class, 'withdrawRequestRejected'])->name('withdraw.request.rejected');
     Route::get('withdraw-request-approved', [WithdrawController::class, 'withdrawRequestApproved'])->name('withdraw.request.approved');
     Route::delete('withdraw-request-delete/{id}', [WithdrawController::class, 'withdrawRequestDelete'])->name('withdraw.request.delete');
-    Route::get('withdraw-transfer-approved', [WithdrawController::class, 'withdrawTransferApproved'])->name('withdraw.transfer.approved');
+    // Balance Transfer
+    Route::get('balance-transfer', [BalanceTransferController::class, 'balanceTransfer'])->name('balance.transfer');
     // Posted Task
     Route::get('posted_task_list-pending', [TaskController::class, 'postedTaskListPending'])->name('posted_task_list.pending');
     Route::get('pending-posted_task_view/{id}', [TaskController::class, 'pendingPostedTaskView'])->name('pending.posted_task_view');

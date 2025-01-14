@@ -35,13 +35,9 @@ class TopListController extends Controller implements HasMiddleware
             $endDate = $request->end_date ?? null;
 
             // Base query for user totals grouped by status
-            $baseQuery = Deposit::select(
+            $baseQuery = Deposit::where('status', 'Approved')->select(
                 'deposits.user_id',
-                DB::raw('SUM(CASE WHEN deposits.status = "Pending" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as pending_amount'),
-                DB::raw('SUM(CASE WHEN deposits.status = "Rejected" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as rejected_amount'),
-                DB::raw('SUM(CASE WHEN deposits.status = "Approved" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as approved_amount'),
                 DB::raw('SUM(deposits.amount) as total_amount'),
-                DB::raw('SUM(CASE WHEN deposits.method = "Withdraw Balance" THEN deposits.amount ELSE 0 END) as transfer_amount') // Include only Withdraw Balance
             );
 
             // Apply date filters
@@ -59,12 +55,8 @@ class TopListController extends Controller implements HasMiddleware
             $topDepositUsers = $baseQuery->get();
 
             // Query to calculate overall totals for all users
-            $totalsQuery = Deposit::select(
-                DB::raw('SUM(CASE WHEN deposits.status = "Pending" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as total_pending'),
-                DB::raw('SUM(CASE WHEN deposits.status = "Rejected" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as total_rejected'),
-                DB::raw('SUM(CASE WHEN deposits.status = "Approved" AND deposits.method != "Withdraw Balance" THEN deposits.amount ELSE 0 END) as total_approved'),
-                DB::raw('SUM(deposits.amount) as grand_total'), // Includes all rows
-                DB::raw('SUM(CASE WHEN deposits.method = "Withdraw Balance" THEN deposits.amount ELSE 0 END) as total_transfer') // Includes only Withdraw Balance rows
+            $totalsQuery = Deposit::where('status', 'Approved')->select(
+                DB::raw('SUM(deposits.amount) as grand_total'),
             );
 
             // Apply the same date filters to totals query
@@ -89,29 +81,13 @@ class TopListController extends Controller implements HasMiddleware
                         <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
-                ->addColumn('pending_amount', function ($row) {
-                    return '<span class="badge bg-warning">' . get_site_settings('site_currency_symbol') . ' ' . $row->pending_amount . '</span>';
-                })
-                ->addColumn('rejected_amount', function ($row) {
-                    return '<span class="badge bg-danger">' . get_site_settings('site_currency_symbol') . ' ' . $row->rejected_amount . '</span>';
-                })
-                ->addColumn('approved_amount', function ($row) {
-                    return '<span class="badge bg-success">' . get_site_settings('site_currency_symbol') . ' ' . $row->approved_amount . '</span>';
-                })
-                ->addColumn('transfer_amount', function ($row) {
-                    return '<span class="badge bg-success">' . get_site_settings('site_currency_symbol') . ' ' . $row->transfer_amount . '</span>';
-                })
                 ->addColumn('total_amount', function ($row) {
                     return '<span class="badge bg-info">' . get_site_settings('site_currency_symbol') . ' ' . $row->total_amount . '</span>';
                 })
                 ->with([
-                    'total_pending' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_pending,
-                    'total_rejected' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_rejected,
-                    'total_approved' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_approved,
-                    'total_transfer' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_transfer,
                     'grand_total' => get_site_settings('site_currency_symbol') . ' ' . $totals->grand_total,
                 ])
-                ->rawColumns(['user_id', 'user_name', 'pending_amount', 'rejected_amount', 'approved_amount', 'transfer_amount', 'total_amount'])
+                ->rawColumns(['user_id', 'user_name', 'transfer_amount', 'total_amount'])
                 ->make(true);
         }
 
@@ -126,11 +102,8 @@ class TopListController extends Controller implements HasMiddleware
             $endDate = $request->end_date ?? null;
 
             // Base query for user totals grouped by status
-            $baseQuery = Withdraw::select(
+            $baseQuery = Withdraw::where('status', 'Approved')->select(
                 'withdraws.user_id',
-                DB::raw('SUM(CASE WHEN withdraws.status = "Pending" THEN withdraws.amount ELSE 0 END) as pending_amount'),
-                DB::raw('SUM(CASE WHEN withdraws.status = "Rejected" THEN withdraws.amount ELSE 0 END) as rejected_amount'),
-                DB::raw('SUM(CASE WHEN withdraws.status = "Approved" THEN withdraws.amount ELSE 0 END) as approved_amount'),
                 DB::raw('SUM(withdraws.amount) as total_amount')
             );
 
@@ -149,10 +122,7 @@ class TopListController extends Controller implements HasMiddleware
             $topDepositUsers = $baseQuery->get();
 
             // Query to calculate overall totals for all users
-            $totalsQuery = Withdraw::select(
-                DB::raw('SUM(CASE WHEN withdraws.status = "Pending" THEN withdraws.amount ELSE 0 END) as total_pending'),
-                DB::raw('SUM(CASE WHEN withdraws.status = "Rejected" THEN withdraws.amount ELSE 0 END) as total_rejected'),
-                DB::raw('SUM(CASE WHEN withdraws.status = "Approved" THEN withdraws.amount ELSE 0 END) as total_approved'),
+            $totalsQuery = Withdraw::where('status', 'Approved')->select(
                 DB::raw('SUM(withdraws.amount) as grand_total')
             );
 
@@ -178,25 +148,13 @@ class TopListController extends Controller implements HasMiddleware
                         <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
-                ->addColumn('pending_amount', function ($row) {
-                    return '<span class="badge bg-warning">' . get_site_settings('site_currency_symbol') . ' ' . $row->pending_amount . '</span>';
-                })
-                ->addColumn('rejected_amount', function ($row) {
-                    return '<span class="badge bg-danger">' . get_site_settings('site_currency_symbol') . ' ' . $row->rejected_amount . '</span>';
-                })
-                ->addColumn('approved_amount', function ($row) {
-                    return '<span class="badge bg-success">' . get_site_settings('site_currency_symbol') . ' ' . $row->approved_amount . '</span>';
-                })
                 ->addColumn('total_amount', function ($row) {
                     return '<span class="badge bg-info">' . get_site_settings('site_currency_symbol') . ' ' . $row->total_amount . '</span>';
                 })
                 ->with([
-                    'total_pending' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_pending,
-                    'total_rejected' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_rejected,
-                    'total_approved' => get_site_settings('site_currency_symbol') . ' ' . $totals->total_approved,
                     'grand_total' => get_site_settings('site_currency_symbol') . ' ' . $totals->grand_total,
                 ])
-                ->rawColumns(['user_id', 'user_name', 'pending_amount', 'rejected_amount', 'approved_amount', 'total_amount'])
+                ->rawColumns(['user_id', 'user_name', 'total_amount'])
                 ->make(true);
         }
 

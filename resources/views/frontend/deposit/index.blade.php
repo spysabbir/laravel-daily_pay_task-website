@@ -11,7 +11,13 @@
                     <h3 class="card-title">Deposit List</h3>
                     <p class="mb-0">Note: You can deposit money by using Bkash, Nagad, Rocket. After depositing money, you have to submit a deposit request with the transaction id. Minimum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_deposit_amount') }} and maximum deposit amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_deposit_amount') }}. After submitting the deposit request then admin will verify your request and add the money to your account. If you have any problem, please contact with us.</p>
                 </div>
-                <div class="action-btn d-flex align-items-center justify-content-end flex-wrap my-2">
+                <div class="mt-3 d-flex align-items-center justify-content-between flex-wrap">
+                    <div class="alert alert-info" role="alert">
+                        <span class="alert-heading text-center">
+                            <i class="link-icon" data-feather="credit-card"></i>
+                            Total Deposit Amount: <span id="total_deposit_amount">0</span>
+                        </span>
+                    </div>
                     <!-- Deposit Modal -->
                     <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">
                         Deposit <i data-feather="dollar-sign"></i>
@@ -76,14 +82,6 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <div class="alert alert-info" role="alert">
-                        <h4 class="alert-heading text-center">
-                            <i class="link-icon" data-feather="credit-card"></i>
-                            Total Deposit Amount: <span id="total_deposit_amount">0</span>
-                        </h4>
-                    </div>
-                </div>
                 <div class="filter mb-3">
                     <div class="row">
                         <div class="col-md-3 mb-3">

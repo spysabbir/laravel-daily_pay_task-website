@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Deposit;
 use App\Models\User;
-use App\Models\BalanceTransfer;
 use App\Notifications\DepositNotification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,7 +22,6 @@ class DepositController extends Controller implements HasMiddleware
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.check') , only:['depositRequestShow', 'depositRequestStatusChange']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.rejected'), only:['depositRequestRejected']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.approved') , only:['depositRequestApproved']),
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.transfer.approved') , only:['depositTransferApproved']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.delete') , only:['depositRequestDelete']),
         ];
     }
@@ -349,47 +347,4 @@ class DepositController extends Controller implements HasMiddleware
         $deposit->delete();
     }
 
-    public function depositTransferApproved(Request $request)
-    {
-        if ($request->ajax()) {
-            $query = BalanceTransfer::where('send', 'Deposit Balance');
-
-            if ($request->user_id){
-                $query->where('balance_transfers.user_id', $request->user_id);
-            }
-
-            $query->select('balance_transfers.*')->orderBy('created_at', 'desc');
-
-            // sum of total deposit balance transfers
-            $totalDepositBalanceTransferAmount = (clone $query)->sum('amount');
-
-            $approvedData = $query->get();
-
-            return DataTables::of($approvedData)
-                ->addIndexColumn()
-                ->editColumn('user_name', function ($row) {
-                    return '
-                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
-                        ';
-                })
-                ->editColumn('amount', function ($row) {
-                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
-                })
-                ->editColumn('payable_amount', function ($row) {
-                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
-                })
-                ->editColumn('created_at', function ($row) {
-                    return '
-                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
-                        ';
-                })
-                ->with([
-                    'totalDepositBalanceTransferAmount' => $totalDepositBalanceTransferAmount,
-                ])
-                ->rawColumns(['user_name', 'amount', 'payable_amount', 'created_at'])
-                ->make(true);
-        }
-
-        return view('backend.deposit.transfer');
-    }
 }

@@ -11,7 +11,13 @@
                     <h3 class="card-title">Transfer List</h3>
                     <p class="mb-0">Note: You can instantly add your deposit balance from your withdraw balance by an extra {{ get_default_settings('withdraw_balance_transfer_charge_percentage') }} % charge. Also, you can instantly add your withdraw balance from your deposit balance by an extra {{ get_default_settings('deposit_balance_transfer_charge_percentage') }} % charge. If you have any problem, please contact with us.</p>
                 </div>
-                <div class="action-btn d-flex align-items-center justify-content-end flex-wrap my-2">
+                <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="alert alert-info" role="alert">
+                        <span class="alert-heading text-center">
+                            <i class="link-icon" data-feather="credit-card"></i>
+                            Total Balance Transfer Amount: <span id="total_balance_transfer_amount">0</span>
+                        </span>
+                    </div>
                     <!-- Transfer Modal -->
                     <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">
                         Transfer <i data-feather="dollar-sign"></i>
@@ -28,7 +34,7 @@
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="sendMethod" class="form-label">Send Method <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="sendMethod" name="send" required>
+                                            <select class="form-select" id="sendMethod" name="send_method" required>
                                                 <option value="">-- Select Send Method --</option>
                                                 <option value="Withdraw Balance">Withdraw Balance</option>
                                                 <option value="Deposit Balance">Deposit Balance</option>
@@ -37,7 +43,7 @@
                                         </div>
                                         <div class="mb-3" id="receive_method_div" style="display: none;">
                                             <label for="receiveMethod" class="form-label">Receive Method <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="receiveMethod" name="receive">
+                                            <select class="form-select" id="receiveMethod" name="receive_method">
                                                 <option value="">-- Select Receive Method --</option>
                                                 <option value="Withdraw Balance">Withdraw Balance</option>
                                                 <option value="Deposit Balance">Deposit Balance</option>
@@ -100,27 +106,23 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="mb-3 d-flex justify-content-between align-items-center">
-                    <div class="alert alert-info" role="alert">
-                        <span class="alert-heading text-center">
-                            <i class="link-icon" data-feather="credit-card"></i>
-                            Total Deposit Balance Transfer Amount: <span id="total_deposit_balance_amount">0</span>
-                        </span>
-                    </div>
-                    <div class="alert alert-primary" role="alert">
-                        <span class="alert-heading text-center">
-                            <i class="link-icon" data-feather="credit-card"></i>
-                            Total Withdraw Balance Transfer Amount: <span id="total_withdraw_balance_amount">0</span>
-                        </span>
-                    </div>
-                </div>
                 <div class="filter mb-3">
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <div class="form-group">
-                                <label for="filter_method" class="form-label">Transfer Method</label>
-                                <select class="form-select filter_data" id="filter_method">
-                                    <option value="">-- Select Transfer Method --</option>
+                                <label for="filter_send_method" class="form-label">Send Method</label>
+                                <select class="form-select filter_data" id="filter_send_method">
+                                    <option value="">-- Select Send Method --</option>
+                                    <option value="Deposit Balance">Deposit Balance</option>
+                                    <option value="Withdraw Balance">Withdraw Balance</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="form-group">
+                                <label for="filter_receive_method" class="form-label">Receive Method</label>
+                                <select class="form-select filter_data" id="filter_receive_method">
+                                    <option value="">-- Select Receive Method --</option>
                                     <option value="Deposit Balance">Deposit Balance</option>
                                     <option value="Withdraw Balance">Withdraw Balance</option>
                                 </select>
@@ -168,19 +170,19 @@
             ajax: {
                 url: "{{ route('transfer') }}",
                 data: function (e) {
-                    e.method = $('#filter_method').val();
+                    e.send_method = $('#filter_send_method').val();
+                    e.receive_method = $('#filter_receive_method').val();
                 },
                 dataSrc: function (json) {
                     var currencySymbol = '{{ get_site_settings('site_currency_symbol') }}';
-                    $('#total_deposit_balance_amount').text(currencySymbol + ' ' + json.totalDepositBalanceAmount);
-                    $('#total_withdraw_balance_amount').text(currencySymbol + ' ' + json.totalWithdrawBalanceAmount);
+                    $('#total_balance_transfer_amount').text(currencySymbol + ' ' + json.totalBalanceTransferAmount);
                     return json.data;
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'send', name: 'send' },
-                { data: 'receive', name: 'receive' },
+                { data: 'send_method', name: 'send_method' },
+                { data: 'receive_method', name: 'receive_method' },
                 { data: 'amount', name: 'amount' },
                 { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },

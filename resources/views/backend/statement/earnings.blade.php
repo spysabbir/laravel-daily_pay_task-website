@@ -30,9 +30,11 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>Earnings Date</th>
-                                <th>Total Deposit Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Total Withdraw Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Total Post Task Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Total Proof Task Reviewed Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Total Balance Transfer Charge</th>
+                                <th>Total Instant Blocked Resolved Charge</th>
                                 <th>Total Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                             </tr>
                         </thead>
@@ -43,9 +45,11 @@
                             <tr>
                                 <th>#</th>
                                 <th class="text-center">Total</th>
-                                <th id="total_deposit_charge_sum"></th>
                                 <th id="total_withdraw_charge_sum"></th>
                                 <th id="total_post_task_charge_sum"></th>
+                                <th id="total_proof_task_reviewed_charge_sum"></th>
+                                <th id="total_balance_transfer_charge_sum"></th>
+                                <th id="total_instant_blocked_resolved_charge_sum"></th>
                                 <th id="total_amount_sum"></th>
                             </tr>
                         </tfoot>
@@ -86,17 +90,22 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'earnings_date', name: 'earnings_date' },
-                { data: 'total_deposit_charge', name: 'total_deposit_charge' },
                 { data: 'total_withdraw_charge', name: 'total_withdraw_charge' },
                 { data: 'total_post_task_charge', name: 'total_post_task_charge' },
+                { data: 'total_proof_task_reviewed_charge', name: 'total_proof_task_reviewed_charge' },
+                { data: 'total_balance_transfer_charge', name: 'total_balance_transfer_charge' },
+                { data: 'total_instant_blocked_resolved_charge', name: 'total_instant_blocked_resolved_charge' },
                 { data: 'total_amount', name: 'total_amount' },
             ],
             drawCallback: function(settings) {
                 var response = settings.json;
 
-                $('#total_deposit_charge_sum').html(response.total_deposit_charge_sum);
+                // Update the totals in the respective HTML elements
                 $('#total_withdraw_charge_sum').html(response.total_withdraw_charge_sum);
                 $('#total_post_task_charge_sum').html(response.total_post_task_charge_sum);
+                $('#total_proof_task_reviewed_charge_sum').html(response.total_proof_task_reviewed_charge_sum);
+                $('#total_balance_transfer_charge_sum').html(response.total_balance_transfer_charge_sum);
+                $('#total_instant_blocked_resolved_charge_sum').html(response.total_instant_blocked_resolved_charge_sum);
                 $('#total_amount_sum').html(response.total_amount_sum);
             },
             initComplete: function() {

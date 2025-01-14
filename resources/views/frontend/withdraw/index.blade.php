@@ -10,7 +10,13 @@
                 <div class="text">
                     <h3 class="card-title">Withdraw List</h3>
                     <p class="mb-0">Note: You can Withdraw money by using Bkash, Nagad, Rocket. Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('min_withdraw_amount') }} and maximum withdraw amount is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('max_withdraw_amount') }}. Withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }} %. Instant withdraw charge is {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}. After submitting the withdraw request, the admin will verify your request then send the money to your account number. If you have any problem, please contact with us.</p>
-                    <div class="action-btn d-flex align-items-center justify-content-end flex-wrap my-2">
+                    <div class="mt-3 d-flex align-items-center justify-content-between flex-wrap">
+                        <div class="alert alert-info" role="alert">
+                            <span class="alert-heading text-center">
+                                <i class="link-icon" data-feather="credit-card"></i>
+                                Total Withdraw Amount: <span id="total_withdraw_amount">0</span>
+                            </span>
+                        </div>
                         <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">
                             Withdraw <i data-feather="dollar-sign"></i>
                         </button>
@@ -90,14 +96,6 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <div class="alert alert-info" role="alert">
-                        <h4 class="alert-heading text-center">
-                            <i class="link-icon" data-feather="credit-card"></i>
-                            Total Withdraw Amount: <span id="total_withdraw_amount">0</span>
-                        </h4>
-                    </div>
-                </div>
                 <div class="filter mb-3">
                     <div class="row">
                         <div class="col-md-3 mb-3">

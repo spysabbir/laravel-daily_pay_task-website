@@ -183,10 +183,10 @@ class UserController extends Controller implements HasMiddleware
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';
                     $statusBtn = $statusPermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn" data-bs-toggle="modal" data-bs-target=".statusModal">Status Details</button>'
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs statusBtn">Status Details</button>'
                         : '';
                     $deviceBtn = $devicePermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs deviceBtn" data-bs-toggle="modal" data-bs-target=".deviceModal">Device Details</button>'
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs deviceBtn">Device Details</button>'
                         : '';
 
                     $btn = $viewBtn . ' ' . $deleteBtn . ' ' . $statusBtn . ' ' . $deviceBtn;
@@ -689,12 +689,12 @@ class UserController extends Controller implements HasMiddleware
         $reportRequestsPending = ProofTask::where('user_id', $id)->where('status', 'Pending')->count();
 
         if ($depositRequests > 0 || $withdrawRequests > 0 || $postedTasksRequests > 0 || $postedTasksProofSubmitRequests > 0 || $workedTasksRequests > 0 || $reportRequestsPending > 0) {
-            return response()->json(['status' => 401, 'error' => 'User has pending requests. Please complete or cancel all requests before changing the status.']);
+            return response()->json(['status' => 401, 'error' => 'User has some pending requests. Please resolve them first.']);
         }
 
         $blockedStatusCount = UserStatus::where('user_id', $id)->where('status', 'Blocked')->count();
-        if ($blockedStatusCount === get_default_settings('user_max_blocked_time_for_banned') && $request->status == 'Blocked') {
-            return response()->json(['status' => 401]);
+        if ($blockedStatusCount == get_default_settings('user_max_blocked_time_for_banned') && $request->status == 'Blocked') {
+            return response()->json(['status' => 401, 'error' => 'User has reached the maximum blocked time. Please change the status to Active or Banned.']);
         }
 
         $userStatus = UserStatus::where('user_id', $id)->latest()->first();

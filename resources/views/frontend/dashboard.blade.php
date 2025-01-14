@@ -87,9 +87,6 @@
         <span class="text-info">
             If you want to unblock your account before the unblocked time, you can pay the unblock charge. The unblock charge is <strong>{{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('user_blocked_instant_resolved_charge') }}</strong>.<br>
         </span>
-        <span class="text-info mt-2">
-            Note: If your account is automatically unblocked before the admin response, you will get an unblock charge refund on your withdraw balance.
-        </span>
     </div>
     @endif
 	<hr>
@@ -642,7 +639,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Total Balance Transfer Status</h6>
+                    <h6 class="card-title">Total Send Balance Transfer Status</h6>
                 </div>
             </div>
             <div class="card-body">

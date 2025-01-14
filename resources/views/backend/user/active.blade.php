@@ -195,6 +195,8 @@
                 type: "GET",
                 success: function (response) {
                     $('#statusModalBody').html(response);
+
+                    $(".statusModal").modal('show');
                 },
             });
         });
@@ -209,6 +211,8 @@
                 type: "GET",
                 success: function (response) {
                     $('#deviceModalBody').html(response);
+
+                    $(".deviceModal").modal('show');
                 },
             });
         });
@@ -238,7 +242,7 @@
                         })
                     }else{
                         if (response.status == 401) {
-                            toastr.error('User has reached the maximum limit of blocked status. Now you can change the status to Banned.')
+                            toastr.error(response.error);
                         } else {
                             $('#statusForm')[0].reset();
                             $(".statusModal").modal('hide');

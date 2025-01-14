@@ -168,7 +168,6 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'deposit.request.rejected', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
             ['name' => 'deposit.request.approved', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
             ['name' => 'deposit.request.delete', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
-            ['name' => 'deposit.transfer.approved', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
             // WithdrawManagement
             ['name' => 'WithdrawMenu', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             ['name' => 'withdraw.request', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
@@ -177,7 +176,9 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'withdraw.request.rejected', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             ['name' => 'withdraw.request.approved', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             ['name' => 'withdraw.request.delete', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
-            ['name' => 'withdraw.transfer.approved', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
+            // BalanceTransferManagement
+            ['name' => 'BalanceTransferMenu', 'group_name' => 'BalanceTransferManagement', 'guard_name' => 'web'],
+            ['name' => 'balance.transfer', 'group_name' => 'BalanceTransferManagement', 'guard_name' => 'web'],
             // PostedTaskManagement
             ['name' => 'PostedTaskMenu', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'posted_task_list.pending', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],

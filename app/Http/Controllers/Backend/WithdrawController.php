@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Withdraw;
 use App\Models\Report;
-use App\Models\BalanceTransfer;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\WithdrawNotification;
 use Illuminate\Support\Facades\Validator;
@@ -27,7 +26,6 @@ class WithdrawController extends Controller implements HasMiddleware
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.check') , only:['withdrawRequestShow', 'withdrawRequestStatusChange']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.rejected'), only:['withdrawRequestRejected']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.approved') , only:['withdrawRequestApproved']),
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.transfer.approved') , only:['withdrawTransferApproved']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.delete') , only:['withdrawRequestDelete']),
         ];
     }
@@ -427,49 +425,5 @@ class WithdrawController extends Controller implements HasMiddleware
         $withdraw = Withdraw::findOrFail($id);
 
         $withdraw->delete();
-    }
-
-    public function withdrawTransferApproved(Request $request)
-    {
-        if ($request->ajax()) {
-            $query = BalanceTransfer::where('send', 'Withdraw Balance');
-
-            if ($request->user_id){
-                $query->where('balance_transfers.user_id', $request->user_id);
-            }
-
-            $query->select('balance_transfers.*')->orderBy('created_at', 'desc');
-
-            // sum of total withdraw balance transfers
-            $totalWithdrawBalanceTransferAmount = (clone $query)->sum('amount');
-
-            $approvedData = $query->get();
-
-            return DataTables::of($approvedData)
-                ->addIndexColumn()
-                ->editColumn('user_name', function ($row) {
-                    return '
-                        <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
-                        ';
-                })
-                ->editColumn('amount', function ($row) {
-                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
-                })
-                ->editColumn('payable_amount', function ($row) {
-                    return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->payable_amount . '</span>';
-                })
-                ->editColumn('created_at', function ($row) {
-                    return '
-                        <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->created_at)) . '</span>
-                        ';
-                })
-                ->with([
-                    'totalWithdrawBalanceTransferAmount' => $totalWithdrawBalanceTransferAmount,
-                ])
-                ->rawColumns(['user_name', 'amount', 'payable_amount', 'created_at'])
-                ->make(true);
-        }
-
-        return view('backend.withdraw.transfer');
     }
 }

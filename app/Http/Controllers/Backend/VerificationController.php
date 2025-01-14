@@ -83,7 +83,7 @@ class VerificationController extends Controller implements HasMiddleware
 
         $userIps = UserDevice::where('user_id', $verification->user_id)->groupBy('ip')->pluck('ip')->toArray();
         $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
-            ->where('user_id', '!=', $verification->id)
+            ->where('user_id', '!=', $verification->user_id)
             ->groupBy('user_id')
             ->pluck('user_id')
             ->toArray();

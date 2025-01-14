@@ -89,7 +89,7 @@ class UserController extends Controller
                 // Calculate the total amount for each status and year
                 $amount = BalanceTransfer::whereYear('created_at', $year)
                     ->where('user_id', Auth::id())
-                    ->where('send', $status)
+                    ->where('send_method', $status)
                     ->sum('amount');
                 $data[] = $amount;
             }
@@ -791,32 +791,35 @@ class UserController extends Controller
 
             $query->select('balance_transfers.*')->orderBy('created_at', 'desc');
 
-            if ($request->method) {
-                $query->where('balance_transfers.send', $request->method);
+            if ($request->send_method) {
+                $query->where('balance_transfers.send_method', $request->send_method);
             }
 
-            $totalDepositBalanceAmount = (clone $query)->where('send', 'Deposit Balance')->sum('amount');
-            $totalWithdrawBalanceAmount = (clone $query)->where('send', 'Withdraw Balance')->sum('amount');
+            if ($request->receive_method) {
+                $query->where('balance_transfers.receive_method', $request->receive_method);
+            }
+
+            $totalBalanceTransferAmount = (clone $query)->sum('amount');
 
             $balance_transfers = $query->get();
 
             return DataTables::of($balance_transfers)
                 ->addIndexColumn()
-                ->editColumn('send', function ($row) {
-                    if ($row->send == 'Deposit Balance') {
-                        $send = '<span class="badge bg-info">' . $row->send . '</span>';
+                ->editColumn('send_method', function ($row) {
+                    if ($row->send_method == 'Deposit Balance') {
+                        $send_method = '<span class="badge bg-info">' . $row->send_method . '</span>';
                     } else {
-                        $send = '<span class="badge bg-primary">' . $row->send . '</span>';
+                        $send_method = '<span class="badge bg-primary">' . $row->send_method . '</span>';
                     }
-                    return $send;
+                    return $send_method;
                 })
-                ->editColumn('receive', function ($row) {
-                    if ($row->receive == 'Deposit Balance') {
-                        $receive = '<span class="badge bg-info">' . $row->receive . '</span>';
+                ->editColumn('receive_method', function ($row) {
+                    if ($row->receive_method == 'Deposit Balance') {
+                        $receive_method = '<span class="badge bg-info">' . $row->receive_method . '</span>';
                     } else {
-                        $receive = '<span class="badge bg-primary">' . $row->receive . '</span>';
+                        $receive_method = '<span class="badge bg-primary">' . $row->receive_method . '</span>';
                     }
-                    return $receive;
+                    return $receive_method;
                 })
                 ->editColumn('amount', function ($row) {
                     return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
@@ -830,8 +833,8 @@ class UserController extends Controller
                 ->addColumn('approved_at', function ($row) {
                     return date('d M Y h:i A', strtotime($row->approved_at));
                 })
-                ->with(['totalDepositBalanceAmount' => $totalDepositBalanceAmount, 'totalWithdrawBalanceAmount' => $totalWithdrawBalanceAmount])
-                ->rawColumns(['send', 'receive', 'amount', 'payable_amount', 'created_at', 'approved_at'])
+                ->with(['totalBalanceTransferAmount' => $totalBalanceTransferAmount])
+                ->rawColumns(['send_method', 'receive_method', 'amount', 'payable_amount', 'created_at', 'approved_at'])
                 ->make(true);
         }
 
@@ -845,8 +848,8 @@ class UserController extends Controller
         $withdrawChargePercentage = get_default_settings('withdraw_balance_transfer_charge_percentage');
 
         $validator = Validator::make($request->all(), [
-            'send' => 'required|in:Deposit Balance,Withdraw Balance',
-            'receive' => 'required|in:Deposit Balance,Withdraw Balance',
+            'send_method' => 'required|in:Deposit Balance,Withdraw Balance',
+            'receive_method' => 'required|in:Deposit Balance,Withdraw Balance',
             'amount' => 'required|numeric|min:1|max:10000',
         ]);
 
@@ -856,7 +859,7 @@ class UserController extends Controller
                 'error'=> $validator->errors()->toArray()
             ]);
         }else{
-            if ($request->send == 'Deposit Balance') {
+            if ($request->send_method == 'Deposit Balance') {
                 if ($request->amount > $request->user()->deposit_balance) {
                     return response()->json([
                         'status' => 401,
@@ -886,8 +889,8 @@ class UserController extends Controller
 
             BalanceTransfer::create([
                 'user_id' => $request->user()->id,
-                'send' => $request->send,
-                'receive' => $request->receive,
+                'send_method' => $request->send_method,
+                'receive_method' => $request->receive_method,
                 'amount' => $request->amount,
                 'payable_amount' => $payable_amount,
             ]);

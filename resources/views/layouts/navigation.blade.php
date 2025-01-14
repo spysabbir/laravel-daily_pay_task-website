@@ -404,11 +404,6 @@
                             <a href="{{ route('backend.deposit.request.approved') }}" class="nav-link">Approved</a>
                         </li>
                         @endcan
-                        @can('deposit.transfer.approved')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.deposit.transfer.approved') }}" class="nav-link">Transfer</a>
-                        </li>
-                        @endcan
                     </ul>
                 </div>
             </li>
@@ -431,11 +426,6 @@
                         @can('withdraw.request.approved')
                         <li class="nav-item">
                             <a href="{{ route('backend.withdraw.request.approved') }}" class="nav-link">Approved</a>
-                        </li>
-                        @endcan
-                        @can('withdraw.transfer.approved')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.withdraw.transfer.approved') }}" class="nav-link">Transfer</a>
                         </li>
                         @endcan
                     </ul>
@@ -543,6 +533,17 @@
                     </ul>
                 </div>
             </li>
+        @endcan
+
+        @can('BalanceTransferMenu')
+            @can('balance.transfer')
+            <li class="nav-item">
+                <a href="{{ route('backend.balance.transfer') }}" class="nav-link">
+                    <i class="link-icon" data-feather="refresh-cw"></i>
+                    <span class="link-title">Balance Transfer</span>
+                </a>
+            </li>
+            @endcan
         @endcan
 
         <li class="nav-item nav-category">Service Agent</li>

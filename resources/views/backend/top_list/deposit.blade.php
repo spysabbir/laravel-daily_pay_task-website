@@ -31,11 +31,7 @@
                                 <th>Sl No</th>
                                 <th>User Id</th>
                                 <th>User Name</th>
-                                <th>Pending Amount</th>
-                                <th>Rejected Amount</th>
-                                <th>Approved Amount</th>
-                                <th>Transfer Amount</th>
-                                <th>Total Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Total Approved Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,10 +42,6 @@
                                 <th>#</th>
                                 <th>#</th>
                                 <th class="text-center">Total</th>
-                                <th id="total_pending"></th>
-                                <th id="total_rejected"></th>
-                                <th id="total_approved"></th>
-                                <th id="total_transfer"></th>
                                 <th id="grand_total"></th>
                             </tr>
                         </tfoot>
@@ -64,6 +56,13 @@
 @section('script')
 <script>
     $(document).ready(function() {
+        // Ajax setup for CSRF token
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        
         // Function to update dynamic message for messageTop
         function updateDynamicMessageTop() {
             var startDate = $('#filter_start_date').val() || 'No Start Date';
@@ -91,19 +90,11 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_id', name: 'user_id' },
                 { data: 'user_name', name: 'user_name' },
-                { data: 'pending_amount', name: 'pending_amount' },
-                { data: 'rejected_amount', name: 'rejected_amount' },
-                { data: 'approved_amount', name: 'approved_amount' },
-                { data: 'transfer_amount', name: 'transfer_amount' },
                 { data: 'total_amount', name: 'total_amount' },
             ],
             drawCallback: function(settings) {
                 var response = settings.json;
 
-                $('#total_pending').html(response.total_pending);
-                $('#total_rejected').html(response.total_rejected);
-                $('#total_approved').html(response.total_approved);
-                $('#total_transfer').html(response.total_transfer);
                 $('#grand_total').html(response.grand_total);
             },
             initComplete: function() {
@@ -112,13 +103,6 @@
                     updateDynamicMessageTop();
                     table.ajax.reload();
                 });
-            }
-        });
-
-        // Ajax setup for CSRF token
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
     });
