@@ -14,7 +14,6 @@
                                 <th>Status</th>
                                 <th>Reason</th>
                                 <th>Blocked Duration</th>
-                                <th>Unblocked Request</th>
                                 <th>Resolved Date</th>
                                 <th>Created By</th>
                                 <th>Created At</th>
@@ -34,7 +33,6 @@
                                     </td>
                                     <td>{{ $status->reason }}</td>
                                     <td>{{ $status->blocked_duration ? $status->blocked_duration . ' hours' : 'N/A' }}</td>
-                                    <td>{{ $status->blocked_resolved_request_at ? date('d M, Y h:i:s A', strtotime($status->blocked_resolved_request_at)) : 'N/A' }}</td>
                                     <td>{{ $status->resolved_at ? date('d M, Y h:i:s A', strtotime($status->resolved_at)) : 'N/A' }}</td>
                                     <td>{{ $status->createdBy->name }}</td>
                                     <td>{{ date('d M, Y h:i:s A', strtotime($status->created_at)) }}</td>

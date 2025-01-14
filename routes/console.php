@@ -23,12 +23,10 @@ Schedule::call(function () {
     foreach ($newsletters as $newsletter) {
         $newsletter->update(['status' => 'Sent']);
 
-        $recipients = $newsletter->mail_type == 'Subscriber'
-            ? Subscriber::where('status', 'Active')->pluck('email')
-            : User::where('status', 'Active')->pluck('email');
+        $recipients = Subscriber::where('status', 'Active')->pluck('id', 'email');
 
         if ($recipients->isNotEmpty()) {
-            Mail::to($recipients)->queue(new NewsletterMail($newsletter));
+            Mail::to($recipients)->queue(new NewsletterMail($newsletter, $recipients->id));
         }
     }
 })->everyMinute();
@@ -49,28 +47,19 @@ Schedule::call(function () {
         if ($now->isSameMinute($activeTime)) {
             $user = User::find($userStatus->user_id);
 
-            if ($userStatus->blocked_resolved_charge) {
-                $user->update([
-                    'withdraw_balance' => $user->withdraw_balance + $userStatus->blocked_resolved_charge
-                ]);
-
-                $userStatus->update([
-                    'blocked_resolved_charge' => null,
-                ]);
-            }
-
             $user->update([
                 'status' => 'Active',
             ]);
 
             $userStatus->update([
                 'resolved_at' => $now,
+                'updated_by' => 1,
             ]);
 
             $userStatus = UserStatus::create([
                 'user_id' => $user->id,
                 'status' => 'Active',
-                'reason' => 'Your account has been unblocked successfully!',
+                'reason' => 'Your account has been automatically unblocked successfully',
                 'resolved_at' => $now,
                 'created_by' => 1,
                 'created_at' => $now,

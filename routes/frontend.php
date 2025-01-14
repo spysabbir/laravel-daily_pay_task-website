@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
 
     Route::get('/user-profile/{id}', [UserController::class, 'userProfile'])->name('user.profile');
 
-    Route::post('/instant-unblocked-request', [UserController::class, 'instantUnblockedRequest'])->name('instant.unblocked.request');
+    Route::post('/instant-unblocked', [UserController::class, 'instantUnblocked'])->name('instant.unblocked');
 
     Route::get('/block-unblock-user/{id}', [UserController::class, 'blockUnblockUser'])->name('block.unblock.user');
     Route::get('/block-list', [UserController::class, 'blockList'])->name('block_list');

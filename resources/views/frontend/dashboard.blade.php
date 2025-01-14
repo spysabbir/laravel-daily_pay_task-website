@@ -66,35 +66,27 @@
 	<div class="alert-heading mb-3">
         <i data-feather="alert-circle"></i>
         <h4> Your account is blocked!</h4>
+        <h5 class="text-danger mt-2">
+            Currently, Your account has been blocked {{ $userBlockedStatusCount }} times if your account is blocked {{ get_default_settings('user_max_blocked_time_for_banned') }} times then the next time you make any mistake your account will be banned finally.
+        </h5>
     </div>
 	<p class="mt-3">
         Your account is blocked by admin. You can't access your account. Please wait for the unblock! If you think this is a mistake, please contact us! We are always ready to help you.
     </p>
     <hr>
-    @if ($userStatus->blocked_resolved_request_at != null)
-        <span class="text-success mt-2">
-            Already send Iinstant unblock request to admin. Please wait for the admin response. If your account is not unblocked within 1 hour, please contact us.
-        </span><br>
-        <span class="text-info mt-2">
-            Note: If your account is automatically unblocked before the admin response, you will get an unblock charge refund on your withdraw balance.
-        </span>
-    @else
     <div>
         <strong>Blocked Reason: {{ $userStatus->reason }}</strong><br>
         <strong>Blocked Time: {{ date('d M, Y h:i A', strtotime($userStatus->created_at)) }}</strong><br>
         <strong>Blocked Duration: {{ $userStatus->blocked_duration }} hours</strong><br>
         <strong>Unblocked Time: {{ date('d M, Y h:i A', strtotime($userStatus->created_at) + $userStatus->blocked_duration * 60 * 60) }}</strong> <br>
         <span class="text-info">
-            If you want to unblock your account before the unblocked time, you can pay the unblock charge. The unblock charge is <strong>{{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('user_blocked_instant_resolved_charge') }}</strong>.<br>
+            If you want to instantly unblock your account before the unblocked time, you can pay the unblock charge. The unblock charge is <strong>{{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('user_blocked_instant_resolved_charge') * $userBlockedStatusCount }}</strong>. Contact us if your account does not have a balance.
         </span>
     </div>
-    @endif
 	<hr>
 	<div class="mb-0 d-flex justify-content-center align-items-center flex-wrap">
         <a href="{{ route('support') }}" class="btn btn-danger btn-xs mx-2">Contact Us</a>
-        @if ($userStatus->blocked_resolved_request_at == null)
-            <button type="button" class="btn btn-primary btn-xs mx-2" data-bs-toggle="modal" data-bs-target=".instantUnblockedModel">Instant Unblocked</button>
-        @endif
+        <button type="button" class="btn btn-primary btn-xs mx-2" data-bs-toggle="modal" data-bs-target=".instantUnblockedModel">Instant Unblocked</button>
         <!-- Normal Withdraw Modal -->
         <div class="modal fade instantUnblockedModel" tabindex="-1" aria-labelledby="instantUnblockedModelLabel" aria-hidden="true">
             <div class="modal-dialog modal-md">
@@ -918,7 +910,7 @@
             submitButton.prop("disabled", true).text("Submitting...");
 
             $.ajax({
-                url: "{{ route('instant.unblocked.request') }}",
+                url: "{{ route('instant.unblocked') }}",
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
@@ -934,7 +926,7 @@
                         if (response.status == 200) {
                             $('.instantUnblockedModel').modal('hide');
                             $('#instantUnblockedModelForm')[0].reset();
-                            toastr.success('Withdraw request sent successfully.');
+                            toastr.success('User unblocked successfully.');
 
                             setTimeout(function() {
                                 location.reload();

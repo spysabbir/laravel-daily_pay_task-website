@@ -17,7 +17,6 @@ return new class extends Migration
             $table->enum('status', ['Active', 'Blocked', 'Banned']);
             $table->text('reason');
             $table->integer('blocked_duration')->nullable(); // in hours
-            $table->timestamp('blocked_resolved_request_at')->nullable();
             $table->decimal('blocked_resolved_charge', 10, 2)->nullable();
             $table->timestamp('resolved_at')->nullable();
             $table->integer('created_by')->nullable();

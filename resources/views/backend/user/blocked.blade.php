@@ -29,16 +29,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="filter_instant_unblocked_check" class="form-label">Instant Unblocked Check</label>
-                                <select class="form-select filter_data" id="filter_instant_unblocked_check">
-                                    <option value="">-- Instant Unblocked Check --</option>
-                                    <option value="Requested">Requested</option>
-                                    <option value="Not Requested">Not Requested</option>
-                                </select>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -57,7 +47,6 @@
                                 <th>Join Date</th>
                                 <th>Last Login</th>
                                 <th>Duplicate Device Check</th>
-                                <th>Instant Unblocked Check</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -126,7 +115,6 @@
                 data: function (d) {
                     d.user_id = $('#filter_user_id').val();
                     d.duplicate_device_check = $('#filter_duplicate_device_check').val();
-                    d.instant_unblocked_check = $('#filter_instant_unblocked_check').val();
                 },
                 dataSrc: function (json) {
                     // Update total deposit count
@@ -147,7 +135,6 @@
                 { data: 'created_at', name: 'created_at' },
                 { data: 'last_login', name: 'last_login' },
                 { data: 'duplicate_device_check', name: 'duplicate_device_check' },
-                { data: 'instant_unblocked_check', name: 'instant_unblocked_check' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

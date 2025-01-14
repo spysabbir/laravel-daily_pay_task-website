@@ -26,6 +26,7 @@ use App\Models\Rating;
 use App\Models\BalanceTransfer;
 use App\Events\SupportEvent;
 use Carbon\Carbon;
+use App\Notifications\UserStatusNotification;
 
 class UserController extends Controller
 {
@@ -120,9 +121,8 @@ class UserController extends Controller
             ];
         }
 
-        // return $totalReportSendApexLineData;
-
         $userStatus = UserStatus::where('user_id', Auth::id())->latest()->first();
+        $userBlockedStatusCount = UserStatus::where('user_id', Auth::id())->where('status', 'Blocked')->count();
 
         // PostTask Charges
         $postTaskChargeTotal = PostTask::where('user_id', Auth::id())
@@ -256,7 +256,7 @@ class UserController extends Controller
             // 'total_pending_report_send' => Report::where('reported_by', Auth::id())->where('status', 'Pending')->count(),
             // 'total_false_report_send' => Report::where('reported_by', Auth::id())->where('status', 'False')->count(),
             // 'total_received_report_send' => Report::where('reported_by', Auth::id())->where('status', 'Received')->count(),
-        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalBalanceTransferChartjsLineData', 'totalReportSendApexLineData', 'userStatus', 'postTaskChargeTotal', 'postTaskChargeWaiting', 'postTaskChargePayment', 'postTaskChargeRefund', 'postTaskChargeHold'));
+        ], compact('monthlyWithdraw', 'monthlyDeposite', 'totalBalanceTransferChartjsLineData', 'totalReportSendApexLineData', 'userStatus', 'postTaskChargeTotal', 'postTaskChargeWaiting', 'postTaskChargePayment', 'postTaskChargeRefund', 'postTaskChargeHold', 'userBlockedStatusCount'));
     }
 
     // Profile.............................................................................................................
@@ -406,7 +406,7 @@ class UserController extends Controller
     }
 
     // Instant Unblocked
-    public function instantUnblockedRequest(Request $request)
+    public function instantUnblocked(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'payment_method' => 'required|in:Deposit Balance,Withdraw Balance',
@@ -420,7 +420,8 @@ class UserController extends Controller
         }else{
             $user = User::findOrFail(Auth::id());
             $userStatus = UserStatus::where('user_id', $user->id)->latest()->first();
-            $user_blocked_instant_resolved_charge = get_default_settings('user_blocked_instant_resolved_charge');
+            $userBlockedStatusCount = UserStatus::where('user_id', Auth::id())->where('status', 'Blocked')->count();
+            $user_blocked_instant_resolved_charge = get_default_settings('user_blocked_instant_resolved_charge') * $userBlockedStatusCount;
 
             if ($request->payment_method == 'Deposit Balance') {
                 if ($user->deposit_balance >= $user_blocked_instant_resolved_charge) {
@@ -446,10 +447,25 @@ class UserController extends Controller
                 }
             }
 
+            $user->update([
+                'status' => 'Active',
+            ]);
+
             $userStatus->update([
                 'blocked_resolved_charge' => $user_blocked_instant_resolved_charge,
-                'blocked_resolved_request_at' => now(),
+                'resolved_at' => now(),
+                'updated_by' => Auth::id(),
             ]);
+
+            $userStatus = UserStatus::create([
+                'user_id' => $user->id,
+                'status' => 'Active',
+                'reason' => 'Your account has been instantly unblocked successfully.',
+                'resolved_at' => now(),
+                'created_by' => Auth::id(),
+            ]);
+
+            $user->notify(new UserStatusNotification($userStatus));
 
             return response()->json([
                 'status' => 200,

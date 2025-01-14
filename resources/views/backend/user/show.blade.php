@@ -31,9 +31,13 @@
                 </div>
                 @endif
                 <div class="d-flex justify-content-center align-items-center flex-wrap mb-2">
-                    <span class="badge bg-primary m-1">Deposit Balance: {{ $depositBalance }}</span>
-                    <span class="badge bg-primary m-1">Withdraw Balance: {{ $withdrawBalance }}</span>
-                    <span class="badge bg-warning text-dark m-1">Hold Balance: {{ $holdBalance }}</span>
+                    <span class="badge bg-primary m-1">Deposit Balance: {{ get_site_settings('site_currency_symbol') }} {{ $depositBalance }}</span>
+                    <span class="badge bg-primary m-1">Withdraw Balance: {{ get_site_settings('site_currency_symbol') }} {{ $withdrawBalance }}</span>
+                    <span class="badge bg-warning text-dark m-1">Hold Balance: {{ get_site_settings('site_currency_symbol') }} {{ $holdBalance }}</span>
+                </div>
+                <div class="d-flex justify-content-center align-items-center flex-wrap mb-2">
+                    <span class="badge bg-primary m-1">Deposit Balance Transfer: {{ get_site_settings('site_currency_symbol') }} {{ $transferDepositBalance }}</span>
+                    <span class="badge bg-primary m-1">Withdraw Balance Transfer: {{ get_site_settings('site_currency_symbol') }} {{ $transferWithdrawBalance }}</span>
                 </div>
                 <div class="text-center mb-2">
                     <span class="badge bg-danger">Report Received: {{ $reportsReceived }}</span>
@@ -129,26 +133,20 @@
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
                 <div class="card bg-warning text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">{{ $pendingDeposit }}</h4>
+                        <h4 class="card-title">{{ get_site_settings('site_currency_symbol') }} {{ $pendingDeposit }}</h4>
                         <p class="card-text">Pending</p>
                     </div>
                 </div>
                 <div class="card bg-success text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">{{ $approvedDeposit }}</h4>
+                        <h4 class="card-title">{{ get_site_settings('site_currency_symbol') }} {{ $approvedDeposit }}</h4>
                         <p class="card-text">Approved</p>
                     </div>
                 </div>
                 <div class="card bg-danger text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">{{ $rejectedDeposit }}</h4>
+                        <h4 class="card-title">{{ get_site_settings('site_currency_symbol') }} {{ $rejectedDeposit }}</h4>
                         <p class="card-text">Rejected</p>
-                    </div>
-                </div>
-                <div class="card bg-info text-dark">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ $transferDeposit }}</h4>
-                        <p class="card-text">Transfer</p>
                     </div>
                 </div>
             </div>
@@ -160,26 +158,20 @@
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
                 <div class="card bg-warning text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">{{ $pendingWithdraw }}</h4>
+                        <h4 class="card-title">{{ get_site_settings('site_currency_symbol') }} {{ $pendingWithdraw }}</h4>
                         <p class="card-text">Pending</p>
                     </div>
                 </div>
                 <div class="card bg-success text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">{{ $approvedWithdraw }}</h4>
+                        <h4 class="card-title">{{ get_site_settings('site_currency_symbol') }} {{ $approvedWithdraw }}</h4>
                         <p class="card-text">Approved</p>
                     </div>
                 </div>
                 <div class="card bg-danger text-dark">
                     <div class="card-body">
-                        <h4 class="card-title">{{ $rejectedWithdraw }}</h4>
+                        <h4 class="card-title">{{ get_site_settings('site_currency_symbol') }} {{ $rejectedWithdraw }}</h4>
                         <p class="card-text">Rejected</p>
-                    </div>
-                </div>
-                <div class="card bg-info text-dark">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ $transferWithdraw }}</h4>
-                        <p class="card-text">Transfer</p>
                     </div>
                 </div>
             </div>
@@ -351,7 +343,7 @@
                                 <td>{{ $userStatuse->blocked_duration ? $userStatuse->blocked_duration . ' hours' : 'N/A' }}</td>
                                 <td>{{ $userStatuse->created_by ? $userStatuse->createdBy->name : 'N/A' }}</td>
                                 <td>{{ date('j M, Y  h:i:s A', strtotime($userStatuse->created_at)) }}</td>
-                                <td>{{ $userStatuse->blocked_resolved_request_at ? date('j M, Y  h:i:s A', strtotime($userStatuse->blocked_resolved_request_at)) : 'N/A' }}</td>
+                                <td>{{ $userStatuse->resolved_at ? date('j M, Y  h:i:s A', strtotime($userStatuse->resolved_at)) : 'N/A' }}</td>
                             </tr>
                             @empty
                             <tr>

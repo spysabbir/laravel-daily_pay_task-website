@@ -93,9 +93,8 @@
             $contact = App\Models\Contact::where('status', 'Unread')->count();
             $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', 1)->get();
             $blockedUserIds = App\Models\User::where('status', 'Blocked')->pluck('id')->toArray();
-            $instantUnblock = App\Models\UserStatus::where('status', 'Blocked')->whereIn('user_id', $blockedUserIds)->whereNot('blocked_resolved_request_at', null)->where('resolved_at', null)->count();
             $supportsCount = $supports->count();
-            $backend_request = ($verification > 0 ? 1 : 0) + ($deposit > 0 ? 1 : 0) + ($withdraw > 0 ? 1 : 0) + ($postTask > 0 ? 1 : 0) + ($proofTask > 0 ? 1 : 0) + ($report > 0 ? 1 : 0) + ($contact > 0 ? 1 : 0) + ($supportsCount > 0 ? 1 : 0) + ($instantUnblock > 0 ? 1 : 0);
+            $backend_request = ($verification > 0 ? 1 : 0) + ($deposit > 0 ? 1 : 0) + ($withdraw > 0 ? 1 : 0) + ($postTask > 0 ? 1 : 0) + ($proofTask > 0 ? 1 : 0) + ($report > 0 ? 1 : 0) + ($contact > 0 ? 1 : 0) + ($supportsCount > 0 ? 1 : 0);
         @endphp
 
         <!-- sidebar -->
@@ -399,19 +398,6 @@
                                                 <strong>Support Message Request</strong>
                                             </p>
                                             <p class="tx-12 text-muted">{{ $supportsCount }} Pending</p>
-                                        </div>
-                                    </a>
-                                    @endif
-                                    @if ($instantUnblock > 0)
-                                    <a href="{{ route('backend.user.blocked') }}" class="dropdown-item d-flex align-items-center py-2">
-                                        <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
-                                            <i class="link-icon text-white" data-feather="alert-circle"></i>
-                                        </div>
-                                        <div class="flex-grow-1 me-2">
-                                            <p>
-                                                <strong>Instant Unblock Request</strong>
-                                            </p>
-                                            <p class="tx-12 text-muted">{{ $instantUnblock }} Pending</p>
                                         </div>
                                     </a>
                                     @endif

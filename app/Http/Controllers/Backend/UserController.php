@@ -18,6 +18,7 @@ use App\Models\PostTask;
 use App\Models\ProofTask;
 use App\Models\Report;
 use App\Models\Withdraw;
+use App\Models\BalanceTransfer;
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -305,18 +306,6 @@ class UserController extends Controller implements HasMiddleware
                 });
             }
 
-            if ($request->instant_unblocked_check) {
-                $allUser = $allUser->filter(function ($user) use ($request) {
-                    $userStatus = UserStatus::where('user_id', $user->id)
-                        ->where('status', 'Blocked')
-                        ->latest()
-                        ->first();
-
-                    $isRequested = $userStatus && $userStatus->blocked_resolved_request_at != null;
-                    return $request->instant_unblocked_check === 'Requested' ? $isRequested : !$isRequested;
-                });
-            }
-
             // Clone the query for counts
             $totalUsersCount = (clone $allUser)->count();
 
@@ -400,14 +389,6 @@ class UserController extends Controller implements HasMiddleware
                         ? '<span class="badge bg-danger">Matched</span>'
                         : '<span class="badge bg-success">Not Matched</span>';
                 })
-                ->editColumn('instant_unblocked_check', function ($row) {
-                    $userStatus = UserStatus::where('user_id', $row->id)->where('status', 'Blocked')->latest()->first();
-                    if ($userStatus->blocked_resolved_request_at != null) {
-                        return '<span class="badge bg-danger">Requested</span>';
-                    } else {
-                        return '<span class="badge bg-success">Not Requested</span>';
-                    }
-                })
                 ->addColumn('action', function ($row) {
                     $deletePermission = auth()->user()->can('user.destroy');
                     $statusPermission = auth()->user()->can('user.status');
@@ -430,7 +411,7 @@ class UserController extends Controller implements HasMiddleware
                 ->with([
                     'totalUsersCount' => $totalUsersCount,
                 ])
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'instant_unblocked_check', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'action'])
                 ->make(true);
         }
 
@@ -583,17 +564,18 @@ class UserController extends Controller implements HasMiddleware
                 $holdBalance += $chargePerTask * $reviewedCount;
             }
 
+        $transferDepositBalance = BalanceTransfer::where('user_id', $id)->where('send_method', 'Deposit Balance')->sum('amount');
+        $transferWithdrawBalance = BalanceTransfer::where('user_id', $id)->where('send_method', 'Withdraw Balance')->sum('amount');
+
         $reportsReceived = Report::where('user_id', $id)->where('status', 'Received')->count();
         // Deposit
         $pendingDeposit = Deposit::where('user_id', $id)->where('status', 'Pending')->sum('amount');
-        $approvedDeposit = Deposit::where('user_id', $id)->where('status', 'Approved')->whereNot('method', 'Withdraw Balance')->sum('amount');
+        $approvedDeposit = Deposit::where('user_id', $id)->where('status', 'Approved')->sum('amount');
         $rejectedDeposit = Deposit::where('user_id', $id)->where('status', 'Rejected')->sum('amount');
-        $transferDeposit = Deposit::where('user_id', $id)->where('status', 'Approved')->where('method', 'Withdraw Balance')->sum('amount');
         // Withdraw
         $pendingWithdraw = Withdraw::where('user_id', $id)->where('status', 'Pending')->sum('amount');
-        $approvedWithdraw = Withdraw::where('user_id', $id)->where('status', 'Approved')->whereNot('method', 'Deposit Balance')->sum('amount');
+        $approvedWithdraw = Withdraw::where('user_id', $id)->where('status', 'Approved')->sum('amount');
         $rejectedWithdraw = Withdraw::where('user_id', $id)->where('status', 'Rejected')->sum('amount');
-        $transferWithdraw = Withdraw::where('user_id', $id)->where('status', 'Approved')->where('method', 'Deposit Balance')->sum('amount');
         // Posted Task
         $pendingPostedTask = PostTask::where('user_id', $id)->where('status', 'Pending')->count();
         $runningPostedTask = PostTask::where('user_id', $id)->where('status', 'Running')->count();
@@ -616,7 +598,7 @@ class UserController extends Controller implements HasMiddleware
         $reportsSendPending = Report::where('reported_by', $id)->where('status', 'Pending')->count();
         $reportsSendFalse = Report::where('reported_by', $id)->where('status', 'False')->count();
         $reportsSendReceived = Report::where('reported_by', $id)->where('status', 'Received')->count();
-        return view('backend.user.show', compact('user', 'userStatuses', 'userDevices', 'userVerification' , 'depositBalance', 'pendingDeposit', 'approvedDeposit', 'rejectedDeposit', 'transferDeposit', 'withdrawBalance', 'pendingWithdraw', 'approvedWithdraw', 'rejectedWithdraw', 'transferWithdraw', 'pendingPostedTask', 'runningPostedTask', 'rejectedPostedTask', 'canceledPostedTask', 'pausedPostedTask', 'completedPostedTask', 'pendingPostedTaskProofSubmit', 'approvedPostedTaskProofSubmit', 'rejectedPostedTaskProofSubmit', 'reviewedPostedTaskProofSubmit', 'pendingWorkedTask', 'approvedWorkedTask', 'rejectedWorkedTask', 'reviewedWorkedTask', 'reportsSendPending', 'reportsSendFalse', 'reportsSendReceived', 'reportsReceived', 'holdBalance'));
+        return view('backend.user.show', compact('user', 'userStatuses', 'userDevices', 'userVerification' , 'depositBalance', 'pendingDeposit', 'approvedDeposit', 'rejectedDeposit', 'transferDepositBalance', 'withdrawBalance', 'pendingWithdraw', 'approvedWithdraw', 'rejectedWithdraw', 'transferWithdrawBalance', 'pendingPostedTask', 'runningPostedTask', 'rejectedPostedTask', 'canceledPostedTask', 'pausedPostedTask', 'completedPostedTask', 'pendingPostedTaskProofSubmit', 'approvedPostedTaskProofSubmit', 'rejectedPostedTaskProofSubmit', 'reviewedPostedTaskProofSubmit', 'pendingWorkedTask', 'approvedWorkedTask', 'rejectedWorkedTask', 'reviewedWorkedTask', 'reportsSendPending', 'reportsSendFalse', 'reportsSendReceived', 'reportsReceived', 'holdBalance'));
     }
 
     public function userStatus(string $id)
@@ -700,6 +682,7 @@ class UserController extends Controller implements HasMiddleware
         $userStatus = UserStatus::where('user_id', $id)->latest()->first();
         if ($request->status == 'Active') {
             $userStatus->update([
+                'updated_by' => auth()->user()->id,
                 'resolved_at' => now(),
             ]);
         }

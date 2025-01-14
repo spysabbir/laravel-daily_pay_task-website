@@ -119,7 +119,6 @@
                                 <th>Reason</th>
                                 <th>Blocked Time</th>
                                 <th>Duration</th>
-                                <th>Resolved Request Time</th>
                                 <th>Resolved Time</th>
                             </tr>
                         </thead>
@@ -130,7 +129,6 @@
                                 <td>{{ $status->reason }}</td>
                                 <td>{{ date('j M, Y  h:i:s A', strtotime($status->created_at)) }}</td>
                                 <td>{{ $status->blocked_duration }} Hours</td>
-                                <td>{{ $status->blocked_resolved_request_at ? date('j M, Y  h:i:s A', strtotime($status->blocked_resolved_request_at)) : 'Not Request' }}</td>
                                 <td>{{ $status->resolved_at ? date('j M, Y  h:i:s A', strtotime($status->resolved_at)) : 'Not Resolved' }}</td>
                             </tr>
                             @empty
