@@ -11,7 +11,7 @@
                 <form class="signup-form" action="{{ route('register') }}" method="POST">
                     @csrf
                     <div class="text-center mb-4">
-                        <strong class="text-info">Note: The all fields must be as per your verification document (e.g. NID or Passport or Driving License)</strong>
+                        <strong class="text-info">Note: The Name, Date of Birth, Gender fields must be as per your verification document (e.g. NID or Passport or Driving License).</strong>
                     </div>
                     <input type="hidden" name="referral_code" value="{{ $referral_code }}">
                     <div class="form-group">

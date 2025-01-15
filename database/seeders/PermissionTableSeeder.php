@@ -122,7 +122,7 @@ class PermissionTableSeeder extends Seeder
             // Notification
             ['name' => 'SendNotificationMenu', 'group_name' => 'SendNotificationManagement', 'guard_name' => 'web'],
             ['name' => 'send.notification', 'group_name' => 'SendNotificationManagement', 'guard_name' => 'web'],
-            ['name' => 'send-notification-store', 'group_name' => 'SendNotificationManagement', 'guard_name' => 'web'],
+            ['name' => 'send.notification.store', 'group_name' => 'SendNotificationManagement', 'guard_name' => 'web'],
             // TaskPostChargeManagement
             ['name' => 'TaskPostChargeMenu', 'group_name' => 'TaskPostChargeManagement', 'guard_name' => 'web'],
             ['name' => 'task_post_charge.index', 'group_name' => 'TaskPostChargeManagement', 'guard_name' => 'web'],
