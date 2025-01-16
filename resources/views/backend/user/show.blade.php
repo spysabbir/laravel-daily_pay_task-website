@@ -35,10 +35,6 @@
                     <span class="badge bg-primary m-1">Withdraw Balance: {{ get_site_settings('site_currency_symbol') }} {{ $withdrawBalance }}</span>
                     <span class="badge bg-warning text-dark m-1">Hold Balance: {{ get_site_settings('site_currency_symbol') }} {{ $holdBalance }}</span>
                 </div>
-                <div class="d-flex justify-content-center align-items-center flex-wrap mb-2">
-                    <span class="badge bg-primary m-1">Deposit Balance Transfer: {{ get_site_settings('site_currency_symbol') }} {{ $transferDepositBalance }}</span>
-                    <span class="badge bg-primary m-1">Withdraw Balance Transfer: {{ get_site_settings('site_currency_symbol') }} {{ $transferWithdrawBalance }}</span>
-                </div>
                 <div class="text-center mb-2">
                     <span class="badge bg-danger">Report Received: {{ $reportsReceived }}</span>
                 </div>
@@ -149,6 +145,12 @@
                         <p class="card-text">Rejected</p>
                     </div>
                 </div>
+                <div class="card bg-primary text-dark">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ get_site_settings('site_currency_symbol') }} {{ $transferDepositBalance }}</h4>
+                        <p class="card-text">Deposit Balance Transfer</p>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card mb-3">
@@ -172,6 +174,12 @@
                     <div class="card-body">
                         <h4 class="card-title">{{ get_site_settings('site_currency_symbol') }} {{ $rejectedWithdraw }}</h4>
                         <p class="card-text">Rejected</p>
+                    </div>
+                </div>
+                <div class="card bg-primary text-dark">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ get_site_settings('site_currency_symbol') }} {{ $transferWithdrawBalance }}</h4>
+                        <p class="card-text">Withdraw Balance Transfer</p>
                     </div>
                 </div>
             </div>

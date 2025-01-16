@@ -709,6 +709,18 @@ class UserController extends Controller implements HasMiddleware
 
     public function userDestroy(string $id)
     {
+        $depositRequests = Deposit::where('user_id', $id)->where('status', 'Pending')->count();
+        $withdrawRequests = Withdraw::where('user_id', $id)->where('status', 'Pending')->count();
+        $postedTasksRequests = PostTask::where('user_id', $id)->where('status', 'Pending')->count();
+        $postedTaskIds = PostTask::where('user_id', $id)->pluck('id');
+        $postedTasksProofSubmitRequests = ProofTask::whereIn('post_task_id', $postedTaskIds)->whereIn('status', ['Pending', 'Reviewed'])->count();
+        $workedTasksRequests = ProofTask::where('user_id', $id)->where('status', 'Reviewed')->count();
+        $reportRequestsPending = ProofTask::where('user_id', $id)->where('status', 'Pending')->count();
+
+        if ($depositRequests > 0 || $withdrawRequests > 0 || $postedTasksRequests > 0 || $postedTasksProofSubmitRequests > 0 || $workedTasksRequests > 0 || $reportRequestsPending > 0) {
+            return response()->json(['status' => 401, 'error' => 'User has some pending requests. Please resolve them first.']);
+        }
+
         $user = User::findOrFail($id);
         $user->updated_by = auth()->user()->id;
         $user->deleted_by = auth()->user()->id;

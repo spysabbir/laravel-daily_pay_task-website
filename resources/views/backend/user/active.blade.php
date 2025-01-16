@@ -276,9 +276,13 @@
                         url: url,
                         method: 'DELETE',
                         success: function(response) {
-                            $('#allDataTable').DataTable().ajax.reload();
-                            $('#trashDataTable').DataTable().ajax.reload();
-                            toastr.warning('User soft delete successfully.');
+                            if (response.status == 401) {
+                                toastr.error(response.error);
+                            } else {
+                                $('#allDataTable').DataTable().ajax.reload();
+                                $('#trashDataTable').DataTable().ajax.reload();
+                                toastr.warning('User soft delete successfully.');
+                            }
                         }
                     });
                 }

@@ -516,6 +516,7 @@
     <script src="{{ asset('template') }}/vendors/jquery.flot/jquery.flot.js"></script>
     <script src="{{ asset('template') }}/vendors/jquery.flot/jquery.flot.resize.js"></script>
     <script src="{{ asset('template') }}/vendors/apexcharts/apexcharts.min.js"></script>
+    <script src="{{ asset('template') }}/vendors/jquery.flot/jquery.flot.pie.js"></script>
 
     <script src="{{ asset('template') }}/vendors/datatable/js/jquery.dataTables.js"></script>
     <script src="{{ asset('template') }}/vendors/datatable/js/dataTables.bootstrap5.js"></script>
@@ -548,6 +549,7 @@
     <script src="{{ asset('template') }}/js/data-table.js"></script>
 	<script src="{{ asset('template') }}/js/select2.js"></script>
     <script src="{{ asset('template') }}/js/lightbox.js"></script>
+    <script src="{{ asset('template') }}/js/jquery.flot-dark.js"></script>
 	<!-- End custom js for all page -->
 
     <!-- Page wise script -->

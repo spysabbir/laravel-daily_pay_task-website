@@ -117,4 +117,163 @@ $(function() {
         apexBarChart.render();
     }
     // monthlyDepositAndWithdrawChart end
+
+    // verifiedUsersChart - START
+    if($('#verifiedUsersChart').length) {
+        var formattedVerifiedUsersDataInt = formattedVerifiedUsersData.map(function(value) {
+            return Math.round(value);
+        });
+
+        var options2 = {
+            chart: {
+                type: "bar",
+                height: 200,
+                sparkline: {
+                    enabled: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 2,
+                    columnWidth: "50%"
+                }
+            },
+            colors: [colors.primary],
+            series: [{
+                name: 'Verified Users Data',
+                data: formattedVerifiedUsersDataInt,
+            }],
+            xaxis: {
+                type: 'datetime',
+                categories: lastTenDaysCategories,
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return parseInt(value);
+                    }
+                }
+            },
+            stroke: {
+                width: 2,
+                curve: "smooth"
+            },
+            markers: {
+                size: 3,
+            },
+            dataLabels: {
+                enabled: true,
+                offsetY: -20,
+                style: {
+                    fontSize: '10px',
+                    colors: ["#fff"]
+                }
+            }
+        };
+
+        new ApexCharts(document.querySelector("#verifiedUsersChart"),options2).render();
+    }
+    // verifiedUsersChart - END
+
+    // postedTasksDataChart start
+    if ($('#postedTasksDataChart').length) {
+        var formattedPostedTasksDataInt = formattedPostedTasksData.map(function(value) {
+            return Math.round(value);
+        });
+
+        var options1 = {
+            chart: {
+                type: "line",
+                height: 200,
+                sparkline: {
+                    enabled: true
+                }
+            },
+            series: [{
+                name: 'Posted Tasks Data',
+                data: formattedPostedTasksDataInt,
+            }],
+            xaxis: {
+                type: 'datetime',
+                categories: lastTenDaysCategories,
+            },
+            stroke: {
+                width: 2,
+                curve: "smooth"
+            },
+            markers: {
+                size: 3,
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return parseInt(value);
+                    }
+                }
+            },
+            colors: [colors.primary],
+            dataLabels: {
+                enabled: true,
+                offsetY: -20,
+                style: {
+                    fontSize: '10px',
+                    colors: [colors.primary]
+                }
+            },
+        };
+
+        new ApexCharts(document.querySelector("#postedTasksDataChart"), options1).render();
+    }
+    // formattedPostedTasksData end
+
+    // workedTasksDataChart - START
+    if ($('#workedTasksDataChart').length) {
+        var formattedWorkedTasksDataInt = formattedWorkedTasksData.map(function(value) {
+            return Math.round(value);
+        });
+
+        var options3 = {
+            chart: {
+                type: "line",
+                height: 200,
+                sparkline: {
+                    enabled: true
+                }
+            },
+            series: [{
+                name: 'Worked Tasks Data',
+                data: formattedWorkedTasksDataInt,
+            }],
+            xaxis: {
+                type: 'datetime',
+                categories: lastTenDaysCategories,
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return parseInt(value);
+                    }
+                }
+            },
+            stroke: {
+                width: 2,
+                curve: "smooth"
+            },
+            markers: {
+                size: 3,
+            },
+            colors: [colors.primary],
+            dataLabels: {
+                enabled: true,
+                offsetY: -20,
+                style: {
+                    fontSize: '10px',
+                    colors: [colors.primary]
+                }
+            }
+        };
+
+        new ApexCharts(document.querySelector("#workedTasksDataChart"), options3).render();
+    }
+    // workedTasksDataChart - END
 });

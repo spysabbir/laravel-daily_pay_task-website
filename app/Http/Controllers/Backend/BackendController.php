@@ -6,34 +6,95 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\PostTask;
-use App\Models\Withdraw;
+use App\Models\ProofTask;
 use App\Models\UserDevice;
+use App\Models\Verification;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class BackendController extends Controller
 {
     public function dashboard()
     {
-        $totalUsers = User::where('user_type', 'Frontend')->count();
-        $activeUsers = User::where('user_type', 'Frontend')->where('status', 'Active')->count();
+        $statuses = ['Active', 'Inactive', 'Blocked', 'Banned'];
 
-        $totalPostTask = PostTask::count();
-        $runningPostTasks = PostTask::where('status', 'Running')->count();
+        $userStatusData = User::select('status', DB::raw('count(*) as total'))
+            ->where('user_type', 'Frontend')
+            ->groupBy('status')
+            ->pluck('total', 'status');
 
-        $totalDeposit = Withdraw::where('status', 'Approved')->sum('amount');
-        $totalWithdraw = Withdraw::where('status', 'Approved')->sum('amount');
+        $formattedUserStatusData = collect($statuses)->map(fn($status) => [
+            'label' => $status,
+            'data' => $userStatusData[$status] ?? 0,
+        ]);
 
-        $totalData = [
-            'totalUsers' => $totalUsers,
-            'totalPostTask' => $totalPostTask,
-            'activeUsers' => $activeUsers,
-            'runningPostTasks' => $runningPostTasks,
-            'totalDeposit' => $totalDeposit,
-            'totalWithdraw' => $totalWithdraw,
-        ];
+        // Get last 10 days data
+        $dates = collect();
+        for ($i = 9; $i >= 0; $i--) {
+            $dates->push(Carbon::today()->subDays($i)->format('M d Y'));
+        }
+        $lastTenDaysCategories = $dates->toArray();
 
-        return view('backend.dashboard' , compact('totalData'));
+        // Get counts for verified users
+        $verifiedUsersData = Verification::select(
+            DB::raw('DATE(approved_at) as date'),
+            DB::raw('COUNT(*) as count')
+        )
+            ->where('approved_at', '!=', null)
+            ->where('approved_at', '>=', Carbon::today()->subDays(6))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+        // Prepare data for the chart
+        $formattedVerifiedUsersData = $dates->map(function ($date) use ($verifiedUsersData) {
+            $dbDate = Carbon::createFromFormat('M d Y', $date)->format('Y-m-d');
+            return $verifiedUsersData[$dbDate]->count ?? 0; // Default to 0 if no data
+        })->toArray();
+        // Calculate total count
+        $totalVerifiedUsers = array_sum($formattedVerifiedUsersData);
+
+        // Get counts for posted tasks
+        $postedTasksData = PostTask::select(
+            DB::raw('DATE(approved_at) as date'),
+            DB::raw('COUNT(*) as count')
+        )
+            ->where('approved_at', '!=', null)
+            ->where('approved_at', '>=', Carbon::today()->subDays(6))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+        // Prepare data for the chart
+        $formattedPostedTasksData = $dates->map(function ($date) use ($postedTasksData) {
+            $dbDate = Carbon::createFromFormat('M d Y', $date)->format('Y-m-d');
+            return $postedTasksData[$dbDate]->count ?? 0; // Default to 0 if no data
+        })->toArray();
+        // Calculate total count
+        $totalPostedTasks = array_sum($formattedPostedTasksData);
+
+        // Get counts for worked tasks
+        $workedTasksData = ProofTask::select(
+            DB::raw('DATE(approved_at) as date'),
+            DB::raw('COUNT(*) as count')
+        )
+            ->where('approved_at', '!=', null)
+            ->where('approved_at', '>=', Carbon::today()->subDays(6))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+        // Prepare data for the chart
+        $formattedWorkedTasksData = $dates->map(function ($date) use ($workedTasksData) {
+            $dbDate = Carbon::createFromFormat('M d Y', $date)->format('Y-m-d');
+            return $workedTasksData[$dbDate]->count ?? 0; // Default to 0 if no data
+        })->toArray();
+        // Calculate total count
+        $totalWorkedTasks = array_sum($formattedWorkedTasksData);
+
+        return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastTenDaysCategories', 'totalVerifiedUsers', 'formattedPostedTasksData', 'totalPostedTasks', 'formattedWorkedTasksData', 'totalWorkedTasks'));
     }
 
     public function profileEdit(Request $request)
