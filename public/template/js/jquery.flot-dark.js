@@ -19,7 +19,7 @@ $(function() {
 
     var fontFamily = "'Roboto', Helvetica, sans-serif"
 
-    // Pie Chart
+    // userStatusFlotPie Chart
     $.plot($('#userStatusFlotPie'), formattedUserStatusData, {
         series: {
             shadowSize: 0,
@@ -46,6 +46,14 @@ $(function() {
             }
         },
 
+        title: {
+            show: true,
+            label: 'User Status',
+            align: 'center',
+            style: { color: colors.bodyColor, fontFamily: fontFamily }
+            
+        },
+
         grid: {
             color: colors.bodyColor,
             borderColor: colors.gridBorder,
@@ -57,7 +65,6 @@ $(function() {
         xaxis: { tickColor: colors.gridBorder },
         yaxis: { tickColor: colors.gridBorder },
         legend: { backgroundColor: colors.cardBg },
-        colors: [colors.primary, colors.success, colors.warning, colors.danger]
+        colors: [colors.success, colors.primary, colors.warning, colors.danger]
     });
-
 });

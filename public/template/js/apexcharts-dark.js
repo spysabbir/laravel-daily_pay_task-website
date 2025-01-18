@@ -147,7 +147,7 @@ $(function() {
 
     // totalWorkedTaskApexPie start
     if ($('#totalWorkedTaskApexPie').length) {
-        var options = {
+        var options2 = {
             chart: {
                 height: 300,
                 type: "pie",
@@ -184,8 +184,187 @@ $(function() {
             series: total_worked_task_series,
         };
 
-        var chart = new ApexCharts(document.querySelector("#totalWorkedTaskApexPie"), options);
+        var chart = new ApexCharts(document.querySelector("#totalWorkedTaskApexPie"), options2);
         chart.render();
     }
     // totalWorkedTaskApexPie end
+
+
+    // totalPostedTasksApexRadialBar start
+    if ($('#totalPostedTasksApexRadialBar').length) {
+
+        var total = postedTasksStatusStatusesData.reduce((acc, value) => acc + value, 0);
+        var percentageData = postedTasksStatusStatusesData.map(value => (value / total) * 100);
+
+        var options3 = {
+            chart: {
+                type: "radialBar",
+                parentHeightOffset: 0,
+                foreColor: colors.bodyColor,
+                background: colors.cardBg,
+                toolbar: {
+                    show: false
+                },
+            },
+            theme: {
+                mode: 'dark'
+            },
+            tooltip: {
+                theme: 'dark'
+            },
+            colors: [colors.primary, colors.success, colors.warning, colors.danger, colors.info, colors.secondary],
+            fill: {},
+            grid: {
+                padding: {
+                    top: 10
+                }
+            },
+            plotOptions: {
+                radialBar: {
+                    dataLabels: {
+                        name: {
+                            fontSize: '14px',
+                            fontFamily: fontFamily
+                        },
+                        value: {
+                            fontSize: '14px',
+                            fontFamily: fontFamily
+                        },
+                        total: {
+                            show: true,
+                            label: 'TOTAL',
+                            fontSize: '14px',
+                            fontFamily: fontFamily,
+                            formatter: function () {
+                                // Show only the total quantity
+                                return `${total}`;
+                            }
+                        }
+                    },
+                    track: {
+                        background: colors.gridBorder,
+                        strokeWidth: '100%',
+                        opacity: 1,
+                        margin: 5,
+                    }
+                }
+            },
+            series: percentageData,
+            labels: postedTasksStatusStatuses.map((status, index) => {
+                // Show only status and quantity for radial bar labels
+                return `${status}: ${postedTasksStatusStatusesData[index]}`;
+            }),
+            legend: {
+                show: true,
+                position: "top",
+                horizontalAlign: 'center',
+                fontFamily: fontFamily,
+                itemMargin: {
+                    horizontal: 8,
+                    vertical: 0
+                },
+                formatter: function(seriesName, opts) {
+                    // Get the index of the seriesName
+                    const index = postedTasksStatusStatuses.findIndex(status => seriesName.startsWith(status));
+                    // Show status, quantity, and percentage in the legend
+                    return `${seriesName} (${percentageData[index].toFixed(1)}%)`;
+                }
+            },
+        };
+
+        var chart = new ApexCharts(document.querySelector("#totalPostedTasksApexRadialBar"), options3);
+        chart.render();
+    }
+
+    // totalWorkedTasksApexRadialBar end
+
+    // totalWorkedTasksApexRadialBar start
+    if ($('#totalWorkedTasksApexRadialBar').length) {
+
+        // Calculate the total sum of all values
+        var total = workedTasksStatusStatusesData.reduce((acc, value) => acc + value, 0);
+
+        // Calculate percentage for each value
+        var percentageData = workedTasksStatusStatusesData.map(value => (value / total) * 100);
+
+        var options4 = {
+            chart: {
+                type: "radialBar",
+                parentHeightOffset: 0,
+                foreColor: colors.bodyColor,
+                background: colors.cardBg,
+                toolbar: {
+                    show: false
+                },
+            },
+            theme: {
+                mode: 'dark'
+            },
+            tooltip: {
+                theme: 'dark'
+            },
+            colors: [colors.primary, colors.success, colors.danger, colors.warning],
+            fill: {},
+            grid: {
+                padding: {
+                    top: 10
+                }
+            },
+            plotOptions: {
+                radialBar: {
+                    dataLabels: {
+                        name: {
+                            fontSize: '14px',
+                            fontFamily: fontFamily
+                        },
+                        value: {
+                            fontSize: '14px',
+                            fontFamily: fontFamily
+                        },
+                        total: {
+                            show: true,
+                            label: 'TOTAL',
+                            fontSize: '14px',
+                            fontFamily: fontFamily,
+                            formatter: function () {
+                                // Show only the total quantity here
+                                return `${total}`;
+                            }
+                        }
+                    },
+                    track: {
+                        background: colors.gridBorder,
+                        strokeWidth: '100%',
+                        opacity: 1,
+                        margin: 5,
+                    }
+                }
+            },
+            series: percentageData,
+            labels: workedTasksStatusStatuses.map((status, index) => {
+                // Show only status and quantity for radial bar labels
+                return `${status}: ${workedTasksStatusStatusesData[index]}`;
+            }),
+            legend: {
+                show: true,
+                position: "top",
+                horizontalAlign: 'center',
+                fontFamily: fontFamily,
+                itemMargin: {
+                    horizontal: 8,
+                    vertical: 0
+                },
+                formatter: function(seriesName, opts) {
+                    // Show status, quantity, and percentage in the legend
+                    const index = workedTasksStatusStatuses.indexOf(seriesName.split(":")[0]);
+                    return `${seriesName} (${percentageData[index].toFixed(1)}%)`;
+                }
+            },
+        };
+
+        var chart = new ApexCharts(document.querySelector("#totalWorkedTasksApexRadialBar"), options4);
+        chart.render();
+    }
+
+    // totalWorkedTasksApexRadialBar end
 });

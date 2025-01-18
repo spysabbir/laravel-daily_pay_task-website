@@ -124,13 +124,17 @@ $(function() {
             return Math.round(value);
         });
 
+        var totalVerifiedUsers = formattedVerifiedUsersDataInt.reduce(function(a, b) {
+            return a + b;
+        }, 0);
+
         var options2 = {
             chart: {
                 type: "bar",
                 height: 200,
-                sparkline: {
-                    enabled: true
-                }
+                toolbar: {
+                    show: false,
+                },
             },
             plotOptions: {
                 bar: {
@@ -140,19 +144,43 @@ $(function() {
             },
             colors: [colors.primary],
             series: [{
-                name: 'Verified Users Data',
+                name: '',
                 data: formattedVerifiedUsersDataInt,
             }],
             xaxis: {
-                type: 'datetime',
-                categories: lastTenDaysCategories,
-            },
-            tooltip: {
-                y: {
+                categories: lastSevenDaysCategories,
+                labels: {
                     formatter: function(value) {
-                        return parseInt(value);
+                        const date = new Date(value);
+                        return date.toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                        });
+                    },
+                    style: {
+                        colors: colors.primary,
+                        fontSize: '10px',
+                    },
+                },
+                title: {
+                    text: 'Total Verified Users: ' + totalVerifiedUsers,
+                    style: {
+                        color: colors.primary,
+                        fontSize: '10px',
                     }
                 }
+            },
+            yaxis: {
+                labels: {
+                    formatter: function(value) {
+                        return parseInt(value);
+                    },
+                    style: {
+                        colors: colors.primary,
+                        fontSize: '10px',
+                    },
+                    offsetX: -15,
+                },
             },
             stroke: {
                 width: 2,
@@ -163,12 +191,18 @@ $(function() {
             },
             dataLabels: {
                 enabled: true,
-                offsetY: -20,
                 style: {
                     fontSize: '10px',
-                    colors: ["#fff"]
+                    colors: ['#fff']
                 }
-            }
+            },
+            grid: {
+                show: true,
+                padding: {
+                    left: 0,
+                    right: 0
+                },
+            },
         };
 
         new ApexCharts(document.querySelector("#verifiedUsersChart"),options2).render();
@@ -181,21 +215,56 @@ $(function() {
             return Math.round(value);
         });
 
+        var totalPostedTasks = formattedPostedTasksDataInt.reduce(function(a, b) {
+            return a + b;
+        }, 0);
+
         var options1 = {
             chart: {
                 type: "line",
                 height: 200,
-                sparkline: {
-                    enabled: true
-                }
+                toolbar: {
+                    show: false,
+                },
             },
             series: [{
-                name: 'Posted Tasks Data',
+                name: '',
                 data: formattedPostedTasksDataInt,
             }],
             xaxis: {
-                type: 'datetime',
-                categories: lastTenDaysCategories,
+                categories: lastSevenDaysCategories,
+                labels: {
+                    formatter: function(value) {
+                        const date = new Date(value);
+                        return date.toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                        });
+                    },
+                    style: {
+                        colors: colors.primary,
+                        fontSize: '10px',
+                    },
+                },
+                title: {
+                    text: 'Total Posted Tasks: ' + totalPostedTasks,
+                    style: {
+                        color: colors.primary,
+                        fontSize: '10px',
+                    }
+                }
+            },
+            yaxis: {
+                labels: {
+                    formatter: function(value) {
+                        return parseInt(value);
+                    },
+                    style: {
+                        colors: colors.primary,
+                        fontSize: '10px',
+                    },
+                    offsetX: -15,
+                },
             },
             stroke: {
                 width: 2,
@@ -204,26 +273,26 @@ $(function() {
             markers: {
                 size: 3,
             },
-            tooltip: {
-                y: {
-                    formatter: function(value) {
-                        return parseInt(value);
-                    }
-                }
-            },
             colors: [colors.primary],
             dataLabels: {
                 enabled: true,
-                offsetY: -20,
                 style: {
                     fontSize: '10px',
                     colors: [colors.primary]
                 }
             },
+            grid: {
+                show: true,
+                padding: {
+                    left: 0,
+                    right: 0
+                },
+            },
         };
 
         new ApexCharts(document.querySelector("#postedTasksDataChart"), options1).render();
     }
+
     // formattedPostedTasksData end
 
     // workedTasksDataChart - START
@@ -232,28 +301,53 @@ $(function() {
             return Math.round(value);
         });
 
+        var totalWorkedTasks = formattedWorkedTasksDataInt.reduce(function(a, b) {
+            return a + b;
+        }, 0);
+
         var options3 = {
             chart: {
                 type: "line",
                 height: 200,
-                sparkline: {
-                    enabled: true
-                }
+                toolbar: {
+                    show: false,
+                },
             },
             series: [{
-                name: 'Worked Tasks Data',
+                name: '',
                 data: formattedWorkedTasksDataInt,
             }],
             xaxis: {
-                type: 'datetime',
-                categories: lastTenDaysCategories,
-            },
-            tooltip: {
-                y: {
+                categories: lastSevenDaysCategories,
+                labels: {
                     formatter: function(value) {
-                        return parseInt(value);
+                        const date = new Date(value);
+                        return date.toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                        });
+                    },
+                    style: {
+                        colors: colors.primary,
+                        fontSize: '10px',
+                    },
+                },
+                title: {
+                    text: 'Total Worked Tasks: ' + totalWorkedTasks,
+                    style: {
+                        color: colors.primary,
+                        fontSize: '10px',
                     }
                 }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: colors.primary,
+                        fontSize: '10px',
+                    },
+                    offsetX: -15,
+                },
             },
             stroke: {
                 width: 2,
@@ -265,12 +359,18 @@ $(function() {
             colors: [colors.primary],
             dataLabels: {
                 enabled: true,
-                offsetY: -20,
                 style: {
                     fontSize: '10px',
                     colors: [colors.primary]
                 }
-            }
+            },
+            grid: {
+                show: true,
+                padding: {
+                    left: 0,
+                    right: 0
+                },
+            },
         };
 
         new ApexCharts(document.querySelector("#workedTasksDataChart"), options3).render();

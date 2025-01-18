@@ -386,9 +386,23 @@ class PostedTaskController extends Controller
         $proofTasks = ProofTask::where('post_task_id', $id)->whereIn('status', ['Pending'])->count();
 
         if ($postTask->status == 'Canceled') {
+            if ($postTask->canceled_by != auth()->user()->id) {
+                return response()->json([
+                    'status' => 400,
+                    'error' => 'This task is already canceled by system. So, you can not cancel this task again. Please check your canceled task list.'
+                ]);
+            }else{
+                return response()->json([
+                    'status' => 400,
+                    'error' => 'This task is already canceled. So, you can not cancel this task again. Please check your canceled task list.'
+                ]);
+            }
+        }
+
+        if ($postTask->status == 'Completed') {
             return response()->json([
                 'status' => 400,
-                'error' => 'This task is already canceled.'
+                'error' => 'This task is already completed. So, you can not cancel this task. Please check your completed task list.'
             ]);
         }
 
@@ -917,14 +931,6 @@ class PostedTaskController extends Controller
             'rejected_reason_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $proofTask = ProofTask::findOrFail($id);
-        if ($proofTask->status != 'Pending') {
-            return response()->json([
-                'status' => 401,
-                'error' => 'This proof task is already ' . $proofTask->status . '.'
-            ]);
-        }
-
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
@@ -934,6 +940,20 @@ class PostedTaskController extends Controller
             $proofTask = ProofTask::findOrFail($id);
             $postTask = PostTask::findOrFail($proofTask->post_task_id);
             $user = User::findOrFail($proofTask->user_id);
+
+            if ($proofTask->created_at < now()->subHours(get_default_settings('posted_task_proof_submit_auto_approved_time'))) {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'Currently, This task proof checking time has expired so this proof has been automatically approved by the system.'
+                ]);
+            }
+
+            if ($proofTask->status != 'Pending') {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'This proof task is already ' . $proofTask->status . '. You can not resubmit it.'
+                ]);
+            }
 
             if ($request->status == 'Approved') {
                 $user->withdraw_balance = $user->withdraw_balance + $postTask->income_of_each_worker + $request->bonus;
@@ -1010,26 +1030,33 @@ class PostedTaskController extends Controller
         $boosting_start_at_diff_in_minutes = Carbon::parse($postTask->boosting_start_at)->diffInMinutes(Carbon::now());
         $boosting_start_at_diff_rounded = $postTask->boosting_time - round($boosting_start_at_diff_in_minutes);
 
-        if ($postTask->status == 'Paused') {
-            if ($boosting_start_at_diff_rounded > 0) {
-                $postTask->boosting_start_at = now();
+        if ($postTask->status == 'Paused' && $postTask->paused_by != auth()->user()->id) {
+            return response()->json([
+                'status' => 401,
+                'error' => 'This task is already paused by system. You can not paused it. Please check the paused task list.'
+            ]);
+        } else {
+            if ($postTask->status == 'Paused') {
+                if ($boosting_start_at_diff_rounded > 0) {
+                    $postTask->boosting_start_at = now();
+                }
+
+                $postTask->status = 'Running';
+            } else if ($postTask->status == 'Running') {
+                if ($boosting_start_at_diff_rounded > 0) {
+                    $postTask->boosting_start_at = null;
+                    $postTask->boosting_time = $boosting_start_at_diff_rounded;
+                }
+
+                $postTask->paused_at = now();
+                $postTask->paused_by = auth()->user()->id;
+                $postTask->status = 'Paused';
             }
 
-            $postTask->status = 'Running';
-        } else if ($postTask->status == 'Running') {
-            if ($boosting_start_at_diff_rounded > 0) {
-                $postTask->boosting_start_at = null;
-                $postTask->boosting_time = $boosting_start_at_diff_rounded;
-            }
+            $postTask->save();
 
-            $postTask->paused_at = now();
-            $postTask->paused_by = auth()->user()->id;
-            $postTask->status = 'Paused';
+            return response()->json(['success' => 'Status updated successfully.']);
         }
-
-        $postTask->save();
-
-        return response()->json(['success' => 'Status updated successfully.']);
     }
 
     public function postedTaskListCanceled(Request $request)

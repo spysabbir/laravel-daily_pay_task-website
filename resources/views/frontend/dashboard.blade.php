@@ -108,7 +108,7 @@
                                 <span class="text-danger error-text payment_method_error"></span>
                             </div>
                             <span class="text-info">
-                                Note: The unblock charge is <strong>{{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('user_blocked_instant_resolved_charge') }}</strong>. Contact us if your account does not have a balance.
+                                Note: The unblock charge is <strong>{{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('user_blocked_instant_resolved_charge') * $userBlockedStatusCount }}</strong>. Contact us if your account does not have a balance.
                             </span>
                         </div>
                         <div class="modal-footer">

@@ -30,12 +30,12 @@ class BackendController extends Controller
             'data' => $userStatusData[$status] ?? 0,
         ]);
 
-        // Get last 10 days data
+        // Get last 7 days data
         $dates = collect();
-        for ($i = 9; $i >= 0; $i--) {
+        for ($i = 6; $i >= 0; $i--) {
             $dates->push(Carbon::today()->subDays($i)->format('M d Y'));
         }
-        $lastTenDaysCategories = $dates->toArray();
+        $lastSevenDaysCategories = $dates->toArray();
 
         // Get counts for verified users
         $verifiedUsersData = Verification::select(
@@ -53,8 +53,6 @@ class BackendController extends Controller
             $dbDate = Carbon::createFromFormat('M d Y', $date)->format('Y-m-d');
             return $verifiedUsersData[$dbDate]->count ?? 0; // Default to 0 if no data
         })->toArray();
-        // Calculate total count
-        $totalVerifiedUsers = array_sum($formattedVerifiedUsersData);
 
         // Get counts for posted tasks
         $postedTasksData = PostTask::select(
@@ -72,16 +70,13 @@ class BackendController extends Controller
             $dbDate = Carbon::createFromFormat('M d Y', $date)->format('Y-m-d');
             return $postedTasksData[$dbDate]->count ?? 0; // Default to 0 if no data
         })->toArray();
-        // Calculate total count
-        $totalPostedTasks = array_sum($formattedPostedTasksData);
 
         // Get counts for worked tasks
         $workedTasksData = ProofTask::select(
-            DB::raw('DATE(approved_at) as date'),
+            DB::raw('DATE(created_at) as date'),
             DB::raw('COUNT(*) as count')
         )
-            ->where('approved_at', '!=', null)
-            ->where('approved_at', '>=', Carbon::today()->subDays(6))
+            ->where('created_at', '>=', Carbon::today()->subDays(6))
             ->groupBy('date')
             ->orderBy('date')
             ->get()
@@ -91,10 +86,27 @@ class BackendController extends Controller
             $dbDate = Carbon::createFromFormat('M d Y', $date)->format('Y-m-d');
             return $workedTasksData[$dbDate]->count ?? 0; // Default to 0 if no data
         })->toArray();
-        // Calculate total count
-        $totalWorkedTasks = array_sum($formattedWorkedTasksData);
 
-        return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastTenDaysCategories', 'totalVerifiedUsers', 'formattedPostedTasksData', 'totalPostedTasks', 'formattedWorkedTasksData', 'totalWorkedTasks'));
+        // Get counts for posted tasks status wise
+        $postedTasksStatusStatuses = ['Pending','Running','Rejected','Canceled','Paused','Completed'];
+        $totalPostedTasksStatusWise = PostTask::select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $postedTasksStatusStatusesData = array_map(function($status) use ($totalPostedTasksStatusWise) {
+            return $totalPostedTasksStatusWise->get($status, 0); // Default to 0 if status is not found
+        }, $postedTasksStatusStatuses);
+
+        // Get counts for worked tasks status wise
+        $workedTasksStatusStatuses = ["Pending", "Approved", "Rejected", "Reviewed"];
+        $totalWorkedTasksStatusWise = ProofTask::select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $workedTasksStatusStatusesData = array_map(function($status) use ($totalWorkedTasksStatusWise) {
+            return $totalWorkedTasksStatusWise->get($status, 0); // Default to 0 if status is not found
+        }, $workedTasksStatusStatuses);
+
+
+        return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastSevenDaysCategories', 'formattedPostedTasksData', 'formattedWorkedTasksData', 'workedTasksStatusStatuses', 'workedTasksStatusStatusesData', 'postedTasksStatusStatuses', 'postedTasksStatusStatusesData'));
     }
 
     public function profileEdit(Request $request)

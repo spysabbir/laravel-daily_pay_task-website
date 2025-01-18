@@ -9,7 +9,7 @@
             <div class="col-md-4 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        @if ($totalVerifiedUsers == 0)
+                        @if (!$formattedWorkedTasksData)
                         <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                             <div class="alert-heading mb-3">
                                 <i data-feather="alert-circle"></i>
@@ -21,18 +21,10 @@
                         </div>
                         @else
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title">Verified User - Last 10 days</h6>
+                            <h6 class="card-title">Verified User (Approved) - Last 7 days</h6>
                         </div>
                         <div class="row">
-                            <div class="col-6 col-md-12 col-xl-2">
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                    <h3 class="mb-2">{{ $totalVerifiedUsers }}</h3>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-12 col-xl-10">
+                            <div class="col-12">
                                 <div id="verifiedUsersChart" class="mt-md-3 mt-xl-0"></div>
                             </div>
                         </div>
@@ -43,7 +35,7 @@
             <div class="col-md-4 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        @if ($totalPostedTasks == 0)
+                        @if (!$formattedPostedTasksData)
                         <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                             <div class="alert-heading mb-3">
                                 <i data-feather="alert-circle"></i>
@@ -55,18 +47,10 @@
                         </div>
                         @else
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title">Posted Task (Approved) - Last 10 days</h6>
+                            <h6 class="card-title">Posted Task (Approved) - Last 7 days</h6>
                         </div>
                         <div class="row">
-                            <div class="col-6 col-md-12 col-xl-2">
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                    <h3 class="mb-2">{{ $totalPostedTasks }}</h3>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-12 col-xl-10">
+                            <div class="col-12">
                                 <div id="postedTasksDataChart" class="mt-md-3 mt-xl-0"></div>
                             </div>
                         </div>
@@ -77,7 +61,7 @@
             <div class="col-md-4 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        @if ($totalWorkedTasks == 0)
+                        @if (!$formattedWorkedTasksData)
                         <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                             <div class="alert-heading mb-3">
                                 <i data-feather="alert-circle"></i>
@@ -89,18 +73,10 @@
                         </div>
                         @else
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title">Worked Tasks (Approved) - Last 10 days</h6>
+                            <h6 class="card-title">Worked Tasks - Last 7 days</h6>
                         </div>
                         <div class="row">
-                            <div class="col-6 col-md-12 col-xl-2">
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <i data-feather="arrow-up" class="icon-sm mb-1"></i>
-                                    </p>
-                                    <h3 class="mb-2">{{ $totalWorkedTasks }}</h3>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-12 col-xl-10">
+                            <div class="col-12">
                                 <div id="workedTasksDataChart" class="mt-md-3 mt-xl-0"></div>
                             </div>
                         </div>
@@ -116,7 +92,7 @@
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                @if ($formattedUserStatusData->isEmpty())
+                @if (!$formattedUserStatusData)
                     <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
                         <div class="alert-heading mb-3">
                             <i data-feather="alert-circle"></i>
@@ -127,7 +103,7 @@
                         </p>
                     </div>
                 @else
-                    <h6 class="card-title">User Status Distribution</h6>
+                    <h6 class="card-title">Total User Status Distribution</h6>
                     <div class="flot-chart-wrapper">
                         <div class="flot-chart" id="userStatusFlotPie"></div>
                     </div>
@@ -136,10 +112,24 @@
         </div>
     </div>
     <div class="col-xl-6 grid-margin stretch-card">
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title">
-                <div id="totalPostedTaskChartjsPie"></div>
+                <h6 class="card-title">Total Posted Tasks Distribution</h6>
+                <div id="totalPostedTasksApexRadialBar"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Total Worked Tasks Distribution</h6>
+                <div id="totalWorkedTasksApexRadialBar"></div>
             </div>
         </div>
     </div>
@@ -147,9 +137,13 @@
 @endsection
 
 <script>
-    const formattedUserStatusData = @json($formattedUserStatusData);
-    var lastTenDaysCategories = @json($lastTenDaysCategories);  // Dates
+    var lastSevenDaysCategories = @json($lastSevenDaysCategories);  // Dates
     var formattedVerifiedUsersData = @json($formattedVerifiedUsersData);  // Counts
     var formattedPostedTasksData = @json($formattedPostedTasksData);  // Counts
     var formattedWorkedTasksData = @json($formattedWorkedTasksData);  // Counts
+    const formattedUserStatusData = @json($formattedUserStatusData);
+    var postedTasksStatusStatuses = @json($postedTasksStatusStatuses);  // Counts
+    var postedTasksStatusStatusesData = @json($postedTasksStatusStatusesData);  // Counts
+    var workedTasksStatusStatuses = @json($workedTasksStatusStatuses);  // Counts
+    var workedTasksStatusStatusesData = @json($workedTasksStatusStatusesData);  // Counts
 </script>

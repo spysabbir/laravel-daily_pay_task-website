@@ -240,8 +240,13 @@
                         url: url,
                         method: 'GET',
                         success: function(response) {
-                            $('#allDataTable').DataTable().ajax.reload();
-                            toastr.warning('Task Paused Successfully');
+                            if (response.status == 401) {
+                                toastr.error(response.error);
+                                $('#allDataTable').DataTable().ajax.reload();
+                            } else {
+                                $('#allDataTable').DataTable().ajax.reload();
+                                toastr.warning('Task Paused Successfully');
+                            }
                         }
                     });
                 }
@@ -260,6 +265,7 @@
                 data: { id: id, check: true },
                 success: function(response) {
                     if (response.status == 400) {
+                        $('#allDataTable').DataTable().ajax.reload();
                         toastr.error(response.error);
                     } else {
                         Swal.fire({
