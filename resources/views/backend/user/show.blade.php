@@ -381,7 +381,7 @@
                         <tbody>
                             @foreach ($userDevices as $userDevice)
                             <tr>
-                                <td>{{ $userDevice->ip }}</td>
+                                <td>{{ $userDevice->ip_address }}</td>
                                 <td>{{ $userDevice->device_type }}</td>
                                 <td>{{ date('j M, Y  h:i:s A', strtotime($userDevice->updated_at)) }}</td>
                             </tr>

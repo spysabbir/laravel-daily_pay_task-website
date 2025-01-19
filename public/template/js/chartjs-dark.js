@@ -188,4 +188,97 @@ $(function() {
         });
     }
     // totalPostedTaskProofChartjsPie end
+
+    // totalDepositChartjsPie start
+    if ($('#totalDepositChartjsPie').length) {
+        new Chart($('#totalDepositChartjsPie'), {
+            type: 'pie',
+            data: {
+                labels: depositsStatuses,
+                datasets: [{
+                    label: "Amount",
+                    backgroundColor: [colors.primary, colors.success, colors.danger],
+                    borderColor: colors.cardBg,
+                    data: formattedDepositsStatusesData
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: colors.bodyColor,
+                            font: {
+                                size: '13px',
+                                family: fontFamily
+                            },
+                            generateLabels: function(chart) {
+                                const dataset = chart.data.datasets[0];
+                                const labels = chart.data.labels;
+
+                                return labels.map((label, index) => {
+                                    const value = dataset.data[index];
+                                    return {
+                                        text: `${label}: ${value}`,
+                                        fillStyle: dataset.backgroundColor[index],
+                                        hidden: isNaN(value) || value === null,
+                                        index: index
+                                    };
+                                });
+                            }
+                        }
+                    },
+                },
+                aspectRatio: 2,
+            }
+        });
+    }
+    // totalDepositChartjsPie end
+
+
+    // totalWithdrawChartjsPie start
+    if($('#totalWithdrawChartjsPie').length) {
+        new Chart($('#totalWithdrawChartjsPie'), {
+            type: 'pie',
+            data: {
+                labels: withdrawsStatuses,
+                datasets: [{
+                    label: "Amount",
+                    backgroundColor: [colors.primary, colors.success, colors.danger],
+                    borderColor: colors.cardBg,
+                    data: formattedWithdrawsStatusesData
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: colors.bodyColor,
+                            font: {
+                                size: '13px',
+                                family: fontFamily
+                            },
+                            generateLabels: function(chart) {
+                                const dataset = chart.data.datasets[0];
+                                const labels = chart.data.labels;
+
+                                return labels.map((label, index) => {
+                                    const value = dataset.data[index];
+                                    return {
+                                        text: `${label}: ${value}`,
+                                        fillStyle: dataset.backgroundColor[index],
+                                        hidden: isNaN(value) || value === null,
+                                        index: index
+                                    };
+                                });
+                            }
+                        }
+                    },
+                },
+                aspectRatio: 2,
+            }
+        });
+    }
+    // totalWithdrawChartjsPie end
 });

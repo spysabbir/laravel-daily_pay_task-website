@@ -28,6 +28,7 @@ use App\Http\Controllers\Backend\TopListController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\VerificationController;
 use App\Http\Controllers\Backend\WithdrawController;
+use App\Http\Controllers\Backend\EmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend'])->group(function() {
@@ -105,7 +106,6 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('send-notification', [NotificationController::class, 'sendNotification'])->name('send.notification');
     Route::post('send-notification-store', [NotificationController::class, 'sendNotificationStore'])->name('send.notification.store');
     Route::get('send-notification-show/{id}', [NotificationController::class, 'sendNotificationShow'])->name('send.notification.show');
-
     // Category
     Route::resource('category', CategoryController::class);
     Route::get('category-trash', [CategoryController::class, 'trash'])->name('category.trash');

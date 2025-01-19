@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Deposit;
+use App\Models\Withdraw;
 
 class BackendController extends Controller
 {
@@ -105,8 +107,25 @@ class BackendController extends Controller
             return $totalWorkedTasksStatusWise->get($status, 0); // Default to 0 if status is not found
         }, $workedTasksStatusStatuses);
 
+        // Get sum of ammount for deposits status wise
+        $depositsStatuses = ['Pending', 'Approved', 'Rejected'];
+        $totalDepositsStatusesWise = Deposit::select('status', DB::raw('sum(amount) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $formattedDepositsStatusesData = array_map(function($status) use ($totalDepositsStatusesWise) {
+            return $totalDepositsStatusesWise->get($status, 0); // Default to 0 if status is not found
+        }, $depositsStatuses);
 
-        return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastSevenDaysCategories', 'formattedPostedTasksData', 'formattedWorkedTasksData', 'workedTasksStatusStatuses', 'workedTasksStatusStatusesData', 'postedTasksStatusStatuses', 'postedTasksStatusStatusesData'));
+        // Get sum of ammount for withdraws status wise
+        $withdrawsStatuses = ['Pending', 'Approved', 'Rejected'];
+        $totalWithdrawsStatusesWise = Withdraw::select('status', DB::raw('sum(amount) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $formattedWithdrawsStatusesData = array_map(function($status) use ($totalWithdrawsStatusesWise) {
+            return $totalWithdrawsStatusesWise->get($status, 0); // Default to 0 if status is not found
+        }, $withdrawsStatuses);
+
+        return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastSevenDaysCategories', 'formattedPostedTasksData', 'formattedWorkedTasksData', 'workedTasksStatusStatuses', 'workedTasksStatusStatusesData', 'postedTasksStatusStatuses', 'postedTasksStatusStatusesData', 'depositsStatuses', 'formattedDepositsStatusesData', 'withdrawsStatuses', 'formattedWithdrawsStatusesData'));
     }
 
     public function profileEdit(Request $request)

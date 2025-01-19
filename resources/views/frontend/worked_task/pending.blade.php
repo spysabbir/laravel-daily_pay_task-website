@@ -35,6 +35,7 @@
                                 <th>Task Title</th>
                                 <th>Task Rate</th>
                                 <th>Submit Date</th>
+                                <th>Checking Expired Time</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,6 +80,7 @@
                 { data: 'title', name: 'title' },
                 { data: 'income_of_each_worker', name: 'income_of_each_worker' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'checking_expired_time', name: 'checking_expired_time' }
             ]
         });
 

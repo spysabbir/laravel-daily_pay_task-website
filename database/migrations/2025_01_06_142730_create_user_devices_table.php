@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('user_devices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('ip');
+            $table->string('mac_address')->nullable();
+            $table->string('ip_address');
             $table->string('device_type');
-            $table->string('device_name');
+            $table->string('device_os');
+            $table->string('device_name')->nullable();
             $table->string('browser');
             $table->string('country');
             $table->string('region');

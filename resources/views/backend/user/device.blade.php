@@ -21,13 +21,13 @@
                     @foreach ($userDevices as $device)
                     <tr>
                         <td>{{ $loop->index+1 }}</td>
-                        <td>{{ $device->ip }}</td>
+                        <td>{{ $device->ip_address }}</td>
                         <td>{{ $device->device_type }}</td>
                         <td>{{ $device->browser }}</td>
                         <td>{{ date('d M, Y h:i:s A', strtotime($device->updated_at)) }}</td>
                         <td>
                             @php
-                                $sameIpUserIds = App\Models\UserDevice::where('ip', $device->ip)
+                                $sameIpUserIds = App\Models\UserDevice::where('ip_address', $device->ip_address)
                                     ->where('user_id', '!=', $device->user_id)
                                     ->groupBy('user_id')
                                     ->pluck('user_id')

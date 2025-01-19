@@ -272,7 +272,7 @@
             </li>
             @endcan
         @endcan
-
+        
         <li class="nav-item nav-category">Editor</li>
         @can('CategoryMenu')
             <li class="nav-item">

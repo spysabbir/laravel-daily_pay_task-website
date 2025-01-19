@@ -257,12 +257,16 @@
                     $(document).find('span.error-text').text('');
                 },
                 success: function(response) {
-                    if (response.status == 401) {
-                        toastr.error(response.error);
-                    } else if (response.status === 400) {
+                    if (response.status === 400) {
                         $.each(response.error, function(prefix, val) {
                             $('span.update_' + prefix + '_error').text(val[0]);
                         });
+                    } else if (response.status == 401) {
+                        $(".viewSingleTaskProofModal").modal('hide');
+                        $('#allDataTable').DataTable().ajax.reload();
+                        toastr.error(response.error);
+                    } else if (response.status === 402) {
+                        toastr.error(response.error);
                     } else {
                         $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                         $("#withdraw_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);

@@ -12,7 +12,7 @@
                     <h3>Total: <span id="total_tasks_count">0</span></h3>
                 </div>
                 <div class="card-description">
-                    <p class="text-info"><strong>Note: </strong>Hi everyone, find the preferred task from the below list to working and will get result from buyers within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours after submitting task proof. You will get automatically payment if the buyer does not approve or reject your Task Proof within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours so work with honesty and perfectly. Please contact us if you face any problem, Thanks.</p>
+                    <p class="text-info"><strong>Note: </strong>Hi user, find the preferred task from the below list to working and will get result from buyers within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours after submitting task proof. You will get automatically payment if the buyer does not approve or reject your Task Proof within {{ get_default_settings('posted_task_proof_submit_auto_approved_time') }} hours so work with honesty and perfectly. Please contact us if you face any problem, Thanks.</p>
                     <p class="text-warning"><strong>Alert: </strong>Please don’t' try to hassle others and submit false work. </p>
                 </div>
             </div>
@@ -35,10 +35,10 @@
                                 <label for="filter_sort_by" class="form-label">Sort By</label>
                                 <select class="form-select filter_data" id="filter_sort_by">
                                     <option value="">-- Select Sort By --</option>
-                                    <option value="latest">Latest</option>
-                                    <option value="oldest">Oldest</option>
-                                    <option value="low_to_high">Low to High</option>
-                                    <option value="high_to_low">High to Low</option>
+                                    <option value="latest">Latest Task</option>
+                                    <option value="oldest">Oldest Task</option>
+                                    <option value="low_to_high">Rate Low to High</option>
+                                    <option value="high_to_low">Rate High to Low</option>
                                 </select>
                             </div>
                         </div>
@@ -56,9 +56,9 @@
                                 <th>Sl No</th>
                                 <th>Category</th>
                                 <th>Task Title</th>
-                                <th>Worker Earn</th>
+                                <th>Task Rate</th>
                                 <th>Proof Submitted</th>
-                                <th>Approved Date</th>
+                                {{-- <th>Approved Date</th> --}}
                                 <th>Proof Submit Deadline</th>
                                 <th>Action</th>
                             </tr>
@@ -135,7 +135,7 @@
                 { data: 'title', name: 'title' },
                 { data: 'income_of_each_worker', name: 'income_of_each_worker' },
                 { data: 'worker_needed', name: 'worker_needed' },
-                { data: 'approved_at', name: 'approved_at' },
+                // { data: 'approved_at', name: 'approved_at' },
                 { data: 'work_duration_deadline', name: 'work_duration_deadline' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]

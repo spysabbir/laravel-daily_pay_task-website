@@ -48,7 +48,7 @@
                                 <th>Rejected Date</th>
                                 <th>Rejected By</th>
                                 <th>
-                                    Reviewed Expired Date
+                                    Reviewed Daadline
                                 </th>
                                 <th>Action</th>
                             </tr>

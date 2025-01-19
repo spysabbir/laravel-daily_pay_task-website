@@ -383,36 +383,39 @@ class PostedTaskController extends Controller
     {
         $postTask = PostTask::findOrFail($id);
 
-        $proofTasks = ProofTask::where('post_task_id', $id)->whereIn('status', ['Pending'])->count();
+        // Fetch pending proof task count once
+        $proofTasksCount = ProofTask::where('post_task_id', $id)
+            ->whereIn('status', ['Pending'])
+            ->count();
 
+        // Handle already canceled task
         if ($postTask->status == 'Canceled') {
-            if ($postTask->canceled_by != auth()->user()->id) {
-                return response()->json([
-                    'status' => 400,
-                    'error' => 'This task is already canceled by system. So, you can not cancel this task again. Please check your canceled task list.'
-                ]);
-            }else{
-                return response()->json([
-                    'status' => 400,
-                    'error' => 'This task is already canceled. So, you can not cancel this task again. Please check your canceled task list.'
-                ]);
-            }
+            $message = $postTask->canceled_by != auth()->user()->id
+                ? 'This task is already canceled by the system. You cannot cancel it again. Please check your canceled posted task list.'
+                : 'This task is already canceled. You cannot cancel it again. Please check your canceled posted task list.';
+            return response()->json([
+                'status' => 400,
+                'error' => $message
+            ]);
         }
 
+        // Handle completed task
         if ($postTask->status == 'Completed') {
             return response()->json([
                 'status' => 400,
-                'error' => 'This task is already completed. So, you can not cancel this task. Please check your completed task list.'
+                'error' => 'This task is already completed. You cannot cancel it. Please check your completed posted task list.'
             ]);
         }
 
-        if ($proofTasks > 0) {
+        // Prevent cancellation if proof tasks are submitted
+        if ($proofTasksCount > 0) {
             return response()->json([
                 'status' => 400,
-                'error' => 'You can not cancel this task. Because some workers are already submitted proof. If you want to cancel this task, please reject or approve all proof first.'
+                'error' => 'You cannot cancel this task because workers have already submitted proof. Please reject or approve all proofs first.'
             ]);
         }
 
+        // Check cancellation validity without processing
         if ($request->has('check') && $request->check == true) {
             return response()->json([
                 'status' => 200,
@@ -420,40 +423,46 @@ class PostedTaskController extends Controller
             ]);
         }
 
-        $validator = Validator::make($request->all(), [
-            'message' => 'required',
+        // Validate cancellation reason
+        $request->validate([
+            'message' => 'required|string',
+        ], [
+            'message.required' => 'Please enter a valid reason.'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 401,
-                'error' => 'Please enter a valid reason.'
-            ]);
-        } else {
-            $user = User::findOrFail($postTask->user_id);
-            $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
-            if ($proofTasks == 0 && $postTask->status != 'Rejected') {
-                $user->deposit_balance = $user->deposit_balance + $postTask->total_cost;
-                $user->save();
-            }else if ($postTask->status == 'Running' || $postTask->status == 'Paused') {
-                $refundAmount = number_format(($postTask->sub_cost / $postTask->worker_needed) * ($postTask->worker_needed - $proofTasks), 2, '.', '');
+        // Process refund logic
+        $user = User::findOrFail($postTask->user_id);
+        $refundAmount = 0;
 
-                $user->deposit_balance = $user->deposit_balance + $refundAmount;
-                $user->save();
-            }
-
-            $postTask->status = 'Canceled';
-            $postTask->cancellation_reason = $request->message;
-            $postTask->canceled_by = auth()->user()->id;
-            $postTask->canceled_at = now();
-            $postTask->save();
-
-            return response()->json([
-                'status' => 200,
-                'deposit_balance' => number_format($user->deposit_balance, 2, '.', ''),
-                'success' => 'Task canceled successfully.'
-            ]);
+        if ($proofTasksCount == 0 && $postTask->status != 'Rejected') {
+            $refundAmount = $postTask->total_cost;
+        } elseif (in_array($postTask->status, ['Running', 'Paused'])) {
+            $refundAmount = number_format(
+                ($postTask->sub_cost / $postTask->worker_needed) * ($postTask->worker_needed - $proofTasksCount),
+                2,
+                '.',
+                ''
+            );
         }
+
+        if ($refundAmount > 0) {
+            $user->deposit_balance += $refundAmount;
+            $user->save();
+        }
+
+        // Update task status
+        $postTask->update([
+            'status' => 'Canceled',
+            'cancellation_reason' => $request->message,
+            'canceled_by' => auth()->user()->id,
+            'canceled_at' => now(),
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'deposit_balance' => number_format($user->deposit_balance, 2, '.', ''),
+            'success' => 'Task canceled successfully.'
+        ]);
     }
 
     public function postedTaskListRunning(Request $request)
@@ -929,6 +938,10 @@ class PostedTaskController extends Controller
             'rating' => 'nullable|numeric|min:0|max:5',
             'rejected_reason' => 'required_if:status,Rejected',
             'rejected_reason_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'status.required' => 'The status field is required.',
+            'status.in' => 'The status must be either Approved or Rejected.',
+            'rejected_reason.required_if' => 'Rejected reason is required when status is Rejected.',
         ]);
 
         if ($validator->fails()) {
@@ -941,60 +954,64 @@ class PostedTaskController extends Controller
             $postTask = PostTask::findOrFail($proofTask->post_task_id);
             $user = User::findOrFail($proofTask->user_id);
 
-            if ($proofTask->created_at < now()->subHours(get_default_settings('posted_task_proof_submit_auto_approved_time'))) {
+            $autoApprovalTime = get_default_settings('posted_task_proof_submit_auto_approved_time');
+            if ($proofTask->created_at < now()->subHours($autoApprovalTime)) {
                 return response()->json([
                     'status' => 401,
-                    'error' => 'Currently, This task proof checking time has expired so this proof has been automatically approved by the system.'
+                    'error' => 'This task proof checking time has expired and has been automatically approved by the system.',
                 ]);
             }
 
             if ($proofTask->status != 'Pending') {
                 return response()->json([
                     'status' => 401,
-                    'error' => 'This proof task is already ' . $proofTask->status . '. You can not resubmit it.'
+                    'error' => "This proof task is already {$proofTask->status}. You cannot resubmit it.",
                 ]);
             }
 
-            if ($request->status == 'Approved') {
-                $user->withdraw_balance = $user->withdraw_balance + $postTask->income_of_each_worker + $request->bonus;
+            if ($request->status === 'Approved') {
+                $totalIncome = $postTask->income_of_each_worker + ($request->bonus ?? 0);
+
+                if ($request->bonus) {
+                    $authUser = auth()->user();
+                    if ($request->bonus <= $authUser->deposit_balance) {
+                        $authUser->deposit_balance -= $request->bonus;
+                    } elseif ($request->bonus <= $authUser->withdraw_balance) {
+                        $authUser->withdraw_balance -= $request->bonus;
+                    } else {
+                        return response()->json([
+                            'status' => 402,
+                            'error' => 'Insufficient balance. Please deposit funds. Your current deposit balance is ' .
+                                get_site_settings('site_currency_symbol') . ' ' . number_format($authUser->deposit_balance, 2) .
+                                ' and withdraw balance is ' . get_site_settings('site_currency_symbol') . ' ' .
+                                number_format($authUser->withdraw_balance, 2) . '.',
+                        ]);
+                    }
+                    $authUser->save();
+
+                    Bonus::create([
+                        'user_id' => $proofTask->user_id,
+                        'bonus_by' => $authUser->id,
+                        'type' => 'Proof Task Approved Bonus',
+                        'post_task_id' => $postTask->id,
+                        'amount' => $request->bonus,
+                    ]);
+
+                    $bonus = Bonus::latest()->first();
+                    $user->notify(new BonusNotification($bonus));
+                }
+
+                $user->withdraw_balance += $totalIncome;
                 $user->save();
 
                 if ($request->rating) {
-                    Rating::create([
+                    $rating = Rating::create([
                         'user_id' => $proofTask->user_id,
                         'rated_by' => auth()->user()->id,
                         'post_task_id' => $postTask->id,
                         'rating' => $request->rating,
                     ]);
-                    $rating = Rating::where('user_id', $proofTask->user_id)->where('post_task_id', $postTask->id)->first();
                     $user->notify(new RatingNotification($rating));
-                }
-
-                if ($request->bonus) {
-                    if ($request->bonus <= auth()->user()->deposit_balance) {
-                        auth()->user()->update([
-                            'deposit_balance' => auth()->user()->deposit_balance - $request->bonus
-                        ]);
-                    }else if ($request->bonus <= auth()->user()->withdraw_balance) {
-                        auth()->user()->update([
-                            'withdraw_balance' => auth()->user()->withdraw_balance - $request->bonus
-                        ]);
-                    }else{
-                        return response()->json([
-                            'status' => 401,
-                            'error' => 'Insufficient balance. Please deposit first. Your current deposit balance is ' . get_site_settings('site_currency_symbol') . ' ' . auth()->user()->deposit_balance . ' and withdraw balance is ' . get_site_settings('site_currency_symbol') . ' ' . auth()->user()->withdraw_balance . '.'
-                        ]);
-                    }
-
-                    Bonus::create([
-                        'user_id' => $proofTask->user_id,
-                        'bonus_by' => auth()->user()->id,
-                        'type' => 'Proof Task Approved Bonus',
-                        'post_task_id' => $postTask->id,
-                        'amount' => $request->bonus,
-                    ]);
-                    $bonus = Bonus::where('user_id', $proofTask->user_id)->where('post_task_id', $postTask->id)->first();
-                    $user->notify(new BonusNotification($bonus));
                 }
             }
 
@@ -1006,14 +1023,15 @@ class PostedTaskController extends Controller
                 $image->toJpeg(80)->save(base_path("public/uploads/task_proof_rejected_reason_photo/").$rejected_reason_photo_name);
             }
 
-            $proofTask->status = $request->status;
-            $proofTask->rejected_reason = $request->rejected_reason ?? NULL;
-            $proofTask->rejected_reason_photo = $rejected_reason_photo_name;
-            $proofTask->rejected_at = $request->status == 'Rejected' ? now() : NULL;
-            $proofTask->rejected_by = $request->status == 'Rejected' ? auth()->user()->id : NULL;
-            $proofTask->approved_at = $request->status == 'Approved' ? now() : NULL;
-            $proofTask->approved_by = $request->status == 'Approved' ? auth()->user()->id : NULL;
-            $proofTask->save();
+            $proofTask->update([
+                'status' => $request->status,
+                'rejected_reason' => $request->rejected_reason ?? null,
+                'rejected_reason_photo' => $rejected_reason_photo_name,
+                'rejected_at' => $request->status === 'Rejected' ? now() : null,
+                'rejected_by' => $request->status === 'Rejected' ? auth()->user()->id : null,
+                'approved_at' => $request->status === 'Approved' ? now() : null,
+                'approved_by' => $request->status === 'Approved' ? auth()->user()->id : null,
+            ]);
 
             return response()->json([
                 'status' => 200,
@@ -1027,36 +1045,68 @@ class PostedTaskController extends Controller
     {
         $postTask = PostTask::findOrFail($id);
 
-        $boosting_start_at_diff_in_minutes = Carbon::parse($postTask->boosting_start_at)->diffInMinutes(Carbon::now());
-        $boosting_start_at_diff_rounded = $postTask->boosting_time - round($boosting_start_at_diff_in_minutes);
+        // Calculate boosting time difference
+        $boostingStartAtDiffInMinutes = Carbon::parse($postTask->boosting_start_at)
+            ->diffInMinutes(Carbon::now());
+        $boostingStartAtDiffRounded = $postTask->boosting_time
+            - round($boostingStartAtDiffInMinutes);
 
-        if ($postTask->status == 'Paused' && $postTask->paused_by != auth()->user()->id) {
+        // Handle task status checks
+        if ($postTask->status == 'Paused') {
+            if ($postTask->paused_by != auth()->user()->id) {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'This task is already paused by the system. You cannot pause it again. Please check your posted paused task list.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'This task is already paused by you. You cannot pause it again. Please check your posted paused task list.'
+                ]);
+            }
+        }
+
+        if ($postTask->status == 'Canceled') {
             return response()->json([
                 'status' => 401,
-                'error' => 'This task is already paused by system. You can not paused it. Please check the paused task list.'
+                'error' => 'This task is canceled. You cannot pause it.'
             ]);
-        } else {
-            if ($postTask->status == 'Paused') {
-                if ($boosting_start_at_diff_rounded > 0) {
-                    $postTask->boosting_start_at = now();
-                }
+        }
 
-                $postTask->status = 'Running';
-            } else if ($postTask->status == 'Running') {
-                if ($boosting_start_at_diff_rounded > 0) {
-                    $postTask->boosting_start_at = null;
-                    $postTask->boosting_time = $boosting_start_at_diff_rounded;
-                }
+        if ($postTask->status == 'Completed') {
+            return response()->json([
+                'status' => 401,
+                'error' => 'This task is completed. You cannot pause it.'
+            ]);
+        }
 
-                $postTask->paused_at = now();
-                $postTask->paused_by = auth()->user()->id;
-                $postTask->status = 'Paused';
+        // Handle Paused and Running status toggling
+        if ($postTask->status == 'Running') {
+            // Pause task
+            if ($boostingStartAtDiffRounded > 0) {
+                $postTask->boosting_start_at = null;
+                $postTask->boosting_time = $boostingStartAtDiffRounded;
             }
 
-            $postTask->save();
+            $postTask->paused_at = now();
+            $postTask->paused_by = auth()->user()->id;
+            $postTask->status = 'Paused';
+        } else {
+            // Resume task
+            if ($boostingStartAtDiffRounded > 0) {
+                $postTask->boosting_start_at = now();
+            }
 
-            return response()->json(['success' => 'Status updated successfully.']);
+            $postTask->status = 'Running';
         }
+
+        // Save updates
+        $postTask->save();
+
+        return response()->json([
+            'status' => 200,
+            'success' => 'Task status updated successfully.'
+        ]);
     }
 
     public function postedTaskListCanceled(Request $request)

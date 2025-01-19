@@ -27,24 +27,29 @@ class CheckUserType
         $userAgent = $request->header('User-Agent');
         $userIp = $request->ip();
 
-        // Detect device type and name
-        $deviceType = preg_match('/Mobile|Android|iPhone|iPad/', $userAgent) ? 'Smartphone' :
-            (preg_match('/Windows|Macintosh|Linux/', $userAgent) ? 'Computer' : 'Unknown Device');
-
-        $deviceName = 'Unknown Device';
-        if ($deviceType === 'Smartphone') {
-            preg_match('/(iPhone|iPad|Samsung|Huawei|Xiaomi|OnePlus|Google)/i', $userAgent, $deviceMatches);
-            $deviceName = $deviceMatches[1] ?? 'Unknown Smartphone';
-        } elseif ($deviceType === 'Computer') {
-            preg_match('/(HP|Dell|Lenovo|Asus|Acer|Walton|Microsoft|Apple|Samsung)/i', $userAgent, $deviceMatches);
-            $deviceName = $deviceMatches[1] ?? 'Unknown Computer';
+        $deviceType = 'Unknown Device';
+        if (preg_match('/Mobile|Android|iPhone|iPad/', $userAgent)) {
+            $deviceType = 'Smartphone';
+        } elseif (preg_match('/Windows|Macintosh|Linux/', $userAgent)) {
+            $deviceType = 'Computer';
+        } else {
+            $deviceType = 'Unknown Device';
         }
 
-        // Detect browser
-        preg_match('/(Chrome|Firefox|Safari|Opera|Edge)\/[0-9.]+/', $userAgent, $browserMatches);
-        $browser = $browserMatches[1] ?? 'Unknown Browser';
+        // Determine Device OS
+        $deviceOs = 'Unknown OS';
+        if (preg_match('/(Windows|Macintosh|Linux|Android|iPhone|iPad)/', $userAgent, $osMatches)) {
+            $deviceOs = $osMatches[1];
+        } elseif (preg_match('/(iOS|Android) [0-9.]+/', $userAgent, $versionMatches)) {
+            $deviceOs = $versionMatches[1];
+        }
 
-        // Use cached location details
+        // Determine Browser
+        $browser = 'Unknown Browser';
+        if (preg_match('/(Chrome|Firefox|Safari|Opera|Edge)\/[0-9.]+/', $userAgent, $browserMatches)) {
+            $browser = $browserMatches[1];
+        }
+
         $cacheKey = "location_{$userIp}";
         $location = cache()->remember($cacheKey, now()->addHours(24), function () use ($userIp) {
             return Location::get($userIp);
@@ -56,12 +61,11 @@ class CheckUserType
         $latitude = $location->latitude ?? null;
         $longitude = $location->longitude ?? null;
 
-        // Efficiently update or create user Devices
         UserDevice::updateOrCreate(
-            ['user_id' => $user->id, 'ip' => $userIp],
+            ['user_id' => $user->id, 'ip_address' => $userIp],
             [
                 'device_type' => $deviceType,
-                'device_name' => $deviceName,
+                'device_os' => $deviceOs,
                 'browser' => $browser,
                 'country' => $country,
                 'region' => $region,
@@ -69,9 +73,8 @@ class CheckUserType
                 'latitude' => $latitude,
                 'longitude' => $longitude,
             ]
-        )->touch(); // Update only the `updated_at` timestamp.
+        )->touch();
 
         return $next($request);
     }
-
 }

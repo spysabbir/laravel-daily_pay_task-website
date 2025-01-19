@@ -358,7 +358,7 @@ class WorkedTaskController extends Controller
                 return DataTables::of($taskList)
                     ->addIndexColumn()
                     ->editColumn('proof_id', function ($row) {
-                        return '<span class="badge bg-primary">'.$row->postTask->id.'-'.$row->id.'</span>';
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'#'.$row->id.'</span>';
                     })
                     ->editColumn('title', function ($row) {
                         return '
@@ -373,8 +373,16 @@ class WorkedTaskController extends Controller
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
+                    ->editColumn('checking_expired_time', function ($row) {
+                        $submitDate = Carbon::parse($row->created_at);
+                        $endDate = $submitDate->addHours((int) get_default_settings('posted_task_proof_submit_auto_approved_time'));
+                        if ($endDate < now()) {
+                            return '<span class="badge bg-danger">Please contact support</span>';
+                        }
+                        return '<span class="badge bg-primary">' . $endDate->format('d M, Y h:i:s A') . '</span>';
+                    })
                     ->with(['totalProofsCount' => $totalProofsCount])
-                    ->rawColumns(['proof_id', 'title'])
+                    ->rawColumns(['proof_id', 'title', 'checking_expired_time'])
                     ->make(true);
             }
             return view('frontend.worked_task.pending');
@@ -409,7 +417,7 @@ class WorkedTaskController extends Controller
                 return DataTables::of($taskList)
                     ->addIndexColumn()
                     ->editColumn('proof_id', function ($row) {
-                        return '<span class="badge bg-primary">'.$row->postTask->id.'-'.$row->id.'</span>';
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'#'.$row->id.'</span>';
                     })
                     ->editColumn('title', function ($row) {
                         return '
@@ -491,7 +499,7 @@ class WorkedTaskController extends Controller
                 return DataTables::of($taskList)
                     ->addIndexColumn()
                     ->editColumn('proof_id', function ($row) {
-                        return '<span class="badge bg-primary">'.$row->postTask->id.'-'.$row->id.'</span>';
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'#'.$row->id.'</span>';
                     })
                     ->editColumn('title', function ($row) {
                         return '
@@ -592,14 +600,14 @@ class WorkedTaskController extends Controller
         if ($proofTask->status == 'Reviewed') {
             return response()->json([
                 'status' => 401,
-                'error' => 'This proof has already been reviewed.'
+                'error' => 'This proof has already been reviewed. You can not review it again. Please check the reviewed worked task list.'
             ]);
         }
 
         // Deduct balance logic
         if ($request->user()->withdraw_balance < get_default_settings('rejected_worked_task_review_charge')) {
             return response()->json([
-                'status' => 401,
+                'status' => 402,
                 'error' => 'Insufficient balance in your account to review the proof.'
             ]);
         }
@@ -660,7 +668,7 @@ class WorkedTaskController extends Controller
                 return DataTables::of($taskList)
                     ->addIndexColumn()
                     ->editColumn('proof_id', function ($row) {
-                        return '<span class="badge bg-primary">'.$row->postTask->id.'-'.$row->id.'</span>';
+                        return '<span class="badge bg-primary">'.$row->postTask->id.'#'.$row->id.'</span>';
                     })
                     ->editColumn('title', function ($row) {
                         return '

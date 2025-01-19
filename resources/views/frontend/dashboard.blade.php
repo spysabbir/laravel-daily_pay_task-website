@@ -631,7 +631,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title">Total Send Balance Transfer Status</h6>
+                    <h6 class="card-title">Total Balance Transfer Status</h6>
                 </div>
             </div>
             <div class="card-body">

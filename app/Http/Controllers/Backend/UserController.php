@@ -48,8 +48,8 @@ class UserController extends Controller implements HasMiddleware
             }
 
             if ($request->duplicate_device_check) {
-                $userIps = UserDevice::groupBy('ip')->pluck('ip')->toArray();
-                $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                $userIps = UserDevice::groupBy('ip_address')->pluck('ip_address')->toArray();
+                $sameIpUserIds = UserDevice::whereIn('ip_address', $userIps)
                     ->groupBy('user_id')
                     ->pluck('user_id')
                     ->toArray();
@@ -63,8 +63,8 @@ class UserController extends Controller implements HasMiddleware
 
             if ($request->duplicate_device_check === 'Matched') {
                 $allUser = $allUser->filter(function ($user) {
-                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip')->pluck('ip')->toArray();
-                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip_address')->pluck('ip_address')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip_address', $userIps)
                         ->where('user_id', '!=', $user->id)
                         ->groupBy('user_id')
                         ->pluck('user_id')
@@ -77,8 +77,8 @@ class UserController extends Controller implements HasMiddleware
                 });
             } elseif ($request->duplicate_device_check === 'Not Matched') {
                 $allUser = $allUser->filter(function ($user) {
-                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip')->pluck('ip')->toArray();
-                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip_address')->pluck('ip_address')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip_address', $userIps)
                         ->where('user_id', '!=', $user->id)
                         ->groupBy('user_id')
                         ->pluck('user_id')
@@ -159,8 +159,8 @@ class UserController extends Controller implements HasMiddleware
                         ';
                 })
                 ->editColumn('duplicate_device_check', function ($row) {
-                    $userIps = UserDevice::where('user_id', $row->id)->groupBy('ip')->pluck('ip')->toArray();
-                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                    $userIps = UserDevice::where('user_id', $row->id)->groupBy('ip_address')->pluck('ip_address')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip_address', $userIps)
                         ->where('user_id', '!=', $row->id)
                         ->groupBy('user_id')
                         ->pluck('user_id')
@@ -263,8 +263,8 @@ class UserController extends Controller implements HasMiddleware
             }
 
             if ($request->duplicate_device_check) {
-                $userIps = UserDevice::groupBy('ip')->pluck('ip')->toArray();
-                $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                $userIps = UserDevice::groupBy('ip_address')->pluck('ip_address')->toArray();
+                $sameIpUserIds = UserDevice::whereIn('ip_address', $userIps)
                     ->groupBy('user_id')
                     ->pluck('user_id')
                     ->toArray();
@@ -278,8 +278,8 @@ class UserController extends Controller implements HasMiddleware
 
             if ($request->duplicate_device_check === 'Matched') {
                 $allUser = $allUser->filter(function ($user) {
-                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip')->pluck('ip')->toArray();
-                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip_address')->pluck('ip_address')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip_address', $userIps)
                         ->where('user_id', '!=', $user->id)
                         ->groupBy('user_id')
                         ->pluck('user_id')
@@ -292,8 +292,8 @@ class UserController extends Controller implements HasMiddleware
                 });
             } elseif ($request->duplicate_device_check === 'Not Matched') {
                 $allUser = $allUser->filter(function ($user) {
-                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip')->pluck('ip')->toArray();
-                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                    $userIps = UserDevice::where('user_id', $user->id)->groupBy('ip_address')->pluck('ip_address')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip_address', $userIps)
                         ->where('user_id', '!=', $user->id)
                         ->groupBy('user_id')
                         ->pluck('user_id')
@@ -374,8 +374,8 @@ class UserController extends Controller implements HasMiddleware
                         ';
                 })
                 ->editColumn('duplicate_device_check', function ($row) {
-                    $userIps = UserDevice::where('user_id', $row->id)->groupBy('ip')->pluck('ip')->toArray();
-                    $sameIpUserIds = UserDevice::whereIn('ip', $userIps)
+                    $userIps = UserDevice::where('user_id', $row->id)->groupBy('ip_address')->pluck('ip_address')->toArray();
+                    $sameIpUserIds = UserDevice::whereIn('ip_address', $userIps)
                         ->where('user_id', '!=', $row->id)
                         ->groupBy('user_id')
                         ->pluck('user_id')

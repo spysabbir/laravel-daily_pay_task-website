@@ -193,8 +193,13 @@ $(function() {
     // totalPostedTasksApexRadialBar start
     if ($('#totalPostedTasksApexRadialBar').length) {
 
+        // Calculate the total sum of all values
         var total = postedTasksStatusStatusesData.reduce((acc, value) => acc + value, 0);
-        var percentageData = postedTasksStatusStatusesData.map(value => (value / total) * 100);
+
+        // Calculate percentage for each value and round it to 2 decimal places
+        var percentageData = postedTasksStatusStatusesData.map(value =>
+            Math.round((value / total) * 100 * 100) / 100 // Round to 2 decimal places
+        );
 
         var options3 = {
             chart: {
@@ -210,7 +215,13 @@ $(function() {
                 mode: 'dark'
             },
             tooltip: {
-                theme: 'dark'
+                theme: 'dark',
+                y: {
+                    formatter: function(value) {
+                        // Ensure 2 decimal points in the tooltip
+                        return `${Math.round((value + Number.EPSILON) * 100) / 100}%`;
+                    }
+                }
             },
             colors: [colors.primary, colors.success, colors.warning, colors.danger, colors.info, colors.secondary],
             fill: {},
@@ -264,10 +275,18 @@ $(function() {
                     vertical: 0
                 },
                 formatter: function(seriesName, opts) {
-                    // Get the index of the seriesName
-                    const index = postedTasksStatusStatuses.findIndex(status => seriesName.startsWith(status));
-                    // Show status, quantity, and percentage in the legend
-                    return `${seriesName} (${percentageData[index].toFixed(1)}%)`;
+                    // Extract the status from the seriesName
+                    const statusName = seriesName.split(":")[0];
+
+                    // Find the index of the status in workedTasksStatusStatuses
+                    const index = postedTasksStatusStatuses.indexOf(statusName);
+
+                    // Check if the index is valid and percentageData[index] exists
+                    if (index !== -1 && percentageData[index] !== undefined) {
+                        return `${seriesName} (${percentageData[index].toFixed(2)}%)`; // Force 2 decimal points
+                    } else {
+                        return `${seriesName} (0.00%)`; // Default to 0.00% if index is invalid
+                    }
                 }
             },
         };
@@ -275,7 +294,6 @@ $(function() {
         var chart = new ApexCharts(document.querySelector("#totalPostedTasksApexRadialBar"), options3);
         chart.render();
     }
-
     // totalWorkedTasksApexRadialBar end
 
     // totalWorkedTasksApexRadialBar start
@@ -284,8 +302,10 @@ $(function() {
         // Calculate the total sum of all values
         var total = workedTasksStatusStatusesData.reduce((acc, value) => acc + value, 0);
 
-        // Calculate percentage for each value
-        var percentageData = workedTasksStatusStatusesData.map(value => (value / total) * 100);
+        // Calculate percentage for each value and round it to 2 decimal points
+        var percentageData = workedTasksStatusStatusesData.map(value =>
+            Math.round((value / total) * 100 * 100) / 100 // Round to 2 decimal places
+        );
 
         var options4 = {
             chart: {
@@ -301,7 +321,12 @@ $(function() {
                 mode: 'dark'
             },
             tooltip: {
-                theme: 'dark'
+                theme: 'dark',
+                y: {
+                    formatter: function(value) {
+                        return `${Math.round((value + Number.EPSILON) * 100) / 100}%`; // Ensure 2 decimal points in tooltip
+                    }
+                }
             },
             colors: [colors.primary, colors.success, colors.danger, colors.warning],
             fill: {},
@@ -355,9 +380,18 @@ $(function() {
                     vertical: 0
                 },
                 formatter: function(seriesName, opts) {
-                    // Show status, quantity, and percentage in the legend
-                    const index = workedTasksStatusStatuses.indexOf(seriesName.split(":")[0]);
-                    return `${seriesName} (${percentageData[index].toFixed(1)}%)`;
+                    // Extract the status from the seriesName
+                    const statusName = seriesName.split(":")[0];
+
+                    // Find the index of the status in workedTasksStatusStatuses
+                    const index = workedTasksStatusStatuses.indexOf(statusName);
+
+                    // Check if the index is valid and percentageData[index] exists
+                    if (index !== -1 && percentageData[index] !== undefined) {
+                        return `${seriesName} (${percentageData[index].toFixed(2)}%)`; // Force 2 decimal points
+                    } else {
+                        return `${seriesName} (0.00%)`; // Default to 0.00% if index is invalid
+                    }
                 }
             },
         };
@@ -365,6 +399,5 @@ $(function() {
         var chart = new ApexCharts(document.querySelector("#totalWorkedTasksApexRadialBar"), options4);
         chart.render();
     }
-
     // totalWorkedTasksApexRadialBar end
 });

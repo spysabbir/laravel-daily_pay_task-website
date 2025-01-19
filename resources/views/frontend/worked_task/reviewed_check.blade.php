@@ -78,8 +78,8 @@
             const fileInputCount = $("#fileUploadContainer .file-upload-row").length;
 
             if (fileInputCount >= maxFileInputs) {
-                toastr.warning("You can only add up to 10 file inputs."); // Show toastr warning
-                return; // Prevent adding more file inputs
+                toastr.warning("You can only add up to 10 file inputs.");
+                return;
             }
 
             const fileInputRow = `
@@ -124,28 +124,25 @@
                     if (response.status === 400) {
                         $.each(response.error, function (prefix, val) {
                             if (prefix.startsWith("reviewed_reason_photos_")) {
-                                // Extract the index from the error key
-                                const index = parseInt(prefix.split("_")[3], 10); // Parse the index
-
-                                // Find the corresponding file input row
+                                const index = parseInt(prefix.split("_")[3], 10);
                                 const fileInputRow = $("#fileUploadContainer")
                                     .find(".file-upload-row")
-                                    .eq(index); // Select the row by index
-
+                                    .eq(index);
                                 if (fileInputRow.length > 0) {
                                     if (index === 0) {
-                                        // Display the error message in the error-text span
                                         $('span.update_reviewed_reason_photos_error').text(val);
                                     }
-                                    // Display the error message in the error-text span
                                     fileInputRow.find("span.error-text").text(val);
                                 }
                             } else {
-                                // Handle other field errors
                                 $('span.update_' + prefix + '_error').text(val);
                             }
                         });
                     } else if (response.status === 401) {
+                        toastr.error(response.error);
+                        $('#allDataTable').DataTable().ajax.reload();
+                        $(".reviewedModal").modal('hide');
+                    } else if (response.status === 402) {
                         toastr.error(response.error);
                     } else {
                         toastr.success('Proof Task Reviewed Successfully.');
