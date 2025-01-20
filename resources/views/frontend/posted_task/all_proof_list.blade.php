@@ -265,7 +265,7 @@
                                 </th>
                                 <th>Status</th>
                                 <th>Submited Date</th>
-                                <th>Checked Date</th>
+                                <th>Checking Time</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -692,7 +692,7 @@
                 },
                 { data: 'status', name: 'status' },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'checked_at', name: 'checked_at' },
+                { data: 'checking_at', name: 'checking_at' },
                 { data: 'action', name: 'action' }
             ]
         });

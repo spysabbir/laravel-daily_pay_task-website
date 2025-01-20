@@ -224,7 +224,7 @@
         // Paused Data
         $(document).on('click', '.pausedBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('posted_task.paused.resume', ":id") }}";
+            var url = "{{ route('posted_task.paused', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -240,8 +240,8 @@
                         url: url,
                         method: 'GET',
                         success: function(response) {
-                            if (response.status == 401) {
-                                toastr.error(response.error);
+                            if (response.status == 400) {
+                                toastr.info(response.error);
                                 $('#allDataTable').DataTable().ajax.reload();
                             } else {
                                 $('#allDataTable').DataTable().ajax.reload();
@@ -265,6 +265,7 @@
                 data: { id: id, check: true },
                 success: function(response) {
                     if (response.status == 400) {
+                        $("#deposit_balance_div strong").html('{{ get_site_settings('site_currency_symbol') }} ' + response.deposit_balance);
                         $('#allDataTable').DataTable().ajax.reload();
                         toastr.error(response.error);
                     } else {

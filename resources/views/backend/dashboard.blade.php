@@ -88,6 +88,72 @@
     </div>
 </div> <!-- row -->
 
+{{-- <div class="row">
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Bar chart</h6>
+                <div id="apexBar"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Grouped bar chart</h6>
+                <canvas id="chartjsGroupedBar"></canvas>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
+<div class="row">
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Last 7 days Deposit and Withdraw Distribution (Approved)</h6>
+                @if (array_sum($formattedDepositData->toArray()) <= 0 && array_sum($formattedWithdrawData->toArray()) <= 0)
+                    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                        <div class="alert-heading mb-3">
+                            <i data-feather="alert-circle"></i>
+                            <h4>No data found!</h4>
+                        </div>
+                        <p class="mt-3">
+                            No data found for deposit and withdraw distribution.
+                        </p>
+                    </div>
+                @else
+                    <canvas id="approvedDepositAndWithdrawChartjsLine"></canvas>
+                @endif
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Last 7 days Report Status Distribution</h6>
+                @if (empty($formattedStatusWiseReportsDataSeries) ||
+                    collect($formattedStatusWiseReportsDataSeries)->every(function ($series) {
+                        return collect($series['data'])->sum() <= 0;
+                    })
+                )
+                    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                        <div class="alert-heading mb-3">
+                            <i data-feather="alert-circle"></i>
+                            <h4>No data found!</h4>
+                        </div>
+                        <p class="mt-3">
+                            No data found for report status distribution.
+                        </p>
+                    </div>
+                @else
+                    <div id="reportStatusApexLine"></div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xl-6 grid-margin stretch-card">
         <div class="card">
@@ -110,9 +176,6 @@
                 @endif
             </div>
         </div>
-    </div>
-    <div class="col-xl-6 grid-margin stretch-card">
-
     </div>
 </div>
 
@@ -217,4 +280,7 @@
     var formattedDepositsStatusesData = @json($formattedDepositsStatusesData);
     var withdrawsStatuses = @json($withdrawsStatuses);
     var formattedWithdrawsStatusesData = @json($formattedWithdrawsStatusesData);
+    var formattedDepositData = @json($formattedDepositData);
+    var formattedWithdrawData = @json($formattedWithdrawData);
+    var formattedStatusWiseReportsDataSeries = @json($formattedStatusWiseReportsDataSeries);
 </script>

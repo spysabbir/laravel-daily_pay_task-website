@@ -296,6 +296,7 @@ $(function() {
     }
     // totalWorkedTasksApexRadialBar end
 
+
     // totalWorkedTasksApexRadialBar start
     if ($('#totalWorkedTasksApexRadialBar').length) {
 
@@ -400,4 +401,79 @@ $(function() {
         chart.render();
     }
     // totalWorkedTasksApexRadialBar end
+
+
+    // reportStatusApexLine start
+    if ($('#reportStatusApexLine').length) {
+        var formattedDates = lastSevenDaysCategories.map(function (dateStr) {
+            var date = new Date(dateStr);
+            var options = { day: '2-digit', month: 'short' };
+            return date.toLocaleDateString('en-GB', options);
+        });
+
+        function getCategorySum(seriesData) {
+            return seriesData.reduce(function (sum, series) {
+                return sum + series.data.reduce(function (subSum, val) {
+                    return subSum + (val || 0);
+                }, 0);
+            }, 0);
+        }
+
+        var lineChartOptions = {
+            chart: {
+                type: "line",
+                height: 320,
+                parentHeightOffset: 0,
+                foreColor: colors.bodyColor,
+                background: colors.cardBg,
+                toolbar: { show: false },
+            },
+            theme: { mode: 'dark' },
+            tooltip: {
+                theme: 'dark',
+                y: {
+                    formatter: function (val) {
+                        return val;
+                    }
+                }
+            },
+            colors: [colors.primary, colors.danger, colors.success],
+            grid: {
+                padding: { bottom: -4 },
+                borderColor: colors.gridBorder,
+                xaxis: {
+                    lines: { show: true }
+                }
+            },
+            series: formattedStatusWiseReportsDataSeries,
+            xaxis: {
+                categories: formattedDates,
+                lines: { show: true },
+                axisBorder: { color: colors.gridBorder },
+                axisTicks: { color: colors.gridBorder }
+            },
+            markers: { size: 0 },
+            legend: {
+                show: true,
+                position: "top",
+                horizontalAlign: 'center',
+                fontFamily: fontFamily,
+                itemMargin: { horizontal: 8, vertical: 0 },
+                formatter: function (seriesName, opts) {
+                    var sumQty = getCategorySum([opts.w.config.series[opts.seriesIndex]]);
+
+                    return `${seriesName} - Total: ${sumQty}`;
+                }
+            },
+            stroke: {
+                width: 3,
+                curve: "smooth",
+                lineCap: "round"
+            }
+        };
+
+        var apexLineChart = new ApexCharts(document.querySelector("#reportStatusApexLine"), lineChartOptions);
+        apexLineChart.render();
+    }
+    // reportStatusApexLine end
 });

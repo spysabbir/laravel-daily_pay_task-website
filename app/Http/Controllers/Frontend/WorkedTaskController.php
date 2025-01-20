@@ -207,19 +207,19 @@ class WorkedTaskController extends Controller
             ]);
         }
 
-        if ($ProofTask >= $postTask->worker_needed) {
-            return response()->json([
-                'canSubmit' => false,
-                'message' => 'Sorry, the required number of work have already submitted proof for this task.'
-            ]);
-        }
-
         $approvedDate = Carbon::parse($postTask->approved_at);
         $endDate = $approvedDate->addDays((int) $postTask->work_duration);
         if ($endDate < now()) {
             return response()->json([
                 'canSubmit' => false,
                 'message' => 'Sorry, the deadline for submitting proof for this task has expired.'
+            ]);
+        }
+
+        if ($ProofTask >= $postTask->worker_needed) {
+            return response()->json([
+                'canSubmit' => false,
+                'message' => 'Sorry, the required number of work have already submitted proof for this task.'
             ]);
         }
 
@@ -257,8 +257,6 @@ class WorkedTaskController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $proofCount = ProofTask::where('post_task_id', $id)->count();
-
         $userExists = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->exists();
         if ($userExists) {
             $notification = array(
@@ -278,21 +276,21 @@ class WorkedTaskController extends Controller
             return back()->with($notification)->withInput();
         }
 
-        if ($proofCount >= $taskDetails->worker_needed) {
+        $approvedDate = Carbon::parse($taskDetails->approved_at);
+        $endDate = $approvedDate->addDays((int) $taskDetails->work_duration);
+        if ($endDate < now()) {
             $notification = array(
-                'message' => 'Sorry, the required number of work have already submitted proof for this task.',
+                'message' => 'Sorry, the deadline for submitting proof for this task has expired.',
                 'alert-type' => 'error'
             );
 
             return back()->with($notification)->withInput();
         }
 
-        $approvedDate = Carbon::parse($taskDetails->approved_at);
-        $endDate = $approvedDate->addDays((int) $taskDetails->work_duration);
-
-        if ($endDate < now()) {
+        $proofCount = ProofTask::where('post_task_id', $id)->count();
+        if ($proofCount >= $taskDetails->worker_needed) {
             $notification = array(
-                'message' => 'Sorry, the deadline for submitting proof for this task has expired.',
+                'message' => 'Sorry, the required number of work have already submitted proof for this task.',
                 'alert-type' => 'error'
             );
 
@@ -597,14 +595,13 @@ class WorkedTaskController extends Controller
 
         $proofTask = ProofTask::findOrFail($id);
 
-        if ($proofTask->status == 'Reviewed') {
+        if ($proofTask->reviewed_at != null) {
             return response()->json([
                 'status' => 401,
-                'error' => 'This proof has already been reviewed. You can not review it again. Please check the reviewed worked task list.'
+                'error' => 'This proof has been already reviewed. You can not review it again. Please check the reviewed worked task list.'
             ]);
         }
 
-        // Deduct balance logic
         if ($request->user()->withdraw_balance < get_default_settings('rejected_worked_task_review_charge')) {
             return response()->json([
                 'status' => 402,

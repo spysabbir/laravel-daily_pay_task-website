@@ -71,7 +71,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/posted_task-list-running', [PostedTaskController::class, 'postedTaskListRunning'])->name('posted_task.list.running');
     Route::get('/posted_task-list-completed', [PostedTaskController::class, 'postedTaskListCompleted'])->name('posted_task.list.completed');
     Route::get('/posted_task-view/{id}', [PostedTaskController::class, 'postedTaskView'])->name('posted_task.view');
-    Route::get('/posted_task-paused-resume/{id}', [PostedTaskController::class, 'postedTaskPausedResume'])->name('posted_task.paused.resume');
+    Route::get('/posted_task-paused/{id}', [PostedTaskController::class, 'postedTaskPaused'])->name('posted_task.paused');
+    Route::get('/posted_task-resume/{id}', [PostedTaskController::class, 'postedTaskResume'])->name('posted_task.resume');
     Route::post('/posted_task-canceled/{id}', [PostedTaskController::class, 'postedTaskCanceled'])->name('posted_task.canceled');
     Route::get('/posted_task-edit/{id}', [PostedTaskController::class, 'postedTaskEdit'])->name('posted_task.edit');
     Route::put('/posted_task-update/{id}', [PostedTaskController::class, 'postedTaskUpdate'])->name('posted_task.update');

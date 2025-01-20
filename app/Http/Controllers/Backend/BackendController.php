@@ -14,6 +14,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Deposit;
+use App\Models\Report;
 use App\Models\Withdraw;
 
 class BackendController extends Controller
@@ -89,6 +90,70 @@ class BackendController extends Controller
             return $workedTasksData[$dbDate]->count ?? 0; // Default to 0 if no data
         })->toArray();
 
+        // Fetch deposits grouped by date for the last 7 days
+        $deposits = Deposit::selectRaw('DATE(approved_at) as date, SUM(amount) as total')
+        ->where('status', 'Approved')
+        ->whereBetween('approved_at', [Carbon::today()->subDays(6)->startOfDay(), Carbon::today()->endOfDay()])
+        ->groupBy('date')
+        ->get()
+        ->pluck('total', 'date');
+        // Map deposit data to the chart labels
+        $formattedDepositData = collect($lastSevenDaysCategories)->map(function ($date) use ($deposits) {
+        $formattedDate = Carbon::createFromFormat('M d Y', $date)->toDateString();
+            return $deposits->get($formattedDate, 0); // Default to 0 if no data for the date
+        });
+
+        // Fetch withdrawals grouped by date for the last 7 days
+        $withdrawals = Withdraw::selectRaw('DATE(approved_at) as date, SUM(amount) as total')
+        ->where('status', 'Approved')
+        ->whereBetween('approved_at', [Carbon::today()->subDays(6)->startOfDay(), Carbon::today()->endOfDay()])
+        ->groupBy('date')
+        ->get()
+        ->pluck('total', 'date');
+        // Map withdrawal data to the chart labels
+        $formattedWithdrawData = collect($lastSevenDaysCategories)->map(function ($date) use ($withdrawals) {
+        $formattedDate = Carbon::createFromFormat('M d Y', $date)->toDateString();
+            return $withdrawals->get($formattedDate, 0); // Default to 0 if no data for the date
+        });
+
+        // Fetch status-wise reports grouped by date for the last 7 days
+        $statusWiseReports = Report::selectRaw('DATE(created_at) as date, status, COUNT(*) as total')
+        ->whereBetween('created_at', [Carbon::today()->subDays(6)->startOfDay(), Carbon::today()->endOfDay()])
+        ->groupBy('date', 'status')
+        ->get()
+        ->groupBy('status');
+
+        // Map the status-wise reports data to the chart labels and series format
+        $formattedStatusWiseReportsData = collect($lastSevenDaysCategories)->map(function ($date) use ($statusWiseReports) {
+        $formattedDate = Carbon::createFromFormat('M d Y', $date)->toDateString();
+
+        return $statusWiseReports->mapWithKeys(function ($statusWiseReport, $status) use ($formattedDate) {
+            return [$status => $statusWiseReport->where('date', $formattedDate)->sum('total')];
+        });
+        });
+
+        // Prepare the final series data format
+        $seriesDataForReports = [
+            'Pending' => [],
+            'False' => [],
+            'Received' => []
+        ];
+
+        foreach ($formattedStatusWiseReportsData as $data) {
+            foreach ($seriesDataForReports as $status => &$values) {
+                $values[] = $data->get($status, 0); // Default to 0 if no data for the status
+            }
+        }
+
+        // Prepare the series array for the chart
+        $formattedStatusWiseReportsDataSeries = collect($seriesDataForReports)->map(function ($data, $status) {
+            return [
+                'name' => $status,
+                'data' => $data
+            ];
+        })->values()->toArray();
+
+
         // Get counts for posted tasks status wise
         $postedTasksStatusStatuses = ['Pending','Running','Rejected','Canceled','Paused','Completed'];
         $totalPostedTasksStatusWise = PostTask::select('status', DB::raw('count(*) as total'))
@@ -125,7 +190,7 @@ class BackendController extends Controller
             return $totalWithdrawsStatusesWise->get($status, 0); // Default to 0 if status is not found
         }, $withdrawsStatuses);
 
-        return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastSevenDaysCategories', 'formattedPostedTasksData', 'formattedWorkedTasksData', 'workedTasksStatusStatuses', 'workedTasksStatusStatusesData', 'postedTasksStatusStatuses', 'postedTasksStatusStatusesData', 'depositsStatuses', 'formattedDepositsStatusesData', 'withdrawsStatuses', 'formattedWithdrawsStatusesData'));
+        return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastSevenDaysCategories', 'formattedPostedTasksData', 'formattedWorkedTasksData', 'workedTasksStatusStatuses', 'workedTasksStatusStatusesData', 'postedTasksStatusStatuses', 'postedTasksStatusStatusesData', 'depositsStatuses', 'formattedDepositsStatusesData', 'withdrawsStatuses', 'formattedWithdrawsStatusesData', 'formattedDepositData', 'formattedWithdrawData', 'formattedStatusWiseReportsDataSeries'));
     }
 
     public function profileEdit(Request $request)

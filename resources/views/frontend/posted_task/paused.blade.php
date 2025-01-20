@@ -208,7 +208,7 @@
         // Resume Data
         $(document).on('click', '.resumeBtn', function(){
             var id = $(this).data('id');
-            var url = "{{ route('posted_task.paused.resume', ":id") }}";
+            var url = "{{ route('posted_task.resume', ":id") }}";
             url = url.replace(':id', id)
             Swal.fire({
                 title: 'Are you sure?',
@@ -224,8 +224,13 @@
                         url: url,
                         method: 'GET',
                         success: function(response) {
-                            $('#allDataTable').DataTable().ajax.reload();
-                            toastr.success('Task Resumed Successfully');
+                            if (response.status == 400) {
+                                $('#allDataTable').DataTable().ajax.reload();
+                                toastr.info(response.error);
+                            } else {
+                                $('#allDataTable').DataTable().ajax.reload();
+                                toastr.success('Task Resumed Successfully');
+                            }
                         }
                     });
                 }

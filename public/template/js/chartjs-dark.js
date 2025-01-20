@@ -281,4 +281,102 @@ $(function() {
         });
     }
     // totalWithdrawChartjsPie end
+
+
+    // approvedDepositAndWithdrawChartjsLine start
+    if ($('#approvedDepositAndWithdrawChartjsLine').length) {
+        const formattedLabels = lastSevenDaysCategories.map(date => {
+            const dateObj = new Date(date);
+            return dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+        });
+
+        const depositSumPerLabel = formattedDepositData.map(value => parseFloat(value) || 0);
+        const withdrawSumPerLabel = formattedWithdrawData.map(value => parseFloat(value) || 0);
+
+        new Chart($('#approvedDepositAndWithdrawChartjsLine'), {
+            type: 'line',
+            data: {
+                labels: formattedLabels,
+                datasets: [{
+                    data: formattedDepositData,
+                    label: "Deposit",
+                    borderColor: colors.info,
+                    backgroundColor: "transparent",
+                    fill: true,
+                    pointBackgroundColor: colors.cardBg,
+                    pointBorderWidth: 2,
+                    pointHoverBorderWidth: 3,
+                    tension: 0.3
+                }, {
+                    data: formattedWithdrawData,
+                    label: "Withdraw",
+                    borderColor: colors.primary,
+                    backgroundColor: "transparent",
+                    fill: true,
+                    pointBackgroundColor: colors.cardBg,
+                    pointBorderWidth: 2,
+                    pointHoverBorderWidth: 3,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: colors.bodyColor,
+                            font: {
+                                size: '13px',
+                                family: fontFamily
+                            },
+                            generateLabels: function(chart) {
+                                const datasets = chart.data.datasets;
+                                return datasets.map(function(dataset, index) {
+                                    const totalForDataset = (dataset.label === "Deposit" ? depositSumPerLabel : withdrawSumPerLabel)
+                                        .reduce((sum, value) => sum + value, 0);
+                                    return {
+                                        text: `${dataset.label} - Total: ${totalForDataset.toFixed(2)}`,
+                                        fillStyle: dataset.borderColor,
+                                        strokeStyle: dataset.borderColor
+                                    };
+                                });
+                            }
+                        }
+                    }
+                },
+                aspectRatio: 2,
+                scales: {
+                    x: {
+                        display: true,
+                        grid: {
+                            display: true,
+                            color: colors.gridBorder,
+                            borderColor: colors.gridBorder,
+                        },
+                        ticks: {
+                            color: colors.bodyColor,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: true,
+                            color: colors.gridBorder,
+                            borderColor: colors.gridBorder,
+                        },
+                        ticks: {
+                            color: colors.bodyColor,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    // approvedDepositAndWithdrawChartjsLine end
+
 });
