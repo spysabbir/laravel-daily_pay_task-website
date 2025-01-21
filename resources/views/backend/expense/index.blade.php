@@ -53,7 +53,10 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="expense_date" class="form-label">Expense Date</label>
-                                            <input type="date" class="form-control" id="expense_date" name="expense_date">
+                                            <div class="input-group date datepicker datePickerExample">
+                                                <input type="text" class="form-control" id="expense_date" name="expense_date">
+                                                <span class="input-group-text input-group-addon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
+                                            </div>
                                             <span class="text-danger error-text expense_date_error"></span>
                                         </div>
                                     </div>
@@ -209,7 +212,10 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="update_expense_date" class="form-label">Expense Date</label>
-                                                    <input type="date" class="form-control" id="update_expense_date" name="expense_date">
+                                                    <div class="input-group date datepicker datePickerExample">
+                                                        <input type="text" class="form-control" id="update_expense_date" name="expense_date">
+                                                        <span class="input-group-text input-group-addon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
+                                                    </div>
                                                     <span class="text-danger error-text update_expense_date_error"></span>
                                                 </div>
                                             </div>
@@ -333,7 +339,13 @@
                     $('#update_title').val(response.title);
                     $('#update_description').val(response.description);
                     $('#update_amount').val(response.amount);
-                    $('#update_expense_date').val(response.expense_date);
+
+                    const date = new Date(response.expense_date);
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = date.toLocaleString('en-US', { month: 'long' });
+                    const year = date.getFullYear();
+                    const formattedDate = `${day} ${month}, ${year}`;
+                    $('#update_expense_date').val(formattedDate);
 
                     $('.editModal').modal('show');
                 },
@@ -482,11 +494,6 @@
                 },
             });
         });
-
-        // expense_date future date disable
-        var today = new Date().toISOString().split('T')[0];
-        document.getElementById("expense_date").setAttribute('max', today);
-        document.getElementById("update_expense_date").setAttribute('max', today);
     });
 </script>
 @endsection

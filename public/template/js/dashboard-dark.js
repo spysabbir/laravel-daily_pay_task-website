@@ -18,6 +18,23 @@ $(function() {
 
     var fontFamily = "'Roboto', Helvetica, sans-serif"
 
+    // Date Picker
+    if ($('.datePickerExample').length) {
+        var date = new Date();
+        var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+        $('.datePickerExample').datepicker({
+            format: "dd MM, yyyy",
+            todayHighlight: true,
+            autoclose: true,
+            endDate: today
+        });
+
+        $('.datePickerExample').datepicker('setDate', today);
+    }
+    // Date Picker - END
+
+
     // monthlyDepositAndWithdrawChart start
     if($('#monthlyDepositAndWithdrawChart').length) {
         var options = {
@@ -376,4 +393,58 @@ $(function() {
         new ApexCharts(document.querySelector("#workedTasksDataChart"), options3).render();
     }
     // workedTasksDataChart - END
+
+    // currentlyOnlineUserChart Chart
+    if ($('#currentlyOnlineUserChart').length) {
+        var currentlyOnlineUserPercentage = (currentlyOnlineUserCount / totalActiveUserCount) * 100;
+
+        var options = {
+        chart: {
+            height: 400,
+            type: "radialBar"
+        },
+        series: [currentlyOnlineUserPercentage],
+        colors: [colors.success],
+        plotOptions: {
+            radialBar: {
+            hollow: {
+                margin: 15,
+                size: "75%"
+            },
+            track: {
+                show: true,
+                background: colors.dark,
+                strokeWidth: '100%',
+                opacity: 1,
+                margin: 5,
+            },
+            dataLabels: {
+                showOn: "always",
+                name: {
+                offsetY: -11,
+                show: true,
+                color: colors.muted,
+                fontSize: "13px"
+                },
+                value: {
+                color: colors.bodyColor,
+                fontSize: "30px",
+                show: true
+                }
+            }
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        stroke: {
+            lineCap: "round",
+        },
+        labels: ["Currently Online User"],
+        };
+
+        var chart = new ApexCharts(document.querySelector("#currentlyOnlineUserChart"), options);
+        chart.render();
+    }
+    // currentlyOnlineUserChart - END
 });

@@ -16,6 +16,8 @@ use Carbon\Carbon;
 use App\Models\Deposit;
 use App\Models\Report;
 use App\Models\Withdraw;
+use App\Models\Contact;
+use App\Models\Support;
 
 class BackendController extends Controller
 {
@@ -190,7 +192,21 @@ class BackendController extends Controller
             return $totalWithdrawsStatusesWise->get($status, 0); // Default to 0 if status is not found
         }, $withdrawsStatuses);
 
-        return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastSevenDaysCategories', 'formattedPostedTasksData', 'formattedWorkedTasksData', 'workedTasksStatusStatuses', 'workedTasksStatusStatusesData', 'postedTasksStatusStatuses', 'postedTasksStatusStatusesData', 'depositsStatuses', 'formattedDepositsStatusesData', 'withdrawsStatuses', 'formattedWithdrawsStatusesData', 'formattedDepositData', 'formattedWithdrawData', 'formattedStatusWiseReportsDataSeries'));
+
+        // Get counts for verification, deposit, withdraw, post task, proof task, report and contact
+        $verificationRequestCount = Verification::where('status', 'Pending')->count();
+        $depositRequestCount = Deposit::where('status', 'Pending')->count();
+        $withdrawRequestCount = Withdraw::where('status', 'Pending')->count();
+        $postTaskRequestCount = PostTask::where('status', 'Pending')->count();
+        $proofTaskRequestCount = ProofTask::where('status', 'Reviewed')->count();
+        $reportRequestCount = Report::where('status', 'Pending')->count();
+        $contactRequestCount = Contact::where('status', 'Unread')->count();
+        $supportsRequestCount = Support::where('status', 'Unread')->where('receiver_id', 1)->count();
+
+        $totalActiveUserCount = User::where('user_type', 'Frontend')->where('status', 'Active')->count();
+        $currentlyOnlineUserCount = User::where('user_type', 'Frontend')->where('last_login_at', '>=', Carbon::now()->subMinutes(5))->count();
+
+        return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastSevenDaysCategories', 'formattedPostedTasksData', 'formattedWorkedTasksData', 'workedTasksStatusStatuses', 'workedTasksStatusStatusesData', 'postedTasksStatusStatuses', 'postedTasksStatusStatusesData', 'depositsStatuses', 'formattedDepositsStatusesData', 'withdrawsStatuses', 'formattedWithdrawsStatusesData', 'formattedDepositData', 'formattedWithdrawData', 'formattedStatusWiseReportsDataSeries', 'verificationRequestCount', 'depositRequestCount', 'withdrawRequestCount', 'postTaskRequestCount', 'proofTaskRequestCount', 'reportRequestCount', 'contactRequestCount', 'supportsRequestCount', 'totalActiveUserCount', 'currentlyOnlineUserCount'));
     }
 
     public function profileEdit(Request $request)

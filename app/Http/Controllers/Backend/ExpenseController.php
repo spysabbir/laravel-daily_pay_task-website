@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Expense;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\ExpenseCategory;
@@ -102,6 +103,9 @@ class ExpenseController extends Controller implements HasMiddleware
 
     public function store(Request $request)
     {
+        $formattedDate = Carbon::createFromFormat('j F, Y', $request->input('expense_date'))->format('Y-m-d');
+        $request->merge(['expense_date' => $formattedDate]);
+
         $validator = Validator::make($request->all(), [
             'expense_category_id' => 'required|exists:expense_categories,id',
             'title' => 'required|string|max:255',
@@ -144,6 +148,9 @@ class ExpenseController extends Controller implements HasMiddleware
 
     public function update(Request $request, string $id)
     {
+        $formattedDate = Carbon::createFromFormat('j F, Y', $request->input('expense_date'))->format('Y-m-d');
+        $request->merge(['expense_date' => $formattedDate]);
+        
         $validator = Validator::make($request->all(), [
             'expense_category_id' => 'required|exists:expense_categories,id',
             'title' => 'required|string|max:255',

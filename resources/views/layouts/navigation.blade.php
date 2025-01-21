@@ -272,7 +272,55 @@
             </li>
             @endcan
         @endcan
-        
+
+        @can('SubscriberMenu')
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#SubscriberMenu" role="button" aria-expanded="false" aria-controls="SubscriberMenu">
+                    <i class="link-icon" data-feather="users"></i>
+                    <span class="link-title">Subscriber</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="SubscriberMenu">
+                    <ul class="nav sub-menu">
+                        @can('subscriber.index')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.subscriber.index') }}" class="nav-link">Subscriber</a>
+                        </li>
+                        @endcan
+                        @can('subscriber.newsletter')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.subscriber.newsletter') }}" class="nav-link">Newsletter</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
+
+        @can('ContactMenu')
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ContactMenu" role="button" aria-expanded="false" aria-controls="ContactMenu">
+                    <i class="link-icon" data-feather="phone"></i>
+                    <span class="link-title">Contact <span class="badge bg-primary">{{ $contact }}</span></span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="ContactMenu">
+                    <ul class="nav sub-menu">
+                        @can('contact.unread')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.contact.unread') }}" class="nav-link">Unread</a>
+                        </li>
+                        @endcan
+                        @can('contact.read')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.contact.read') }}" class="nav-link">Read</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
+
         <li class="nav-item nav-category">Editor</li>
         @can('CategoryMenu')
             <li class="nav-item">
@@ -334,30 +382,6 @@
                 </a>
             </li>
             @endcan
-        @endcan
-
-        @can('SubscriberMenu')
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#SubscriberMenu" role="button" aria-expanded="false" aria-controls="SubscriberMenu">
-                    <i class="link-icon" data-feather="users"></i>
-                    <span class="link-title">Subscriber</span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="SubscriberMenu">
-                    <ul class="nav sub-menu">
-                        @can('subscriber.index')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.subscriber.index') }}" class="nav-link">Subscriber</a>
-                        </li>
-                        @endcan
-                        @can('subscriber.newsletter')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.subscriber.newsletter') }}" class="nav-link">Newsletter</a>
-                        </li>
-                        @endcan
-                    </ul>
-                </div>
-            </li>
         @endcan
 
         <li class="nav-item nav-category">Moderator</li>
@@ -547,30 +571,6 @@
         @endcan
 
         <li class="nav-item nav-category">Service Agent</li>
-        @can('ContactMenu')
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#ContactMenu" role="button" aria-expanded="false" aria-controls="ContactMenu">
-                    <i class="link-icon" data-feather="phone"></i>
-                    <span class="link-title">Contact <span class="badge bg-primary">{{ $contact }}</span></span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="ContactMenu">
-                    <ul class="nav sub-menu">
-                        @can('contact.unread')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.contact.unread') }}" class="nav-link">Unread</a>
-                        </li>
-                        @endcan
-                        @can('contact.read')
-                        <li class="nav-item">
-                            <a href="{{ route('backend.contact.read') }}" class="nav-link">Read</a>
-                        </li>
-                        @endcan
-                    </ul>
-                </div>
-            </li>
-        @endcan
-
         @can('SupportMenu')
             @can('support.index')
             <li class="nav-item">

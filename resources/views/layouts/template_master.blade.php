@@ -65,6 +65,9 @@
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/jquery-steps/jquery.steps.css">
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/lightbox2/css/lightbox.min.css"  />
     <link rel="stylesheet" href="{{ asset('template') }}/vendors/lightGallery/dist/css/lightgallery.min.css" >
+
+	<link rel="stylesheet" href="{{ asset('template') }}/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+
     <!-- End plugin css for this page -->
 
 	<!-- inject:css -->
@@ -92,7 +95,6 @@
             $report = App\Models\Report::where('status', 'Pending')->count();
             $contact = App\Models\Contact::where('status', 'Unread')->count();
             $supports = App\Models\Support::where('status', 'Unread')->where('receiver_id', 1)->get();
-            $blockedUserIds = App\Models\User::where('status', 'Blocked')->pluck('id')->toArray();
             $supportsCount = $supports->count();
             $backend_request = ($verification > 0 ? 1 : 0) + ($deposit > 0 ? 1 : 0) + ($withdraw > 0 ? 1 : 0) + ($postTask > 0 ? 1 : 0) + ($proofTask > 0 ? 1 : 0) + ($report > 0 ? 1 : 0) + ($contact > 0 ? 1 : 0) + ($supportsCount > 0 ? 1 : 0);
         @endphp
@@ -533,6 +535,7 @@
     <script src="{{ asset('template') }}/vendors/lightbox2/js/lightbox.min.js"></script>
     <script src="{{ asset('template') }}/vendors/lightGallery/dist/js/lightgallery-all.min.js"></script>
     <script src="{{ asset('template') }}/vendors/lightGallery/lib/jquery.mousewheel.min.js"></script>
+    <script src="{{ asset('template') }}/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <!-- End plugin js for all pages -->
 
 	<!-- inject:js -->

@@ -33,8 +33,8 @@
                                 <th>Total Withdraw Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Total Post Task Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Total Proof Task Reviewed Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
-                                <th>Total Balance Transfer Charge</th>
-                                <th>Total Instant Blocked Resolved Charge</th>
+                                <th>Total Balance Transfer Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Total Instant Blocked Resolved Charge ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Total Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                             </tr>
                         </thead>

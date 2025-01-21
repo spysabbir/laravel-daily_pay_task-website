@@ -32,7 +32,7 @@
                                 <th>Sl No</th>
                                 <th>Expenses Date</th>
                                 <th>Total Expense Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
-                                <th>Total Bonus Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
+                                <th>Total Bonus Given Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                                 <th>Total Amount ( {{ get_site_settings('site_currency_symbol') }} )</th>
                             </tr>
                         </thead>
