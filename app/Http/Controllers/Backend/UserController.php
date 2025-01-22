@@ -57,6 +57,14 @@ class UserController extends Controller implements HasMiddleware
                 $query->whereIn('id', $sameIpUserIds);
             }
 
+            if ($request->last_activity) {
+                if ($request->last_activity == 'Online') {
+                    $query->where('last_activity_at', '>=', now()->subMinutes(5));
+                } else {
+                    $query->where('last_activity_at', '<', now()->subMinutes(5));
+                }
+            }
+
             $query->select('users.*')->orderBy('created_at', 'desc');
 
             $allUser = $query->get();
@@ -147,11 +155,16 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge bg-warning text-dark">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
                         ';
                 })
-                ->editColumn('last_login', function ($row) {
-                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
-                    return '
-                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
-                        ';
+                ->editColumn('last_activity_at', function ($row) {
+                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
+                    $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
+                    $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
+
+                    $statusBadge = $isOnline
+                        ? '<span class="badge bg-success text-white">Online</span>'
+                        : '<span class="badge bg-danger text-white">Offline</span>';
+
+                    return '<div>' . $statusBadge . ' <small>' . $timeDiff . '</small></div>';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
@@ -196,7 +209,7 @@ class UserController extends Controller implements HasMiddleware
                 ->with([
                     'totalUsersCount' => $totalUsersCount,
                 ])
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_activity_at', 'created_at', 'duplicate_device_check', 'action'])
                 ->make(true);
         }
 
@@ -212,6 +225,14 @@ class UserController extends Controller implements HasMiddleware
                 $query->where('id', $request->user_id);
             }
 
+            if ($request->last_activity) {
+                if ($request->last_activity == 'Online') {
+                    $query->where('last_activity_at', '>=', now()->subMinutes(5));
+                } else {
+                    $query->where('last_activity_at', '<', now()->subMinutes(5));
+                }
+            }
+
             $query->select('users.*')->orderBy('created_at', 'desc');
 
             // Clone the query for counts
@@ -221,11 +242,16 @@ class UserController extends Controller implements HasMiddleware
 
             return DataTables::of($allUser)
                 ->addIndexColumn()
-                ->editColumn('last_login', function ($row) {
-                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
-                    return '
-                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
-                        ';
+                ->editColumn('last_activity_at', function ($row) {
+                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
+                    $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
+                    $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
+
+                    $statusBadge = $isOnline
+                        ? '<span class="badge bg-success text-white">Online</span>'
+                        : '<span class="badge bg-danger text-white">Offline</span>';
+
+                    return '<div>' . $statusBadge . ' <small>' . $timeDiff . '</small></div>';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
@@ -246,7 +272,7 @@ class UserController extends Controller implements HasMiddleware
                 ->with([
                     'totalUsersCount' => $totalUsersCount,
                 ])
-                ->rawColumns(['last_login', 'created_at', 'action'])
+                ->rawColumns(['last_activity_at', 'created_at', 'action'])
                 ->make(true);
         }
 
@@ -270,6 +296,14 @@ class UserController extends Controller implements HasMiddleware
                     ->toArray();
 
                 $query->whereIn('id', $sameIpUserIds);
+            }
+
+            if ($request->last_activity) {
+                if ($request->last_activity == 'Online') {
+                    $query->where('last_activity_at', '>=', now()->subMinutes(5));
+                } else {
+                    $query->where('last_activity_at', '<', now()->subMinutes(5));
+                }
             }
 
             $query->select('users.*')->orderBy('created_at', 'desc');
@@ -362,11 +396,16 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge bg-warning text-dark">' . $block_count . ' time' . ($block_count > 1 ? 's' : '') . '</span>
                         ';
                 })
-                ->editColumn('last_login', function ($row) {
-                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
-                    return '
-                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
-                        ';
+                ->editColumn('last_activity_at', function ($row) {
+                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
+                    $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
+                    $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
+
+                    $statusBadge = $isOnline
+                        ? '<span class="badge bg-success text-white">Online</span>'
+                        : '<span class="badge bg-danger text-white">Offline</span>';
+
+                    return '<div>' . $statusBadge . ' <small>' . $timeDiff . '</small></div>';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
@@ -411,7 +450,7 @@ class UserController extends Controller implements HasMiddleware
                 ->with([
                     'totalUsersCount' => $totalUsersCount,
                 ])
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_login', 'created_at', 'duplicate_device_check', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'last_activity_at', 'created_at', 'duplicate_device_check', 'action'])
                 ->make(true);
         }
 
@@ -425,6 +464,14 @@ class UserController extends Controller implements HasMiddleware
 
             if ($request->user_id) {
                 $query->where('id', $request->user_id);
+            }
+
+            if ($request->last_activity) {
+                if ($request->last_activity == 'Online') {
+                    $query->where('last_activity_at', '>=', now()->subMinutes(5));
+                } else {
+                    $query->where('last_activity_at', '<', now()->subMinutes(5));
+                }
             }
 
             $query->select('users.*')->orderBy('created_at', 'desc');
@@ -493,11 +540,16 @@ class UserController extends Controller implements HasMiddleware
                         <span class="badge text-danger bg-dark">' . date('d M, Y  h:i:s A', strtotime($banned_at)) . '</span>
                         ';
                 })
-                ->editColumn('last_login', function ($row) {
-                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
-                    return '
-                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
-                        ';
+                ->editColumn('last_activity_at', function ($row) {
+                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
+                    $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
+                    $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
+
+                    $statusBadge = $isOnline
+                        ? '<span class="badge bg-success text-white">Online</span>'
+                        : '<span class="badge bg-danger text-white">Offline</span>';
+
+                    return '<div>' . $statusBadge . ' <small>' . $timeDiff . '</small></div>';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
@@ -526,7 +578,7 @@ class UserController extends Controller implements HasMiddleware
                 ->with([
                     'totalUsersCount' => $totalUsersCount,
                 ])
-                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'banned_at', 'last_login', 'created_at', 'action'])
+                ->rawColumns(['deposit_balance', 'withdraw_balance', 'hold_balance', 'report_count', 'block_count', 'banned_at', 'last_activity_at', 'created_at', 'action'])
                 ->make(true);
         }
 

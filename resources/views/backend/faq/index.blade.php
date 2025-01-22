@@ -24,12 +24,12 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="question" class="form-label">Faq Question</label>
+                                            <label for="question" class="form-label">Faq Question <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="question" name="question" placeholder="Faq question">
                                             <span class="text-danger error-text question_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="answer" class="form-label">Faq Answer</label>
+                                            <label for="answer" class="form-label">Faq Answer <span class="text-danger">*</span></label>
                                             <textarea class="form-control" id="answer" name="answer" placeholder="Faq answer" rows="4"></textarea>
                                             <span class="text-danger error-text answer_error"></span>
                                         </div>
@@ -134,12 +134,12 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="faq_id">
                                                 <div class="mb-3">
-                                                    <label for="faq_question" class="form-label">Faq question</label>
+                                                    <label for="faq_question" class="form-label">Faq Question <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="faq_question" name="question" placeholder="Faq question">
                                                     <span class="text-danger error-text update_question_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="faq_answer" class="form-label">Faq answer</label>
+                                                    <label for="faq_answer" class="form-label">Faq Answer <span class="text-danger">*</span></label>
                                                     <textarea class="form-control" id="faq_answer" name="answer" placeholder="Faq answer" rows="4"></textarea>
                                                     <span class="text-danger error-text update_answer_error"></span>
                                                 </div>

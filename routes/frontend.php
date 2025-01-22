@@ -28,8 +28,13 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
 
     Route::post('/instant-unblocked', [UserController::class, 'instantUnblocked'])->name('instant.unblocked');
 
-    Route::get('/block-unblock-user/{id}', [UserController::class, 'blockUnblockUser'])->name('block.unblock.user');
-    Route::get('/block-list', [UserController::class, 'blockList'])->name('block_list');
+    Route::get('/blocked-user/{id}', [UserController::class, 'blockedUser'])->name('blocked.user');
+    Route::get('/unblocked-user/{id}', [UserController::class, 'unblockedUser'])->name('unblocked.user');
+    Route::get('/blocked-user-list', [UserController::class, 'blockedUserList'])->name('blocked.user.list');
+
+    Route::get('/favorite-user/{id}', [UserController::class, 'favoriteUser'])->name('favorite.user');
+    Route::get('/unfavorite-user/{id}', [UserController::class, 'unfavoriteUser'])->name('unfavorite.user');
+    Route::get('/favorite-user-list', [UserController::class, 'favoriteUserList'])->name('favorite.user.list');
 
     Route::post('/report-send/{id}', [UserController::class, 'reportSend'])->name('report.send');
     Route::get('/report', [UserController::class, 'report'])->name('report');

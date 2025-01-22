@@ -24,7 +24,7 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="category_id" class="form-label">Category</label>
+                                            <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
                                             <select class="form-select" id="category_id" name="category_id">
                                                 <option value="">-- Select Category --</option>
                                                 @foreach ($categories as $category)
@@ -34,7 +34,7 @@
                                             <span class="text-danger error-text category_id_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="sub_category_id" class="form-label">Sub Category</label>
+                                            <label for="sub_category_id" class="form-label">Sub Category <span class="text-danger">*</span></label>
                                             <select class="form-select get_sub_categories" id="sub_category_id" name="sub_category_id">
                                                 <option value="">-- Select Category First --</option>
                                             </select>
@@ -48,7 +48,7 @@
                                             <span class="text-danger error-text child_category_id_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="min_charges" class="form-label">Min Charge</label>
+                                            <label for="min_charges" class="form-label">Min Charge <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="min_charges" name="min_charge" placeholder="Min Charge">
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
@@ -56,7 +56,7 @@
                                             <span class="text-danger error-text min_charge_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="max_charges" class="form-label">Max Charge</label>
+                                            <label for="max_charges" class="form-label">Max Charge <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="max_charges" name="max_charge" placeholder="Max Charge">
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
@@ -182,7 +182,7 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="task_post_charge_id">
                                                 <div class="mb-3">
-                                                    <label for="category_id" class="form-label">Category</label>
+                                                    <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
                                                     <select class="form-select category_id" id="category_id" name="category_id">
                                                         <option value="">-- Select Category --</option>
                                                         @foreach ($categories as $category)
@@ -192,7 +192,7 @@
                                                     <span class="text-danger error-text update_category_id_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="sub_category_id" class="form-label">Sub Category</label>
+                                                    <label for="sub_category_id" class="form-label">Sub Category <span class="text-danger">*</span></label>
                                                     <select class="form-select sub_category_id get_sub_categories" id="sub_category_id" name="sub_category_id">
                                                         <option value="">-- Select Category First --</option>
                                                     </select>
@@ -206,7 +206,7 @@
                                                     <span class="text-danger error-text update_child_category_id_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="min_charge" class="form-label">Min Charge</label>
+                                                    <label for="min_charge" class="form-label">Min Charge <span class="text-danger">*</span></label>
                                                     <div class="input-group">
                                                         <input type="text" class="form-control" id="min_charge" name="min_charge" placeholder="Min Charge">
                                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
@@ -214,7 +214,7 @@
                                                     <span class="text-danger error-text update_min_charge_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="max_charge" class="form-label">Max Charge</label>
+                                                    <label for="max_charge" class="form-label">Max Charge <span class="text-danger">*</span></label>
                                                     <div class="input-group">
                                                         <input type="text" class="form-control" id="max_charge" name="max_charge" placeholder="Max Charge">
                                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>

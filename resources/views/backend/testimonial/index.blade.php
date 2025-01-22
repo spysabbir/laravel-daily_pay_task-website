@@ -24,23 +24,23 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="photo" class="form-label">Photo</label>
+                                            <label for="photo" class="form-label">Photo <span class="text-danger">*</span></label>
                                             <input type="file" class="form-control" id="photo" name="photo">
                                             <span class="text-danger error-text photo_error"></span>
                                             <img src="" alt="Photo" id="testimonial_photo" style="max-width: 100px; max-height: 100px;" class="mt-2 d-block">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="name" class="form-label">Name</label>
+                                            <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="name" name="name" placeholder="Name">
                                             <span class="text-danger error-text name_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="designation" class="form-label">Designation</label>
+                                            <label for="designation" class="form-label">Designation <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="designation" name="designation" placeholder="Designation">
                                             <span class="text-danger error-text designation_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="comment" class="form-label">Comment</label>
+                                            <label for="comment" class="form-label">Comment <span class="text-danger">*</span></label>
                                             <textarea class="form-control" id="comment" name="comment" placeholder="Comment" rows="4"></textarea>
                                             <span class="text-danger error-text comment_error"></span>
                                         </div>
@@ -149,23 +149,23 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="testimonial_id">
                                                 <div class="mb-3">
-                                                    <label for="photo" class="form-label">Photo</label>
+                                                    <label for="photo" class="form-label">Photo <span class="text-danger">*</span></label>
                                                     <input type="file" class="form-control" id="update_photo" name="photo">
                                                     <span class="text-danger error-text update_photo_error"></span>
                                                     <img src="" alt="Photo" id="update_testimonial_photo" style="max-width: 100px; max-height: 100px;" class="mt-2">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="testimonial_name" class="form-label">Name</label>
+                                                    <label for="testimonial_name" class="form-label">Name <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="testimonial_name" name="name" placeholder="Name">
                                                     <span class="text-danger error-text update_name_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="testimonial_designation" class="form-label">Designation</label>
+                                                    <label for="testimonial_designation" class="form-label">Designation <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="testimonial_designation" name="designation" placeholder="Designation">
                                                     <span class="text-danger error-text update_designation_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="testimonial_comment" class="form-label">Comment</label>
+                                                    <label for="testimonial_comment" class="form-label">Comment <span class="text-danger">*</span></label>
                                                     <textarea class="form-control" id="testimonial_comment" name="comment" placeholder="Comment" rows="4"></textarea>
                                                     <span class="text-danger error-text update_comment_error"></span>
                                                 </div>

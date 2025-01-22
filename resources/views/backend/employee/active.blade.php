@@ -25,7 +25,7 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="role" class="form-label">Employee Role</label>
+                                            <label for="role" class="form-label">Employee Role <span class="text-danger">*</span></label>
                                             <select class="form-select" id="role" name="role">
                                                 <option value="">-- Select Role --</option>
                                                 @foreach ($roles as $role)
@@ -37,17 +37,17 @@
                                             <span class="text-danger error-text role_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="name" class="form-label">Employee Name</label>
+                                            <label for="name" class="form-label">Employee Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="name" name="name" placeholder="Employee Name">
                                             <span class="text-danger error-text name_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="email" class="form-label">Employee Email</label>
+                                            <label for="email" class="form-label">Employee Email <span class="text-danger">*</span></label>
                                             <input type="email" class="form-control" id="email" name="email" placeholder="Employee Email">
                                             <span class="text-danger error-text email_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="password" class="form-label">Employee Password</label>
+                                            <label for="password" class="form-label">Employee Password <span class="text-danger">*</span></label>
                                             <input type="password" class="form-control" id="password" name="password" placeholder="Employee Password">
                                             <span class="text-danger error-text password_error"></span>
                                         </div>
@@ -84,6 +84,16 @@
                                 <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search Employee Id">
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_last_activity" class="form-label">Last Activity</label>
+                                <select class="form-select filter_data" id="filter_last_activity">
+                                    <option value="">-- Select Last Activity --</option>
+                                    <option value="Online">Online</option>
+                                    <option value="Offline">Offline</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -95,7 +105,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Last Login</th>
+                                <th>Last Activity</th>
                                 <th>Join Date</th>
                                 <th>Roles</th>
                                 <th>Action</th>
@@ -116,7 +126,7 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="employee_id">
                                                 <div class="mb-3">
-                                                    <label for="employee_role" class="form-label">Employee Role</label>
+                                                    <label for="employee_role" class="form-label">Employee Role <span class="text-danger">*</span></label>
                                                     <select class="form-select" id="employee_role" name="role">
                                                         <option value="">-- Select Role --</option>
                                                         @foreach ($roles as $role)
@@ -128,14 +138,19 @@
                                                     <span class="text-danger error-text update_role_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="employee_name" class="form-label">Employee Name</label>
+                                                    <label for="employee_name" class="form-label">Employee Name <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="employee_name" name="name" placeholder="Employee Name">
                                                     <span class="text-danger error-text update_name_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="employee_email" class="form-label">Employee Email</label>
+                                                    <label for="employee_email" class="form-label">Employee Email <span class="text-danger">*</span></label>
                                                     <input type="email" class="form-control" id="employee_email" name="email" placeholder="Employee Email">
                                                     <span class="text-danger error-text update_email_error"></span>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="employee_password" class="form-label">Employee Password <span class="text-danger">*</span></label>
+                                                    <input type="password" class="form-control" id="employee_password" name="password" placeholder="Employee Password">
+                                                    <span class="text-danger error-text update_password_error"></span>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -174,6 +189,7 @@
                 data: function (e) {
                     e.role = $('#filter_role').val();
                     e.user_id = $('#filter_user_id').val();
+                    e.last_activity = $('#filter_last_activity').val();
                 },
                 dataSrc: function (json) {
                     // Update total deposit count
@@ -187,7 +203,7 @@
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },
-                { data: 'last_login', name: 'last_login' },
+                { data: 'last_activity_at', name: 'last_activity_at' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'roles', name: 'roles' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }

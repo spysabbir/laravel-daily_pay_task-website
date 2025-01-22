@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -17,6 +18,9 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
+        $formattedDate = Carbon::createFromFormat('j F, Y', $request->input('date_of_birth'))->format('Y-m-d');
+        $request->merge(['date_of_birth' => $formattedDate]);
+
         $request->validate([
             'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'name' => ['required', 'string', 'max:255'],

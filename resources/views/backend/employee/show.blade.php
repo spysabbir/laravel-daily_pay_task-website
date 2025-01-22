@@ -72,8 +72,8 @@
                                 <td>{{ $employee->bio ?? 'N/A' }}</td>
                             </tr>
                             <tr>
-                                <td>Last Login At</td>
-                                <td>{{ $employee->last_login_at ? date('d M, Y  h:i:s A', strtotime($employee->last_login_at)) : 'N/A' }}</td>
+                                <td>Last Activity At</td>
+                                <td>{{ $employee->last_activity_at ? date('d M, Y  h:i:s A', strtotime($employee->last_activity_at)) : 'N/A' }}</td>
                             </tr>
                             <tr>
                                 <td>Created By</td>
@@ -84,12 +84,20 @@
                                 <td>{{ $employee->updated_by ? $employee->updatedBy->name : 'N/A' }}</td>
                             </tr>
                             <tr>
+                                <td>Deleted By</td>
+                                <td>{{ $employee->deleted_by ? $employee->deletedBy->name : 'N/A' }}</td>
+                            </tr>
+                            <tr>
                                 <td>Created At</td>
                                 <td>{{ $employee->created_at->format('d M, Y h:i:s A') }}</td>
                             </tr>
                             <tr>
                                 <td>Updated At</td>
                                 <td>{{ $employee->updated_at->format('d M, Y h:i:s A') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Deleted At</td>
+                                <td>{{ $employee->deleted_at ? $employee->deleted_at->format('d M, Y h:i:s A') : 'N/A' }}</td>
                             </tr>
                         </tbody>
                     </table>

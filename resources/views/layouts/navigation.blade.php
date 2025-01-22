@@ -682,16 +682,23 @@
         </li>
 
         <li class="nav-item">
-            <a href="{{ route('block_list') }}" class="nav-link">
-                <i class="link-icon" data-feather="shield"></i>
-                <span class="link-title">Block List</span>
+            <a href="{{ route('report') }}" class="nav-link">
+                <i class="link-icon" data-feather="file-text"></i>
+                <span class="link-title">Report</span>
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="{{ route('report') }}" class="nav-link">
-                <i class="link-icon" data-feather="file-text"></i>
-                <span class="link-title">Report</span>
+            <a href="{{ route('blocked.user.list') }}" class="nav-link">
+                <i class="link-icon" data-feather="shield"></i>
+                <span class="link-title">Blocked User List</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('favorite.user.list') }}" class="nav-link">
+                <i class="link-icon" data-feather="heart"></i>
+                <span class="link-title">Favorite User List</span>
             </a>
         </li>
 

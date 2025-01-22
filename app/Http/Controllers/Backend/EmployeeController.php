@@ -42,9 +42,17 @@ class EmployeeController extends Controller implements HasMiddleware
                 $query->where('id',  $request->user_id);
             }
 
+            if ($request->last_activity) {
+                if ($request->last_activity == 'Online') {
+                    $query->where('last_activity_at', '>=', now()->subMinutes(5));
+                } else {
+                    $query->where('last_activity_at', '<', now()->subMinutes(5));
+                }
+            }
+
             // Clone the query for counts
             $totalUsersCount = (clone $query)->count();
-            
+
             $allEmployee = $query->orderBy('created_at', 'desc')->get();
 
             return DataTables::of($allEmployee)
@@ -52,11 +60,16 @@ class EmployeeController extends Controller implements HasMiddleware
                 ->editColumn('phone', function ($row) {
                     return $row->phone ?? 'N/A';
                 })
-                ->editColumn('last_login', function ($row) {
-                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
-                    return '
-                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
-                        ';
+                ->editColumn('last_activity_at', function ($row) {
+                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
+                    $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
+                    $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
+
+                    $statusBadge = $isOnline
+                        ? '<span class="badge bg-success text-white">Online</span>'
+                        : '<span class="badge bg-danger text-white">Offline</span>';
+
+                    return '<div>' . $statusBadge . ' <small>' . $timeDiff . '</small></div>';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
@@ -69,7 +82,7 @@ class EmployeeController extends Controller implements HasMiddleware
                     $editPermission = auth()->user()->can('employee.edit');
                     $deletePermission = auth()->user()->can('employee.destroy');
 
-                    $viewBtn = '<a href="' . route('backend.employee.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>';
+                    $viewBtn = '<a href="' . route('backend.employee.show', encrypt($row->id)) . '" class="btn btn-primary btn-xs">View</a>';
                     $statusBtn = $canChangeStatus
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs statusBtn">Deactive</button>'
                         : '';
@@ -86,7 +99,7 @@ class EmployeeController extends Controller implements HasMiddleware
                 ->with([
                     'totalUsersCount' => $totalUsersCount,
                 ])
-                ->rawColumns(['phone', 'last_login', 'created_at', 'roles', 'action'])
+                ->rawColumns(['phone', 'last_activity_at', 'created_at', 'roles', 'action'])
                 ->make(true);
         }
 
@@ -99,8 +112,14 @@ class EmployeeController extends Controller implements HasMiddleware
         $validator = Validator::make($request->all(), [
             'role' => 'required',
             'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email|unique:users',
-            'password' => 'required|string|min:8',
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', 'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/'],
+            'password' => [
+                'required', 'string', 'min:8', 'max:20',
+                'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'
+            ],
+        ],[
+            'email.regex' => 'The email must follow the format " ****@****.*** ".',
+            'password.regex' => 'The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
         ]);
 
         if($validator->fails()){
@@ -147,7 +166,14 @@ class EmployeeController extends Controller implements HasMiddleware
         $validator = Validator::make($request->all(), [
             'role' => 'required',
             'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email|unique:users,email,'.$id,
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $id, 'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/'],
+            'password' => [
+                'nullable', 'string', 'min:8', 'max:20',
+                'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'
+            ],
+        ],[
+            'email.regex' => 'The email must follow the format " ****@****.*** ".',
+            'password.regex' => 'The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
         ]);
 
         if ($validator->fails()) {
@@ -160,6 +186,8 @@ class EmployeeController extends Controller implements HasMiddleware
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
+                'password' => $request->password ? Hash::make($request->password) : $user->password,
+                'updated_by' => auth()->user()->id,
             ]);
 
             if ($request->role) {
@@ -263,6 +291,14 @@ class EmployeeController extends Controller implements HasMiddleware
                 $query->where('id',  $request->user_id);
             }
 
+            if ($request->last_activity) {
+                if ($request->last_activity == 'Online') {
+                    $query->where('last_activity_at', '>=', now()->subMinutes(5));
+                } else {
+                    $query->where('last_activity_at', '<', now()->subMinutes(5));
+                }
+            }
+            
             // Clone the query for counts
             $totalUsersCount = (clone $query)->count();
 
@@ -273,11 +309,16 @@ class EmployeeController extends Controller implements HasMiddleware
                 ->editColumn('phone', function ($row) {
                     return $row->phone ?? 'N/A';
                 })
-                ->editColumn('last_login', function ($row) {
-                    $last_login_at = $row->last_login_at ? date('d M, Y  h:i:s A', strtotime($row->last_login_at)) : 'N/A';
-                    return '
-                        <span class="badge text-white bg-dark">' . $last_login_at . '</span>
-                        ';
+                ->editColumn('last_activity_at', function ($row) {
+                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
+                    $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
+                    $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
+
+                    $statusBadge = $isOnline
+                        ? '<span class="badge bg-success text-white">Online</span>'
+                        : '<span class="badge bg-danger text-white">Offline</span>';
+
+                    return '<div>' . $statusBadge . ' <small>' . $timeDiff . '</small></div>';
                 })
                 ->editColumn('created_at', function ($row) {
                     return '
@@ -289,7 +330,7 @@ class EmployeeController extends Controller implements HasMiddleware
                     $canChangeStatus = auth()->user()->can('employee.status');
                     $deletePermission = auth()->user()->can('employee.destroy');
 
-                    $viewBtn = '<a href="' . route('backend.employee.show', $row->id) . '" class="btn btn-primary btn-xs">View</a>';
+                    $viewBtn = '<a href="' . route('backend.employee.show', encrypt($row->id)) . '" class="btn btn-primary btn-xs">View</a>';
                     $statusBtn = $canChangeStatus
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-success btn-xs statusBtn">Active</button>'
                         : '';
@@ -303,7 +344,7 @@ class EmployeeController extends Controller implements HasMiddleware
                 ->with([
                     'totalUsersCount' => $totalUsersCount,
                 ])
-                ->rawColumns(['phone', 'last_login', 'created_at', 'roles', 'action'])
+                ->rawColumns(['phone', 'last_activity_at', 'created_at', 'roles', 'action'])
                 ->make(true);
         }
 

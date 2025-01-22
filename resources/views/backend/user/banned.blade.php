@@ -19,6 +19,16 @@
                                 <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_last_activity" class="form-label">Last Activity</label>
+                                <select class="form-select filter_data" id="filter_last_activity">
+                                    <option value="">-- Select Last Activity --</option>
+                                    <option value="Online">Online</option>
+                                    <option value="Offline">Offline</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -35,7 +45,7 @@
                                 <th>Total Report</th>
                                 <th>Total Block</th>
                                 <th>Join Date</th>
-                                <th>Last Login</th>
+                                <th>Last Activity</th>
                                 <th>Banned Date</th>
                                 <th>Action</th>
                             </tr>
@@ -87,6 +97,7 @@
                 type: 'GET',
                 data: function (d) {
                     d.user_id = $('#filter_user_id').val();
+                    d.last_activity = $('#filter_last_activity').val();
                 },
                 dataSrc: function (json) {
                     // Update total deposit count
@@ -105,12 +116,16 @@
                 { data: 'report_count', name: 'report_count' },
                 { data: 'block_count', name: 'block_count' },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'last_login', name: 'last_login' },
+                { data: 'last_activity_at', name: 'last_activity_at' },
                 { data: 'banned_at', name: 'banned_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
+        // Filter Data
+        $('.filter_data').change(function(){
+            $('#allDataTable').DataTable().ajax.reload();
+        });
         // Filter Data
         $('.filter_data').keyup(function() {
             $('#allDataTable').DataTable().ajax.reload();

@@ -25,7 +25,7 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-xl-4 col-lg-6 mb-3">
-                                                <label for="status" class="form-label">Status</label>
+                                                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                                                 <select class="form-select" name="status" id="status">
                                                     <option value="">-- Select Status --</option>
                                                     <option value="Draft">Draft</option>
@@ -34,18 +34,18 @@
                                                 <span class="text-danger error-text status_error"></span>
                                             </div>
                                             <div class="col-xl-4 col-lg-6 mb-3" id="sent_at_div">
-                                                <label for="sent_at" class="form-label">Send At</label>
+                                                <label for="sent_at" class="form-label">Send At <span class="text-danger">*</span></label>
                                                 <input type="datetime-local" class="form-control" name="sent_at" id="sent_at">
                                                 <span class="text-danger error-text sent_at_error"></span>
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="subject" class="form-label">Subject</label>
+                                            <label for="subject" class="form-label">Subject <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
                                             <span class="text-danger error-text subject_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="content" class="form-label">Content</label>
+                                            <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
                                             <textarea class="form-control" name="content" id="content" placeholder="Content" rows="5"></textarea>
                                             <span class="text-danger error-text content_error"></span>
                                         </div>

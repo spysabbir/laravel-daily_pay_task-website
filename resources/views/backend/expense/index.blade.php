@@ -24,7 +24,7 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="expense_category_id" class="form-label">Category</label>
+                                            <label for="expense_category_id" class="form-label">Category <span class="text-danger">*</span></label>
                                             <select class="form-select" id="expense_category_id" name="expense_category_id">
                                                 <option value="">-- Select Category --</option>
                                                 @foreach ($expense_categories as $category)
@@ -34,7 +34,7 @@
                                             <span class="text-danger error-text expense_category_id_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="title" class="form-label">Title</label>
+                                            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="title" name="title" placeholder="Title">
                                             <span class="text-danger error-text title_error"></span>
                                         </div>
@@ -44,7 +44,7 @@
                                             <span class="text-danger error-text description_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="amount" class="form-label">Amount</label>
+                                            <label for="amount" class="form-label">Amount <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control" id="amount" name="amount" placeholder="Amount">
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
@@ -52,7 +52,7 @@
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="expense_date" class="form-label">Expense Date</label>
+                                            <label for="expense_date" class="form-label">Expense Date <span class="text-danger">*</span></label>
                                             <div class="input-group date datepicker datePickerExample">
                                                 <input type="text" class="form-control" id="expense_date" name="expense_date">
                                                 <span class="input-group-text input-group-addon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
@@ -183,7 +183,7 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="expense_id">
                                                 <div class="mb-3">
-                                                    <label for="update_expense_category_id" class="form-label">Category</label>
+                                                    <label for="update_expense_category_id" class="form-label">Category <span class="text-danger">*</span></label>
                                                     <select class="form-select" id="update_expense_category_id" name="expense_category_id">
                                                         <option value="">-- Select Category --</option>
                                                         @foreach ($expense_categories as $category)
@@ -193,7 +193,7 @@
                                                     <span class="text-danger error-text update_expense_category_id_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="update_title" class="form-label">Title</label>
+                                                    <label for="update_title" class="form-label">Title <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="update_title" name="title" placeholder="Title">
                                                     <span class="text-danger error-text update_title_error"></span>
                                                 </div>
@@ -203,7 +203,7 @@
                                                     <span class="text-danger error-text update_description_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="update_amount" class="form-label">Amount</label>
+                                                    <label for="update_amount" class="form-label">Amount <span class="text-danger">*</span></label>
                                                     <div class="input-group">
                                                         <input type="number" class="form-control" id="update_amount" name="amount" placeholder="Amount">
                                                         <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
@@ -211,7 +211,7 @@
                                                     <span class="text-danger error-text update_amount_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="update_expense_date" class="form-label">Expense Date</label>
+                                                    <label for="update_expense_date" class="form-label">Expense Date <span class="text-danger">*</span></label>
                                                     <div class="input-group date datepicker datePickerExample">
                                                         <input type="text" class="form-control" id="update_expense_date" name="expense_date">
                                                         <span class="input-group-text input-group-addon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>

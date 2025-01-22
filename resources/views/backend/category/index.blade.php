@@ -24,7 +24,7 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="name" class="form-label">Category Name</label>
+                                            <label for="name" class="form-label">Category Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="name" name="name" placeholder="Category Name">
                                             <span class="text-danger error-text name_error"></span>
                                         </div>
@@ -112,7 +112,7 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="category_id">
                                                 <div class="mb-3">
-                                                    <label for="category_name" class="form-label">Category Name</label>
+                                                    <label for="category_name" class="form-label">Category Name <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="category_name" name="name" placeholder="Category Name">
                                                     <span class="text-danger error-text update_name_error"></span>
                                                 </div>

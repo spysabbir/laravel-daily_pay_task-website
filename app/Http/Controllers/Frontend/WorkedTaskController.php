@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\PostTask;
 use App\Models\ProofTask;
-use App\Models\Block;
 use App\Models\Report;
 use App\Models\NotInterestedTask;
+use App\Models\FavoriteUser;
 use App\Models\Rating;
+use App\Models\BlockedUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManager;
@@ -41,8 +42,10 @@ class WorkedTaskController extends Controller
         } else {
             if ($request->ajax()) {
                 $proofTaskIds = ProofTask::where('user_id', Auth::id())->pluck('post_task_id')->toArray();
-                $blockedUserIds = Block::where('blocked_by', Auth::id())->pluck('user_id')->toArray();
+                $blockedUserIds = BlockedUser::where('user_id', Auth::id())->pluck('blocked_user_id')->toArray();
                 $notInterestedTaskIds = NotInterestedTask::where('user_id', Auth::id())->pluck('post_task_id')->toArray();
+                $favoriteUserIds = FavoriteUser::where('user_id', Auth::id())->pluck('favorite_user_id')->toArray();
+
                 $query = PostTask::where('status', 'Running')
                     ->whereNot('user_id', Auth::id())
                     ->whereNotIn('id', $proofTaskIds)
@@ -52,6 +55,7 @@ class WorkedTaskController extends Controller
                 if ($request->category_id) {
                     $query->where('post_tasks.category_id', $request->category_id);
                 }
+
                 if ($request->sort_by) {
                     if ($request->sort_by == 'low_to_high') {
                         $query->orderBy('income_of_each_worker', 'asc');
@@ -70,12 +74,19 @@ class WorkedTaskController extends Controller
                         THEN 0
                         ELSE 1
                     END
-                ");
+                    ");
 
-                // Total filtered count
+                if (!empty($favoriteUserIds)) {
+                    $findTasks = $query->orderByRaw("
+                        CASE
+                            WHEN user_id IN (" . implode(',', $favoriteUserIds) . ") THEN 0
+                            ELSE 1
+                        END
+                    ");
+                }
+
                 $totalTasksCount = $findTasks->count();
 
-                // $findTasks = $query->orderBy('approved_at', 'desc')->get();
                 $findTasks = $findTasks->orderBy('approved_at', 'desc')->get();
 
                 return DataTables::of($findTasks)
@@ -84,9 +95,27 @@ class WorkedTaskController extends Controller
                         return '<span class="badge bg-primary">'.$row->category->name.'</span>';
                     })
                     ->editColumn('title', function ($row) {
+                        $boostingIcon = '';
+                        $favoriteIcon = '';
+
+                        if ($row->boosting_start_at && $row->boosting_time) {
+                            $boostingTime = Carbon::parse($row->boosting_start_at)->addMinutes($row->boosting_time);
+                            if ($boostingTime > now()) {
+                                $boostingIcon = '<span class="text-success"><i class="fa-solid fa-bolt"></i></span>';
+                            }
+                        }
+
+                        static $favoriteUserIds = null;
+                        if (is_null($favoriteUserIds)) {
+                            $favoriteUserIds = FavoriteUser::where('user_id', Auth::id())->pluck('favorite_user_id')->toArray();
+                        }
+                        if (in_array($row->user_id, $favoriteUserIds)) {
+                            $favoriteIcon = '<span class="text-success"><i class="fa-solid fa-star"></i></span>';
+                        }
+
                         return '
-                            <a href="'.route('find_task.details', encrypt($row->id)).'" title="'.$row->title.'" class="text-success">
-                                '.$row->title.'
+                            <a href="' . route('find_task.details', encrypt($row->id)) . '" title="' . e($row->title) . '" class="text-white">
+                                ' . $boostingIcon . ' ' . $favoriteIcon . ' ' . e($row->title) . '
                             </a>
                         ';
                     })
@@ -146,7 +175,8 @@ class WorkedTaskController extends Controller
         $taskProofExists = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->exists();
         $taskProof = ProofTask::where('post_task_id', $id)->where('user_id', Auth::id())->first();
         $proofCount = ProofTask::where('post_task_id', $id)->count();
-        $blocked = Block::where('user_id', $taskDetails->user_id)->where('blocked_by', Auth::id())->exists();
+        $blocked = BlockedUser::where('user_id', Auth::id())->where('blocked_user_id', $taskDetails->user_id)->exists();
+        $favorite = FavoriteUser::where('user_id', Auth::id())->where('favorite_user_id', $taskDetails->user_id)->exists();
         $reportPostTask = Report::where('post_task_id', $id)->where('reported_by', Auth::id())->first();
         $reportUserCount = Report::where('user_id', $taskDetails->user_id)->where('reported_by', Auth::id())->where('type', 'User')->count();
         $reviewDetails = Rating::where('user_id', $taskDetails->user_id)->get();
@@ -166,7 +196,7 @@ class WorkedTaskController extends Controller
         $totalWorkedTaskProofRejectedCount = ProofTask::where('user_id', $taskDetails->user_id)->where('status', 'Rejected')->count();
         $totalWorkedTaskProofRejected = $totalWorkedTaskProofSubmitCount > 0 ? round(($totalWorkedTaskProofRejectedCount / $totalWorkedTaskProofSubmitCount) * 100, 2) : 0;
 
-        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'taskProof', 'proofCount', 'blocked', 'reportPostTask', 'reportUserCount', 'reviewDetails', 'totalPostedTask', 'totalWorkedTask', 'totalPostedTaskProofCount', 'totalPostedTaskProofApproved', 'totalPostedTaskProofRejected', 'totalWorkedTaskProofApproved', 'totalWorkedTaskProofRejected'));
+        return view('frontend.find_tasks.view', compact('taskDetails', 'taskProofExists', 'taskProof', 'proofCount', 'blocked', 'favorite', 'reportPostTask', 'reportUserCount', 'reviewDetails', 'totalPostedTask', 'totalWorkedTask', 'totalPostedTaskProofCount', 'totalPostedTaskProofApproved', 'totalPostedTaskProofRejected', 'totalWorkedTaskProofApproved', 'totalWorkedTaskProofRejected'));
     }
 
     public function findTaskNotInterested($id)

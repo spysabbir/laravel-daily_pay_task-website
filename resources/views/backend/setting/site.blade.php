@@ -8,6 +8,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Site Setting</h3>
+                <p><span class="text-danger">*</span> <small>Fields are required</small></p>
             </div>
             <div class="card-body">
                 <form class="forms-sample" action="{{ route('backend.site.setting.update') }}" method="POST" enctype="multipart/form-data">
@@ -30,35 +31,35 @@
                             <img width="80" height="80" class="mt-2 rounded" src="{{asset('uploads/setting_photo')}}/{{$siteSetting->site_favicon}}" id="site_faviconPreview"  alt="Site Favicon">
                         </div>
                         <div class="col-lg-6 mb-3">
-                            <label for="site_name" class="form-label">Site Name</label>
+                            <label for="site_name" class="form-label">Site Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="site_name" name="site_name" value="{{ old('site_name', $siteSetting->site_name) }}" placeholder="Site Name">
                             @error('site_name')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-6 mb-3">
-                            <label for="site_url" class="form-label">Site Url</label>
+                            <label for="site_url" class="form-label">Site Url <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="site_url" name="site_url" value="{{ old('site_url', $siteSetting->site_url) }}" placeholder="Site Url">
                             @error('site_url')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-6 mb-3">
-                            <label for="site_tagline" class="form-label">Site Tagline</label>
+                            <label for="site_tagline" class="form-label">Site Tagline <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="site_tagline" name="site_tagline" value="{{ old('site_tagline', $siteSetting->site_tagline) }}" placeholder="Site Tagline">
                             @error('site_tagline')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-12 mb-3">
-                            <label for="site_description" class="form-label">Site Description</label>
+                            <label for="site_description" class="form-label">Site Description <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="site_description" name="site_description" rows="4" placeholder="Site Description">{{ old('site_description', $siteSetting->site_description) }}</textarea>
                             @error('site_description')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-4 col-sm-6 mb-3">
-                            <label for="site_timezone" class="form-label">Time Zone</label>
+                            <label for="site_timezone" class="form-label">Time Zone <span class="text-danger">*</span></label>
                             <select class="form-select" name="site_timezone" id="site_timezone">
                                 <option value="">Select Time Zone</option>
                                 <option value="UTC" @selected(old('site_timezone', $siteSetting->site_timezone == 'UTC'))>UTC</option>
@@ -69,7 +70,7 @@
                             @enderror
                         </div>
                         <div class="col-lg-4 col-sm-6 mb-3">
-                            <label for="site_currency" class="form-label">Site Currency</label>
+                            <label for="site_currency" class="form-label">Site Currency <span class="text-danger">*</span></label>
                             <select class="form-select" name="site_currency" id="site_currency">
                                 <option value="">Select Currency</option>
                                 <option value="USD" @selected(old('site_currency', $siteSetting->site_currency == 'USD'))>USD</option>
@@ -80,7 +81,7 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-4 col-sm-6 mb-3">
-                            <label for="site_currency_symbol" class="form-label">Site Currency Symbol</label>
+                            <label for="site_currency_symbol" class="form-label">Site Currency Symbol <span class="text-danger">*</span></label>
                             <select class="form-select" name="site_currency_symbol" id="site_currency_symbol">
                                 <option value="">Select Currency Symbol</option>
                                 <option value="$" @selected(old('site_currency_symbol', $siteSetting->site_currency_symbol == '$'))>$</option>
@@ -91,35 +92,35 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-6 col-sm-6 mb-3">
-                            <label for="site_main_email" class="form-label">Site Main Email</label>
+                            <label for="site_main_email" class="form-label">Site Main Email <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="site_main_email" name="site_main_email" value="{{ old('site_main_email', $siteSetting->site_main_email) }}" placeholder="Site Main Email">
                             @error('site_main_email')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-6 col-sm-6 mb-3">
-                            <label for="site_support_email" class="form-label">Site Support Email</label>
+                            <label for="site_support_email" class="form-label">Site Support Email <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="site_support_email" name="site_support_email" value="{{ old('site_support_email', $siteSetting->site_support_email) }}" placeholder="Site Support Email">
                             @error('site_support_email')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-6 col-sm-6 mb-3">
-                            <label for="site_main_phone" class="form-label">Site Main Phone</label>
+                            <label for="site_main_phone" class="form-label">Site Main Phone <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="site_main_phone" name="site_main_phone" value="{{ old('site_main_phone', $siteSetting->site_main_phone) }}" placeholder="Site Main Phone">
                             @error('site_main_phone')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-6 col-sm-6 mb-3">
-                            <label for="site_support_phone" class="form-label">Site Support Phone</label>
+                            <label for="site_support_phone" class="form-label">Site Support Phone <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="site_support_phone" name="site_support_phone" value="{{ old('site_support_phone', $siteSetting->site_support_phone) }}" placeholder="Site Support Phone">
                             @error('site_support_phone')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-12 col-sm-6 mb-3">
-                            <label for="site_address" class="form-label">Site Address</label>
+                            <label for="site_address" class="form-label">Site Address <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="site_address" name="site_address" value="{{ old('site_address', $siteSetting->site_address) }}" placeholder="Site Address">
                         </div><!-- Col -->
                         <div class="col-lg-12 col-sm-6 mb-3">
@@ -176,6 +177,27 @@
 @section('script')
 <script>
     $(document).ready(function(){
+        // Site Currency and Symbol
+        const siteCurrency = document.getElementById('site_currency');
+        const siteCurrencySymbol = document.getElementById('site_currency_symbol');
+        function updateOptions() {
+            const currencyValue = siteCurrency.value;
+            const symbolValue = siteCurrencySymbol.value;
+
+            siteCurrencySymbol.querySelectorAll('option').forEach(option => {
+                option.disabled = (currencyValue === 'USD' && option.value === '৳') ||
+                                (currencyValue === 'BDT' && option.value === '$');
+            });
+
+            siteCurrency.querySelectorAll('option').forEach(option => {
+                option.disabled = (symbolValue === '$' && option.value === 'BDT') ||
+                                (symbolValue === '৳' && option.value === 'USD');
+            });
+        }
+        siteCurrency.addEventListener('change', updateOptions);
+        siteCurrencySymbol.addEventListener('change', updateOptions);
+        updateOptions();
+
         // Logo Image Preview
         $('#site_logo').change(function(){
             var reader = new FileReader();

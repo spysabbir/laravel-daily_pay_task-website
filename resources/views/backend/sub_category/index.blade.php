@@ -24,7 +24,7 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="category_id" class="form-label">Category</label>
+                                            <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
                                             <select class="form-select" id="category_id" name="category_id">
                                                 <option value="">-- Select Category --</option>
                                                 @foreach ($categories as $category)
@@ -34,7 +34,7 @@
                                             <span class="text-danger error-text category_id_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="name" class="form-label">Sub Category Name</label>
+                                            <label for="name" class="form-label">Sub Category Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="name" name="name" placeholder="Sub Category Name">
                                             <span class="text-danger error-text name_error"></span>
                                         </div>
@@ -135,7 +135,7 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="sub_category_id">
                                                 <div class="mb-3">
-                                                    <label for="category_id" class="form-label">Category</label>
+                                                    <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
                                                     <select class="form-select category_id" id="category_id" name="category_id">
                                                         <option value="">-- Select Category --</option>
                                                         @foreach ($categories as $category)
@@ -145,7 +145,7 @@
                                                     <span class="text-danger error-text update_category_id_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="sub_category_name" class="form-label">Sub Category Name</label>
+                                                    <label for="sub_category_name" class="form-label">Sub Category Name <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="sub_category_name" name="name" placeholder="Sub Category Name">
                                                     <span class="text-danger error-text update_name_error"></span>
                                                 </div>

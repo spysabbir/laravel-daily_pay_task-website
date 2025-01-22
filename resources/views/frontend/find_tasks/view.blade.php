@@ -223,10 +223,10 @@
                     {{-- <p>Name: <a href="{{ route('user.profile', encrypt($taskDetails->user->id)) }}" class="text-info">{{ $taskDetails->user->name }}</a></p> --}}
                     <p>Name: <span class="text-info">{{ $taskDetails->user->name }}</span></p>
                     <p>Active Status:
-                        @if (\Carbon\Carbon::parse($taskDetails->user->last_login_at)->gt(\Carbon\Carbon::now()->subMinutes(5)))
+                        @if (\Carbon\Carbon::parse($taskDetails->user->last_activity_at)->gt(\Carbon\Carbon::now()->subMinutes(5)))
                         <span class="text-success">Online</span>
                         @else
-                        <span class="text-info">{{ \Carbon\Carbon::parse($taskDetails->user->last_login_at)->diffForHumans() }}</span>
+                        <span class="text-info">{{ \Carbon\Carbon::parse($taskDetails->user->last_activity_at)->diffForHumans() }}</span>
                         @endif
                     </p>
                     <p>Join Date: <span class="text-info">{{ $taskDetails->user->created_at->format('d M, Y') }}</span></p>
@@ -251,7 +251,7 @@
                 </div>
                 <div class="d-flex align-items-center justify-content-between border p-3">
                     <!-- Report User Button -->
-                    <button type="button" class="btn btn-primary btn-sm d-flex align-items-center mx-2" data-bs-toggle="modal" data-bs-target=".reportModal">
+                    <button type="button" class="btn btn-info btn-sm d-flex align-items-center mx-2" data-bs-toggle="modal" data-bs-target=".reportModal">
                         <i class="icon-md" data-feather="message-circle"></i>
                         <span class="d-none d-md-block ms-1">Report User</span>
                     </button>
@@ -293,13 +293,30 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Block User -->
-                    <a href="{{ route('block.unblock.user', $taskDetails->user->id) }}" class="btn btn-{{ $blocked ? 'danger' : 'warning' }} btn-sm d-flex align-items-center">
-                        <i class="icon-md" data-feather="shield"></i>
-                        <span class="d-none d-md-block ms-1">
-                            {{ $blocked ? 'Unblock User' : 'Block User' }}
-                        </span>
-                    </a>
+                    <!-- Favorite User -->
+                    @if ($favorite)
+                        <a href="{{ route('unfavorite.user', $taskDetails->user->id) }}" class="btn btn-success btn-sm d-flex align-items-center">
+                            <i class="icon-md" data-feather="heart"></i>
+                            <span class="d-none d-md-block ms-1">Unfavorite User</span>
+                        </a>
+                    @else
+                        <a href="{{ route('favorite.user', $taskDetails->user->id) }}" class="btn btn-primary btn-sm d-flex align-items-center">
+                            <i class="icon-md" data-feather="heart"></i>
+                            <span class="d-none d-md-block ms-1">Favorite User</span>
+                        </a>
+                    @endif
+                    <!-- Blocked User -->
+                    @if ($blocked)
+                        <a href="{{ route('unblocked.user', $taskDetails->user->id) }}" class="btn btn-danger btn-sm d-flex align-items-center mx-2">
+                            <i class="icon-md" data-feather="shield"></i>
+                            <span class="d-none d-md-block ms-1">Unblocked User</span>
+                        </a>
+                    @else
+                        <a href="{{ route('blocked.user', $taskDetails->user->id) }}" class="btn btn-warning btn-sm d-flex align-items-center mx-2">
+                            <i class="icon-md" data-feather="shield"></i>
+                            <span class="d-none d-md-block ms-1">Blocked User</span>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

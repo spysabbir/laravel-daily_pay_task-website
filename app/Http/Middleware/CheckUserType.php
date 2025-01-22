@@ -22,7 +22,7 @@ class CheckUserType
         }
 
         $user = Auth::user();
-        $user->update(['last_login_at' => now()]);
+        $user->update(['last_activity_at' => now()]);
 
         $userAgent = $request->header('User-Agent');
         $userIp = $request->ip();

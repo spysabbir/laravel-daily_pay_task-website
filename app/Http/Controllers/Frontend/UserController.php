@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Block;
 use App\Models\Bonus;
+use App\Models\BlockedUser;
 use App\Models\Deposit;
 use App\Models\User;
 use App\Models\Verification;
@@ -25,6 +25,7 @@ use App\Models\UserDevice;
 use App\Models\Rating;
 use App\Models\BalanceTransfer;
 use App\Events\SupportEvent;
+use App\Models\FavoriteUser;
 use Carbon\Carbon;
 use App\Notifications\UserStatusNotification;
 
@@ -290,7 +291,8 @@ class UserController extends Controller
     public function userProfile($id)
     {
         $user = User::findOrFail(decrypt($id));
-        $blocked = Block::where('user_id', $user->id)->where('blocked_by', Auth::id())->exists();
+        $blocked = BlockedUser::where('user_id', Auth::id())->where('blocked_user_id', $user->id)->exists();
+        $favorite = FavoriteUser::where('user_id', Auth::id())->where('favorite_user_id', $user->id)->exists();
         $nowPostTaskRunningCount = PostTask::where('user_id', $user->id)->where('status', 'Running')->count();
         $totalPostTaskApprovedCount = PostTask::where('user_id', $user->id)->where('approved_by', '!=', null)->count();
         $totalPostTaskApprovedIds = PostTask::where('user_id', $user->id)->where('approved_by', '!=', null)->pluck('id')->toArray();
@@ -311,7 +313,7 @@ class UserController extends Controller
 
         $reportUserCount = Report::where('user_id', $user->id)->where('reported_by', Auth::id())->where('type', 'User')->count();
 
-        return view('frontend.user_profile.index', compact('user', 'blocked', 'nowPostTaskRunningCount', 'totalPostTaskApprovedCount', 'totalPastedTaskProofCount', 'totalPendingTasksProofCount', 'totalApprovedTasksProofCount', 'totalRejectedTasksProofCount', 'nowReviewedTasksProofCount', 'totalReviewedTasksProofCount', 'totalWorkedTask', 'totalPendingWorkedTask', 'totalApprovedWorkedTask', 'totalRejectedWorkedTask', 'nowReviewedWorkedTask', 'totalReviewedWorkedTask', 'reportUserCount'));
+        return view('frontend.user_profile.index', compact('user', 'blocked', 'favorite', 'nowPostTaskRunningCount', 'totalPostTaskApprovedCount', 'totalPastedTaskProofCount', 'totalPendingTasksProofCount', 'totalApprovedTasksProofCount', 'totalRejectedTasksProofCount', 'nowReviewedTasksProofCount', 'totalReviewedTasksProofCount', 'totalWorkedTask', 'totalPendingWorkedTask', 'totalApprovedWorkedTask', 'totalRejectedWorkedTask', 'nowReviewedWorkedTask', 'totalReviewedWorkedTask', 'reportUserCount'));
     }
 
     // Verification.............................................................................................................
@@ -1070,9 +1072,9 @@ class UserController extends Controller
         return view('frontend.refferal.index', compact('referralCount', 'referralEarned'));
     }
 
-    // Block.............................................................................................................
+    // Favorite.............................................................................................................
 
-    public function blockList(Request $request)
+    public function favoriteUserList(Request $request)
     {
         $user = User::findOrFail(Auth::id());
         $hasVerification = $user->hasVerification('Approved');
@@ -1083,9 +1085,113 @@ class UserController extends Controller
             return redirect()->route('dashboard');
         } else {
             if ($request->ajax()) {
-                $blockedUsers = Block::where('blocked_by', Auth::id());
+                $favoriteUsers = FavoriteUser::where('user_id', Auth::id());
 
-                $query = $blockedUsers->select('blocks.*');
+                $query = $favoriteUsers->select('favorite_users.*');
+
+                // Total filtered count
+                $totalFavoritesCount = $query->count();
+
+                $favoriteList = $query->get();
+
+                return DataTables::of($favoriteList)
+                    ->addIndexColumn()
+                    ->editColumn('favorite_user', function ($row) {
+                        if ($row->favoriteUser->deleted_at == null) {
+                            $favoriteUser = '
+                            <a href="'.route('user.profile', encrypt($row->favoriteUser->id)).'" title="'.$row->favoriteUser->name.'" class="text-info">
+                                '.$row->favoriteUser->name.'
+                            </a>
+                            ';
+                        } else {
+                            $favoriteUser = '<span class="badge bg-primary">' . $row->favoriteUser->name . '</span>';
+                        }
+                        return $favoriteUser;
+                    })
+                    ->editColumn('created_at', function ($row) {
+                        return date('d M Y h:i A', strtotime($row->created_at));
+                    })
+                    ->addColumn('action', function ($row) {
+                        $action = '
+                        <a href="'.route('unfavorite.user', $row->favoriteUser->id).'" title="Unfavorite" class="btn btn-danger btn-sm">
+                            Unfavorite
+                        </a>
+                        ';
+                        return $action;
+                    })
+                    ->with(['totalFavoritesCount' => $totalFavoritesCount])
+                    ->rawColumns(['favorite_user', 'action'])
+                    ->make(true);
+            }
+            return view('frontend.favorite_list.index');
+        }
+    }
+
+    public function favoriteUser($id)
+    {
+        $favorite = FavoriteUser::where('user_id', Auth::id())->where('favorite_user_id', $id)->exists();
+
+        if ($favorite) {
+            $notification = array(
+                'message' => 'User already favorite.',
+                'alert-type' => 'info'
+            );
+
+            return back()->with($notification);
+        }
+
+        FavoriteUser::create([
+            'user_id' => Auth::id(),
+            'favorite_user_id' => $id,
+        ]);
+
+        $notification = array(
+            'message' => 'User favorite successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
+    }
+
+    public function unfavoriteUser($id)
+    {
+        $favorite = FavoriteUser::where('user_id', Auth::id())->where('favorite_user_id', $id)->exists();
+
+        if (!$favorite) {
+            $notification = array(
+                'message' => 'User already unfavorite.',
+                'alert-type' => 'info'
+            );
+
+            return back()->with($notification);
+        }
+
+        FavoriteUser::where('user_id', Auth::id())->where('favorite_user_id', $id)->delete();
+
+        $notification = array(
+            'message' => 'User unfavorite successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
+    }
+
+    // Blocked.............................................................................................................
+
+    public function blockedUserList(Request $request)
+    {
+        $user = User::findOrFail(Auth::id());
+        $hasVerification = $user->hasVerification('Approved');
+
+        if (!$hasVerification) {
+            return redirect()->route('verification')->with('error', 'Please verify your account first.');
+        } else if ($user->status == 'Blocked' || $user->status == 'Banned') {
+            return redirect()->route('dashboard');
+        } else {
+            if ($request->ajax()) {
+                $blockedUsers = BlockedUser::where('user_id', Auth::id());
+
+                $query = $blockedUsers->select('blocked_users.*');
 
                 // Total filtered count
                 $totalBlockedsCount = $query->count();
@@ -1094,60 +1200,80 @@ class UserController extends Controller
 
                 return DataTables::of($blockedList)
                     ->addIndexColumn()
-                    ->editColumn('user', function ($row) {
-                        if ($row->blocked->deleted_at == null) {
-                            $blocked = '
-                            <a href="'.route('user.profile', encrypt($row->blocked->id)).'" title="'.$row->blocked->name.'" class="text-info">
-                                '.$row->blocked->name.'
+                    ->editColumn('blocked_user', function ($row) {
+                        if ($row->blockedUser->deleted_at == null) {
+                            $blockedUser = '
+                            <a href="'.route('user.profile', encrypt($row->blockedUser->id)).'" title="'.$row->blockedUser->name.'" class="text-info">
+                                '.$row->blockedUser->name.'
                             </a>
                             ';
                         } else {
-                            $blocked = '<span class="badge bg-primary">' . $row->blocked->name . '</span>';
+                            $blockedUser = '<span class="badge bg-primary">' . $row->blockedUser->name . '</span>';
                         }
-                        return $blocked;
+                        return $blockedUser;
                     })
-                    ->editColumn('blocked_at', function ($row) {
-                        return date('d M Y h:i A', strtotime($row->blocked_at));
+                    ->editColumn('created_at', function ($row) {
+                        return date('d M Y h:i A', strtotime($row->created_at));
                     })
                     ->addColumn('action', function ($row) {
                         $action = '
-                        <a href="'.route('block.unblock.user', $row->blocked->id).'" title="Unblock" class="btn btn-danger btn-sm">
-                            Unblock
+                        <a href="'.route('unblocked.user', $row->blockedUser->id).'" title="Unblocked" class="btn btn-danger btn-sm">
+                            Unblocked
                         </a>
                         ';
                         return $action;
                     })
                     ->with(['totalBlockedsCount' => $totalBlockedsCount])
-                    ->rawColumns(['user', 'action'])
+                    ->rawColumns(['blocked_user', 'action'])
                     ->make(true);
             }
-            return view('frontend.block_list.index');
+            return view('frontend.blocked_list.index');
         }
     }
 
-    public function blockUnblockUser($id)
+    public function blockedUser($id)
     {
-        $blocked = Block::where('user_id', $id)->where('blocked_by', Auth::id())->exists();
+        $blocked = BlockedUser::where('user_id', Auth::id())->where('blocked_user_id', $id)->exists();
 
         if ($blocked) {
-            Block::where('user_id', $id)->where('blocked_by', Auth::id())->delete();
-
             $notification = array(
-                'message' => 'User unblocked successfully.',
+                'message' => 'User already blocked.',
                 'alert-type' => 'success'
             );
 
             return back()->with($notification);
         }
 
-        Block::create([
-            'user_id' => $id,
-            'blocked_by' => Auth::id(),
-            'blocked_at' => now(),
+        BlockedUser::create([
+            'user_id' => Auth::id(),
+            'blocked_user_id' => $id,
         ]);
 
         $notification = array(
             'message' => 'User blocked successfully.',
+            'alert-type' => 'error'
+        );
+
+        return back()->with($notification);
+    }
+
+    public function unblockedUser($id)
+    {
+        $blocked = BlockedUser::where('user_id', Auth::id())->where('blocked_user_id', $id)->exists();
+
+        if (!$blocked) {
+            $notification = array(
+                'message' => 'User already unblocked.',
+                'alert-type' => 'success'
+            );
+
+            return back()->with($notification);
+        }
+
+        BlockedUser::where('user_id', Auth::id())->where('blocked_user_id', $id)->delete();
+
+        $notification = array(
+            'message' => 'User unblocked successfully.',
             'alert-type' => 'error'
         );
 

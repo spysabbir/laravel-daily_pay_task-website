@@ -17,13 +17,6 @@
                             <h4 class="ms-3 text-info">Name: {{ $user->name }}</h4>
                             <h5 class="ms-3 text-info">Email: {{ $user->email }}</h5>
                             <h5 class="ms-3 text-info">Joined: {{ $user->created_at->format('j F, Y  h:i:s A') }}</h5>
-                            <h5 class="ms-3 text-info">Active Status:
-                                @if (\Carbon\Carbon::parse($user->last_login_at)->gt(\Carbon\Carbon::now()->subMinutes(5)))
-                                <span class="text-success">Online</span>
-                                @else
-                                <span class="text-info">{{ \Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}</span>
-                                @endif
-                            </h5>
                         </div>
                     </div>
                     <div class="col-xl-7 col-lg-12 my-2 d-flex justify-content-center align-items-center flex-wrap">
@@ -118,7 +111,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="userDateOfBirth" class="form-label">Date of Birth <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
-                        <input type="date" class="form-control" id="userDateOfBirth" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth) }}" {{ $user->isFrontendUser() && $user->hasVerification('Pending') || $user->hasVerification('Approved') ? 'readonly' : '' }} required>
+                        <div class="input-group date datepicker datePickerExample">
+                            <input type="text" class="form-control" id="userDateOfBirth" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth) }}" {{ $user->isFrontendUser() && $user->hasVerification('Pending') || $user->hasVerification('Approved') ? 'readonly' : '' }} required>
+                            <span class="input-group-text input-group-addon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
+                        </div>
                         @error('date_of_birth')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

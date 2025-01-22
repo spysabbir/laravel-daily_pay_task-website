@@ -162,6 +162,28 @@
             }
         });
 
+        function updateDropdowns() {
+            const sendMethod = $('#filter_send_method').val();
+            const receiveMethod = $('#filter_receive_method').val();
+
+            $('#filter_receive_method option').prop('disabled', false);
+            $('#filter_send_method option').prop('disabled', false);
+
+            if (sendMethod) {
+                $('#filter_receive_method option[value="' + sendMethod + '"]').prop('disabled', true);
+            }
+
+            if (receiveMethod) {
+                $('#filter_send_method option[value="' + receiveMethod + '"]').prop('disabled', true);
+            }
+        }
+
+        // Attach event listeners
+        $('#filter_send_method, #filter_receive_method').on('change', updateDropdowns);
+
+        // Initialize on page load
+        updateDropdowns();
+
         // Read Data
         $('#allDataTable').DataTable({
             processing: true,

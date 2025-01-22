@@ -23,14 +23,14 @@
                                 @csrf
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label for="group_name" class="form-label">Permission Group Name</label>
+                                        <label for="group_name" class="form-label">Permission Group Name <span class="text-danger">*</span></label>
 										<div id="bloodhound">
                                             <input type="text" class="form-control typeahead" id="group_name" name="group_name" placeholder="Permission Group Name" size="100%">
                                         </div>
                                         <span class="text-danger error-text group_name_error"></span>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">Permission Name</label>
+                                        <label for="name" class="form-label">Permission Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="name" name="name" placeholder="Permission Name">
                                         <span class="text-danger error-text name_error"></span>
                                     </div>
@@ -85,14 +85,14 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="permission_id">
                                                 <div class="mb-3">
-                                                    <label for="permission_group_name" class="form-label">Permission Group Name</label>
+                                                    <label for="permission_group_name" class="form-label">Permission Group Name <span class="text-danger">*</span></label>
                                                     <div id="bloodhound">
                                                         <input type="text" class="form-control typeahead" id="permission_group_name" name="group_name" placeholder="Permission Group Name" size="100%">
                                                     </div>
                                                     <span class="text-danger error-text update_group_name_error"></span>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="permission_name" class="form-label">Permission Name</label>
+                                                    <label for="permission_name" class="form-label">Permission Name <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="permission_name" name="name" placeholder="Permission Name">
                                                     <span class="text-danger error-text update_name_error"></span>
                                                 </div>

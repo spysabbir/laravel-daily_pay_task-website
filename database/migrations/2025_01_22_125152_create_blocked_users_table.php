@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('blocks', function (Blueprint $table) {
+        Schema::create('blocked_users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('blocked_by')->constrained('users')->onDelete('cascade');
-            $table->timestamp('blocked_at')->useCurrent();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('blocked_user_id')->constrained('users')->onDelete('cascade');
+            $table->timestamps();
+
+            $table->unique(['user_id', 'blocked_user_id']);
         });
     }
 
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('blocks');
+        Schema::dropIfExists('blocked_users');
     }
 };

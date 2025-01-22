@@ -204,7 +204,7 @@ class BackendController extends Controller
         $supportsRequestCount = Support::where('status', 'Unread')->where('receiver_id', 1)->count();
 
         $totalActiveUserCount = User::where('user_type', 'Frontend')->where('status', 'Active')->count();
-        $currentlyOnlineUserCount = User::where('user_type', 'Frontend')->where('last_login_at', '>=', Carbon::now()->subMinutes(5))->count();
+        $currentlyOnlineUserCount = User::where('user_type', 'Frontend')->where('last_activity_at', '>=', Carbon::now()->subMinutes(5))->count();
 
         return view('backend.dashboard' , compact( 'formattedUserStatusData', 'formattedVerifiedUsersData', 'lastSevenDaysCategories', 'formattedPostedTasksData', 'formattedWorkedTasksData', 'workedTasksStatusStatuses', 'workedTasksStatusStatusesData', 'postedTasksStatusStatuses', 'postedTasksStatusStatusesData', 'depositsStatuses', 'formattedDepositsStatusesData', 'withdrawsStatuses', 'formattedWithdrawsStatusesData', 'formattedDepositData', 'formattedWithdrawData', 'formattedStatusWiseReportsDataSeries', 'verificationRequestCount', 'depositRequestCount', 'withdrawRequestCount', 'postTaskRequestCount', 'proofTaskRequestCount', 'reportRequestCount', 'contactRequestCount', 'supportsRequestCount', 'totalActiveUserCount', 'currentlyOnlineUserCount'));
     }

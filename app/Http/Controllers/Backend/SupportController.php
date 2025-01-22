@@ -61,8 +61,8 @@ class SupportController extends Controller implements HasMiddleware
             'id' => $user->id,
             'name' => $user->name,
             'profile_photo' => asset('uploads/profile_photo/' . $user->profile_photo),
-            'last_active' => Carbon::parse($user->last_login_at)->diffForHumans(),
-            'active_status' => Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline',
+            'last_active' => Carbon::parse($user->last_activity_at)->diffForHumans(),
+            'active_status' => Carbon::parse($user->last_activity_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline',
             'messages' => $formattedMessages
         ]);
     }
@@ -125,7 +125,7 @@ class SupportController extends Controller implements HasMiddleware
                 'name' => $user->name,
                 'status' => $user->status,
                 'profile_photo' => $user->profile_photo,
-                'active_status' => Carbon::parse($user->last_login_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline',
+                'active_status' => Carbon::parse($user->last_activity_at)->diffInMinutes(now()) <= 5 ? 'online' : 'offline',
                 'message' => $message,
                 'send_at' => $latestSupport ? $latestSupport->created_at->diffForHumans() : 'No message',
                 'support_count' => Support::where('sender_id', $user->id)->where('status', 'Unread')->count(),

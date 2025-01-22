@@ -23,6 +23,10 @@ return new class extends Migration
             $table->enum('user_type', ['Frontend', 'Backend'])->default('Frontend');
             $table->enum('status', ['Active', 'Inactive', 'Blocked', 'Banned'])->default('Inactive');
             $table->text('bio')->nullable();
+            $table->string('country')->nullable();
+            $table->string('region')->nullable();
+            $table->string('city')->nullable();
+            $table->string('address')->nullable();
             $table->string('referral_code')->unique()->nullable();
             $table->string('referred_by')->nullable();
             $table->decimal('deposit_balance', 20, 2)->default(0);
@@ -30,7 +34,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->timestamp('last_login_at')->nullable();
+            $table->timestamp('last_activity_at')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();

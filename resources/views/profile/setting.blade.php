@@ -17,7 +17,6 @@
                             <h4 class="ms-3 text-info">Name: {{ $user->name }}</h4>
                             <h5 class="ms-3 text-info">Email: {{ $user->email }}</h5>
                             <h5 class="ms-3 text-info">Joined: {{ $user->created_at->format('j F, Y  h:i:s A') }}</h5>
-                            <h5 class="ms-3 text-info">Last Active: {{ date('j F, Y  h:i:s A', strtotime($user->last_login_at)) }}</h5>
                         </div>
                     </div>
                     <div class="col-xl-7 col-lg-12 my-2 d-flex justify-content-center align-items-center flex-wrap">
@@ -80,6 +79,7 @@
                             <tr>
                                 <th>Ip</th>
                                 <th>Device Type</th>
+                                <th>Browser</th>
                                 <th>Updated Time</th>
                             </tr>
                         </thead>
@@ -88,6 +88,7 @@
                             <tr>
                                 <td>{{ $userDevice->ip_address }}</td>
                                 <td>{{ $userDevice->device_type }}</td>
+                                <td>{{ $userDevice->browser }}</td>
                                 <td>{{ date('j M, Y  h:i:s A', strtotime($userDevice->updated_at)) }}</td>
                             </tr>
                             @endforeach

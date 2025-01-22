@@ -23,7 +23,7 @@
                                 @csrf
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">Role Name</label>
+                                        <label for="name" class="form-label">Role Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="name" name="name" placeholder="Role Name">
                                         <span class="text-danger error-text name_error"></span>
                                     </div>
@@ -62,7 +62,7 @@
                                             <div class="modal-body">
                                                 <input type="hidden" id="role_id">
                                                 <div class="mb-3">
-                                                    <label for="role_name" class="form-label">Role Name</label>
+                                                    <label for="role_name" class="form-label">Role Name <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" id="role_name" name="name" placeholder="Role Name">
                                                     <span class="text-danger error-text update_name_error"></span>
                                                 </div>
