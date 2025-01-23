@@ -110,16 +110,22 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="userDateOfBirth" class="form-label">Date of Birth <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
-                        <div class="input-group date datepicker datePickerExample">
-                            <input type="text" class="form-control" id="userDateOfBirth" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth) }}" {{ $user->isFrontendUser() && $user->hasVerification('Pending') || $user->hasVerification('Approved') ? 'readonly' : '' }} required>
-                            <span class="input-group-text input-group-addon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
+                        <label for="userDateOfBirth" class="form-label">
+                            Date of Birth <span class="text-danger">*</span>
+                            <span class="text-primary">(As per your verification document)</span>
+                        </label>
+                        <div class="input-group date datepicker" id="{{ $user->isFrontendUser() && ($user->hasVerification('Pending') || $user->hasVerification('Approved')) ? '' : 'date_of_birth_picker' }}">
+                            <input type="text" class="form-control" id="userDateOfBirth" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth ? \Carbon\Carbon::parse($user->date_of_birth)->format('d F, Y') : '') }}"
+                                placeholder="Select a date" required readonly
+                            >
+                            <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                         </div>
                         @error('date_of_birth')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                         <small class="text-danger d-block" id="userDateOfBirthError"></small>
                     </div>
+
                     <div class="mb-3">
                         <div>
                             <label for="userDateOfBirth" class="form-label d-block">Gender <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
@@ -253,6 +259,20 @@
 
 <script>
     $(document).ready(function(){
+        // Date Picker
+        if ($('#date_of_birth_picker').length) {
+            var date = new Date();
+            var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            $('#date_of_birth_picker').datepicker({
+                format: "dd MM, yyyy",
+                todayHighlight: true,
+                autoclose: true,
+                endDate: today,
+                todayBtn: "linked",
+            });
+            $('#userDateOfBirth').attr('placeholder', 'Select a date');
+        }
+
         // Profile Image Preview
         document.getElementById('userProfilePhoto').addEventListener('change', function() {
             const file = this.files[0];

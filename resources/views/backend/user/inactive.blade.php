@@ -26,6 +26,7 @@
                                     <option value="">-- Select Last Activity --</option>
                                     <option value="Online">Online</option>
                                     <option value="Offline">Offline</option>
+                                    <option value="No Activity">No Activity</option>
                                 </select>
                             </div>
                         </div>

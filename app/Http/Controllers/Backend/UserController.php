@@ -19,6 +19,7 @@ use App\Models\ProofTask;
 use App\Models\Report;
 use App\Models\Withdraw;
 use App\Models\BalanceTransfer;
+use Carbon\Carbon;
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -60,7 +61,7 @@ class UserController extends Controller implements HasMiddleware
             if ($request->last_activity) {
                 if ($request->last_activity == 'Online') {
                     $query->where('last_activity_at', '>=', now()->subMinutes(5));
-                } else {
+                } else if($request->last_activity == 'Offline') {
                     $query->where('last_activity_at', '<', now()->subMinutes(5));
                 }
             }
@@ -156,7 +157,7 @@ class UserController extends Controller implements HasMiddleware
                         ';
                 })
                 ->editColumn('last_activity_at', function ($row) {
-                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
+                    $lastActivity = $row->last_activity_at ? Carbon::parse($row->last_activity_at) : null;
                     $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
                     $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
 
@@ -228,8 +229,10 @@ class UserController extends Controller implements HasMiddleware
             if ($request->last_activity) {
                 if ($request->last_activity == 'Online') {
                     $query->where('last_activity_at', '>=', now()->subMinutes(5));
-                } else {
+                } else if($request->last_activity == 'Offline') {
                     $query->where('last_activity_at', '<', now()->subMinutes(5));
+                } else {
+                    $query->where('last_activity_at', null);
                 }
             }
 
@@ -243,13 +246,18 @@ class UserController extends Controller implements HasMiddleware
             return DataTables::of($allUser)
                 ->addIndexColumn()
                 ->editColumn('last_activity_at', function ($row) {
-                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
-                    $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
-                    $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
+                    $lastActivity = $row->last_activity_at ? Carbon::parse($row->last_activity_at) : null;
+
+                    if (!$lastActivity) {
+                        return '<div class="badge bg-danger text-white">No activity</div>';
+                    }
+
+                    $isOnline = $lastActivity->gte(now()->subMinutes(5));
+                    $timeDiff = $lastActivity->diffForHumans();
 
                     $statusBadge = $isOnline
                         ? '<span class="badge bg-success text-white">Online</span>'
-                        : '<span class="badge bg-danger text-white">Offline</span>';
+                        : '<span class="badge bg-warning text-white">Offline</span>';
 
                     return '<div>' . $statusBadge . ' <small>' . $timeDiff . '</small></div>';
                 })
@@ -301,7 +309,7 @@ class UserController extends Controller implements HasMiddleware
             if ($request->last_activity) {
                 if ($request->last_activity == 'Online') {
                     $query->where('last_activity_at', '>=', now()->subMinutes(5));
-                } else {
+                } else if($request->last_activity == 'Offline') {
                     $query->where('last_activity_at', '<', now()->subMinutes(5));
                 }
             }
@@ -397,7 +405,7 @@ class UserController extends Controller implements HasMiddleware
                         ';
                 })
                 ->editColumn('last_activity_at', function ($row) {
-                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
+                    $lastActivity = $row->last_activity_at ? Carbon::parse($row->last_activity_at) : null;
                     $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
                     $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
 
@@ -469,7 +477,7 @@ class UserController extends Controller implements HasMiddleware
             if ($request->last_activity) {
                 if ($request->last_activity == 'Online') {
                     $query->where('last_activity_at', '>=', now()->subMinutes(5));
-                } else {
+                } else if($request->last_activity == 'Offline') {
                     $query->where('last_activity_at', '<', now()->subMinutes(5));
                 }
             }
@@ -541,7 +549,7 @@ class UserController extends Controller implements HasMiddleware
                         ';
                 })
                 ->editColumn('last_activity_at', function ($row) {
-                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
+                    $lastActivity = $row->last_activity_at ? Carbon::parse($row->last_activity_at) : null;
                     $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
                     $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
 

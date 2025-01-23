@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Carbon\Carbon;
 
 class EmployeeController extends Controller implements HasMiddleware
 {
@@ -45,8 +46,10 @@ class EmployeeController extends Controller implements HasMiddleware
             if ($request->last_activity) {
                 if ($request->last_activity == 'Online') {
                     $query->where('last_activity_at', '>=', now()->subMinutes(5));
-                } else {
+                } else if($request->last_activity == 'Offline') {
                     $query->where('last_activity_at', '<', now()->subMinutes(5));
+                } else {
+                    $query->where('last_activity_at', null);
                 }
             }
 
@@ -61,13 +64,18 @@ class EmployeeController extends Controller implements HasMiddleware
                     return $row->phone ?? 'N/A';
                 })
                 ->editColumn('last_activity_at', function ($row) {
-                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
-                    $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
-                    $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
+                    $lastActivity = $row->last_activity_at ? Carbon::parse($row->last_activity_at) : null;
+
+                    if (!$lastActivity) {
+                        return '<div class="badge bg-danger text-white">No activity</div>';
+                    }
+
+                    $isOnline = $lastActivity->gte(now()->subMinutes(5));
+                    $timeDiff = $lastActivity->diffForHumans();
 
                     $statusBadge = $isOnline
                         ? '<span class="badge bg-success text-white">Online</span>'
-                        : '<span class="badge bg-danger text-white">Offline</span>';
+                        : '<span class="badge bg-warning text-white">Offline</span>';
 
                     return '<div>' . $statusBadge . ' <small>' . $timeDiff . '</small></div>';
                 })
@@ -107,10 +115,11 @@ class EmployeeController extends Controller implements HasMiddleware
         return view('backend.employee.active', compact('roles'));
     }
 
-    public function store (Request $request)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'role' => 'required',
+            'role' => 'required|array',
+            'role.*' => 'exists:roles,id',
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', 'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/'],
             'password' => [
@@ -118,16 +127,16 @@ class EmployeeController extends Controller implements HasMiddleware
                 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'
             ],
         ],[
-            'email.regex' => 'The email must follow the format " ****@****.*** ".',
+            'email.regex' => 'The email must follow the format "****@****.***".',
             'password.regex' => 'The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'error'=> $validator->errors()->toArray()
+                'error' => $validator->errors()->toArray()
             ]);
-        }else{
+        } else {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -155,6 +164,7 @@ class EmployeeController extends Controller implements HasMiddleware
     public function edit(string $id)
     {
         $employee = User::where('id', $id)->first();
+
         return response()->json([
             'employee' => $employee,
             'role' => $employee->roles->pluck('id')->toArray()
@@ -164,7 +174,8 @@ class EmployeeController extends Controller implements HasMiddleware
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'role' => 'required',
+            'role' => 'required|array',
+            'role.*' => 'exists:roles,id',
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $id, 'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/'],
             'password' => [
@@ -182,18 +193,15 @@ class EmployeeController extends Controller implements HasMiddleware
                 'error' => $validator->errors()->toArray()
             ]);
         } else {
-            $user = User::findOrFail($id);
-            $user->update([
+            $employee = User::findOrFail($id);
+            $employee->update([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => $request->password ? Hash::make($request->password) : $user->password,
+                'password' => $request->password ? Hash::make($request->password) : $employee->password,
                 'updated_by' => auth()->user()->id,
             ]);
 
-            if ($request->role) {
-                $user->roles()->detach();
-                $user->roles()->sync($request->role);
-            }
+            $employee->roles()->sync($request->role);
 
             return response()->json([
                 'status' => 200,
@@ -294,11 +302,13 @@ class EmployeeController extends Controller implements HasMiddleware
             if ($request->last_activity) {
                 if ($request->last_activity == 'Online') {
                     $query->where('last_activity_at', '>=', now()->subMinutes(5));
-                } else {
+                } else if($request->last_activity == 'Offline') {
                     $query->where('last_activity_at', '<', now()->subMinutes(5));
+                } else {
+                    $query->where('last_activity_at', null);
                 }
             }
-            
+
             // Clone the query for counts
             $totalUsersCount = (clone $query)->count();
 
@@ -310,13 +320,18 @@ class EmployeeController extends Controller implements HasMiddleware
                     return $row->phone ?? 'N/A';
                 })
                 ->editColumn('last_activity_at', function ($row) {
-                    $lastActivity = $row->last_activity_at ? \Carbon\Carbon::parse($row->last_activity_at) : null;
-                    $isOnline = $lastActivity && $lastActivity->gte(now()->subMinutes(5));
-                    $timeDiff = $lastActivity ? $lastActivity->diffForHumans() : 'No activity';
+                    $lastActivity = $row->last_activity_at ? Carbon::parse($row->last_activity_at) : null;
+
+                    if (!$lastActivity) {
+                        return '<div class="badge bg-danger text-white">No activity</div>';
+                    }
+
+                    $isOnline = $lastActivity->gte(now()->subMinutes(5));
+                    $timeDiff = $lastActivity->diffForHumans();
 
                     $statusBadge = $isOnline
                         ? '<span class="badge bg-success text-white">Online</span>'
-                        : '<span class="badge bg-danger text-white">Offline</span>';
+                        : '<span class="badge bg-warning text-white">Offline</span>';
 
                     return '<div>' . $statusBadge . ' <small>' . $timeDiff . '</small></div>';
                 })

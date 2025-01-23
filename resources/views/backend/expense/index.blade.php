@@ -53,9 +53,9 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="expense_date" class="form-label">Expense Date <span class="text-danger">*</span></label>
-                                            <div class="input-group date datepicker datePickerExample">
-                                                <input type="text" class="form-control" id="expense_date" name="expense_date">
-                                                <span class="input-group-text input-group-addon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
+                                            <div class="input-group date datepicker" id="expense_date_picker">
+                                                <input type="text" class="form-control" id="expense_date" name="expense_date" readonly>
+                                                <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                                             </div>
                                             <span class="text-danger error-text expense_date_error"></span>
                                         </div>
@@ -212,9 +212,9 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="update_expense_date" class="form-label">Expense Date <span class="text-danger">*</span></label>
-                                                    <div class="input-group date datepicker datePickerExample">
-                                                        <input type="text" class="form-control" id="update_expense_date" name="expense_date">
-                                                        <span class="input-group-text input-group-addon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
+                                                    <div class="input-group date datepicker" id="update_expense_date_picker">
+                                                        <input type="text" class="form-control" id="update_expense_date" name="expense_date" readonly>
+                                                        <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                                                     </div>
                                                     <span class="text-danger error-text update_expense_date_error"></span>
                                                 </div>
@@ -273,6 +273,20 @@
         $('.filter_data').change(function(){
             $('#allDataTable').DataTable().ajax.reload();
         });
+
+        // Date Picker
+        if ($('#expense_date_picker').length) {
+            var date = new Date();
+            var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            $('#expense_date_picker').datepicker({
+                format: "dd MM, yyyy",
+                todayHighlight: true,
+                autoclose: true,
+                endDate: today,
+                todayBtn: "linked",
+            });
+            $('#expense_date').attr('placeholder', 'Select a date');
+        }
 
         // Store Data
         $('#createForm').submit(function(event) {
@@ -340,12 +354,24 @@
                     $('#update_description').val(response.description);
                     $('#update_amount').val(response.amount);
 
-                    const date = new Date(response.expense_date);
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = date.toLocaleString('en-US', { month: 'long' });
-                    const year = date.getFullYear();
+                    const expense_date = new Date(response.expense_date);
+                    const day = String(expense_date.getDate()).padStart(2, '0');
+                    const month = expense_date.toLocaleString('en-US', { month: 'long' });
+                    const year = expense_date.getFullYear();
                     const formattedDate = `${day} ${month}, ${year}`;
-                    $('#update_expense_date').val(formattedDate);
+
+                    if ($('#update_expense_date_picker').length) {
+                        var date = new Date();
+                        var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                        $('#update_expense_date_picker').datepicker({
+                            format: "dd MM, yyyy",
+                            todayHighlight: true,
+                            autoclose: true,
+                            endDate: today,
+                            todayBtn: "linked",
+                        });
+                        $('#update_expense_date_picker').datepicker('setDate', formattedDate);
+                    }
 
                     $('.editModal').modal('show');
                 },

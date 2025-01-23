@@ -18,23 +18,6 @@ $(function() {
 
     var fontFamily = "'Roboto', Helvetica, sans-serif"
 
-    // Date Picker
-    if ($('.datePickerExample').length) {
-        var date = new Date();
-        var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-        $('.datePickerExample').datepicker({
-            format: "dd MM, yyyy",
-            todayHighlight: true,
-            autoclose: true,
-            endDate: today
-        });
-
-        $('.datePickerExample').datepicker('setDate', today);
-    }
-    // Date Picker - END
-
-
     // monthlyDepositAndWithdrawChart start
     if($('#monthlyDepositAndWithdrawChart').length) {
         var options = {

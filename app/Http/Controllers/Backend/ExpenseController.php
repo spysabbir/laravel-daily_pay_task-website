@@ -103,36 +103,46 @@ class ExpenseController extends Controller implements HasMiddleware
 
     public function store(Request $request)
     {
-        $formattedDate = Carbon::createFromFormat('j F, Y', $request->input('expense_date'))->format('Y-m-d');
-        $request->merge(['expense_date' => $formattedDate]);
+        $input = $request->all();
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($input, [
             'expense_category_id' => 'required|exists:expense_categories,id',
             'title' => 'required|string|max:255',
             'amount' => 'required|numeric',
-            'expense_date' => 'required|date',
+            'expense_date' => 'required|string',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'error'=> $validator->errors()->toArray()
-            ]);
-        }else{
-            Expense::create([
-                'expense_category_id' => $request->expense_category_id,
-                'title' => $request->title,
-                'description' => $request->description,
-                'amount' => $request->amount,
-                'expense_date' => $request->expense_date,
-                'created_by' => auth()->user()->id,
-            ]);
-
-            return response()->json([
-                'status' => 200,
+                'error' => $validator->errors()->toArray(),
             ]);
         }
+
+        try {
+            $input['expense_date'] = Carbon::createFromFormat('j F, Y', $input['expense_date'])->format('Y-m-d');
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'error' => ['expense_date' => ['Invalid date format. Please provide a valid date.']],
+            ]);
+        }
+
+        Expense::create([
+            'expense_category_id' => $input['expense_category_id'],
+            'title' => $input['title'],
+            'description' => $input['description'] ?? null,
+            'amount' => $input['amount'],
+            'expense_date' => $input['expense_date'],
+            'created_by' => auth()->id(),
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Expense created successfully!',
+        ]);
     }
+
 
     public function show(string $id)
     {
@@ -148,10 +158,21 @@ class ExpenseController extends Controller implements HasMiddleware
 
     public function update(Request $request, string $id)
     {
-        $formattedDate = Carbon::createFromFormat('j F, Y', $request->input('expense_date'))->format('Y-m-d');
-        $request->merge(['expense_date' => $formattedDate]);
-        
-        $validator = Validator::make($request->all(), [
+        $input = $request->all();
+
+        if (!empty($input['expense_date'])) {
+            try {
+                $formattedDate = Carbon::createFromFormat('j F, Y', $input['expense_date'])->format('Y-m-d');
+                $input['expense_date'] = $formattedDate;
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 400,
+                    'error' => ['expense_date' => ['Invalid date format. Please provide a valid date.']]
+                ]);
+            }
+        }
+
+        $validator = Validator::make($input, [
             'expense_category_id' => 'required|exists:expense_categories,id',
             'title' => 'required|string|max:255',
             'amount' => 'required|numeric',
@@ -169,7 +190,7 @@ class ExpenseController extends Controller implements HasMiddleware
                 'title' => $request->title,
                 'description' => $request->description,
                 'amount' => $request->amount,
-                'expense_date' => $request->expense_date,
+                'expense_date' => $formattedDate,
                 'updated_by' => auth()->user()->id,
             ]);
 

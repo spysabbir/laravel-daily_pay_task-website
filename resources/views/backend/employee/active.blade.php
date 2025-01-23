@@ -25,9 +25,8 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="role" class="form-label">Employee Role <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="role" name="role">
-                                                <option value="">-- Select Role --</option>
+                                            <label class="form-label" for="role">Employee Role <span class="text-danger">*</span></label>
+                                            <select class="role-select2-multiple form-select" id="role" name="role[]" multiple="multiple" data-width="100%">
                                                 @foreach ($roles as $role)
                                                     @if (auth()->user()->hasRole('Super Admin') || $role->name !== 'Super Admin')
                                                         <option value="{{ $role->id }}">{{ $role->name }}</option>
@@ -91,6 +90,7 @@
                                     <option value="">-- Select Last Activity --</option>
                                     <option value="Online">Online</option>
                                     <option value="Offline">Offline</option>
+                                    <option value="No Activity">No Activity</option>
                                 </select>
                             </div>
                         </div>
@@ -113,6 +113,7 @@
                         </thead>
                         <tbody>
 
+
                             <!-- Edit Modal -->
                             <div class="modal fade editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-md">
@@ -127,8 +128,7 @@
                                                 <input type="hidden" id="employee_id">
                                                 <div class="mb-3">
                                                     <label for="employee_role" class="form-label">Employee Role <span class="text-danger">*</span></label>
-                                                    <select class="form-select" id="employee_role" name="role">
-                                                        <option value="">-- Select Role --</option>
+                                                    <select class="employee_role-select2-multiple form-select" id="employee_role" name="role[]" multiple="multiple" data-width="100%">
                                                         @foreach ($roles as $role)
                                                             @if (auth()->user()->hasRole('Super Admin') || $role->name !== 'Super Admin')
                                                                 <option value="{{ $role->id }}">{{ $role->name }}</option>
@@ -178,6 +178,22 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        // Select2 for Create and Edit Modal
+        $.fn.select2.defaults.set("dropdownParent", $(document.body));
+
+        if ($(".role-select2-multiple").length) {
+            $(".role-select2-multiple").select2({
+                dropdownParent: $('.createModel'),
+                allowClear: true,
+            });
+        }
+        if ($(".employee_role-select2-multiple").length) {
+            $(".employee_role-select2-multiple").select2({
+                dropdownParent: $('.editModal'),
+                allowClear: true,
+            });
+        }
 
         // Read Data
         $('#allDataTable').DataTable({
@@ -258,16 +274,21 @@
         // Edit Data
         $(document).on('click', '.editBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.employee.edit', ":id") }}";
-            url = url.replace(':id', id)
+            var url = "{{ route('backend.employee.edit', ':id') }}";
+            url = url.replace(':id', id);
+
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
+                    // Set the employee data
                     $('#employee_id').val(response.employee.id);
-                    $('#employee_role').val(response.role);
                     $('#employee_name').val(response.employee.name);
                     $('#employee_email').val(response.employee.email);
+                    $('#employee_password').val('');
+
+                    // Set the selected roles in the Select2 dropdown
+                    $('#employee_role').val(response.role).trigger('change'); // Use trigger('change') to refresh Select2
                 },
             });
         });
