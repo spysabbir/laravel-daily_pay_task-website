@@ -26,7 +26,6 @@ class WithdrawController extends Controller implements HasMiddleware
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.check') , only:['withdrawRequestShow', 'withdrawRequestStatusChange']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.rejected'), only:['withdrawRequestRejected']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.approved') , only:['withdrawRequestApproved']),
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.delete') , only:['withdrawRequestDelete']),
         ];
     }
 
@@ -105,10 +104,11 @@ class WithdrawController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
-                    ';
-                return $btn;
+                    $checkPermission = auth()->user()->can('withdraw.request.check');
+
+                    $btn = $checkPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" >Check</button>' : '';
+                    return $btn;
                 })
                 ->with([
                     'totalWithdrawsCount' => $totalWithdrawsCount,
@@ -126,8 +126,8 @@ class WithdrawController extends Controller implements HasMiddleware
         $withdraw = Withdraw::where('id', $id)->first();
         $reportsPending = Report::where('user_id', Auth::id())->where('status', 'Pending')->count();
 
-        $withdrawNumber = Withdraw::where('user_id', $withdraw->user_id)->whereNot('method', 'Deposit Balance')->groupBy('number')->pluck('number')->toArray();
-        $sameNumberUserIds = Withdraw::whereNot('user_id', $withdraw->user_id)->whereNot('method', 'Deposit Balance')->whereIn('number', $withdrawNumber)->groupBy('user_id')->pluck('user_id')->toArray();
+        $withdrawNumber = Withdraw::where('user_id', $withdraw->user_id)->groupBy('number')->pluck('number')->toArray();
+        $sameNumberUserIds = Withdraw::whereNot('user_id', $withdraw->user_id)->whereIn('number', $withdrawNumber)->groupBy('user_id')->pluck('user_id')->toArray();
         $sameNumberUserIds = User::whereIn('id', $sameNumberUserIds)->whereIn('status', ['Active', 'Blocked'])->get();
 
         return view('backend.withdraw.show', compact('withdraw', 'reportsPending', 'sameNumberUserIds'));
@@ -150,6 +150,13 @@ class WithdrawController extends Controller implements HasMiddleware
         $withdraw = Withdraw::findOrFail($id);
         $user = User::findOrFail($withdraw->user_id);
         $referrer = $user->referred_by ? User::find($user->referred_by) : null;
+
+        if ($withdraw->status != 'Pending') {
+            return response()->json([
+                'status' => 401,
+                'error' => 'Withdraw request is already ' . $withdraw->status . '! Please check withdraw ' . $withdraw->status . ' list.'
+            ]);
+        }
 
         $withdraw->update([
             'status' => $request->status,
@@ -193,9 +200,28 @@ class WithdrawController extends Controller implements HasMiddleware
     public function withdrawRequestRejected(Request $request)
     {
         if ($request->ajax()) {
-            $query = Withdraw::where('status', 'Rejected')->whereNot('method', 'Deposit Balance');
+            $query = Withdraw::where('status', 'Rejected');
+
+            if ($request->method){
+                $query->where('withdraws.method', $request->method);
+            }
+
+            if ($request->type){
+                $query->where('withdraws.type', $request->type);
+            }
+
+            if ($request->user_id){
+                $query->where('withdraws.user_id', $request->user_id);
+            }
+
+            if ($request->number){
+                $query->where('withdraws.number', $request->number);
+            }
 
             $query->select('withdraws.*')->orderBy('rejected_at', 'desc');
+
+            // Clone the query for counts
+            $totalWithdrawsCount = (clone $query)->count();
 
             $rejectedData = $query->get();
 
@@ -256,19 +282,19 @@ class WithdrawController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $deletePermission = auth()->user()->can('deposit.request.delete');
-
-                    $deleteBtn = $deletePermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
-                        : '';
-
-                    return $deleteBtn;
+                    $viewBtn = '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
+                    ';
+                    return $viewBtn;
                 })
+                ->with([
+                    'totalWithdrawsCount' => $totalWithdrawsCount,
+                ])
                 ->rawColumns(['user_name', 'type', 'method', 'amount', 'payable_amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
-        return view('backend.withdraw.index');
+        return view('backend.withdraw.rejected');
     }
 
     public function withdrawRequestApproved(Request $request)
@@ -355,10 +381,16 @@ class WithdrawController extends Controller implements HasMiddleware
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
+                ->addColumn('action', function ($row) {
+                    $btn = '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
+                    ';
+                    return $btn;
+                })
                 ->with([
                     'totalWithdrawsCount' => $totalWithdrawsCount,
                 ])
-                ->rawColumns(['user_name', 'type', 'method', 'amount', 'payable_amount', 'created_at', 'approved_by', 'approved_at'])
+                ->rawColumns(['user_name', 'type', 'method', 'amount', 'payable_amount', 'created_at', 'approved_by', 'approved_at', 'action'])
                 ->make(true);
         }
 
@@ -418,12 +450,5 @@ class WithdrawController extends Controller implements HasMiddleware
         return response()->json([
             'status' => 200,
         ]);
-    }
-
-    public function withdrawRequestDelete(string $id)
-    {
-        $withdraw = Withdraw::findOrFail($id);
-
-        $withdraw->delete();
     }
 }

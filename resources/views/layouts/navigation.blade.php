@@ -404,6 +404,11 @@
                             <a href="{{ route('backend.verification.request.approved') }}" class="nav-link">Approved</a>
                         </li>
                         @endcan
+                        @can('verification.request.rejected')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.verification.request.rejected') }}" class="nav-link">Rejected</a>
+                        </li>
+                        @endcan
                     </ul>
                 </div>
             </li>
@@ -428,6 +433,11 @@
                             <a href="{{ route('backend.deposit.request.approved') }}" class="nav-link">Approved</a>
                         </li>
                         @endcan
+                        @can('deposit.request.rejected')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.deposit.request.rejected') }}" class="nav-link">Rejected</a>
+                        </li>
+                        @endcan
                     </ul>
                 </div>
             </li>
@@ -450,6 +460,11 @@
                         @can('withdraw.request.approved')
                         <li class="nav-item">
                             <a href="{{ route('backend.withdraw.request.approved') }}" class="nav-link">Approved</a>
+                        </li>
+                        @endcan
+                        @can('withdraw.request.rejected')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.withdraw.request.rejected') }}" class="nav-link">Rejected</a>
                         </li>
                         @endcan
                     </ul>

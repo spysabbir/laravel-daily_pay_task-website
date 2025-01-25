@@ -22,7 +22,6 @@ class DepositController extends Controller implements HasMiddleware
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.check') , only:['depositRequestShow', 'depositRequestStatusChange']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.rejected'), only:['depositRequestRejected']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.approved') , only:['depositRequestApproved']),
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.delete') , only:['depositRequestDelete']),
         ];
     }
 
@@ -86,10 +85,11 @@ class DepositController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '
-                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" data-bs-toggle="modal" data-bs-target=".viewModal">Check</button>
-                    ';
-                return $btn;
+                    $checkPermission = auth()->user()->can('deposit.request.check');
+
+                    $btn = $checkPermission
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn" >Check</button>' : '';
+                    return $btn;
                 })
                 ->with([
                     'totalDepositsCount' => $totalDepositsCount,
@@ -125,6 +125,13 @@ class DepositController extends Controller implements HasMiddleware
         $deposit = Deposit::findOrFail($id);
         $user = User::where('id', $deposit->user_id)->first();
 
+        if ($deposit->status != 'Pending') {
+            return response()->json([
+                'status' => 401,
+                'error' => 'Deposit request is already ' . $deposit->status . '! Please check deposit ' . $deposit->status . ' list.'
+            ]);
+        }
+
         $deposit->update([
             'status' => $request->status,
             'rejected_reason' => $request->status === 'Rejected' ? $request->rejected_reason : null,
@@ -152,7 +159,26 @@ class DepositController extends Controller implements HasMiddleware
         if ($request->ajax()) {
             $query = Deposit::where('status', 'Rejected');
 
+            if ($request->method){
+                $query->where('deposits.method', $request->method);
+            }
+
+            if ($request->user_id){
+                $query->where('deposits.user_id', $request->user_id);
+            }
+
+            if ($request->number){
+                $query->where('deposits.number', $request->number);
+            }
+
+            if ($request->transaction_id){
+                $query->where('deposits.transaction_id', $request->transaction_id);
+            }
+
             $query->select('deposits.*')->orderBy('rejected_at', 'desc');
+
+            // Clone the query for counts
+            $totalDepositsCount = (clone $query)->count();
 
             $rejectedData = $query->get();
 
@@ -198,19 +224,19 @@ class DepositController extends Controller implements HasMiddleware
                         ';
                 })
                 ->addColumn('action', function ($row) {
-                    $deletePermission = auth()->user()->can('deposit.request.delete');
-
-                    $deleteBtn = $deletePermission
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
-                        : '';
-
-                    return $deleteBtn;
+                    $viewBtn = '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
+                    ';
+                    return $viewBtn;
                 })
+                ->with([
+                    'totalDepositsCount' => $totalDepositsCount,
+                ])
                 ->rawColumns(['user_name', 'method', 'amount', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
-        return view('backend.deposit.index');
+        return view('backend.deposit.rejected');
     }
 
     public function depositRequestApproved(Request $request)
@@ -286,10 +312,16 @@ class DepositController extends Controller implements HasMiddleware
                         <span class="badge text-dark bg-light">' . date('d M, Y  h:i:s A', strtotime($row->approved_at)) . '</span>
                         ';
                 })
+                ->addColumn('action', function ($row) {
+                    $btn = '
+                        <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
+                    ';
+                    return $btn;
+                })
                 ->with([
                     'totalDepositsCount' => $totalDepositsCount,
                 ])
-                ->rawColumns(['user_name', 'method', 'number', 'transaction_id', 'amount', 'approved_by', 'approved_at'])
+                ->rawColumns(['user_name', 'method', 'number', 'transaction_id', 'amount', 'approved_by', 'approved_at', 'action'])
                 ->make(true);
         }
 
@@ -339,12 +371,4 @@ class DepositController extends Controller implements HasMiddleware
             ]);
         }
     }
-
-    public function depositRequestDelete(string $id)
-    {
-        $deposit = Deposit::findOrFail($id);
-
-        $deposit->delete();
-    }
-
 }

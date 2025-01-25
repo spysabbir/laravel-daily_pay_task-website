@@ -166,9 +166,15 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('#pendingDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
-                        toastr.success('Task post update successfully.');
+                        if (response.status == 401) {
+                            $(".viewModal").modal('hide');
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            toastr.info(response.error);
+                        } else {
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            $(".viewModal").modal('hide');
+                            toastr.success('Task post update successfully.');
+                        }
                     }
                 },
                 complete: function() {

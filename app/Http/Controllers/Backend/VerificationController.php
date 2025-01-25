@@ -110,6 +110,14 @@ class VerificationController extends Controller implements HasMiddleware
         }
 
         $verification = Verification::findOrFail($id);
+
+        if ($verification->status != 'Pending') {
+            return response()->json([
+                'status' => 401,
+                'error' => 'Verification request is already ' . $verification->status . '! Please check verification ' . $verification->status . ' list.'
+            ]);
+        }
+
         $verification->update([
             'status' => $request->status,
             'rejected_reason' => $request->status == 'Rejected' ? $request->rejected_reason : NULL,
@@ -155,7 +163,14 @@ class VerificationController extends Controller implements HasMiddleware
         if ($request->ajax()) {
             $query = Verification::where('status', 'Rejected');
 
+            if ($request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+
             $query->select('verifications.*')->orderBy('rejected_at', 'desc');
+
+            // Clone the query for counts
+            $totalVerificationsCount = (clone $query)->count();
 
             $rejectedData = $query->get();
 
@@ -189,17 +204,24 @@ class VerificationController extends Controller implements HasMiddleware
                 ->addColumn('action', function ($row) {
                     $deletePermission = auth()->user()->can('verification.request.delete');
 
+                    $btn = '
+                    <button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>
+                    ';
+
                     $deleteBtn = $deletePermission
                         ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Delete</button>'
                         : '';
 
-                    return $deleteBtn;
+                    return $deleteBtn . $btn;
                 })
+                ->with([
+                    'totalVerificationsCount' => $totalVerificationsCount,
+                ])
                 ->rawColumns(['user_name', 'user_email', 'created_at', 'rejected_by', 'rejected_at', 'action'])
                 ->make(true);
         }
 
-        return view('backend.verification.index');
+        return view('backend.verification.rejected');
     }
 
     public function verificationRequestApproved(Request $request)
@@ -211,14 +233,14 @@ class VerificationController extends Controller implements HasMiddleware
                 $query->where('user_id', $request->user_id);
             }
 
-            $query->select('verifications.*')->orderBy('created_at', 'desc');
+            $query->select('verifications.*')->orderBy('approved_at', 'desc');
 
             // Clone the query for counts
             $totalVerificationsCount = (clone $query)->count();
 
-            $approvedRequest = $query->get();
+            $approvedData = $query->get();
 
-            return DataTables::of($approvedRequest)
+            return DataTables::of($approvedData)
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '

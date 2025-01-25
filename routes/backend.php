@@ -159,7 +159,6 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::put('deposit-request-status-change/{id}', [DepositController::class, 'depositRequestStatusChange'])->name('deposit.request.status.change');
     Route::get('deposit-request-rejected', [DepositController::class, 'depositRequestRejected'])->name('deposit.request.rejected');
     Route::get('deposit-request-approved', [DepositController::class, 'depositRequestApproved'])->name('deposit.request.approved');
-    Route::delete('deposit-request-delete/{id}', [DepositController::class, 'depositRequestDelete'])->name('deposit.request.delete');
     // Withdraw
     Route::get('withdraw-request', [WithdrawController::class, 'withdrawRequest'])->name('withdraw.request');
     Route::post('withdraw-request-send', [WithdrawController::class, 'withdrawRequestSend'])->name('withdraw.request.send');
@@ -167,7 +166,6 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::put('withdraw-request-status-change/{id}', [WithdrawController::class, 'withdrawRequestStatusChange'])->name('withdraw.request.status.change');
     Route::get('withdraw-request-rejected', [WithdrawController::class, 'withdrawRequestRejected'])->name('withdraw.request.rejected');
     Route::get('withdraw-request-approved', [WithdrawController::class, 'withdrawRequestApproved'])->name('withdraw.request.approved');
-    Route::delete('withdraw-request-delete/{id}', [WithdrawController::class, 'withdrawRequestDelete'])->name('withdraw.request.delete');
     // Balance Transfer
     Route::get('balance-transfer', [BalanceTransferController::class, 'balanceTransfer'])->name('balance.transfer');
     // Posted Task

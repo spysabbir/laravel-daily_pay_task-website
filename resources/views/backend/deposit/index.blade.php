@@ -10,50 +10,6 @@
                 <h3 class="card-title">Deposit Request (Pending)</h3>
                 <h3>Total: <span id="total_deposits_count">0</span></h3>
                 <div class="action-btn">
-                    @can('deposit.request.rejected')
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".rejectedData">
-                        Rejected Data
-                    </button>
-                    @endcan
-                    <!-- Deposit Request (Reject) Modal -->
-                    <div class="modal fade rejectedData" tabindex="-1" aria-labelledby="rejectedDataLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="rejectedDataLabel">Deposit Reject</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="table-responsive">
-                                        <table id="rejectedDataTable" class="table w-100">
-                                            <thead>
-                                                <tr>
-                                                    <th>Sl No</th>
-                                                    <th>User Id</th>
-                                                    <th>User Name</th>
-                                                    <th>Method</th>
-                                                    <th>Number</th>
-                                                    <th>Transaction Id</th>
-                                                    <th>Amount</th>
-                                                    <th>Submitted Date</th>
-                                                    <th>Rejected Reason</th>
-                                                    <th>Rejected By</th>
-                                                    <th>Rejected At</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     @can('deposit.request.send')
                     <!-- Normal Deposit Modal -->
                     <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Deposit <i data-feather="plus-circle"></i></button>
@@ -293,6 +249,8 @@
                 type: "GET",
                 success: function (response) {
                     $('#modalBody').html(response);
+
+                    $('.viewModal').modal('show');
                 },
             });
         });
@@ -322,12 +280,15 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $("#editForm")[0].reset();
-                        $(".rejectedData").modal('hide');
-                        $('#pendingDataTable').DataTable().ajax.reload();
-                        $('#rejectedDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
-                        toastr.success('Deposit status change successfully.');
+                        if (response.status == 401) {
+                            $(".viewModal").modal('hide');
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            toastr.info(response.error);
+                        } else {
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            $(".viewModal").modal('hide');
+                            toastr.success('Deposit status change successfully.');
+                        }
                     }
                 },
                 complete: function() {
@@ -335,61 +296,7 @@
                     submitButton.prop("disabled", false).text("Submit");
                 }
             });
-        })
-
-        // Rejected Data
-        @can('deposit.request.rejected')
-        $('#rejectedDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            searching: true,
-            ajax: {
-                url: "{{ route('backend.deposit.request.rejected') }}",
-            },
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'user_id', name: 'user_id' },
-                { data: 'user_name', name: 'user_name' },
-                { data: 'method', name: 'method' },
-                { data: 'number', name: 'number' },
-                { data: 'transaction_id', name: 'transaction_id' },
-                { data: 'amount', name: 'amount' },
-                { data: 'created_at', name: 'created_at' },
-                { data: 'rejected_reason', name: 'rejected_reason' },
-                { data: 'rejected_by', name: 'rejected_by' },
-                { data: 'rejected_at', name: 'rejected_at' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
         });
-        @endcan
-
-        // Delete Data
-        $(document).on('click', '.deleteBtn', function(){
-            var id = $(this).data('id');
-            var url = "{{ route('backend.deposit.request.delete', ":id") }}";
-            url = url.replace(':id', id)
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        method: 'DELETE',
-                        success: function(response) {
-                            $(".rejectedData").modal('hide');
-                            $('#rejectedDataTable').DataTable().ajax.reload();
-                            toastr.success('Deposit request delete successfully.');
-                        }
-                    });
-                }
-            })
-        })
     });
 </script>
 @endsection

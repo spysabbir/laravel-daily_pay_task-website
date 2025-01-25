@@ -255,10 +255,15 @@
                         if (response.status == 401) {
                             toastr.error(response.error);
                         } else {
-                            $('#statusForm')[0].reset();
-                            $(".statusModal").modal('hide');
-                            $('#allDataTable').DataTable().ajax.reload();
-                            toastr.success('User status update successfully.');
+                            if (response.status == 402) {
+                                $('#allDataTable').DataTable().ajax.reload();
+                                toastr.info(response.error);
+                            } else {
+                                $('#statusForm')[0].reset();
+                                $(".statusModal").modal('hide');
+                                $('#allDataTable').DataTable().ajax.reload();
+                                toastr.success('User status update successfully.');
+                            }
                         }
                     }
                 },

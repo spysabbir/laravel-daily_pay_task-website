@@ -120,34 +120,6 @@
                 },
             });
         });
-
-        // Delete Data
-        $(document).on('click', '.deleteBtn', function(){
-            var id = $(this).data('id');
-            var url = "{{ route('backend.verification.request.delete', ":id") }}";
-            url = url.replace(':id', id)
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        method: 'DELETE',
-                        success: function(response) {
-                            $(".rejectedData").modal('hide');
-                            $('#rejectedDataTable').DataTable().ajax.reload();
-                            toastr.success('Verification request delete successfully.');
-                        }
-                    });
-                }
-            })
-        })
     });
 </script>
 @endsection

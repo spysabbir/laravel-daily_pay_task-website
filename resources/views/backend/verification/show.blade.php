@@ -88,6 +88,12 @@
                 <h4 class="alert-heading">Approved!</h4>
                 <p>This verification request has been approved by <strong>{{ $verification->approvedBy->name }}</strong> at <strong>{{ date('d M, Y  h:i:s A', strtotime($verification->approved_at)) }}</strong></p>
             </div>
+        @elseif ($verification->status == 'Rejected')
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Rejected!</h4>
+                <p>This verification request has been rejected by <strong>{{ $verification->rejectedBy->name }}</strong> at <strong>{{ date('d M, Y  h:i:s A', strtotime($verification->rejected_at)) }}</strong></p>
+                <p><strong>Rejected Reason:</strong> {{ $verification->rejected_reason }}</p>
+            </div>
         @else
         <div class="mb-3">
             @if ($verification->rejected_by)

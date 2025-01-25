@@ -172,10 +172,16 @@
                         if (response.status == 401) {
                             toastr.error('User has reached the maximum limit of blocked status. Now you can change the status to Active.')
                         } else {
-                            $('#statusForm')[0].reset();
-                            $(".statusModal").modal('hide');
-                            $('#allDataTable').DataTable().ajax.reload();
-                            toastr.success('User status update successfully.');
+                            if (response.status == 402) {
+                                $(".statusModal").modal('hide');
+                                $('#allDataTable').DataTable().ajax.reload();
+                                toastr.info(response.error);
+                            } else {
+                                $('#statusForm')[0].reset();
+                                $(".statusModal").modal('hide');
+                                $('#allDataTable').DataTable().ajax.reload();
+                                toastr.success('User status update successfully.');
+                            }
                         }
                     }
                 },

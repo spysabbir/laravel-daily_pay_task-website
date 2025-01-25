@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Withdraw Request (Approved)')
+@section('title', 'Withdraw Request (Rejected)')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Withdraw Request (Approved)</h3>
+                <h3 class="card-title">Withdraw Request (Rejected)</h3>
                 <h3>Total: <span id="total_withdraws_count">0</span></h3>
             </div>
             <div class="card-body">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table id="approvedDataTable" class="table">
+                    <table id="rejectedDataTable" class="table">
                         <thead>
                             <tr>
                                 <th>Sl No</th>
@@ -61,8 +61,8 @@
                                 <th>Withdraw Amount</th>
                                 <th>Payable Amount</th>
                                 <th>Submitted Date</th>
-                                <th>Approved By</th>
-                                <th>Approved At</th>
+                                <th>Rejected By</th>
+                                <th>Rejected At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -103,13 +103,13 @@
             }
         });
 
-        // Approved Data
-        $('#approvedDataTable').DataTable({
+        // Rejected Data
+        $('#rejectedDataTable').DataTable({
             processing: true,
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('backend.withdraw.request.approved') }}",
+                url: "{{ route('backend.withdraw.request.rejected') }}",
                 data: function (e) {
                     e.method = $('#filter_method').val();
                     e.type = $('#filter_type').val();
@@ -132,19 +132,19 @@
                 { data: 'amount', name: 'amount' },
                 { data: 'payable_amount', name: 'payable_amount' },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'approved_by', name: 'approved_by' },
-                { data: 'approved_at', name: 'approved_at' },
+                { data: 'rejected_by', name: 'rejected_by' },
+                { data: 'rejected_at', name: 'rejected_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
 
         // Filter Data
         $('.filter_data').change(function(){
-            $('#approvedDataTable').DataTable().ajax.reload();
+            $('#rejectedDataTable').DataTable().ajax.reload();
         });
         // Filter Data
         $('.filter_data').keyup(function(){
-            $('#approvedDataTable').DataTable().ajax.reload();
+            $('#rejectedDataTable').DataTable().ajax.reload();
         });
 
         // View Data

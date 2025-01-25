@@ -9,48 +9,6 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Verification Request (Pending)</h3>
                 <h3>Total: <span id="total_verifications_count">0</span></h3>
-                <div class="action-btn">
-                    @can('verification.request.rejected')
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".rejectedData">
-                        Rejected List
-                    </button>
-                    @endcan
-                    <!-- Verification Request (Reject) Modal -->
-                    <div class="modal fade rejectedData" tabindex="-1" aria-labelledby="rejectedDataLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="rejectedDataLabel">Verification Reject</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="table-responsive">
-                                        <table id="rejectedDataTable" class="table w-100">
-                                            <thead>
-                                                <tr>
-                                                    <th>Sl No</th>
-                                                    <th>User Id</th>
-                                                    <th>User Name</th>
-                                                    <th>Submited At</th>
-                                                    <th>Rejected Reason</th>
-                                                    <th>Rejected By</th>
-                                                    <th>Rejected At</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -179,66 +137,21 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('#pendingDataTable').DataTable().ajax.reload();
-                        $('#rejectedDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
-                        toastr.success('Verification status change successfully.');
+                        if (response.status == 401) {
+                            $(".viewModal").modal('hide');
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            toastr.info(response.error);
+                        } else {
+                            $('#pendingDataTable').DataTable().ajax.reload();
+                            $(".viewModal").modal('hide');
+                            toastr.success('Verification status change successfully.');
+                        }
                     }
                 },
                 complete: function() {
                     submitButton.prop("disabled", false).text("Submit");
                 }
             });
-        })
-
-        // Rejected Data
-        @can('verification.request.rejected')
-        $('#rejectedDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            searching: true,
-            ajax: {
-                url: "{{ route('backend.verification.request.rejected') }}",
-            },
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'user_id', name: 'user_id' },
-                { data: 'user_name', name: 'user_name' },
-                { data: 'created_at', name: 'created_at' },
-                { data: 'rejected_reason', name: 'rejected_reason' },
-                { data: 'rejected_by', name: 'rejected_by' },
-                { data: 'rejected_at', name: 'rejected_at' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
-        });
-        @endcan
-
-        // Delete Data
-        $(document).on('click', '.deleteBtn', function(){
-            var id = $(this).data('id');
-            var url = "{{ route('backend.verification.request.delete', ":id") }}";
-            url = url.replace(':id', id)
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        method: 'DELETE',
-                        success: function(response) {
-                            $(".rejectedData").modal('hide');
-                            $('#rejectedDataTable').DataTable().ajax.reload();
-                            toastr.success('Verification request delete successfully.');
-                        }
-                    });
-                }
-            })
         })
     });
 </script>

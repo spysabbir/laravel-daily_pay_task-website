@@ -722,6 +722,13 @@ class UserController extends Controller implements HasMiddleware
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         }
 
+        if ($request->status == User::where('id', $id)->first()->status) {
+            return response()->json([
+                'status' => 402,
+                'error' => 'User status is already ' . $request->status . '. Please check user ' . $request->status . ' list.'
+            ]);
+        }
+
         $depositRequests = Deposit::where('user_id', $id)->where('status', 'Pending')->count();
         $withdrawRequests = Withdraw::where('user_id', $id)->where('status', 'Pending')->count();
         $postedTasksRequests = PostTask::where('user_id', $id)->where('status', 'Pending')->count();

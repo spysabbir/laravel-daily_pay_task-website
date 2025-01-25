@@ -108,9 +108,15 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     } else {
-                        toastr.success('Proof Task has been updated successfully.');
-                        $('#allDataTable').DataTable().ajax.reload();
-                        $(".reviewedModal").modal('hide');
+                        if (response.status == 401) {
+                            $(".reviewedModal").modal('hide');
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.info(response.error);
+                        } else {
+                            toastr.success('Proof Task has been updated successfully.');
+                            $('#allDataTable').DataTable().ajax.reload();
+                            $(".reviewedModal").modal('hide');
+                        }
                     }
                 },
                 complete: function() {

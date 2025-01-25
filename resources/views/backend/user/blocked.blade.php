@@ -211,10 +211,16 @@
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('#statusForm')[0].reset();
-                        $(".statusModal").modal('hide');
-                        $('#allDataTable').DataTable().ajax.reload();
-                        toastr.success('User status update successfully.');
+                        if (response.status == 402) {
+                            $(".statusModal").modal('hide');
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.info(response.error);
+                        } else {
+                            $('#statusForm')[0].reset();
+                            $(".statusModal").modal('hide');
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.success('User status update successfully.');
+                        }
                     }
                 },
                 complete: function() {

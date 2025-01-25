@@ -134,6 +134,57 @@
             });
         });
 
+        // Canceled Task
+        $(document).on('click', '.canceledBtn', function(){
+            var id = $(this).data('id');
+            var url = "{{ route('backend.running.posted_task_canceled', ":id") }}";
+            url = url.replace(':id', id);
+
+            Swal.fire({
+                input: "textarea",
+                inputLabel: "Cancellation Reason",
+                inputPlaceholder: "Type cancellation reason here...",
+                inputAttributes: {
+                    "aria-label": "Type cancellation reason here..."
+                },
+                title: 'Are you sure?',
+                text: "You want to cancel this task!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Cancel it!',
+                preConfirm: () => {
+                    const message = Swal.getInput().value;
+                    if (!message) {
+                        Swal.showValidationMessage('Cancellation Reason is required');
+                    }
+                    return message;
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: { id: id, message: result.value },
+                        success: function(response) {
+                            if (response.status == 401) {
+                                toastr.error(response.error);
+                            } else {
+                                if (response.status == 402) {
+                                    $('#runningDataTable').DataTable().ajax.reload();
+                                    toastr.info(response.error);
+                                } else {
+                                    $('#runningDataTable').DataTable().ajax.reload();
+                                    toastr.error('Task Canceled Successfully');
+                                }
+                            }
+                        },
+                    });
+                }
+            });
+        });
+        
         // Resume Data
         $(document).on('click', '.resumeBtn', function(){
             var id = $(this).data('id');
@@ -153,8 +204,13 @@
                         url: url,
                         method: 'GET',
                         success: function(response) {
-                            $('#pausedDataTable').DataTable().ajax.reload();
-                            toastr.success('Task Resumed Successfully');
+                            if (response.status == 401) {
+                                $('#pausedDataTable').DataTable().ajax.reload();
+                                toastr.info(response.error);
+                            } else {
+                                $('#pausedDataTable').DataTable().ajax.reload();
+                                toastr.success('Task Resumed Successfully');
+                            }
                         }
                     });
                 }

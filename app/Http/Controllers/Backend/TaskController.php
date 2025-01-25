@@ -424,6 +424,7 @@ class TaskController extends Controller implements HasMiddleware
                 })
                 ->editColumn('action', function ($row) {
                     $canResume = auth()->user()->can('posted_task.paused.resume');
+                    $canCanceled = auth()->user()->can('posted_task.canceled');
 
                     $pausedBtn = '';
                     $viewBtn = '';
@@ -432,9 +433,13 @@ class TaskController extends Controller implements HasMiddleware
                         $pausedBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-warning btn-xs resumeBtn">Resume</button>';
                     }
 
+                    $canceledBtn = $canCanceled
+                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs canceledBtn">Canceled</button>'
+                        : '';
+
                     $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-primary btn-xs viewBtn">View</button>';
 
-                    return $viewBtn . ' ' . $pausedBtn;
+                    return $viewBtn . ' ' . $pausedBtn . ' ' . $canceledBtn;
                 })
                 ->with([
                     'totalPostedTasksCount' => $totalPostedTasksCount,
@@ -540,6 +545,13 @@ class TaskController extends Controller implements HasMiddleware
         // Retrieve the PostTask model
         $postTask = PostTask::findOrFail($id);
 
+        if ($postTask->status != 'Pending') {
+            return response()->json([
+                'status' => 401,
+                'error' => 'Posted task request is already ' . $postTask->status . '! Please check posted task ' . $postTask->status . ' list.'
+            ]);
+        }
+
         // Store the previous status
         $previousStatus = $postTask->status;
 
@@ -603,8 +615,14 @@ class TaskController extends Controller implements HasMiddleware
         } else {
             $postTask = PostTask::findOrFail($id);
             $user = User::findOrFail($postTask->user_id);
-
             $proofTasks = ProofTask::where('post_task_id', $postTask->id)->count();
+
+            if ($postTask->status != 'Running' || $postTask->status != 'Paused') {
+                return response()->json([
+                    'status' => 402,
+                    'error' => 'Posted task is already ' . $postTask->status . '! Please check posted task ' . $postTask->status . ' list.'
+                ]);
+            }
 
             if ($proofTasks === 0) {
                 $user->deposit_balance = $user->deposit_balance + $postTask->total_cost;
@@ -644,6 +662,13 @@ class TaskController extends Controller implements HasMiddleware
         } else {
             $postTask = PostTask::findOrFail($id);
 
+            if ($postTask->status != 'Running') {
+                return response()->json([
+                    'status' => 402,
+                    'error' => 'Posted task is already ' . $postTask->status . '! Please check posted task ' . $postTask->status . ' list.'
+                ]);
+            }
+
             $postTask->status = 'Paused';
             $postTask->pausing_reason = $request->message;
             $postTask->paused_by = auth()->user()->id;
@@ -663,6 +688,14 @@ class TaskController extends Controller implements HasMiddleware
     public function runningPostedTaskPausedResume($id)
     {
         $postTask = PostTask::findOrFail($id);
+
+        if ($postTask->status != 'Paused') {
+            return response()->json([
+                'status' => 401,
+                'error' => 'Posted task is already ' . $postTask->status . '! Please check posted task ' . $postTask->status . ' list.'
+            ]);
+        }
+
         $postTask->status = 'Running';
         $postTask->save();
 
@@ -1148,6 +1181,13 @@ class TaskController extends Controller implements HasMiddleware
 
             $postTaskUser = User::findOrFail($postTask->user_id);
             $proofTaskUser = User::findOrFail($proofTask->user_id);
+
+            if ($proofTask->status != 'Reviewed') {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'Worked task reviewed request is already ' . $proofTask->status . '! Please check worked task approved & rejected list.'
+                ]);
+            }
 
             if ($request->status == 'Rejected') {
                 $postTaskUser->update([

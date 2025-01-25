@@ -208,9 +208,15 @@
                             $('span.'+prefix+'_error').text(val[0]);
                         })
                     }else{
-                        $('#allDataTable').DataTable().ajax.reload();
-                        $(".viewModal").modal('hide');
-                        toastr.success('Reply Submitted Successfully');
+                        if (response.status == 401) {
+                            $(".viewModal").modal('hide');
+                            $('#allDataTable').DataTable().ajax.reload();
+                            toastr.info(response.error);
+                        } else {
+                            $('#allDataTable').DataTable().ajax.reload();
+                            $(".viewModal").modal('hide');
+                            toastr.success('Reply Submitted Successfully');
+                        }
                     }
                 },
                 complete: function () {

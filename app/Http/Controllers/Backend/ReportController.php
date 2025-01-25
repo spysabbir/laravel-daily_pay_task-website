@@ -141,6 +141,14 @@ class ReportController extends Controller implements HasMiddleware
             ]);
         } else {
             $report = Report::findOrFail($request->report_id);
+
+            if ($report->status != 'Pending') {
+                return response()->json([
+                    'status' => 401,
+                    'error' => 'Report request is already ' . $report->status . '! Please check report ' . $report->status . ' list.'
+                ]);
+            }
+
             $report->update([
                 'status' => $request->status,
             ]);
