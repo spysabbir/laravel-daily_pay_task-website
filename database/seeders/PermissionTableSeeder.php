@@ -176,7 +176,12 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'withdraw.request.approved', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             // BalanceTransferManagement
             ['name' => 'BalanceTransferMenu', 'group_name' => 'BalanceTransferManagement', 'guard_name' => 'web'],
-            ['name' => 'balance.transfer', 'group_name' => 'BalanceTransferManagement', 'guard_name' => 'web'],
+            ['name' => 'balance.transfer.history', 'group_name' => 'BalanceTransferManagement', 'guard_name' => 'web'],
+            ['name' => 'balance.transfer.store', 'group_name' => 'BalanceTransferManagement', 'guard_name' => 'web'],
+            // Bonus
+            ['name' => 'BonusMenu', 'group_name' => 'BonusManagement', 'guard_name' => 'web'],
+            ['name' => 'bonus.history', 'group_name' => 'BonusManagement', 'guard_name' => 'web'],
+            ['name' => 'bonus.store', 'group_name' => 'BonusManagement', 'guard_name' => 'web'],
             // PostedTaskManagement
             ['name' => 'PostedTaskMenu', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'posted_task_list.pending', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],

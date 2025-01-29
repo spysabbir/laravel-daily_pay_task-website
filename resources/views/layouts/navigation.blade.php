@@ -575,11 +575,22 @@
         @endcan
 
         @can('BalanceTransferMenu')
-            @can('balance.transfer')
+            @can('balance.transfer.history')
             <li class="nav-item">
-                <a href="{{ route('backend.balance.transfer') }}" class="nav-link">
+                <a href="{{ route('backend.balance.transfer.history') }}" class="nav-link">
                     <i class="link-icon" data-feather="refresh-cw"></i>
                     <span class="link-title">Balance Transfer</span>
+                </a>
+            </li>
+            @endcan
+        @endcan
+
+        @can('BonusMenu')
+            @can('bonus.history')
+            <li class="nav-item">
+                <a href="{{ route('backend.bonus.history') }}" class="nav-link">
+                    <i class="link-icon" data-feather="gift"></i>
+                    <span class="link-title">Bonus</span>
                 </a>
             </li>
             @endcan
@@ -700,20 +711,6 @@
             <a href="{{ route('report') }}" class="nav-link">
                 <i class="link-icon" data-feather="file-text"></i>
                 <span class="link-title">Report</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{{ route('blocked.user.list') }}" class="nav-link">
-                <i class="link-icon" data-feather="shield"></i>
-                <span class="link-title">Blocked User List</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{{ route('favorite.user.list') }}" class="nav-link">
-                <i class="link-icon" data-feather="heart"></i>
-                <span class="link-title">Favorite User List</span>
             </a>
         </li>
 

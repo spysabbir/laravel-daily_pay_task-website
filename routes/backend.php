@@ -28,7 +28,7 @@ use App\Http\Controllers\Backend\TopListController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\VerificationController;
 use App\Http\Controllers\Backend\WithdrawController;
-use App\Http\Controllers\Backend\EmailController;
+use App\Http\Controllers\Backend\BonusController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend'])->group(function() {
@@ -167,7 +167,11 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('withdraw-request-rejected', [WithdrawController::class, 'withdrawRequestRejected'])->name('withdraw.request.rejected');
     Route::get('withdraw-request-approved', [WithdrawController::class, 'withdrawRequestApproved'])->name('withdraw.request.approved');
     // Balance Transfer
-    Route::get('balance-transfer', [BalanceTransferController::class, 'balanceTransfer'])->name('balance.transfer');
+    Route::get('balance-transfer-history', [BalanceTransferController::class, 'balanceTransferHistory'])->name('balance.transfer.history');
+    Route::post('balance-transfer-store', [BalanceTransferController::class, 'balanceTransferStore'])->name('balance.transfer.store');
+    // Bonus
+    Route::get('bonus-history', [BonusController::class, 'bonusHistory'])->name('bonus.history');
+    Route::post('bonus-store', [BonusController::class, 'bonusStore'])->name('bonus.store');
     // Posted Task
     Route::get('posted_task_list-pending', [TaskController::class, 'postedTaskListPending'])->name('posted_task_list.pending');
     Route::get('pending-posted_task_view/{id}', [TaskController::class, 'pendingPostedTaskView'])->name('pending.posted_task_view');

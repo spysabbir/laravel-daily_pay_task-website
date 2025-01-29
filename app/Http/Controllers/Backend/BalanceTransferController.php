@@ -15,10 +15,10 @@ class BalanceTransferController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('balance.transfer') , only:['balanceTransfer']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('balance.transfer.history') , only:['balanceTransferHistory']),
         ];
     }
-    public function balanceTransfer(Request $request)
+    public function balanceTransferHistory(Request $request)
     {
         if ($request->ajax()) {
             $query = BalanceTransfer::select('balance_transfers.*');
@@ -40,9 +40,9 @@ class BalanceTransferController extends Controller implements HasMiddleware
             // sum of total balance transfers
             $totalBalanceTransferAmount = (clone $query)->sum('amount');
 
-            $approvedData = $query->get();
+            $balanceTransferData = $query->get();
 
-            return DataTables::of($approvedData)
+            return DataTables::of($balanceTransferData)
                 ->addIndexColumn()
                 ->editColumn('user_name', function ($row) {
                     return '

@@ -441,6 +441,20 @@
                                             <span>Profile Setting</span>
                                         </a>
                                     </li>
+                                    @if (Auth::user()->user_type === 'Frontend')
+                                    <li class="dropdown-item p-0">
+                                        <a href="{{ route('favorite.user.list') }}" class="text-body ms-0 d-block p-2">
+                                            <i class="me-2 icon-md" data-feather="heart"></i>
+                                            <span>Favorite User List</span>
+                                        </a>
+                                    </li>
+                                    <li class="dropdown-item p-0">
+                                        <a href="{{ route('blocked.user.list') }}" class="text-body ms-0 d-block p-2">
+                                            <i class="me-2 icon-md" data-feather="shield"></i>
+                                            <span>Blocked User List</span>
+                                        </a>
+                                    </li>
+                                    @endif
                                     @if (Auth::user()->user_type === 'Backend')
                                     <li class="dropdown-item p-0">
                                         <a href="{{ route('backend.notification') }}" class="text-body ms-0 d-block p-2">
