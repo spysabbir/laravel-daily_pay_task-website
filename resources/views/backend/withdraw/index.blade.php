@@ -10,7 +10,7 @@
                 <h3 class="card-title">Withdraw Request (Pending)</h3>
                 <h3>Total: <span id="total_withdraws_count">0</span></h3>
                 <div class="action-btn">
-                    @can('withdraw.request.send')
+                    @can('withdraw.request.store')
                     <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Withdraw <i data-feather="plus-circle"></i></button>
                     @endcan
                     <!-- Normal Withdraw Modal -->
@@ -35,19 +35,6 @@
                                             <span class="text-danger error-text user_id_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="type" class="form-label">Withdraw Type <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="type" name="type" required>
-                                                <option value="">-- Select Withdraw Type --</option>
-                                                <option value="Ragular">Ragular</option>
-                                                <option value="Instant">Instant</option>
-                                            </select>
-                                            <small class="text-info d-block">
-                                                <strong id="ragular">Note: Withdraw request will be processed within 24 hours.</strong>
-                                                <strong id="instant">Note: Withdraw request will be processed in 30 minutes. But you will be charged an extra {{ get_site_settings('site_currency_symbol') }} {{ get_default_settings('instant_withdraw_charge') }}.</strong>
-                                            </small>
-                                            <span class="text-danger error-text type_error"></span>
-                                        </div>
-                                        <div class="mb-3">
                                             <label for="method" class="form-label">Withdraw Method <span class="text-danger">*</span></label>
                                             <select class="form-select" id="method" name="method" required>
                                                 <option value="">-- Select Withdraw Method --</option>
@@ -69,15 +56,17 @@
                                                 <input type="number" class="form-control" id="amount" name="amount" min="25" placeholder="Withdraw Amount" required>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
-                                            <small class="text-info d-block">Note: Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} 25.</small>
+                                            <small class="text-info d-block">Note: Minimum withdraw amount is {{ get_site_settings('site_currency_symbol') }} 25<span id="max_withdraw_amount"></span>.</small>
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Withdraw Charge Percentage</label>
+                                            <label class="form-label" for="charge_percentage">Withdraw Charge Percentage <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control" value="{{ get_default_settings('withdraw_charge_percentage') }}" disabled>
+                                                <input type="number" class="form-control" id="charge_percentage" name="charge_percentage" min="0" value="{{ get_default_settings('withdraw_charge_percentage') }}" placeholder="Withdraw Charge Percentage" required>
                                                 <span class="input-group-text input-group-addon">%</span>
                                             </div>
+                                            <small class="text-info d-block">Note: Default withdraw charge percentage is {{ get_default_settings('withdraw_charge_percentage') }}%.</small>
+                                            <span class="text-danger error-text charge_percentage_error"></span>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Payable Withdraw Amount</label>
@@ -230,50 +219,39 @@
             $('#pendingDataTable').DataTable().ajax.reload();
         });
 
-        $('#ragular').hide();
-        $('#instant').hide();
-        $('#type').change(function(){
-            if ($('#type').val() == 'Ragular') {
-                $('#ragular').show();
-                $('#instant').hide();
-                var amount = $('#amount').val();
-                var charge = {{ get_default_settings('withdraw_charge_percentage') }};
-                var payable_amount = amount - (amount * charge / 100);
-                $('#payable_withdraw_amount').val(payable_amount);
-            }else if ($('#type').val() == 'Instant') {
-                $('#ragular').hide();
-                $('#instant').show();
-                var amount = $('#amount').val();
-                var charge = {{ get_default_settings('withdraw_charge_percentage') }};
-                var instant_withdraw_charge = {{ get_default_settings('instant_withdraw_charge') }};
-                var payable_amount = amount - (amount * charge / 100);
-                if(amount == ''){
-                    $('#payable_withdraw_amount').val(payable_amount);
-                }else{
-                    $('#payable_withdraw_amount').val(payable_amount - instant_withdraw_charge);
-                }
-            }else{
-                $('#ragular').hide();
-                $('#instant').hide();
-            }
-        });
-
-        // Calculate Payable Amount
-        $('#amount, #type').on('keyup change', function(){
-            var amount = $('#amount').val();
-            var instant_withdraw_charge = {{ get_default_settings('instant_withdraw_charge') }};
-            var charge = {{ get_default_settings('withdraw_charge_percentage') }};
+        function calculatePayableAmount() {
+            var amount = parseFloat($('#amount').val()) || 0;
+            var charge = parseFloat($('#charge_percentage').val()) || 0;
             var payable_amount = amount - (amount * charge / 100);
 
-            if ($('#type').val() == 'Instant') {
-                if(amount == ''){
-                    $('#payable_withdraw_amount').val(payable_amount);
-                } else {
-                    $('#payable_withdraw_amount').val(payable_amount - instant_withdraw_charge);
-                }
-            } else {
-                $('#payable_withdraw_amount').val(payable_amount);
+            if (payable_amount < 0) {
+                payable_amount = 0;
             }
+            $('#payable_withdraw_amount').val(payable_amount.toFixed(2));
+        }
+
+        // Calculate Payable Amount on input change
+        $('#amount, #charge_percentage').on('input change', function () {
+            calculatePayableAmount();
+        });
+
+        // Get user-wise withdraw balance
+        $('#user_id').change(function () {
+            var user_id = $(this).val();
+            var url = "{{ route('backend.withdraw.request.store.user.withdraw.balance', ':id') }}";
+            url = url.replace(':id', user_id);
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (response) {
+                    $('#amount').val(response.withdraw_balance);
+                    $('#amount').attr('max', response.withdraw_balance);
+                    $('#max_withdraw_amount').text(' and maximum withdraw amount is ' + '{{ get_site_settings('site_currency_symbol') }} ' + response.withdraw_balance);
+
+                    calculatePayableAmount();
+                }
+            });
         });
 
         // Store Data
@@ -285,7 +263,7 @@
             submitButton.prop("disabled", true).text("Submitting...");
 
             $.ajax({
-                url: "{{ route('backend.withdraw.request.send') }}",
+                url: "{{ route('backend.withdraw.request.store') }}",
                 type: 'POST',
                 data: formData,
                 dataType: 'json',

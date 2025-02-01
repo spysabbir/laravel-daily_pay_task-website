@@ -11,13 +11,10 @@ use Carbon\Carbon;
 class BonusNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    protected $referrerBonus;
     protected $userBonus;
 
-    public function __construct($referrerBonus = null, $userBonus = null)
+    public function __construct($userBonus)
     {
-        $this->referrerBonus = $referrerBonus;
         $this->userBonus = $userBonus;
     }
 
@@ -28,7 +25,7 @@ class BonusNotification extends Notification implements ShouldQueue
 
     public function toDatabase($notifiable)
     {
-        $bonus = $this->referrerBonus ?? $this->userBonus;
+        $bonus = $this->userBonus;
 
         $currencySymbol = get_site_settings('site_currency_symbol');
 
@@ -40,7 +37,7 @@ class BonusNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable)
     {
-        $bonus = $this->referrerBonus ?? $this->userBonus;
+        $bonus = $this->userBonus;
 
         $currencySymbol = get_site_settings('site_currency_symbol');
 

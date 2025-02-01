@@ -1434,7 +1434,7 @@ class PostedTaskController extends Controller
                     }
                     $authUser->save();
 
-                    Bonus::create([
+                    $userBonus = Bonus::create([
                         'user_id' => $proofTask->user_id,
                         'bonus_by' => $authUser->id,
                         'type' => 'Proof Task Approved Bonus',
@@ -1442,8 +1442,7 @@ class PostedTaskController extends Controller
                         'amount' => $request->bonus,
                     ]);
 
-                    $bonus = Bonus::latest()->first();
-                    $user->notify(new BonusNotification($bonus));
+                    $user->notify(new BonusNotification($userBonus));
                 }
 
                 $user->withdraw_balance += $totalIncome;

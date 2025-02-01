@@ -701,7 +701,7 @@
                         <a href="{{ route('bonus') }}" class="nav-link">Bonus</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('transfer') }}" class="nav-link">Transfer</a>
+                        <a href="{{ route('balance.transfer') }}" class="nav-link">Balance Transfer</a>
                     </li>
                 </ul>
             </div>

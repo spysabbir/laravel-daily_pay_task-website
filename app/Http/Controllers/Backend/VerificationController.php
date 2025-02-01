@@ -140,14 +140,14 @@ class VerificationController extends Controller implements HasMiddleware
                 $referrer = User::where('id', $user->referred_by)->first();
                 $referrer->increment('withdraw_balance', $referralBonus);
 
-                $referrerBonus = Bonus::create([
+                $userBonus = Bonus::create([
                     'user_id' => $referrer->id,
                     'bonus_by' => $user->id,
                     'type' => 'Referral Registration Bonus',
                     'amount' => $referralBonus,
                 ]);
 
-                $referrer->notify(new BonusNotification($referrerBonus));
+                $referrer->notify(new BonusNotification($userBonus));
             }
         }
 

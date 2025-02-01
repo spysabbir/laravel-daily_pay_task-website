@@ -802,7 +802,7 @@ class UserController extends Controller
 
     // Transfer.............................................................................................................
 
-    public function transfer(Request $request)
+    public function balanceTransfer(Request $request)
     {
         if ($request->ajax()) {
             $query = BalanceTransfer::where('user_id', Auth::id());
@@ -856,10 +856,10 @@ class UserController extends Controller
                 ->make(true);
         }
 
-        return view('frontend.transfer.index');
+        return view('frontend.balance_transfer.index');
     }
 
-    public function transferStore(Request $request)
+    public function balanceTransferStore(Request $request)
     {
         $currencySymbol = get_site_settings('site_currency_symbol');
         $depositChargePercentage = get_default_settings('deposit_balance_transfer_charge_percentage');
@@ -942,6 +942,9 @@ class UserController extends Controller
 
                 $query->select('bonuses.*')->orderBy('created_at', 'desc');
 
+                // sum of total bonuses
+                $totalBonusAmount = (clone $query)->sum('amount');
+
                 $bonuses = $query->get();
 
                 return DataTables::of($bonuses)
@@ -956,21 +959,26 @@ class UserController extends Controller
                         if ($row->type == 'Proof Task Approved Bonus') {
                             $bonus_by = '<span class="badge bg-success">Buyer</span>';
                         } else {
-                            $bonus_by = '<span class="badge bg-primary">Admin</span>';
+                            $bonus_by = '<span class="badge bg-primary">Site</span>';
                         }
                         return $bonus_by;
                     })
-                    ->editColumn('for_user', function ($row) {
-                        if ($row->bonusBy->deleted_at == null) {
-                            $for_user = '
-                            <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
-                                '.$row->bonusBy->name.'
-                            </a>
-                            ';
+                    ->editColumn('bonus_by_user_name', function ($row) {
+                        if ($row->type == 'Proof Task Approved Bonus') {
+                            if ($row->bonusBy->deleted_at == null) {
+                                $bonus_by_user_name = '
+                                <a href="'.route('user.profile', encrypt($row->bonusBy->id)).'" title="'.$row->bonusBy->name.'" class="text-info">
+                                    '.$row->bonusBy->name.'
+                                </a>
+                                ';
+                            } else {
+                                $bonus_by_user_name = '<span class="badge bg-primary">' . $row->bonusBy->name . '</span>';
+                            }
                         } else {
-                            $for_user = '<span class="badge bg-primary">' . $row->bonusBy->name . '</span>';
+                            $bonus_by_user_name = '<span class="badge bg-primary">Site</span>';
                         }
-                        return $for_user;
+
+                        return $bonus_by_user_name;
                     })
                     ->editColumn('amount', function ($row) {
                         return '<span class="badge bg-primary">' . get_site_settings('site_currency_symbol') . ' ' . $row->amount . '</span>';
@@ -978,13 +986,14 @@ class UserController extends Controller
                     ->editColumn('created_at', function ($row) {
                         return $row->created_at->format('d M Y h:i A');
                     })
-                    ->rawColumns(['type', 'for_user', 'bonus_by', 'amount', 'created_at'])
+                    ->with([
+                        'totalBonusAmount' => $totalBonusAmount,
+                    ])
+                    ->rawColumns(['type', 'bonus_by_user_name', 'bonus_by', 'amount', 'created_at'])
                     ->make(true);
             }
 
-            $total_bonus = Bonus::where('user_id', Auth::id())->sum('amount');
-
-            return view('frontend.bonus.index', compact('total_bonus'));
+            return view('frontend.bonus.index');
         }
     }
 

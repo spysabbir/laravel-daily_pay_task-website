@@ -10,7 +10,7 @@
                 <h3 class="card-title">Deposit Request (Pending)</h3>
                 <h3>Total: <span id="total_deposits_count">0</span></h3>
                 <div class="action-btn">
-                    @can('deposit.request.send')
+                    @can('deposit.request.store')
                     <!-- Normal Deposit Modal -->
                     <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Deposit <i data-feather="plus-circle"></i></button>
                     @endcan
@@ -210,7 +210,7 @@
             var formData = $(this).serialize();
 
             $.ajax({
-                url: "{{ route('backend.deposit.request.send') }}",
+                url: "{{ route('backend.deposit.request.store') }}",
                 type: 'POST',
                 data: formData,
                 dataType: 'json',

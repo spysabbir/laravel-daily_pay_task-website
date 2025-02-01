@@ -18,7 +18,7 @@ class DepositController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request') , only:['depositRequest']),
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.send') , only:['depositRequestSend']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.store') , only:['depositRequestStore']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.check') , only:['depositRequestShow', 'depositRequestStatusChange']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.rejected'), only:['depositRequestRejected']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('deposit.request.approved') , only:['depositRequestApproved']),
@@ -328,7 +328,7 @@ class DepositController extends Controller implements HasMiddleware
         return view('backend.deposit.approved');
     }
 
-    public function depositRequestSend(Request $request)
+    public function depositRequestStore(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',

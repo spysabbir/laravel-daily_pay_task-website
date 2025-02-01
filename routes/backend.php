@@ -154,14 +154,15 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::delete('verification-request-delete/{id}', [VerificationController::class, 'verificationRequestDelete'])->name('verification.request.delete');
     // Deposit
     Route::get('deposit-request', [DepositController::class, 'depositRequest'])->name('deposit.request');
-    Route::post('deposit-request-send', [DepositController::class, 'depositRequestSend'])->name('deposit.request.send');
+    Route::post('deposit-request-store', [DepositController::class, 'depositRequestStore'])->name('deposit.request.store');
     Route::get('deposit-request/{id}', [DepositController::class, 'depositRequestShow'])->name('deposit.request.show');
     Route::put('deposit-request-status-change/{id}', [DepositController::class, 'depositRequestStatusChange'])->name('deposit.request.status.change');
     Route::get('deposit-request-rejected', [DepositController::class, 'depositRequestRejected'])->name('deposit.request.rejected');
     Route::get('deposit-request-approved', [DepositController::class, 'depositRequestApproved'])->name('deposit.request.approved');
     // Withdraw
     Route::get('withdraw-request', [WithdrawController::class, 'withdrawRequest'])->name('withdraw.request');
-    Route::post('withdraw-request-send', [WithdrawController::class, 'withdrawRequestSend'])->name('withdraw.request.send');
+    Route::get('withdraw-request-store-user-withdraw-balance/{user_id}', [WithdrawController::class, 'withdrawRequestStoreUserWithdrawBalance'])->name('withdraw.request.store.user.withdraw.balance');
+    Route::post('withdraw-request-store', [WithdrawController::class, 'withdrawRequestStore'])->name('withdraw.request.store');
     Route::get('withdraw-request/{id}', [WithdrawController::class, 'withdrawRequestShow'])->name('withdraw.request.show');
     Route::put('withdraw-request-status-change/{id}', [WithdrawController::class, 'withdrawRequestStatusChange'])->name('withdraw.request.status.change');
     Route::get('withdraw-request-rejected', [WithdrawController::class, 'withdrawRequestRejected'])->name('withdraw.request.rejected');

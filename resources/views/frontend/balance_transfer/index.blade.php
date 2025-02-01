@@ -1,6 +1,6 @@
 @extends('layouts.template_master')
 
-@section('title', 'Transfer')
+@section('title', 'Balance Transfer')
 
 @section('content')
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="text">
-                    <h3 class="card-title">Transfer List</h3>
+                    <h3 class="card-title">Balance Transfer List</h3>
                     <p class="mb-0">Note: You can instantly add your deposit balance from your withdraw balance by an extra {{ get_default_settings('withdraw_balance_transfer_charge_percentage') }} % charge. Also, you can instantly add your withdraw balance from your deposit balance by an extra {{ get_default_settings('deposit_balance_transfer_charge_percentage') }} % charge. If you have any problem, please contact with us.</p>
                 </div>
                 <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap">
@@ -18,7 +18,7 @@
                             Total Balance Transfer Amount: <span id="total_balance_transfer_amount">0</span>
                         </span>
                     </div>
-                    <!-- Transfer Modal -->
+                    <!-- Balance Transfer Modal -->
                     <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">
                         Transfer <i data-feather="dollar-sign"></i>
                     </button>
@@ -190,7 +190,7 @@
             serverSide: true,
             searching: true,
             ajax: {
-                url: "{{ route('transfer') }}",
+                url: "{{ route('balance.transfer') }}",
                 data: function (e) {
                     e.send_method = $('#filter_send_method').val();
                     e.receive_method = $('#filter_receive_method').val();
@@ -298,7 +298,7 @@
             var formData = $(this).serialize();
 
             $.ajax({
-                url: "{{ route('transfer.store') }}",
+                url: "{{ route('balance.transfer.store') }}",
                 type: 'POST',
                 data: formData,
                 dataType: 'json',

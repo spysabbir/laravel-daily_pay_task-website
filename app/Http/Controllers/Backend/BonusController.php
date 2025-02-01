@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bonus;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use App\Notifications\BonusNotification;
 
 class BonusController extends Controller implements HasMiddleware
 {
@@ -15,6 +18,7 @@ class BonusController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('bonus.history') , only:['bonusHistory']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('bonus.store') , only:['bonusStore']),
         ];
     }
     public function bonusHistory(Request $request)
@@ -48,6 +52,14 @@ class BonusController extends Controller implements HasMiddleware
                         <a href="' . route('backend.user.show', encrypt($row->user->id)) . '" class="text-primary" target="_blank">' . $row->user->name . '</a>
                         ';
                 })
+                ->editColumn('bonus_by', function ($row) {
+                    if ($row->type == 'Proof Task Approved Bonus') {
+                        $bonus_by = '<span class="badge bg-success">Buyer</span>';
+                    } else {
+                        $bonus_by = '<span class="badge bg-primary">Site</span>';
+                    }
+                    return $bonus_by;
+                })
                 ->editColumn('bonus_by_user_name', function ($row) {
                     return '
                         <a href="' . route('backend.user.show', encrypt($row->bonusBy->id)) . '" class="text-primary" target="_blank">' . $row->bonusBy->name . '</a>
@@ -72,10 +84,42 @@ class BonusController extends Controller implements HasMiddleware
                 ->with([
                     'totalBonusAmount' => $totalBonusAmount,
                 ])
-                ->rawColumns(['user_name', 'bonus_by_user_name', 'type', 'amount', 'created_at'])
+                ->rawColumns(['user_name', 'bonus_by', 'bonus_by_user_name', 'type', 'amount', 'created_at'])
                 ->make(true);
         }
 
-        return view('backend.bonus.index');
+        $users = User::where('user_type', 'Frontend')->whereIn('status', ['Active', 'Blocked'])->get();
+        return view('backend.bonus.index', compact('users'));
+    }
+
+    public function bonusStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'amount' => 'required|numeric|min:1',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            $userBonus = Bonus::create([
+                'user_id' => $request->user_id,
+                'bonus_by' => auth()->user()->id,
+                'type' => 'Site Special Bonus',
+                'amount' => $request->amount,
+            ]);
+
+            $user = User::where('id', $request->user_id)->first();
+            $user->increment('withdraw_balance', $request->amount);
+
+            $user->notify(new BonusNotification($userBonus));
+
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
     }
 }

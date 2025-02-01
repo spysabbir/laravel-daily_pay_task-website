@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BalanceTransfer;
+use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -16,6 +17,7 @@ class BalanceTransferController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('balance.transfer.history') , only:['balanceTransferHistory']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('balance.transfer.store') , only:['balanceTransferStore']),
         ];
     }
     public function balanceTransferHistory(Request $request)
@@ -83,6 +85,69 @@ class BalanceTransferController extends Controller implements HasMiddleware
                 ->make(true);
         }
 
-        return view('backend.balance_transfer.index');
+        $users = User::where('user_type', 'Frontend')->whereIn('status', ['Active', 'Blocked'])->get();
+        return view('backend.balance_transfer.index', compact('users'));
+    }
+
+    public function balanceTransferStore(Request $request)
+    {
+        $currencySymbol = get_site_settings('site_currency_symbol');
+        $depositChargePercentage = get_default_settings('deposit_balance_transfer_charge_percentage');
+        $withdrawChargePercentage = get_default_settings('withdraw_balance_transfer_charge_percentage');
+
+        $validator = Validator::make($request->all(), [
+            'send_method' => 'required|in:Deposit Balance,Withdraw Balance',
+            'receive_method' => 'required|in:Deposit Balance,Withdraw Balance',
+            'amount' => 'required|numeric|min:1|max:10000',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'error'=> $validator->errors()->toArray()
+            ]);
+        }else{
+            if ($request->send_method == 'Deposit Balance') {
+                if ($request->amount > $request->user()->deposit_balance) {
+                    return response()->json([
+                        'status' => 401,
+                        'error'=> 'Insufficient balance in your account to transfer balance ' . $currencySymbol .' '. $request->amount .
+                                '. Your current balance is ' . $currencySymbol .' '. $request->user()->deposit_balance
+                    ]);
+                } else {
+                    $payable_amount = $request->amount - ($request->amount * $depositChargePercentage / 100);
+
+                    $request->user()->decrement('deposit_balance', $request->amount);
+                    $request->user()->increment('withdraw_balance', $payable_amount);
+                }
+            } else {
+                if ($request->amount > $request->user()->withdraw_balance) {
+                    return response()->json([
+                        'status' => 401,
+                        'error'=> 'Insufficient balance in your account to transfer balance ' . $currencySymbol .' '. $request->amount .
+                                '. Your current balance is ' . $currencySymbol .' '. $request->user()->withdraw_balance
+                    ]);
+                } else {
+                    $payable_amount = $request->amount - ($request->amount * $withdrawChargePercentage / 100);
+
+                    $request->user()->decrement('withdraw_balance', $request->amount);
+                    $request->user()->increment('deposit_balance', $payable_amount);
+                }
+            }
+
+            BalanceTransfer::create([
+                'user_id' => $request->user()->id,
+                'send_method' => $request->send_method,
+                'receive_method' => $request->receive_method,
+                'amount' => $request->amount,
+                'payable_amount' => $payable_amount,
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'deposit_balance' => number_format($request->user()->deposit_balance, 2, '.', ''),
+                'withdraw_balance' => number_format($request->user()->withdraw_balance, 2, '.', ''),
+            ]);
+        }
     }
 }

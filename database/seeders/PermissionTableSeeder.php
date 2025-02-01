@@ -163,14 +163,14 @@ class PermissionTableSeeder extends Seeder
             // DepositManagement
             ['name' => 'DepositMenu', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
             ['name' => 'deposit.request', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
-            ['name' => 'deposit.request.send', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
+            ['name' => 'deposit.request.store', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
             ['name' => 'deposit.request.check', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
             ['name' => 'deposit.request.rejected', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
             ['name' => 'deposit.request.approved', 'group_name' => 'DepositManagement', 'guard_name' => 'web'],
             // WithdrawManagement
             ['name' => 'WithdrawMenu', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             ['name' => 'withdraw.request', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
-            ['name' => 'withdraw.request.send', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
+            ['name' => 'withdraw.request.store', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             ['name' => 'withdraw.request.check', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             ['name' => 'withdraw.request.rejected', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],
             ['name' => 'withdraw.request.approved', 'group_name' => 'WithdrawManagement', 'guard_name' => 'web'],

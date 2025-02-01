@@ -98,8 +98,8 @@ Route::middleware(['auth', 'verified', 'check_user_type:Frontend'])->group(funct
     Route::get('/withdraw', [UserController::class, 'withdraw'])->name('withdraw');
     Route::post('/withdraw', [UserController::class, 'withdrawStore'])->name('withdraw.store');
 
-    Route::get('/transfer', [UserController::class, 'transfer'])->name('transfer');
-    Route::post('/transfer-store', [UserController::class, 'transferStore'])->name('transfer.store');
+    Route::get('/balance-transfer', [UserController::class, 'balanceTransfer'])->name('balance.transfer');
+    Route::post('/balance-transfer-store', [UserController::class, 'balanceTransferStore'])->name('balance.transfer.store');
 
     Route::get('/bonus', [UserController::class, 'bonus'])->name('bonus');
 

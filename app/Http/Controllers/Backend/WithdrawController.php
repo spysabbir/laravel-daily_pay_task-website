@@ -22,7 +22,7 @@ class WithdrawController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request') , only:['withdrawRequest']),
-            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.send') , only:['withdrawRequestSend']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.store') , only:['withdrawRequestStoreUserWithdrawBalance', 'withdrawRequestStore']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.check') , only:['withdrawRequestShow', 'withdrawRequestStatusChange']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.rejected'), only:['withdrawRequestRejected']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('withdraw.request.approved') , only:['withdrawRequestApproved']),
@@ -175,14 +175,14 @@ class WithdrawController extends Controller implements HasMiddleware
                     'withdraw_balance' => $referrer->withdraw_balance + $bonusAmount,
                 ]);
 
-                $referrerBonus = Bonus::create([
+                $userBonus = Bonus::create([
                     'user_id' => $referrer->id,
                     'bonus_by' => $user->id,
                     'type' => 'Referral Withdrawal Bonus',
                     'amount' => $bonusAmount,
                 ]);
 
-                $referrer->notify(new BonusNotification($referrerBonus));
+                $referrer->notify(new BonusNotification($userBonus));
             }
         } elseif ($request->status === 'Rejected') {
             $user->update([
@@ -397,18 +397,26 @@ class WithdrawController extends Controller implements HasMiddleware
         return view('backend.withdraw.approved');
     }
 
-    public function withdrawRequestSend(Request $request)
+    public function withdrawRequestStoreUserWithdrawBalance($user_id)
+    {
+        $user = User::findOrFail($user_id);
+        return response()->json([
+            'status' => 200,
+            'withdraw_balance' => $user->withdraw_balance,
+        ]);
+    }
+
+    public function withdrawRequestStore(Request $request)
     {
         $currencySymbol = get_site_settings('site_currency_symbol');
-        $withdrawChargePercentage = get_default_settings('withdraw_charge_percentage');
         $instantWithdrawCharge = get_default_settings('instant_withdraw_charge');
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            'type' => 'required|in:Ragular,Instant',
-            'amount' => "required|numeric|min:25",
             'method' => 'required|in:Bkash,Nagad,Rocket',
             'number' => ['required', 'string', 'regex:/^(?:\+8801|01)[3-9]\d{8}$/'],
+            'amount' => "required|numeric|min:25",
+            'charge_percentage' => 'required|numeric|min:0',
         ],
         [
             'number.regex' => 'The phone number must be a valid Bangladeshi number (+8801XXXXXXXX or 01XXXXXXXX).',
@@ -431,14 +439,11 @@ class WithdrawController extends Controller implements HasMiddleware
             ]);
         }
 
-        $payableAmount = $request->amount - ($request->amount * $withdrawChargePercentage / 100);
-        if ($request->type == 'Instant') {
-            $payableAmount -= $instantWithdrawCharge;
-        }
+        $payableAmount = $request->amount - ($request->amount * $request->charge_percentage / 100);
 
         Withdraw::create([
             'user_id' => $user->id,
-            'type' => $request->type,
+            'type' => 'Ragular',
             'method' => $request->method,
             'number' => $request->number,
             'amount' => $request->amount,
@@ -446,6 +451,8 @@ class WithdrawController extends Controller implements HasMiddleware
             'status' => 'Pending',
             'created_by' => auth()->user()->id,
         ]);
+
+        $user->decrement('withdraw_balance', $request->amount);
 
         return response()->json([
             'status' => 200,

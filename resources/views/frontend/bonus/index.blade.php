@@ -17,7 +17,7 @@
                     <div class="alert alert-info" role="alert">
                         <span class="alert-heading text-center">
                             <i class="link-icon" data-feather="credit-card"></i>
-                            Total Bonus: {{ get_site_settings('site_currency_symbol') }} {{ $total_bonus }}
+                            Total Bonus: <span id="totalBonusAmount">0</span>
                         </span>
                     </div>
                 </div>
@@ -33,6 +33,7 @@
                                     <option value="Referral Registration Bonus">Referral Registration Bonus</option>
                                     <option value="Referral Withdrawal Bonus">Referral Withdrawal Bonus</option>
                                     <option value="Proof Task Approved Bonus">Proof Task Approved Bonus</option>
+                                    <option value="Site Special Bonus">Site Special Bonus</option>
                                 </select>
                             </div>
                         </div>
@@ -44,8 +45,8 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>Type</th>
-                                <th>By</th>
-                                <th>For User</th>
+                                <th>Bonus By</th>
+                                <th>Bonus By User Name</th>
                                 <th>Amount</th>
                                 <th>Date</th>
                             </tr>
@@ -79,13 +80,19 @@
                 url: "{{ route('bonus') }}",
                 data: function (e) {
                     e.type = $('#filter_type').val();
+                },
+                dataSrc: function (json) {
+                    // Update total bonuses amount
+                    var currencySymbol = '{{ get_site_settings('site_currency_symbol') }}';
+                    $('#totalBonusAmount').text(currencySymbol + ' ' + json.totalBonusAmount);
+                    return json.data;
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'type', name: 'type' },
                 { data: 'bonus_by', name: 'bonus_by' },
-                { data: 'for_user', name: 'for_user' },
+                { data: 'bonus_by_user_name', name: 'bonus_by_user_name' },
                 { data: 'amount', name: 'amount' },
                 { data: 'created_at', name: 'created_at' },
             ]

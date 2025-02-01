@@ -9,6 +9,49 @@
             <div class="card-header d-flex justify-content-between">
                 <h3 class="card-title">Bonus</h3>
                 <h3>Total Amount: <span id="totalBonusAmount">0</span></h3>
+                <div class="action-btn">
+                    @can('bonus.store')
+                    <!-- Normal Bonus Modal -->
+                    <button type="button" class="btn btn-primary m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".createModel">Bonus <i data-feather="plus-circle"></i></button>
+                    @endcan
+                    <div class="modal fade createModel select2Model" tabindex="-1" aria-labelledby="createModelLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="createModelLabel">Bonus</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                </div>
+                                <form class="forms-sample" id="createForm">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="user_id" class="form-label">User Name <span class="text-danger">*</span></label>
+                                            <select class="form-select js-select2-single" id="user_id" name="user_id" required data-width="100%">
+                                                <option value="">-- Select User --</option>
+                                                @foreach ($users as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->id }} - {{ $user->name }} </option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger error-text user_id_error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="amount" class="form-label">Bonus Amount <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="amount" name="amount" min="1" placeholder="Bonus Amount" required>
+                                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                                            </div>
+                                            <span class="text-danger error-text amount_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Bonus</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div class="filter mb-3">
@@ -33,6 +76,7 @@
                                     <option value="Referral Registration Bonus">Referral Registration Bonus</option>
                                     <option value="Referral Withdrawal Bonus">Referral Withdrawal Bonus</option>
                                     <option value="Proof Task Approved Bonus">Proof Task Approved Bonus</option>
+                                    <option value="Site Special Bonus">Site Special Bonus</option>
                                 </select>
                             </div>
                         </div>
@@ -44,6 +88,7 @@
                             <tr>
                                 <th>Sl No</th>
                                 <th>User Name</th>
+                                <th>Bonus By</th>
                                 <th>Bonus By User Name</th>
                                 <th>Type</th>
                                 <th>Amount</th>
@@ -84,13 +129,15 @@
                 },
                 dataSrc: function (json) {
                     // Update total bonuses amount
-                    $('#totalBonusAmount').text(json.totalBonusAmount);
+                    var currencySymbol = '{{ get_site_settings('site_currency_symbol') }}';
+                    $('#totalBonusAmount').text(currencySymbol + ' ' + json.totalBonusAmount);
                     return json.data;
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'user_name', name: 'user_name' },
+                { data: 'bonus_by', name: 'bonus_by' },
                 { data: 'bonus_by_user_name', name: 'bonus_by_user_name' },
                 { data: 'type', name: 'type' },
                 { data: 'amount', name: 'amount' },
@@ -105,6 +152,41 @@
         // Filter Data
         $('.filter_data').keyup(function(){
             $('#allDataTable').DataTable().ajax.reload();
+        });
+
+        // Store Data
+        $('#createForm').submit(function(event) {
+            event.preventDefault();
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Submitting...");
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: "{{ route('backend.bonus.store') }}",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                beforeSend:function(){
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+                    if (response.status == 400) {
+                        $.each(response.error, function(prefix, val){
+                            $('span.'+prefix+'_error').text(val[0]);
+                        })
+                    }else{
+                        $('.createModel').modal('hide');
+                        $('#createForm')[0].reset();
+                        $('#allDataTable').DataTable().ajax.reload();
+                        toastr.success('Bonus Sent Successfully');
+                    }
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Submit");
+                }
+            });
         });
     });
 </script>
