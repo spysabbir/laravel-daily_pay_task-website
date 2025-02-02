@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('receive_method');
             $table->decimal('amount', 10, 2);
             $table->decimal('payable_amount', 10, 2);
+            $table->integer('created_by');
             $table->timestamps();
         });
     }

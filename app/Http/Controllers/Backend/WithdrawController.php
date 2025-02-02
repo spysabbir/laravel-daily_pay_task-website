@@ -409,7 +409,6 @@ class WithdrawController extends Controller implements HasMiddleware
     public function withdrawRequestStore(Request $request)
     {
         $currencySymbol = get_site_settings('site_currency_symbol');
-        $instantWithdrawCharge = get_default_settings('instant_withdraw_charge');
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',

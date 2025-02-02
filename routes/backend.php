@@ -169,6 +169,7 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::get('withdraw-request-approved', [WithdrawController::class, 'withdrawRequestApproved'])->name('withdraw.request.approved');
     // Balance Transfer
     Route::get('balance-transfer-history', [BalanceTransferController::class, 'balanceTransferHistory'])->name('balance.transfer.history');
+    Route::get('balance.transfer.store.user.balance/{user_id}', [BalanceTransferController::class, 'balanceTransferStoreUserBalance'])->name('balance.transfer.store.user.balance');
     Route::post('balance-transfer-store', [BalanceTransferController::class, 'balanceTransferStore'])->name('balance.transfer.store');
     // Bonus
     Route::get('bonus-history', [BonusController::class, 'bonusHistory'])->name('bonus.history');

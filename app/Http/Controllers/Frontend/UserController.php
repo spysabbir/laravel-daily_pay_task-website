@@ -868,7 +868,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'send_method' => 'required|in:Deposit Balance,Withdraw Balance',
             'receive_method' => 'required|in:Deposit Balance,Withdraw Balance',
-            'amount' => 'required|numeric|min:1|max:10000',
+            'amount' => 'required|numeric|min:1',
         ]);
 
         if($validator->fails()){
@@ -911,6 +911,7 @@ class UserController extends Controller
                 'receive_method' => $request->receive_method,
                 'amount' => $request->amount,
                 'payable_amount' => $payable_amount,
+                'created_by' => auth()->user()->id,
             ]);
 
             return response()->json([

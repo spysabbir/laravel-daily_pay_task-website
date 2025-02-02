@@ -342,6 +342,7 @@
 </div>
 @endsection
 
+@section('script')
 <script>
     var lastSevenDaysCategories = @json($lastSevenDaysCategories);
     var formattedVerifiedUsersData = @json($formattedVerifiedUsersData);
@@ -362,3 +363,4 @@
     var totalActiveUserCount = @json($totalActiveUserCount);
     var currentlyOnlineUserCount = @json($currentlyOnlineUserCount);
 </script>
+@endsection

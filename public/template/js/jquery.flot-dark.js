@@ -20,51 +20,52 @@ $(function() {
     var fontFamily = "'Roboto', Helvetica, sans-serif"
 
     // userStatusFlotPie Chart
-    $.plot($('#userStatusFlotPie'), formattedUserStatusData, {
-        series: {
-            shadowSize: 0,
-            pie: {
-                show: true,
-                radius: 1,
-                innerRadius: 0.5,
-                stroke: {
-                    color: colors.cardBg,
-                    width: 3
-                },
-                label: {
+    if ($('#userStatusFlotPie').length) {
+        $.plot($('#userStatusFlotPie'), formattedUserStatusData, {
+            series: {
+                shadowSize: 0,
+                pie: {
                     show: true,
-                    radius: 3 / 4,
-                    background: { opacity: 0.5 },
-                    formatter: function(label, series) {
-                        const count = series.data[0][1]; // Extract count
-                        const percent = Math.round(series.percent); // Extract percent
-                        return `<div style="font-size:11px;text-align:center;color:white;">
-                                    ${label}<br>${count} (${percent}%)
-                                </div>`;
+                    radius: 1,
+                    innerRadius: 0.5,
+                    stroke: {
+                        color: colors.cardBg,
+                        width: 3
+                    },
+                    label: {
+                        show: true,
+                        radius: 3 / 4,
+                        background: { opacity: 0.5 },
+                        formatter: function(label, series) {
+                            const count = series.data[0][1]; // Extract count
+                            const percent = Math.round(series.percent); // Extract percent
+                            return `<div style="font-size:11px;text-align:center;color:white;">
+                                        ${label}<br>${count} (${percent}%)
+                                    </div>`;
+                        }
                     }
                 }
-            }
-        },
+            },
 
-        title: {
-            show: true,
-            label: 'User Status',
-            align: 'center',
-            style: { color: colors.bodyColor, fontFamily: fontFamily }
-            
-        },
+            title: {
+                show: true,
+                label: 'User Status',
+                align: 'center',
+                style: { color: colors.bodyColor, fontFamily: fontFamily }
+            },
 
-        grid: {
-            color: colors.bodyColor,
-            borderColor: colors.gridBorder,
-            borderWidth: 1,
-            hoverable: true,
-            clickable: true
-        },
+            grid: {
+                color: colors.bodyColor,
+                borderColor: colors.gridBorder,
+                borderWidth: 1,
+                hoverable: true,
+                clickable: true
+            },
 
-        xaxis: { tickColor: colors.gridBorder },
-        yaxis: { tickColor: colors.gridBorder },
-        legend: { backgroundColor: colors.cardBg },
-        colors: [colors.success, colors.primary, colors.warning, colors.danger]
-    });
+            xaxis: { tickColor: colors.gridBorder },
+            yaxis: { tickColor: colors.gridBorder },
+            legend: { backgroundColor: colors.cardBg },
+            colors: [colors.success, colors.primary, colors.warning, colors.danger]
+        });
+    }
 });

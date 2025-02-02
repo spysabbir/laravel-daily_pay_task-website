@@ -39,32 +39,28 @@
                                                 <option value="Withdraw Balance">Withdraw Balance</option>
                                                 <option value="Deposit Balance">Deposit Balance</option>
                                             </select>
-                                            <span class="text-danger error-text send_error"></span>
+                                            <span class="text-danger error-text send_method_error"></span>
                                         </div>
-                                        <div class="mb-3" id="receive_method_div" style="display: none;">
-                                            <label for="receiveMethod" class="form-label">Receive Method <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="receiveMethod" name="receive_method">
-                                                <option value="">-- Select Receive Method --</option>
-                                                <option value="Withdraw Balance">Withdraw Balance</option>
-                                                <option value="Deposit Balance">Deposit Balance</option>
-                                            </select>
-                                            <span class="text-danger error-text receive_error"></span>
+                                        <div class="mb-3" id="receive_method_div" style="display: none">
+                                            <label for="receiveMethod" class="form-label">Receive Method</label>
+                                            <input type="text" class="form-control" id="receiveMethod" name="receive_method" readonly>
+                                            <span class="text-danger error-text receive_method_error"></span>
                                         </div>
-                                        <div class="mb-3" id="deposit_balance_check_div">
+                                        <div class="mb-3" id="deposit_balance_check_div" style="display: none">
                                             <label for="deposit_balance_check" class="form-label">Deposit Balance</label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control" id="deposit_balance_check" value="{{ Auth::user()->deposit_balance }}" disabled>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                         </div>
-                                        <div class="mb-3" id="withdraw_balance_check_div">
+                                        <div class="mb-3" id="withdraw_balance_check_div" style="display: none">
                                             <label for="withdraw_balance_check" class="form-label">Withdraw Balance</label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control" id="withdraw_balance_check" value="{{ Auth::user()->withdraw_balance }}" disabled>
                                                 <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
                                             </div>
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="mb-3" id="transfer_amount_div" style="display: none">
                                             <label for="transferAmount" class="form-label">Transfer Amount <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control" id="transferAmount" name="amount" min="1" max="10000" placeholder="Transfer Amount" required>
@@ -73,21 +69,21 @@
                                             <small class="text-info d-block">Note: Minimum transfer  amount is {{ get_site_settings('site_currency_symbol') }} 1 and maximum transfer amount is {{ get_site_settings('site_currency_symbol') }} 10000.</small>
                                             <span class="text-danger error-text amount_error"></span>
                                         </div>
-                                        <div class="mb-3" id="withdraw_balance_transfer_charge_div">
+                                        <div class="mb-3" id="withdraw_balance_transfer_charge_div" style="display: none">
                                             <label for="withdraw_balance_transfer_charge_percentage" class="form-label">Withdraw Balance Transfer Charge Percentage</label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control" id="withdraw_balance_transfer_charge_percentage" value="{{ get_default_settings('withdraw_balance_transfer_charge_percentage') }}" disabled>
                                                 <span class="input-group-text input-group-addon">%</span>
                                             </div>
                                         </div>
-                                        <div class="mb-3" id="deposit_balance_transfer_charge_div">
+                                        <div class="mb-3" id="deposit_balance_transfer_charge_div" style="display: none">
                                             <label for="deposit_balance_transfer_charge_percentage" class="form-label">Deposit Balance Transfer Charge Percentage</label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control" id="deposit_balance_transfer_charge_percentage" value="{{ get_default_settings('deposit_balance_transfer_charge_percentage') }}" disabled>
                                                 <span class="input-group-text input-group-addon">%</span>
                                             </div>
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="mb-3" id="payable_amount_div" style="display: none">
                                             <label for="payable_amount" class="form-label">Payable Amount</label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control" id="payable_amount" value="0" placeholder="Payable Amount" disabled>
@@ -97,7 +93,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Deposit</button>
+                                        <button type="submit" class="btn btn-primary">Transfer</button>
                                     </div>
                                 </form>
                             </div>
@@ -162,6 +158,7 @@
             }
         });
 
+        // Update dropdowns
         function updateDropdowns() {
             const sendMethod = $('#filter_send_method').val();
             const receiveMethod = $('#filter_receive_method').val();
@@ -177,11 +174,7 @@
                 $('#filter_send_method option[value="' + receiveMethod + '"]').prop('disabled', true);
             }
         }
-
-        // Attach event listeners
         $('#filter_send_method, #filter_receive_method').on('change', updateDropdowns);
-
-        // Initialize on page load
         updateDropdowns();
 
         // Read Data
@@ -216,43 +209,39 @@
             $('#allDataTable').DataTable().ajax.reload();
         });
 
+        // Default all div hide when click on modal open
+        $('.createModel').on('show.bs.modal', function (e) {
+            $('#receive_method_div, #deposit_balance_check_div, #withdraw_balance_check_div, #transfer_amount_div, #withdraw_balance_transfer_charge_div, #deposit_balance_transfer_charge_div, #payable_amount_div').hide();
+        });
+
+        // Default charge percentage
         const withdrawChargePercentage = {{ get_default_settings("withdraw_balance_transfer_charge_percentage") }};
         const depositChargePercentage = {{ get_default_settings("deposit_balance_transfer_charge_percentage") }};
-
-        // Initially hide all relevant divs
-        $('#deposit_balance_check_div, #withdraw_balance_check_div, #withdraw_balance_transfer_charge_div, #deposit_balance_transfer_charge_div').hide();
-        $('#receive_method_div').hide();
 
         // Handle Send Method change
         $('#sendMethod').on('change', function () {
             const method = $(this).val();
 
-            // Clear Receive Method and hide its div initially
-            $('#receiveMethod').val('');
-            $('#receive_method_div').hide();
+            // Clear hide its div initially
+            $('#receiveMethod, #transferAmount').val('');
+            $('#receive_method_div, #transfer_amount_div, #payable_amount_div').hide();
 
             // Toggle visibility of corresponding divs based on Send Method
             if (method === "Withdraw Balance") {
                 $('#deposit_balance_check_div, #deposit_balance_transfer_charge_div').hide();
                 $('#withdraw_balance_check_div, #withdraw_balance_transfer_charge_div').show();
+                $('#receiveMethod').val('Deposit Balance');
             } else if (method === "Deposit Balance") {
                 $('#withdraw_balance_check_div, #withdraw_balance_transfer_charge_div').hide();
                 $('#deposit_balance_check_div, #deposit_balance_transfer_charge_div').show();
+                $('#receiveMethod').val('Withdraw Balance');
             } else {
                 $('#deposit_balance_check_div, #withdraw_balance_check_div, #withdraw_balance_transfer_charge_div, #deposit_balance_transfer_charge_div').hide();
             }
 
             // Enable Receive Method div only if a valid Send Method is selected
             if (method) {
-                $('#receive_method_div').show();
-
-                // Disable the corresponding option in Receive Method
-                $('#receiveMethod option').prop('disabled', false); // Enable all options
-                if (method === "Withdraw Balance") {
-                    $('#receiveMethod option[value="Withdraw Balance"]').prop('disabled', true);
-                } else if (method === "Deposit Balance") {
-                    $('#receiveMethod option[value="Deposit Balance"]').prop('disabled', true);
-                }
+                $('#receive_method_div, #transfer_amount_div, #payable_amount_div').show();
             }
 
             // Recalculate payable amount

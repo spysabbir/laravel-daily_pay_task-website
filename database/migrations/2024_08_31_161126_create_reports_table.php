@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['User', 'Post Task', 'Proof Task'])->default('User');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('post_task_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('proof_task_id')->nullable()->constrained()->onDelete('cascade');
             $table->longText('reason');
