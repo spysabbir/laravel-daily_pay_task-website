@@ -174,6 +174,7 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     // Bonus
     Route::get('bonus-history', [BonusController::class, 'bonusHistory'])->name('bonus.history');
     Route::post('bonus-store', [BonusController::class, 'bonusStore'])->name('bonus.store');
+    Route::post('bonus-import', [BonusController::class, 'bonusImport'])->name('bonus.import');
     // Posted Task
     Route::get('posted_task_list-pending', [TaskController::class, 'postedTaskListPending'])->name('posted_task_list.pending');
     Route::get('pending-posted_task_view/{id}', [TaskController::class, 'pendingPostedTaskView'])->name('pending.posted_task_view');

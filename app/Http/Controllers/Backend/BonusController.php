@@ -11,6 +11,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Notifications\BonusNotification;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\BonusImport;
 
 class BonusController extends Controller implements HasMiddleware
 {
@@ -119,6 +121,50 @@ class BonusController extends Controller implements HasMiddleware
 
             return response()->json([
                 'status' => 200,
+            ]);
+        }
+    }
+
+    public function bonusImport(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'error' => $validator->errors()->toArray()
+            ]);
+        }
+
+        // Load the file
+        $file = $request->file('file');
+        $data = Excel::toArray([], $file);
+
+        if (empty($data) || count($data[0]) < 2) {
+            return response()->json([
+                'status' => 400,
+                'error' => ['file' => ['The uploaded file is empty or has no valid data.']]
+            ]);
+        }
+
+        // Check for missing columns
+        $headers = array_map('strtolower', $data[0][0]); // Assuming first row contains headers
+        if (!in_array('user_id', $headers) || !in_array('amount', $headers)) {
+            return response()->json([
+                'status' => 400,
+                'error' => ['file' => ['The uploaded file is missing required columns user_id or amount.']]
+            ]);
+        }
+
+        try {
+            Excel::import(new BonusImport, $file);
+            return response()->json(['status' => 200]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'error' => ['file' => ['An error occurred during import: ' . $e->getMessage()]]
             ]);
         }
     }

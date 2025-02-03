@@ -182,6 +182,7 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'BonusMenu', 'group_name' => 'BonusManagement', 'guard_name' => 'web'],
             ['name' => 'bonus.history', 'group_name' => 'BonusManagement', 'guard_name' => 'web'],
             ['name' => 'bonus.store', 'group_name' => 'BonusManagement', 'guard_name' => 'web'],
+            ['name' => 'bonus.import', 'group_name' => 'BonusManagement', 'guard_name' => 'web'],
             // PostedTaskManagement
             ['name' => 'PostedTaskMenu', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],
             ['name' => 'posted_task_list.pending', 'group_name' => 'PostedTaskManagement', 'guard_name' => 'web'],

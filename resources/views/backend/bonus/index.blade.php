@@ -51,6 +51,38 @@
                             </div>
                         </div>
                     </div>
+                    @can('bonus.import')
+                    <!-- Normal Bonus Modal -->
+                    <button type="button" class="btn btn-info m-1 btn-xs" data-bs-toggle="modal" data-bs-target=".importModel">Import <i data-feather="plus-circle"></i></button>
+                    @endcan
+                    <div class="modal fade importModel select2Model" tabindex="-1" aria-labelledby="importModelLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="importModelLabel">Import</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                </div>
+                                <form class="forms-sample" id="importForm" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <strong>Import Bonus Sample File - </strong>
+                                            <a href="{{ asset('uploads/bonus_import.xlsx') }}" class="text-primary" download>Download</a>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="file" class="form-label">File <span class="text-danger">*</span></label>
+                                            <input type="file" class="form-control" id="file" name="file" accept=".xls, .xlsx">
+                                            <span class="text-danger error-text file_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Import</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -188,6 +220,47 @@
                 }
             });
         });
+
+        // Import Data
+        $('#importForm').submit(function(event) {
+            event.preventDefault();
+
+            var submitButton = $(this).find("button[type='submit']");
+            submitButton.prop("disabled", true).text("Importing...");
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: "{{ route('backend.bonus.import') }}",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+                    if (response.status == 400) {
+                        $.each(response.error, function(prefix, val) {
+                            $('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $('.importModel').modal('hide');
+                        $('#importForm')[0].reset();
+                        $('#allDataTable').DataTable().ajax.reload();
+                        toastr.success('Bonus Imported Successfully');
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error(xhr.responseJSON.message || 'Something went wrong.');
+                },
+                complete: function() {
+                    submitButton.prop("disabled", false).text("Import");
+                }
+            });
+        });
+
     });
 </script>
 @endsection

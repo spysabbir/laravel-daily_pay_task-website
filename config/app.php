@@ -127,6 +127,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ])->toArray(),
 
 ];
