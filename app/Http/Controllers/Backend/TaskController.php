@@ -769,8 +769,8 @@ class TaskController extends Controller implements HasMiddleware
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->where('status', 'Pending');
 
-            if ($request->proof_id) {
-                $query->where('id', $request->proof_id);
+            if ($request->worked_task_id) {
+                $query->where('id', $request->worked_task_id);
             }
 
             if ($request->user_id) {
@@ -906,8 +906,8 @@ class TaskController extends Controller implements HasMiddleware
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->whereNotIn('status', ['Pending', 'Reviewed']);
 
-            if ($request->proof_id) {
-                $query->where('id', $request->proof_id);
+            if ($request->worked_task_id) {
+                $query->where('id', $request->worked_task_id);
             }
 
             if ($request->user_id) {
@@ -1068,8 +1068,8 @@ class TaskController extends Controller implements HasMiddleware
         if ($request->ajax()) {
             $query = ProofTask::where('post_task_id', decrypt($id))->where('status', 'Reviewed');
 
-            if ($request->proof_id) {
-                $query->where('id', $request->proof_id);
+            if ($request->worked_task_id) {
+                $query->where('id', $request->worked_task_id);
             }
 
             if ($request->user_id) {

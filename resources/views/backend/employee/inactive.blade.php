@@ -52,19 +52,6 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="role" class="form-label">Role</label>
-                                <select class="form-select filter_data" id="filter_role">
-                                    <option value="">-- Select Role --</option>
-                                    @foreach ($roles as $role)
-                                        @if (auth()->user()->hasRole('Super Admin') || $role->name !== 'Super Admin')
-                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
                                 <label for="filter_user_id" class="form-label">Employee Id</label>
                                 <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search Employee Id">
                             </div>
@@ -77,6 +64,19 @@
                                     <option value="Online">Online</option>
                                     <option value="Offline">Offline</option>
                                     <option value="No Activity">No Activity</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select filter_data" id="filter_role">
+                                    <option value="">-- Select Role --</option>
+                                    @foreach ($roles as $role)
+                                        @if (auth()->user()->hasRole('Super Admin') || $role->name !== 'Super Admin')
+                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        @endif
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

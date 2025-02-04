@@ -27,22 +27,22 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-lg-6 mb-3">
+                                            <div class="col-lg-4 mb-3">
                                                 <label for="type" class="form-label">Type <span class="text-danger">*</span></label>
                                                 <select class="form-select" id="type" name="type">
                                                     <option value="">Select Type</option>
+                                                    <option value="Multiple Employee">Multiple Employee</option>
                                                     <option value="All Employee">All Employee</option>
-                                                    <option value="Single Employee">Single Employee</option>
+                                                    <option value="Multiple User">Multiple User</option>
                                                     <option value="All User">All User</option>
-                                                    <option value="Single User">Single User</option>
                                                 </select>
                                                 <span class="text-danger error-text type_error"></span>
                                             </div>
-                                            <div class="col-lg-6 mb-3">
+                                            <div class="col-lg-8 mb-3">
                                                 <div class="d-none" id="userDiv">
                                                     <label for="user_id" class="form-label">User Name <span class="text-danger">*</span></label>
-                                                    <select class="form-select js-select2-single" id="user_id" data-width="100%">
-                                                        <option value="">-- Select User --</option>
+                                                    <select class="form-select js-select2-multiple" id="user_id" data-width="100%" multiple>
+                                                        {{-- <option value="">-- Select User --</option> --}}
                                                         @foreach ($allUser as $user)
                                                             <option value="{{ $user->id }}">{{ $user->id }} - {{ $user->name }}</option>
                                                         @endforeach
@@ -50,8 +50,8 @@
                                                 </div>
                                                 <div class="d-none" id="employeeDiv">
                                                     <label for="employee_id" class="form-label">Employee Name <span class="text-danger">*</span></label>
-                                                    <select class="form-select js-select2-single" id="employee_id" data-width="100%">
-                                                        <option value="">-- Select Employee --</option>
+                                                    <select class="form-select js-select2-multiple" id="employee_id" data-width="100%" multiple>
+                                                        {{-- <option value="">-- Select Employee --</option> --}}
                                                         @foreach ($allEmployee as $user)
                                                             <option value="{{ $user->id }}">{{ $user->id }} - {{ $user->name }}</option>
                                                         @endforeach
@@ -87,21 +87,11 @@
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <div class="form-group">
-                                <label for="filter_status" class="form-label">Status</label>
-                                <select class="form-select filter_data" id="filter_status">
-                                    <option value="">-- Select Status --</option>
-                                    <option value="Unread">Unread</option>
-                                    <option value="Read">Read</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="form-group">
                                 <label for="filter_type" class="form-label">Type</label>
                                 <select class="form-select filter_data" id="filter_type">
                                     <option value="">-- Select Type --</option>
-                                    <option value="All Employee">All Employee</option>
-                                    <option value="All User">All User</option>
+                                    <option value="Employee">Employee</option>
+                                    <option value="User">User</option>
                                 </select>
                             </div>
                         </div>
@@ -109,6 +99,16 @@
                             <div class="form-group">
                                 <label for="filter_user_id" class="form-label">User or Employee Id</label>
                                 <input type="number" class="form-control filter_data" id="filter_user_id" placeholder="User or Employee Id">
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="form-group">
+                                <label for="filter_status" class="form-label">Status</label>
+                                <select class="form-select filter_data" id="filter_status">
+                                    <option value="">-- Select Status --</option>
+                                    <option value="Unread">Unread</option>
+                                    <option value="Read">Read</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -200,6 +200,10 @@
         $('.filter_data').change(function(){
             $('#allDataTable').DataTable().ajax.reload();
         });
+        // Filter Data
+        $('.filter_data').keyup(function() {
+            $('#allDataTable').DataTable().ajax.reload();
+        });
 
         // User Type Change Event
         $('#type').on('change', function () {
@@ -209,10 +213,10 @@
             $('#user_id_hidden').val('');
             $('.user_id_error').text('');
 
-            if (selectedType === 'Single User') {
+            if (selectedType === 'Multiple User') {
                 $('#userDiv').removeClass('d-none');
                 $('#user_id').prop('disabled', false);
-            } else if (selectedType === 'Single Employee') {
+            } else if (selectedType === 'Multiple Employee') {
                 $('#employeeDiv').removeClass('d-none');
                 $('#employee_id').prop('disabled', false);
             }
@@ -242,6 +246,8 @@
                     $(document).find('span.error-text').text('');
                 },
                 success: function(response) {
+                    console.log(response);
+
                     if (response.status == 400) {
                         $.each(response.error, function(prefix, val){
                             $('span.'+prefix+'_error').text(val[0]);

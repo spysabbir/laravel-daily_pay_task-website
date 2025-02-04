@@ -8,7 +8,6 @@ $(function () {
     if ($(".js-select2-single").length) {
         $(".js-select2-single").select2({
             dropdownParent: $('.select2Model'), // Specify the modal or parent dynamically
-            allowClear: true,
             placeholder: "Select a value",
         });
     }
@@ -18,7 +17,6 @@ $(function () {
         $(".js-select2-multiple").select2({
             dropdownParent: $('.select2Model'), // Specify the modal or parent dynamically
             allowClear: true,
-            placeholder: "Select a value",
         });
     }
 });

@@ -15,7 +15,13 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_type" class="form-label">Withdraw Type</label>
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_type" class="form-label">Type</label>
                                 <select class="form-select filter_data" id="filter_type">
                                     <option value="">-- Select Withdraw Type --</option>
                                     <option value="Ragular">Ragular</option>
@@ -25,19 +31,13 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_method" class="form-label">Withdraw Method</label>
+                                <label for="filter_method" class="form-label">Method</label>
                                 <select class="form-select filter_data" id="filter_method">
                                     <option value="">-- Select Withdraw Method --</option>
                                     <option value="Bkash">Bkash</option>
                                     <option value="Nagad">Nagad</option>
                                     <option value="Rocket">Rocket</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="filter_user_id" class="form-label">User Id</label>
-                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
                         <div class="col-md-3">

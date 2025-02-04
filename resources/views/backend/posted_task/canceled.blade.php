@@ -15,14 +15,14 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_posted_task_id" class="form-label">Posted Task Id</label>
-                                <input type="number" id="filter_posted_task_id" class="form-control filter_data" placeholder="Search Posted Task Id">
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_user_id" class="form-label">User Id</label>
-                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
+                                <label for="filter_posted_task_id" class="form-label">Posted Task Id</label>
+                                <input type="number" id="filter_posted_task_id" class="form-control filter_data" placeholder="Search Posted Task Id">
                             </div>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                                 <th>Sl No</th>
                                 <th>User Id</th>
                                 <th>User Name</th>
-                                <th>Task Id</th>
+                                <th>Posted Task Id</th>
                                 <th>Title</th>
                                 <th>Proof Submitted</th>
                                 {{-- <th>Proof Status</th> --}}

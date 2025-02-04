@@ -200,20 +200,14 @@
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="posted_task_proof_submit_auto_approved_time" class="form-label">Posted Task Proof Submit Auto Approved Time <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="posted_task_proof_submit_auto_approved_time" name="posted_task_proof_submit_auto_approved_time" value="{{ old('posted_task_proof_submit_auto_approved_time', $defaultSetting->posted_task_proof_submit_auto_approved_time) }}" placeholder="Posted Task Proof Submit Auto Approved Time">
-                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                            </div>
+                            <input type="number" class="form-control" id="posted_task_proof_submit_auto_approved_time" name="posted_task_proof_submit_auto_approved_time" value="{{ old('posted_task_proof_submit_auto_approved_time', $defaultSetting->posted_task_proof_submit_auto_approved_time) }}" placeholder="Posted Task Proof Submit Auto Approved Time">
                             @error('posted_task_proof_submit_auto_approved_time')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="posted_task_proof_submit_rejected_charge_auto_refund_time" class="form-label">Posted Task Proof Submit Rejected Charge Auto Refund Time <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="posted_task_proof_submit_rejected_charge_auto_refund_time" name="posted_task_proof_submit_rejected_charge_auto_refund_time" value="{{ old('posted_task_proof_submit_rejected_charge_auto_refund_time', $defaultSetting->posted_task_proof_submit_rejected_charge_auto_refund_time) }}" placeholder="Posted Task Proof Submit Rejected Charge Auto Refund Time">
-                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
-                            </div>
+                            <input type="number" class="form-control" id="posted_task_proof_submit_rejected_charge_auto_refund_time" name="posted_task_proof_submit_rejected_charge_auto_refund_time" value="{{ old('posted_task_proof_submit_rejected_charge_auto_refund_time', $defaultSetting->posted_task_proof_submit_rejected_charge_auto_refund_time) }}" placeholder="Posted Task Proof Submit Rejected Charge Auto Refund Time">
                             @error('posted_task_proof_submit_rejected_charge_auto_refund_time')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
@@ -237,7 +231,10 @@
                         </div><!-- Col -->
                         <div class="col-lg-3 col-sm-6 mb-3">
                             <label for="user_blocked_instant_resolved_charge" class="form-label">User Blocked Instant Resolved Charge <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="user_blocked_instant_resolved_charge" name="user_blocked_instant_resolved_charge" value="{{ old('user_blocked_instant_resolved_charge', $defaultSetting->user_blocked_instant_resolved_charge) }}" placeholder="User Blocked Instant Resolved Charge">
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="user_blocked_instant_resolved_charge" name="user_blocked_instant_resolved_charge" value="{{ old('user_blocked_instant_resolved_charge', $defaultSetting->user_blocked_instant_resolved_charge) }}" placeholder="User Blocked Instant Resolved Charge">
+                                <span class="input-group-text input-group-addon">{{ get_site_settings('site_currency_symbol') }}</span>
+                            </div>
                             @error('user_blocked_instant_resolved_charge')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror

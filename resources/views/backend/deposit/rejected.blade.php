@@ -15,19 +15,19 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="method" class="form-label">Deposit Method</label>
+                                <label for="filter_user_id" class="form-label">User Id</label>
+                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="method" class="form-label">Method</label>
                                 <select class="form-select filter_data" id="filter_method">
                                     <option value="">-- Select Deposit Method --</option>
                                     <option value="Bkash">Bkash</option>
                                     <option value="Nagad">Nagad</option>
                                     <option value="Rocket">Rocket</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="filter_user_id" class="form-label">User Id</label>
-                                <input type="number" id="filter_user_id" class="form-control filter_data" placeholder="Search User Id">
                             </div>
                         </div>
                         <div class="col-md-3">

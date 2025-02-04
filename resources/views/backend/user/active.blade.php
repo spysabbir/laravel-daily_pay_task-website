@@ -58,21 +58,21 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_duplicate_device_check" class="form-label">Duplicate Device Check</label>
-                                <select class="form-select filter_data" id="filter_duplicate_device_check">
-                                    <option value="">-- Duplicate Device Check --</option>
-                                    <option value="Matched">Matched</option>
-                                    <option value="Not Matched">Not Matched</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
                                 <label for="filter_last_activity" class="form-label">Last Activity</label>
                                 <select class="form-select filter_data" id="filter_last_activity">
                                     <option value="">-- Select Last Activity --</option>
                                     <option value="Online">Online</option>
                                     <option value="Offline">Offline</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filter_duplicate_device_check" class="form-label">Duplicate Device Check</label>
+                                <select class="form-select filter_data" id="filter_duplicate_device_check">
+                                    <option value="">-- Duplicate Device Check --</option>
+                                    <option value="Matched">Matched</option>
+                                    <option value="Not Matched">Not Matched</option>
                                 </select>
                             </div>
                         </div>

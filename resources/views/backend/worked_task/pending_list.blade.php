@@ -92,8 +92,8 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="filter_proof_id" class="form-label">Proof Id</label>
-                                <input type="number" id="filter_proof_id" class="form-control filter_data" placeholder="Search Proof Id">
+                                <label for="filter_worked_task_id" class="form-label">Worked Task Id</label>
+                                <input type="number" id="filter_worked_task_id" class="form-control filter_data" placeholder="Search Worked Task Id">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -109,7 +109,7 @@
                         <thead>
                             <tr>
                                 <th>Sl No</th>
-                                <th>Proof Id</th>
+                                <th>Worked Task Id</th>
                                 <th>User Details</th>
                                 <th>
                                     <!-- Header Button for Expand/Collapse All -->
@@ -169,7 +169,7 @@
                 url: "{{ route('backend.pending.worked_task_view', encrypt($postTask->id)) }}",
                 type: "GET",
                 data: function (d) {
-                    d.proof_id = $('#filter_proof_id').val();
+                    d.worked_task_id = $('#filter_worked_task_id').val();
                     d.user_id = $('#filter_user_id').val();
                 },
                 dataSrc: function (json) {

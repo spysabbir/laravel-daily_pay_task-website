@@ -41,7 +41,7 @@ class NotificationController extends Controller implements HasMiddleware
             }
 
             if ($request->type) {
-                if ($request->type == 'All User') {
+                if ($request->type == 'User') {
                     $notificationsQuery->whereHasMorph('notifiable', User::class, function ($query) {
                         $query->where('user_type', 'Frontend');
                     });
@@ -120,14 +120,14 @@ class NotificationController extends Controller implements HasMiddleware
         $validator = Validator::make($request->all(), [
             'type' => 'required|string',
             'user_id' => [
-                'required_if:type,Single User',
-                'required_if:type,Single Employee',
+                'required_if:type,Multiple User',
+                'required_if:type,Multiple Employee',
                 'nullable', // Prevents validation error when not required
             ],
             'title' => 'required|string|max:255',
             'message' => 'required|string',
         ], [
-            'user_id.required_if' => 'The Name field is required when type is Single Employee or Single User.',
+            'user_id.required_if' => 'The Name field is required when type is Multiple Employee or Multiple User.',
         ]);
 
         if($validator->fails()){
@@ -141,22 +141,28 @@ class NotificationController extends Controller implements HasMiddleware
                 'message' => $request->message,
             ];
 
-            if($request->type == 'All Employee') {
+            if ($request->type == 'All Employee') {
                 $allEmployee = User::where('user_type', 'Backend')->where('status', 'Active')->get();
-                foreach($allEmployee as $employee) {
+                foreach ($allEmployee as $employee) {
                     $employee->notify(new CustomNotification($notificationData));
                 }
-            } else if($request->type == 'Single Employee') {
-                $employee = User::where('id', $request->user_id)->first();
-                $employee->notify(new CustomNotification($notificationData));
-            } else if($request->type == 'All User') {
+            } elseif ($request->type == 'Multiple Employee') {
+                $employeeIds = explode(',', $request->user_id); // Convert to an array
+                $employees = User::whereIn('id', $employeeIds)->get();
+                foreach ($employees as $employee) {
+                    $employee->notify(new CustomNotification($notificationData));
+                }
+            } elseif ($request->type == 'All User') {
                 $allUser = User::where('user_type', 'Frontend')->whereIn('status', ['Active', 'Blocked'])->get();
-                foreach($allUser as $user) {
+                foreach ($allUser as $user) {
                     $user->notify(new CustomNotification($notificationData));
                 }
-            } else if($request->type == 'Single User') {
-                $user = User::where('id', $request->user_id)->first();
-                $user->notify(new CustomNotification($notificationData));
+            } elseif ($request->type == 'Multiple User') {
+                $userIds = explode(',', $request->user_id); // Convert to an array
+                $users = User::whereIn('id', $userIds)->get();
+                foreach ($users as $user) {
+                    $user->notify(new CustomNotification($notificationData));
+                }
             }
 
             return response()->json([
