@@ -30,7 +30,6 @@
                                 <i class="bx bx-show"></i>
                             </button>
                         </div>
-                        <small class="text-info d-block">The password must be at least 8 characters long and contain upper- and lower-case letters, numbers, and symbols.</small>
                         @error('password')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

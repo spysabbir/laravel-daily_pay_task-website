@@ -22,7 +22,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label>Enter Date of Birth <span class="text-danger">*</span></label>
+                        <label>Select Date of Birth <span class="text-danger">*</span></label>
                         <input type="date" class="form-control" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth') }}" placeholder="Enter Your Date of Birth" required>
                         @error('date_of_birth')
                             <span class="text-danger">{{ $message }}</span>
@@ -30,7 +30,7 @@
                         <small class="text-danger d-block" id="date_of_birth_error"></small>
                     </div>
                     <div class="form-group">
-                        <label>Gender <span class="text-danger">*</span></label>
+                        <label>Select Gender <span class="text-danger">*</span></label>
                         <div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" class="form-check-input" value="Male" name="gender" id="Male" @checked(old('gender') === 'Male') required>

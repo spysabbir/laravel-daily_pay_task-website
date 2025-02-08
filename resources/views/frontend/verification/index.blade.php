@@ -10,10 +10,10 @@
             <div class="alert alert-info alert-dismissible fade show text-center" role="alert">
                 <div class="alert-heading mb-3">
                     <i data-feather="alert-circle"></i>
-                    <h4>Account Verification Pending!</h4>
+                    <h4>Account Verification Request is Pending!</h4>
                 </div>
                 <p class="mt-3">
-                    Your account verification is pending. Please wait for admin approval. Admin will verify your account as soon as possible. If you have any issue, please contact with us. We are always ready to help you.
+                    Please wait for the approval. Admin will check your verification request as soon as possible. If you have any issue, please contact with us. We are always ready to help you.
                 </p>
                 <hr>
                 <div class="mb-0">
@@ -24,10 +24,10 @@
             <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
                 <div class="alert-heading mb-3">
                     <i data-feather="alert-circle"></i>
-                    <h4>Account Verification Rejected!</h4>
+                    <h4>Account Verification Request is Rejected!</h4>
                 </div>
                 <p class="mt-3">
-                    Your account verification is rejected by admin. Please contact with us to re-verify your account. We are always ready to help you.
+                    Check your verification request rejected reason. Finally, you can re-verify your account with your original documents. If you have any issue, please contact with us. We are always ready to help you
                 </p>
                 <hr>
                 <div class="mb-0">
@@ -76,27 +76,24 @@
                 @if ($verification && $verification->status !== 'Rejected')
                     @if ($verification->status === 'Pending')
                         <div class="alert alert-warning">
-                            Your Verification is Pending
+                            Your Verification Request is Pending
                             <p>
-                                <strong>Note:</strong> Please wait for the approval.
+                                <strong>Note:</strong> Please wait for the approval. Admin will check your verification request as soon as possible. If you have any issue, please contact with us. We are always ready to help you.
                             </p>
                         </div>
                     @elseif ($verification->status === 'Approved')
                         <div class="alert alert-success">
-                            Your Verification is Approved
+                            Your Verification Request is Approved
                             <p>
-                                <strong>Note:</strong> You can now use all the features.
+                                <strong>Note:</strong> You can now use all the features. Thanks for verifying your account. Please stay with us.
                             </p>
                         </div>
                     @endif
                 @else
                     @if ($verification && $verification->status === 'Rejected')
                     <div class="alert alert-danger">
-                        Your Verification is Rejected <br>
+                        Your Verification Request is Rejected <br>
                         Rejected Reason: {{ $verification->rejected_reason }} <br>
-                        <p>
-                            <strong>Note:</strong> Please re-submit the verification.
-                        </p>
                     </div>
                     @endif
                     <form class="forms-sample" action="{{ $verification && $verification->status === 'Rejected' ? route('re-verification.store') : route('verification.store') }}" method="POST" enctype="multipart/form-data">
@@ -135,7 +132,7 @@
                                     <input type="file" class="form-control" id="id_front_image" name="id_front_image" accept=".jpg, .jpeg, .png">
                                     <small class="text-info">Id Front Image must be a valid image file (jpeg, jpg, png) and the file size must be less than 2MB.</small>
                                     <span id="id_front_imageError" class="text-danger d-block"></span>
-                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image ?? '' }}" id="id_front_image_preview" class="img-fluid mt-3" style="height: 280px; display: {{ $verification && $verification->id_front_image ? 'block' : 'none' }};">
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_front_image ?? '' }}" id="id_front_image_preview" class="img-fluid mt-3" style="height: 220px; display: {{ $verification && $verification->id_front_image ? 'block' : 'none' }};">
                                 </div>
                                 @error('id_front_image')
                                     <span class="text-danger">{{ $message }}</span>
@@ -147,7 +144,7 @@
                                     <input type="file" class="form-control" id="id_with_face_image" name="id_with_face_image" accept=".jpg, .jpeg, .png">
                                     <small class="text-info">Id With Face Image must be a valid image file (jpeg, jpg, png) and the file size must be less than 2MB.</small>
                                     <span id="id_with_face_imageError" class="text-danger d-block"></span>
-                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image ?? '' }}" id="id_with_face_image_preview" class="img-fluid mt-3" style="height: 280px; display: {{ $verification && $verification->id_with_face_image ? 'block' : 'none' }};">
+                                    <img src="{{ asset('uploads/verification_photo') }}/{{ $verification->id_with_face_image ?? '' }}" id="id_with_face_image_preview" class="img-fluid mt-3" style="height: 220px; display: {{ $verification && $verification->id_with_face_image ? 'block' : 'none' }};">
                                 </div>
                                 @error('id_with_face_image')
                                     <span class="text-danger">{{ $message }}</span>

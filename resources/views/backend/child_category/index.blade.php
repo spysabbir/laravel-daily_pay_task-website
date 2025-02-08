@@ -25,7 +25,7 @@
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="category_id" name="category_id">
+                                            <select class="form-select category-select2-single" id="category_id" name="category_id" required data-width="100%">
                                                 <option value="">-- Select Category --</option>
                                                 @foreach ($categories as $category)
                                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -35,7 +35,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="sub_category_id" class="form-label">Sub Category <span class="text-danger">*</span></label>
-                                            <select class="form-select get_sub_categories" id="sub_category_id" name="sub_category_id">
+                                            <select class="form-select get_sub_categories subcategory-select2-single" id="sub_category_id" name="sub_category_id" required data-width="100%">
                                                 <option value="">-- Select Category First --</option>
                                             </select>
                                             <span class="text-danger error-text sub_category_id_error"></span>
@@ -153,7 +153,7 @@
                                                 <input type="hidden" id="child_category_id">
                                                 <div class="mb-3">
                                                     <label for="edit_category_id" class="form-label">Category <span class="text-danger">*</span></label>
-                                                    <select class="form-select" id="edit_category_id" name="category_id">
+                                                    <select class="form-select category-select2-single-edit" id="edit_category_id" name="category_id" required data-width="100%">
                                                         <option value="">-- Select Category --</option>
                                                         @foreach ($categories as $category)
                                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -163,7 +163,7 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="edit_sub_category_id" class="form-label">Sub Category <span class="text-danger">*</span></label>
-                                                    <select class="form-select get_edit_sub_categories" id="edit_sub_category_id" name="sub_category_id">
+                                                    <select class="form-select get_edit_sub_categories subcategory-select2-single-edit" id="edit_sub_category_id" name="sub_category_id" required data-width="100%">
                                                         <option value="">-- Select Category First --</option>
                                                         @foreach ($sub_categories as $sub_category)
                                                             <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
@@ -229,6 +229,46 @@
         // Filter Data
         $('.filter_data').change(function(){
             $('#allDataTable').DataTable().ajax.reload();
+        });
+
+        // Select2
+        $.fn.select2.defaults.set("dropdownParent", $(document.body));
+        if ($(".category-select2-single").length) {
+            $(".category-select2-single").select2({
+                dropdownParent: $('.createModel'),
+                placeholder: "-- Select Category --",
+            });
+        }
+        if ($(".subcategory-select2-single").length) {
+            $(".subcategory-select2-single").select2({
+                dropdownParent: $('.createModel'),
+                placeholder: "-- Select Subcategory --",
+            });
+        }
+        if ($(".category-select2-single-edit").length) {
+            $(".category-select2-single-edit").select2({
+                dropdownParent: $('.editModal'),
+                placeholder: "-- Select Category --",
+            });
+        }
+        if ($(".subcategory-select2-single-edit").length) {
+            $(".subcategory-select2-single-edit").select2({
+                dropdownParent: $('.editModal'),
+                placeholder: "-- Select Subcategory --",
+            });
+        }
+
+        // Reset Form
+        $('.createModel').on('hidden.bs.modal', function () {
+            $('#createForm')[0].reset();
+            $(document).find('span.error-text').text('');
+
+            if ($(".category-select2-single").length) {
+                $(".category-select2-single").val('').trigger('change');
+            }
+            if ($(".subcategory-select2-single").length) {
+                $(".subcategory-select2-single").val('').trigger('change');
+            }
         });
 
         // Store Data

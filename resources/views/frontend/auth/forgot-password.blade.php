@@ -14,6 +14,9 @@
                 </div>
                 @endif
                 <form class="reset-form" method="POST" action="{{ route('password.email') }}">
+                    <div class="text-center mb-4">
+                        <strong class="text-info">Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.</strong>
+                    </div>
                     @csrf
                     <div class="form-group">
                         <label>Enter Email <span class="text-danger">*</span></label>

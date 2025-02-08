@@ -142,7 +142,7 @@
                         </div>
                         <form class="newsletter-form" id="subscribeForm" action="{{ route('subscribe') }}" method="POST">
                             @csrf
-                            <input type="email" class="form-control" placeholder="Enter your email" name="subscribe_email">
+                            <input type="email" class="form-control" placeholder="Enter your email" name="subscribe_email" required>
                             <span class="text-warning error-text subscribe_email_error"></span>
                             <button class="default-btn sub-btn" type="submit">Subscribe</button>
                         </form>

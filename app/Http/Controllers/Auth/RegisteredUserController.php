@@ -17,6 +17,14 @@ class RegisteredUserController extends Controller
 {
     public function register(Request $request)
     {
+        if (Auth::check()) {
+            if (Auth::user()->user_type === 'Backend') {
+                return redirect()->route('backend.dashboard');
+            }
+
+            return redirect()->route('dashboard');
+        }
+
         $referral_code = $request->query('ref');
         return view('frontend.auth.register', ['referral_code' => $referral_code]);
     }

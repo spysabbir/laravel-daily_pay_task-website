@@ -28,7 +28,7 @@
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="user_id" class="form-label">User Name <span class="text-danger">*</span></label>
-                                            <select class="form-select js-select2-single" id="user_id" name="user_id" required data-width="100%">
+                                            <select class="form-select user-select2-single" id="user_id" name="user_id" required data-width="100%">
                                                 <option value="">-- Select User --</option>
                                                 @foreach ($users as $user)
                                                     <option value="{{ $user->id }}">{{ $user->id }} - {{ $user->name }} </option>
@@ -233,9 +233,25 @@
             $('#allDataTable').DataTable().ajax.reload();
         });
 
+        // Select2
+        $.fn.select2.defaults.set("dropdownParent", $(document.body));
+        if ($(".user-select2-single").length) {
+            $(".user-select2-single").select2({
+                dropdownParent: $('.createModel'),
+                placeholder: "-- Select User --",
+            });
+        }
+
         /// Default all div hide when click on modal open
         $('.createModel').on('show.bs.modal', function (e) {
             $('#receive_method_div, #deposit_balance_check_div, #withdraw_balance_check_div, #transfer_amount_div, #withdraw_balance_transfer_charge_div, #deposit_balance_transfer_charge_div, #payable_amount_div').hide();
+
+            $('#createForm')[0].reset();
+            $(document).find('span.error-text').text('');
+
+            if ($(".user-select2-single").length) {
+                $(".user-select2-single").val('').trigger('change');
+            }
         });
 
         // Handle Send Method change
@@ -292,7 +308,6 @@
 
         // Trigger when either user_id or sendMethod changes
         $('#user_id, #sendMethod').on('change', handleBalanceTransfer);
-
 
         // Function to calculate payable amount
         function calculatePayableAmount() {

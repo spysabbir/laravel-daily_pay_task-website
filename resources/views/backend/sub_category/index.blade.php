@@ -25,7 +25,7 @@
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="category_id" name="category_id">
+                                            <select class="form-select category-select2-single" id="category_id" name="category_id" required data-width="100%">
                                                 <option value="">-- Select Category --</option>
                                                 @foreach ($categories as $category)
                                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -136,7 +136,7 @@
                                                 <input type="hidden" id="sub_category_id">
                                                 <div class="mb-3">
                                                     <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
-                                                    <select class="form-select category_id" id="category_id" name="category_id">
+                                                    <select class="form-select category_id category-select2-single-edit" id="category_id" name="category_id" required data-width="100%">
                                                         <option value="">-- Select Category --</option>
                                                         @foreach ($categories as $category)
                                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -202,6 +202,31 @@
             $('#allDataTable').DataTable().ajax.reload();
         });
 
+        // Select2
+        $.fn.select2.defaults.set("dropdownParent", $(document.body));
+        if ($(".category-select2-single").length) {
+            $(".category-select2-single").select2({
+                dropdownParent: $('.createModel'),
+                placeholder: "-- Select Category --",
+            });
+        }
+        if ($(".category-select2-single-edit").length) {
+            $(".category-select2-single-edit").select2({
+                dropdownParent: $('.editModal'),
+                placeholder: "-- Select Category --",
+            });
+        }
+
+        // Reset Form
+        $('.createModel').on('hidden.bs.modal', function () {
+            $('#createForm')[0].reset();
+            $(document).find('span.error-text').text('');
+
+            if ($(".category-select2-single").length) {
+                $(".category-select2-single").val('').trigger('change');
+            }
+        });
+
         // Store Data
         $('#createForm').submit(function(event) {
             event.preventDefault();
@@ -240,15 +265,17 @@
         // Edit Data
         $(document).on('click', '.editBtn', function () {
             var id = $(this).data('id');
-            var url = "{{ route('backend.sub_category.edit', ":id") }}";
-            url = url.replace(':id', id)
+            var url = "{{ route('backend.sub_category.edit', ':id') }}";
+            url = url.replace(':id', id);
+
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
                     $('#sub_category_id').val(response.id);
-                    $('.category_id').val(response.category_id);
                     $('#sub_category_name').val(response.name);
+
+                    $(".category_id").val(response.category_id).trigger('change');
 
                     $('.editModal').modal('show');
                 },

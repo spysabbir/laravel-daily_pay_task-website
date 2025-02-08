@@ -18,6 +18,7 @@ use App\Models\Report;
 use App\Models\Withdraw;
 use App\Models\Contact;
 use App\Models\Support;
+use Illuminate\Support\Str;
 
 class BackendController extends Controller
 {
@@ -248,7 +249,12 @@ class BackendController extends Controller
                     return $row->data['title'];
                 })
                 ->editColumn('message', function ($row) {
-                    return $row->data['message'];
+                    $message = Str::limit($row->data['message'],40, '...');
+                    return e($message);
+                })
+                ->addColumn('message_full', function ($row) {
+                    $message = nl2br(e($row->data['message']));
+                    return '<span class="badge bg-info text-dark my-2">Message: </span> ' . $message;
                 })
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->diffForHumans();
@@ -265,7 +271,7 @@ class BackendController extends Controller
                     'readNotificationsCount' => $readNotificationsCount,
                     'unreadNotificationsCount' => $unreadNotificationsCount,
                 ])
-                ->rawColumns(['status'])
+                ->rawColumns(['message', 'message_full', 'status'])
                 ->make(true);
         }
 

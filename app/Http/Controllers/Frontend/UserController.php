@@ -28,6 +28,7 @@ use App\Events\SupportEvent;
 use App\Models\FavoriteUser;
 use Carbon\Carbon;
 use App\Notifications\UserStatusNotification;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -1029,7 +1030,12 @@ class UserController extends Controller
                     return $row->data['title'];
                 })
                 ->editColumn('message', function ($row) {
-                    return $row->data['message'];
+                    $message = Str::limit($row->data['message'],40, '...');
+                    return e($message);
+                })
+                ->addColumn('message_full', function ($row) {
+                    $message = nl2br(e($row->data['message']));
+                    return '<span class="badge bg-info text-dark my-2">Message: </span> ' . $message;
                 })
                 ->editColumn('created_at', function ($row) {
                     return $row->created_at->diffForHumans();
@@ -1046,7 +1052,7 @@ class UserController extends Controller
                     'readNotificationsCount' => $readNotificationsCount,
                     'unreadNotificationsCount' => $unreadNotificationsCount,
                 ])
-                ->rawColumns(['status'])
+                ->rawColumns(['message', 'message_full', 'status'])
                 ->make(true);
         }
 

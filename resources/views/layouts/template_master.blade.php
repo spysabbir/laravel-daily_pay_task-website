@@ -188,6 +188,9 @@
                                                 </a>
                                             @endforelse
                                         </div>
+                                        <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
+                                            <a href="{{ Auth::user()->isFrontendUser() ? route('support') : route('backend.support') }}">View all</a>
+                                        </div>
                                     @else
                                         <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
                                             <div class="flex-grow-1 me-2">
@@ -195,9 +198,6 @@
                                             </div>
                                         </a>
                                     @endif
-                                </div>
-                                <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
-                                    <a href="{{ Auth::user()->isFrontendUser() ? route('support') : route('backend.support') }}">View all</a>
                                 </div>
                             </div>
                         </li>
@@ -214,7 +214,9 @@
                                 @if (Auth::user()->isFrontendUser())
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
                                     <p class="text-info mx-2">{{ Auth::user()->unreadNotifications->count() }} New Notifications</p>
+                                    @if (Auth::user()->unreadNotifications->count() > 0)
                                     <a href="{{ route('notification.read.all') }}" class="text-warning mx-2">Clear all</a>
+                                    @endif
                                 </div>
                                 <div class="p-1">
                                     @if (Auth::user()->unreadNotifications->count() > 0)
@@ -237,6 +239,9 @@
                                                 </a>
                                             @endforeach
                                         </div>
+                                        <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
+                                            <a href="{{ route('notification') }}">View all</a>
+                                        </div>
                                     @else
                                         <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
                                             <div class="flex-grow-1 me-2">
@@ -245,13 +250,12 @@
                                         </a>
                                     @endif
                                 </div>
-                                <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
-                                    <a href="{{ route('notification') }}">View all</a>
-                                </div>
                                 @else
                                 <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
                                     <p class="text-info mx-2">{{ Auth::user()->unreadNotifications->count() }} New Notifications</p>
+                                    @if (Auth::user()->unreadNotifications->count() > 0)
                                     <a href="{{ route('backend.notification.read.all') }}" class="text-warning mx-2">Clear all</a>
+                                    @endif
                                 </div>
                                 <div class="p-1">
                                     @if (Auth::user()->unreadNotifications->count() > 0)
@@ -270,6 +274,9 @@
                                                 </a>
                                             @endforeach
                                         </div>
+                                        <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
+                                            <a href="{{ route('backend.notification') }}">View all</a>
+                                        </div>
                                     @else
                                         <a href="javascript:;" class="dropdown-item d-flex align-items-center py-2">
                                             <div class="flex-grow-1 me-2">
@@ -277,9 +284,6 @@
                                             </div>
                                         </a>
                                     @endif
-                                </div>
-                                <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
-                                    <a href="{{ route('backend.notification') }}">View all</a>
                                 </div>
                                 @endif
                             </div>

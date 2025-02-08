@@ -26,7 +26,7 @@
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="user_id" class="form-label">User Name <span class="text-danger">*</span></label>
-                                            <select class="form-select js-select2-single" id="user_id" name="user_id" required data-width="100%">
+                                            <select class="form-select user-select2-single" id="user_id" name="user_id" required data-width="100%">
                                                 <option value="">-- Select User --</option>
                                                 @foreach ($users as $user)
                                                     <option value="{{ $user->id }}">{{ $user->id }} - {{ $user->name }} </option>
@@ -184,6 +184,25 @@
         // Filter Data
         $('.filter_data').keyup(function(){
             $('#allDataTable').DataTable().ajax.reload();
+        });
+
+        // Select2
+        $.fn.select2.defaults.set("dropdownParent", $(document.body));
+        if ($(".user-select2-single").length) {
+            $(".user-select2-single").select2({
+                dropdownParent: $('.createModel'),
+                placeholder: "-- Select User --",
+            });
+        }
+
+        // Reset Form
+        $('.createModel').on('hidden.bs.modal', function () {
+            $('#createForm')[0].reset();
+            $(document).find('span.error-text').text('');
+
+            if ($(".user-select2-single").length) {
+                $(".user-select2-single").val('').trigger('change');
+            }
         });
 
         // Store Data

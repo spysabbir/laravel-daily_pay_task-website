@@ -63,37 +63,37 @@
             <form id="contactForm" class="contact-form" action="{{ route('contact.store') }}" method="POST">
                 @csrf
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" name="name" class="form-control" placeholder="Your Name">
+                            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" required>
                             <span class="text-danger error-text name_error"></span>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <input type="email" name="email" class="form-control" placeholder="Your Email">
+                            <input type="email" name="email" class="form-control" placeholder="Enter Your Email" required>
                             <span class="text-danger error-text email_error"></span>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" name="phone" class="form-control" placeholder="Your Phone">
+                            <input type="number" name="phone" class="form-control" placeholder="Enter Your Phone">
                             <span class="text-danger error-text phone_error"></span>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
-                            <input type="text" name="subject" class="form-control" placeholder="Your Subject">
+                            <input type="text" name="subject" class="form-control" placeholder="Enter Your Subject" required>
                             <span class="text-danger error-text subject_error"></span>
                         </div>
                     </div>
 
                     <div class="col-lg-12 col-md-12">
                         <div class="form-group">
-                            <textarea name="message" class="form-control message-field" cols="30" rows="7" placeholder="Your Message"></textarea>
+                            <textarea name="message" class="form-control message-field" cols="30" rows="7" placeholder="Enter Your Message" required></textarea>
                             <span class="text-danger error-text message_error"></span>
                         </div>
                     </div>
