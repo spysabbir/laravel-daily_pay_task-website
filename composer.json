@@ -12,6 +12,7 @@
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^11.9",
         "laravel/reverb": "@beta",
+        "laravel/socialite": "^5.17",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",
         "propaganistas/laravel-disposable-email": "^2.4",

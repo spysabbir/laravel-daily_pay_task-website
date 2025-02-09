@@ -21,6 +21,10 @@ Route::get('verify-email', EmailVerificationPromptController::class)->name('veri
 Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)->name('verification.verify')->middleware(['auth', 'signed', 'throttle:6,1']);
 Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->name('verification.send')->middleware(['auth', 'throttle:6,1']);
 
+// Socialite
+Route::get('/auth/{provider}/redirect', [AuthenticatedSessionController::class, 'redirectToProvider'])->name('socialite.redirect');
+Route::get('/auth/{provider}/callback', [AuthenticatedSessionController::class, 'handleProviderCallback'])->name('socialite.callback');
+
 // Backend
 Route::get('backend/login', [AuthenticatedSessionController::class, 'backendLogin'])->name('backend.login');
 Route::get('backend-forgot-password', [PasswordResetLinkController::class, 'backendPasswordRequest'])->name('backend.password.request');

@@ -60,21 +60,21 @@
                         @endif
                     </div>
 
-                    {{-- <div class="other-signin text-center">
+                    <div class="other-signin text-center">
                         <span>Or sign in with</span>
                         <ul>
                             <li>
-                                <a href="#">
-                                    <i class='bx bxl-google'></i>
+                                <a href="{{ route('socialite.redirect', 'google') }}">
+                                    <i class='bx bxl-google' style="background-color: #db4437;"></i>
                                 </a>
                             </li>
                             <li>
-                                <a href="#">
-                                    <i class='bx bxl-facebook'></i>
+                                <a href="{{ route('socialite.redirect', 'facebook') }}">
+                                    <i class='bx bxl-facebook' style="background-color: #3b5998;"></i>
                                 </a>
                             </li>
                         </ul>
-                    </div> --}}
+                    </div>
 
                     <div class="create-btn text-center">
                         <p>Not have an account?
