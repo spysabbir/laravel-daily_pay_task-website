@@ -13,9 +13,9 @@
                         <h2>How We Started</h2>
                     </div>
 
-                    <p>Daily Micro Tasks was founded to provide individuals with flexible earning opportunities in a fast-paced digital world. Inspired by the gig economy, we aimed to create a user-friendly platform where anyone can complete simple tasks and earn extra income. Our mission is to empower users to maximize their potential!</p>
+                    <p>Daily Pay Task was founded to provide individuals with flexible earning opportunities in a fast-paced digital world. Inspired by the gig economy, we aimed to create a user-friendly platform where anyone can complete simple tasks and earn extra income. Our mission is to empower users to maximize their potential!</p>
 
-                    <p>Daily Micro Tasks was created to empower individuals to earn money easily by completing simple tasks in their spare time.</p>
+                    <p>Daily Pay Task was created to empower individuals to earn money easily by completing simple tasks in their spare time.</p>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -72,7 +72,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>Why You Choose Us Among Other Task Site?</h2>
-            <p>Daily Micro Tasks stands out with its user-friendly interface, diverse task offerings, and quick payouts. Enjoy flexible earning opportunities that fit your schedule, along with a supportive community that helps you maximize your income effortlessly. Join us today!</p>
+            <p>Daily Pay Task stands out with its user-friendly interface, diverse task offerings, and quick payouts. Enjoy flexible earning opportunities that fit your schedule, along with a supportive community that helps you maximize your income effortlessly. Join us today!</p>
         </div>
 
         <div class="row">
@@ -96,7 +96,7 @@
                 <div class="choose-card">
                     <i class="flaticon-computer"></i>
                     <h3>Quick Payouts</h3>
-                    <p>At Daily Micro Tasks, we prioritize timely payments. Enjoy hassle-free earnings with fast payout options, ensuring you receive your rewards as soon as possible, making your efforts truly worthwhile.</p>
+                    <p>At Daily Pay Task, we prioritize timely payments. Enjoy hassle-free earnings with fast payout options, ensuring you receive your rewards as soon as possible, making your efforts truly worthwhile.</p>
                 </div>
             </div>
         </div>
@@ -114,9 +114,9 @@
                         <h2>Grow Your Business Faster With Premium Advertising</h2>
                     </div>
 
-                    <p>Unlock your brand’s potential with premium advertising on Daily Micro Tasks. Reach a targeted audience eager to engage with your services. Our platform offers flexible ad placements, allowing you to showcase your offerings effectively. Boost visibility, drive traffic, and accelerate growth with our tailored advertising solutions today!</p>
+                    <p>Unlock your brand’s potential with premium advertising on Daily Pay Task. Reach a targeted audience eager to engage with your services. Our platform offers flexible ad placements, allowing you to showcase your offerings effectively. Boost visibility, drive traffic, and accelerate growth with our tailored advertising solutions today!</p>
 
-                    <p>Accelerate your business growth with premium advertising on Daily Micro Tasks. Connect with a targeted audience and showcase your services effectively. Enjoy flexible ad placements that enhance visibility and drive traffic, helping you achieve your marketing goals quickly and efficiently!</p>
+                    <p>Accelerate your business growth with premium advertising on Daily Pay Task. Connect with a targeted audience and showcase your services effectively. Enjoy flexible ad placements that enhance visibility and drive traffic, helping you achieve your marketing goals quickly and efficiently!</p>
 
                     <div class="theme-btn">
                         <a href="{{ route('contact.us') }}" class="default-btn">Contact Us</a>
@@ -176,7 +176,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>What Client’s Say About Us</h2>
-            <p>Clients love Daily Micro Tasks for its user-friendly design and diverse task selection. They highlight the quick payouts and flexible earning opportunities, enabling them to maximize their income effortlessly. Our supportive community keeps them engaged and motivated to succeed!</p>
+            <p>Clients love Daily Pay Task for its user-friendly design and diverse task selection. They highlight the quick payouts and flexible earning opportunities, enabling them to maximize their income effortlessly. Our supportive community keeps them engaged and motivated to succeed!</p>
         </div>
 
         <div class="row">

@@ -14,9 +14,9 @@ class SiteSettingTableSeeder extends Seeder
     public function run(): void
     {
         $setting = [
-            'site_name' => 'Daily Micro Tasks',
-            'site_tagline' => 'Turn Your Spare Time into Earn',
-            'site_description' => 'At Daily Micro Tasks, turn your spare time into earn with a variety of simple, rewarding tasks. Earn extra cash during your daily routine and discover how small efforts can lead to significant rewards. Join our community and start maximizing your earn today!',
+            'site_name' => 'Daily Pay Task',
+            'site_tagline' => 'Your Effort, Your Reward - Your Time Is Valuable!',
+            'site_description' => 'Earn daily by completing quick micro-tasks. Get paid instantly for your time and effort. Join now and turn your spare moments into real cash!',
             'site_url' => 'http://127.0.0.1:8000',
             'site_timezone' => 'Asia/Dhaka',
             'site_currency' => 'BDT',

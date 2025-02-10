@@ -15,15 +15,15 @@ class SeoSettingTableSeeder extends Seeder
     {
         $setting = [
             'author' => 'Spy Sabbir',
-            'keywords' => 'Daily Micro Tasks',
+            'keywords' => 'Daily Pay Task',
             'title' => 'Turn Your Spare Time into Profit',
-            'description' => 'Daily Micro Tasks - Turn Your Spare Time into Profit',
+            'description' => 'Daily Pay Task - Turn Your Spare Time into Profit',
 
-            'og_site_name' => 'Daily Micro Tasks',
-            'og_url' => 'https://dailymicrotasks.com',
+            'og_site_name' => 'Daily Pay Task',
+            'og_url' => 'https://dailypaytask.com',
 
-            'twitter_card' => 'Daily Micro Tasks',
-            'twitter_site' => 'Daily Micro Tasks',
+            'twitter_card' => 'Daily Pay Task',
+            'twitter_site' => 'Daily Pay Task',
 
             'image' => 'default_seo_image.jpg',
             'image_alt' => 'seo_iamge',

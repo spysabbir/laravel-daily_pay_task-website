@@ -65,12 +65,12 @@
                         <ul>
                             <li>
                                 <a href="{{ route('socialite.redirect', 'google') }}">
-                                    <i class='bx bxl-google' style="background-color: #db4437;"></i>
+                                    <i class='bx bxl-google' style="background-color: #db4437; color: #fff;"></i>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('socialite.redirect', 'facebook') }}">
-                                    <i class='bx bxl-facebook' style="background-color: #3b5998;"></i>
+                                    <i class='bx bxl-facebook' style="background-color: #3b5998; color: #fff;"></i>
                                 </a>
                             </li>
                         </ul>

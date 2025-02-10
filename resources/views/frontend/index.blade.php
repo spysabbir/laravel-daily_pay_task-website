@@ -34,7 +34,7 @@
                 <div class="why-choose-text pt-100 pb-70">
                     <div class="section-title">
                         <h2>Why You Choose {{ get_site_settings('site_name') }}?</h2>
-                        <p>Daily Micro Tasks provides the flexibility to earn on your own schedule. Complete simple tasks for quick payouts, and enjoy a supportive community. Turn your spare time into cash and explore diverse opportunities to boost your income effortlessly!</p>
+                        <p>Daily Pay Task provides the flexibility to earn on your own schedule. Complete simple tasks for quick payouts, and enjoy a supportive community. Turn your spare time into cash and explore diverse opportunities to boost your income effortlessly!</p>
                     </div>
 
                     <div class="row">
@@ -94,7 +94,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>Popular Tasks Category</h2>
-            <p>Discover our Popular Tasks Category at Daily Micro Tasks, featuring in-demand tasks like online surveys, data entry, and content moderation. These easy, rewarding opportunities cater to various skills and interests, making it simple to earn extra cash on your schedule!</p>
+            <p>Discover our Popular Tasks Category at Daily Pay Task, featuring in-demand tasks like online surveys, data entry, and content moderation. These easy, rewarding opportunities cater to various skills and interests, making it simple to earn extra cash on your schedule!</p>
         </div>
 
         <div class="row">
@@ -203,7 +203,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>Top Buyer</h2>
-            <p>Meet our Top Buyer section, showcasing the most sought-after tasks on Daily Micro Tasks. These high-demand tasks offer excellent rewards and quick payouts. Join today to capitalize on popular opportunities and maximize your earnings with the best tasks available!</p>
+            <p>Meet our Top Buyer section, showcasing the most sought-after tasks on Daily Pay Task. These high-demand tasks offer excellent rewards and quick payouts. Join today to capitalize on popular opportunities and maximize your earnings with the best tasks available!</p>
         </div>
 
         <div class="row">
@@ -321,7 +321,7 @@
     <div class="container">
         <div class="section-title text-center">
             <h2>What Client’s Say About Us</h2>
-            <p>Our clients love Daily Micro Tasks for its user-friendly interface and diverse task options. They appreciate the quick payouts and the flexibility to earn on their own schedules. Join our community and see why they keep coming back!</p>
+            <p>Our clients love Daily Pay Task for its user-friendly interface and diverse task options. They appreciate the quick payouts and the flexibility to earn on their own schedules. Join our community and see why they keep coming back!</p>
         </div>
 
         <div class="row">
