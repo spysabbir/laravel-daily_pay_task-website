@@ -14,19 +14,12 @@ class SeoSettingTableSeeder extends Seeder
     public function run(): void
     {
         $setting = [
+            'title' => 'Daily Pay Task - Your Effort, Your Reward',
             'author' => 'Spy Sabbir',
-            'keywords' => 'Daily Pay Task',
-            'title' => 'Turn Your Spare Time into Profit',
-            'description' => 'Daily Pay Task - Turn Your Spare Time into Profit',
-
-            'og_site_name' => 'Daily Pay Task',
-            'og_url' => 'https://dailypaytask.com',
-
-            'twitter_card' => 'Daily Pay Task',
-            'twitter_site' => 'Daily Pay Task',
-
-            'image' => 'default_seo_image.jpg',
-            'image_alt' => 'seo_iamge',
+            'keywords' => 'Daily Pay Task, Daily Pay, Daily Task, Pay Daily, Pay Task, Task Pay, Task Daily, Earn Money, Earn Money Online',
+            'description' => 'Earn daily by completing quick micro-tasks. Get paid instantly for your time and effort. Join now and turn your spare moments into real cash!',
+            'image' => 'default_seo_image.png',
+            'image_alt' => 'Daily Pay Task - Your Effort, Your Reward',
         ];
 
         SeoSetting::create($setting);

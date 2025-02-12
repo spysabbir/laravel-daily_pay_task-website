@@ -43,34 +43,6 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-6 col-sm-12 mb-3">
-                            <label for="og_url" class="form-label">Og Url <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="og_url" name="og_url" value="{{ old('og_url', $seoSetting->og_url) }}" placeholder="Og Url">
-                            @error('og_url')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                        </div><!-- Col -->
-                        <div class="col-lg-6 col-sm-12 mb-3">
-                            <label for="og_site_name" class="form-label">Og Site Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="og_site_name" name="og_site_name" value="{{ old('og_site_name', $seoSetting->og_site_name) }}" placeholder="Og Site Name">
-                            @error('og_site_name')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                        </div><!-- Col -->
-                        <div class="col-lg-6 col-sm-12 mb-3">
-                            <label for="twitter_card" class="form-label">Twitter Card <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="twitter_card" name="twitter_card" value="{{ old('twitter_card', $seoSetting->twitter_card) }}" placeholder="Twitter Card">
-                            @error('twitter_card')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                        </div><!-- Col -->
-                        <div class="col-lg-6 col-sm-12 mb-3">
-                            <label for="twitter_site" class="form-label">Twitter Site <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="twitter_site" name="twitter_site" value="{{ old('twitter_site', $seoSetting->twitter_site) }}" placeholder="Twitter Site">
-                            @error('twitter_site')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                        </div><!-- Col -->
-                        <div class="col-lg-6 col-sm-12 mb-3">
                             <label for="image" class="form-label">Image</label>
                             <input type="file" class="form-control" name="image" id="image">
                             @error('image')

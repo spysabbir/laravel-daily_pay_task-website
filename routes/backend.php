@@ -56,6 +56,8 @@ Route::prefix('backend')->name('backend.')->middleware(['check_user_type:Backend
     Route::post('sms/setting/update', [SettingController::class, 'smsSettingUpdate'])->name('sms.setting.update');
     Route::get('setting/captcha', [SettingController::class, 'captchaSetting'])->name('captcha.setting');
     Route::post('captcha/setting/update', [SettingController::class, 'captchaSettingUpdate'])->name('captcha.setting.update');
+    Route::get('setting/socialite', [SettingController::class, 'socialiteSetting'])->name('socialite.setting');
+    Route::post('socialite/setting/update', [SettingController::class, 'socialiteSettingUpdate'])->name('socialite.setting.update');
     // Expense Category
     Route::resource('expense_category', ExpenseCategoryController::class);
     Route::get('expense_category-trash', [ExpenseCategoryController::class, 'trash'])->name('expense_category.trash');

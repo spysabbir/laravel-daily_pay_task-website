@@ -5,20 +5,19 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="index, follow">
 
     <!-- SEO -->
     <meta name="title" content="{{ $seoSetting->title }}">
     <meta name="description" content="{{ $seoSetting->description }}">
 	<meta name="author" content="{{ $seoSetting->author }}">
 	<meta name="keywords" content="{{ $seoSetting->keywords }}">
-    <meta name='robots' content='index,follow'>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="Website">
-    <meta property="og:site_name" content="{{ $seoSetting->og_site_name }}">
-    <meta property="og:url" content="{{ $seoSetting->og_url }}">
+    <meta property="og:url" content="{{ get_site_settings('site_url') }}">
     <meta property="og:title" content="{{ $seoSetting->title }}">
     <meta property="og:description" content="{{ $seoSetting->description }}">
     <meta property="og:image" content="{{ asset('uploads/setting_photo') }}/{{ $seoSetting->image }}">
@@ -27,8 +26,7 @@
     <meta property="og:image:height" content="630">
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="{{ $seoSetting->twitter_card }}">
-    <meta property="twitter:site" content="{{ $seoSetting->twitter_site }}">
+    <meta property="twitter:card" content="summary">
     <meta property="twitter:title" content="{{ $seoSetting->title }}">
     <meta property="twitter:description" content="{{ $seoSetting->description }}">
     <meta property="twitter:image" content="{{ asset('uploads/setting_photo') }}/{{ $seoSetting->image }}">
@@ -41,10 +39,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Title -->
-	<title>{{ get_site_settings('site_name') }}- @yield('title')</title>
+	<title>{{ get_site_settings('site_name') }} - @yield('title')</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_favicon') }}" />
+    <link rel="icon" href="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_favicon') }}"  type="image/x-icon">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

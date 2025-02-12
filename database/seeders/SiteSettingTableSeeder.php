@@ -15,7 +15,7 @@ class SiteSettingTableSeeder extends Seeder
     {
         $setting = [
             'site_name' => 'Daily Pay Task',
-            'site_tagline' => 'Your Effort, Your Reward - Your Time Is Valuable!',
+            'site_slogan' => 'Your Effort, Your Reward',
             'site_description' => 'Earn daily by completing quick micro-tasks. Get paid instantly for your time and effort. Join now and turn your spare moments into real cash!',
             'site_url' => 'http://127.0.0.1:8000',
             'site_timezone' => 'Asia/Dhaka',

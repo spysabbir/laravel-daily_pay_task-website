@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('seo_settings', function (Blueprint $table) {
+        Schema::create('socialite_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('author')->nullable();
-            $table->string('keywords')->nullable();
-            $table->string('description')->nullable();
-            $table->string('image')->nullable();
-            $table->string('image_alt')->nullable();
+            $table->string('google_client_id')->nullable();
+            $table->string('google_client_secret')->nullable();
+            $table->string('facebook_client_id')->nullable();
+            $table->string('facebook_client_secret')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('seo_settings');
+        Schema::dropIfExists('socialite_settings');
     }
 };

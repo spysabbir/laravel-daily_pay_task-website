@@ -9,6 +9,7 @@ use App\Models\MailSetting;
 use App\Models\SeoSetting;
 use App\Models\SiteSetting;
 use App\Models\SmsSetting;
+use App\Models\SocialiteSetting;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -26,6 +27,7 @@ class SettingController extends Controller implements HasMiddleware
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('mail.setting'), only:['mailSetting', 'mailSettingUpdate']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('sms.setting'), only:['smsSetting', 'smsSettingUpdate']),
             new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('captcha.setting'), only:['captchaSetting', 'captchaSettingUpdate']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('socialite.setting'), only:['socialiteSetting', 'socialiteSettingUpdate']),
         ];
     }
 
@@ -134,7 +136,7 @@ class SettingController extends Controller implements HasMiddleware
             'site_favicon' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'site_name' => 'required|string|max:255',
             'site_url' => 'required|string|max:255|url',
-            'site_tagline' => 'required|string|max:255',
+            'site_slogan' => 'required|string|max:255',
             'site_description' => 'required|string',
             'site_timezone' => 'required|in:UTC,Asia/Dhaka',
             'site_currency' => 'required|in:USD,BDT',
@@ -165,7 +167,7 @@ class SettingController extends Controller implements HasMiddleware
 
         $siteSetting->update([
             'site_name' => $request->site_name,
-            'site_tagline' => $request->site_tagline,
+            'site_slogan' => $request->site_slogan,
             'site_description' => $request->site_description,
             'site_url' => $request->site_url,
             'site_timezone' => $request->site_timezone,
@@ -242,10 +244,6 @@ class SettingController extends Controller implements HasMiddleware
             'author' => 'required',
             'keywords' => 'required',
             'description' => 'required',
-            'og_url' => 'required',
-            'og_site_name' => 'required',
-            'twitter_card' => 'required',
-            'twitter_site' => 'required',
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'image_alt' => 'required',
         ]);
@@ -256,16 +254,12 @@ class SettingController extends Controller implements HasMiddleware
             'author' => $request->author,
             'keywords' => $request->keywords,
             'description' => $request->description,
-            'og_url' => $request->og_url,
-            'og_site_name' => $request->og_site_name,
-            'twitter_card' => $request->twitter_card,
-            'twitter_site' => $request->twitter_site,
             'image_alt' => $request->image_alt,
         ]);
 
         // Seo Image Upload
         if($request->hasFile('image')){
-            if($seoSetting->image != 'default_seo_image.jpg'){
+            if($seoSetting->image != 'default_seo_image.png'){
                 unlink(base_path("public/uploads/setting_photo/").$seoSetting->image);
             }
 
@@ -340,14 +334,14 @@ class SettingController extends Controller implements HasMiddleware
         $request->validate([
             'sms_driver' => 'required',
             'sms_api_key' => 'required',
-            'sms_from' => 'required',
+            'sms_send_from' => 'required',
         ]);
 
         $smsSetting = SmsSetting::first();
         $smsSetting->update([
             'sms_driver' => $request->sms_driver,
             'sms_api_key' => $request->sms_api_key,
-            'sms_from' => $request->sms_from,
+            'sms_send_from' => $request->sms_send_from,
         ]);
 
         $notification = array(
@@ -380,6 +374,35 @@ class SettingController extends Controller implements HasMiddleware
 
         $notification = array(
             'message' => 'Captcha setting updated successfully.',
+            'alert-type' => 'success'
+        );
+
+        return back()->with($notification);
+    }
+
+    public function socialiteSetting(){
+        $socialiteSetting = SocialiteSetting::first();
+        return view('backend.setting.socialite', compact('socialiteSetting'));
+    }
+
+    public function socialiteSettingUpdate(Request $request){
+        $request->validate([
+            'google_client_id' => 'required',
+            'google_client_secret' => 'required',
+            'facebook_client_id' => 'required',
+            'facebook_client_secret' => 'required',
+        ]);
+
+        $socialiteSetting = SocialiteSetting::first();
+        $socialiteSetting->update([
+            'google_client_id' => $request->google_client_id,
+            'google_client_secret' => $request->google_client_secret,
+            'facebook_client_id' => $request->facebook_client_id,
+            'facebook_client_secret' => $request->facebook_client_secret,
+        ]);
+
+        $notification = array(
+            'message' => 'Socialite setting updated successfully.',
             'alert-type' => 'success'
         );
 

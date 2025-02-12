@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('site_settings', function (Blueprint $table) {
             $table->id();
             $table->string('site_name');
-            $table->string('site_tagline')->nullable();
+            $table->string('site_slogan')->nullable();
             $table->text('site_description')->nullable();
             $table->string('site_url');
             $table->enum('site_timezone', ['UTC', 'Asia/Dhaka']);

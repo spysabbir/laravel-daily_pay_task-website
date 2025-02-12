@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('sms_driver')->nullable();
             $table->string('sms_api_key')->nullable();
-            $table->string('sms_from')->nullable();
+            $table->string('sms_send_from')->nullable();
             $table->timestamps();
         });
     }

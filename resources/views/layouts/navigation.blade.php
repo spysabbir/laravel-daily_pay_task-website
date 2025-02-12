@@ -48,6 +48,11 @@
                             <a href="{{ route('backend.captcha.setting') }}" class="nav-link">Captcha</a>
                         </li>
                         @endcan
+                        @can('socialite.setting')
+                        <li class="nav-item">
+                            <a href="{{ route('backend.socialite.setting') }}" class="nav-link">Socialite</a>
+                        </li>
+                        @endcan
                     </ul>
                 </div>
             </li>

@@ -10,7 +10,7 @@
             <div class="container">
                 <div class="banner-text">
                     <span>Welcome to {{ get_site_settings('site_name') }}</span>
-                    <h1>{{ get_site_settings('site_tagline') }}</h1>
+                    <h1>{{ get_site_settings('site_slogan') }}</h1>
                     <p>{{ get_site_settings('site_description') }}</p>
                     <div class="theme-btn">
                         <a href="{{ route('contact.us') }}" class="default-btn">Contact Us</a>

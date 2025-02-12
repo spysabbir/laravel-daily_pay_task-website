@@ -14,14 +14,14 @@ class MailSettingTableSeeder extends Seeder
     public function run(): void
     {
         $setting = [
-            'mail_driver' => 'smtp',
-            'mail_mailer' => 'smtp',
-            'mail_host' => 'smtp.mailtrap.io',
-            'mail_port' => '2525',
-            'mail_username' => 'your_username',
-            'mail_password' => 'your_password',
-            'mail_encryption' => 'tls',
-            'mail_from_address' => 'noreply@gmail.com',
+            'mail_driver' => 'mail_driver',
+            'mail_mailer' => 'mail_mailer',
+            'mail_host' => 'mail_host',
+            'mail_port' => 'mail_port',
+            'mail_username' => 'mail_username',
+            'mail_password' => 'mail_password',
+            'mail_encryption' => 'mail_encryption',
+            'mail_from_address' => 'mail_from_address',
         ];
 
         MailSetting::create($setting);

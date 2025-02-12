@@ -1,9 +1,40 @@
+@php
+    $seoSetting = App\Models\SeoSetting::first();
+@endphp
 <!doctype html>
 <html lang="zxx">
     <head>
         <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="robots" content="index, follow">
+
+        <!-- SEO -->
+        <meta name="title" content="{{ $seoSetting->title }}">
+        <meta name="description" content="{{ $seoSetting->description }}">
+        <meta name="author" content="{{ $seoSetting->author }}">
+        <meta name="keywords" content="{{ $seoSetting->keywords }}">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="Website">
+        <meta property="og:url" content="{{ get_site_settings('site_url') }}">
+        <meta property="og:title" content="{{ $seoSetting->title }}">
+        <meta property="og:description" content="{{ $seoSetting->description }}">
+        <meta property="og:image" content="{{ asset('uploads/setting_photo') }}/{{ $seoSetting->image }}">
+        <meta property="og:image:alt" content="{{ $seoSetting->image_alt }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary">
+        <meta property="twitter:title" content="{{ $seoSetting->title }}">
+        <meta property="twitter:description" content="{{ $seoSetting->description }}">
+        <meta property="twitter:image" content="{{ asset('uploads/setting_photo') }}/{{ $seoSetting->image }}">
+        <meta property="twitter:image:alt" content="{{ $seoSetting->image_alt }}">
+        <meta property="twitter:image:width" content="1200">
+        <meta property="twitter:image:height" content="630">
+
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="{{ asset('frontend') }}/css/bootstrap.min.css">
         <!-- Owl Carousel CSS -->
@@ -25,7 +56,7 @@
         <!-- Responsive CSS -->
         <link rel="stylesheet" href="{{ asset('frontend') }}/css/responsive.css">
         <!-- Title CSS -->
-        <title>{{ config('app.name') }} - @yield('title')</title>
+        <title>{{ get_site_settings('site_name') }} - @yield('title')</title>
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="{{ asset('uploads/setting_photo') }}/{{ get_site_settings('site_favicon') }}">
 

@@ -53,6 +53,7 @@ class PermissionTableSeeder extends Seeder
             ['name' => 'mail.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'sms.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             ['name' => 'captcha.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
+            ['name' => 'socialite.setting', 'group_name' => 'SettingManagement', 'guard_name' => 'web'],
             // AccountsStatementManagement
             ['name' => 'AccountsStatementMenu', 'group_name' => 'AccountsStatementManagement', 'guard_name' => 'web'],
             ['name' => 'earnings.statement', 'group_name' => 'AccountsStatementManagement', 'guard_name' => 'web'],

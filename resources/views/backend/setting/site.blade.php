@@ -30,7 +30,7 @@
                             @enderror
                             <img width="80" height="80" class="mt-2 rounded" src="{{asset('uploads/setting_photo')}}/{{$siteSetting->site_favicon}}" id="site_faviconPreview"  alt="Site Favicon">
                         </div>
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-3 mb-3">
                             <label for="site_name" class="form-label">Site Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="site_name" name="site_name" value="{{ old('site_name', $siteSetting->site_name) }}" placeholder="Site Name">
                             @error('site_name')
@@ -38,16 +38,16 @@
                             @enderror
                         </div><!-- Col -->
                         <div class="col-lg-6 mb-3">
-                            <label for="site_url" class="form-label">Site Url <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="site_url" name="site_url" value="{{ old('site_url', $siteSetting->site_url) }}" placeholder="Site Url">
-                            @error('site_url')
+                            <label for="site_slogan" class="form-label">Site Slogan <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="site_slogan" name="site_slogan" value="{{ old('site_slogan', $siteSetting->site_slogan) }}" placeholder="Site Slogan">
+                            @error('site_slogan')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->
-                        <div class="col-lg-6 mb-3">
-                            <label for="site_tagline" class="form-label">Site Tagline <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="site_tagline" name="site_tagline" value="{{ old('site_tagline', $siteSetting->site_tagline) }}" placeholder="Site Tagline">
-                            @error('site_tagline')
+                        <div class="col-lg-3 mb-3">
+                            <label for="site_url" class="form-label">Site Url <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="site_url" name="site_url" value="{{ old('site_url', $siteSetting->site_url) }}" placeholder="Site Url">
+                            @error('site_url')
                                 <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div><!-- Col -->

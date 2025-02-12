@@ -14,9 +14,9 @@ class SmsSettingTableSeeder extends Seeder
     public function run(): void
     {
         $setting = [
-            'sms_driver' => 'bulksmsbd',
-            'sms_api_key' => '1234567890',
-            'sms_from' => '1234567890',
+            'sms_driver' => 'sms_driver',
+            'sms_api_key' => 'sms_api_key',
+            'sms_send_from' => 'sms_send_from',
         ];
 
         SmsSetting::create($setting);
