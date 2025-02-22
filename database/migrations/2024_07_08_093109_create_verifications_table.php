@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('id_type', ['NID', 'Passport', 'Driving License']);
-            $table->string('id_number')->unique();
+            $table->string('id_number');
             $table->string('id_front_image');
             $table->string('id_with_face_image');
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
@@ -25,7 +25,11 @@ return new class extends Migration
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
             $table->timestamps();
+
+            // Ensure unique constraint for id_type and id_number together
+            $table->unique(['id_type', 'id_number']);
         });
+
     }
 
     /**

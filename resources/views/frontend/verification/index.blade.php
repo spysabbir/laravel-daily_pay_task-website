@@ -217,6 +217,15 @@
                 $('#id_with_face_image_preview').hide();
             }
         });
+
+        // Form Submit Button Disable
+        const form = document.querySelector(".forms-sample");
+        const submitButton = form.querySelector("button[type='submit']");
+
+        form.addEventListener("submit", function () {
+            submitButton.disabled = true;
+            submitButton.innerText = "Processing...";
+        });
     });
 </script>
 @endsection

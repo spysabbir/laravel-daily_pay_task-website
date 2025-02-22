@@ -330,10 +330,32 @@ class UserController extends Controller
     {
         $request->validate([
             'id_type' => 'required|in:NID,Passport,Driving License',
-            'id_number' => 'required|string|unique:verifications,id_number,'.$request->user()->id.',user_id',
-            'id_front_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'id_with_face_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'id_number' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    $exists = Verification::where('id_type', $request->id_type)
+                        ->where('id_number', $value)
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('The combination of ID Type and ID Number has already been taken.');
+                    }
+                },
+            ],
+            'id_front_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'id_with_face_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        // Allready Verification Request Exists or Not
+        $verification = Verification::where('user_id', $request->user()->id)->exists();
+        if ($verification) {
+            $notification = array(
+                'message' => 'You have already submitted a verification request.',
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
+        }
 
         $manager = new ImageManager(new Driver());
         // id_front_image
@@ -345,6 +367,7 @@ class UserController extends Controller
         $image = $manager->read($request->file('id_with_face_image'));
         $image->toJpeg(80)->save(base_path("public/uploads/verification_photo/").$id_with_face_image_name);
 
+        // Store Verification
         Verification::create([
             'user_id' => $request->user()->id,
             'id_type' => $request->id_type,
@@ -365,33 +388,58 @@ class UserController extends Controller
     {
         $request->validate([
             'id_type' => 'required|in:NID,Passport,Driving License',
-            'id_number' => 'required|string|unique:verifications,id_number,'.$request->user()->id.',user_id',
+            'id_number' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    $exists = Verification::where('id_type', $request->id_type)
+                        ->where('id_number', $value)
+                        ->where('user_id', '!=', $request->user()->id) // Ignore current user's record
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('The combination of ID Type and ID Number has already been taken.');
+                    }
+                },
+            ],
             'id_front_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_with_face_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $verification = Verification::where('id', $request->verification_id)->first();
+        $verification = Verification::where('id', $request->verification_id)
+            ->where('user_id', $request->user()->id) // Ensure it's the same user's verification
+            ->firstOrFail(); // If not found, throw 404
 
-        $manager = new ImageManager(new Driver());
-        // id_front_image
-        if ($request->file('id_front_image')) {
-            unlink(base_path("public/uploads/verification_photo/").$verification->id_front_image);
-            $id_front_image_name = $request->user()->id."-id_front_image".".". $request->file('id_front_image')->getClientOriginalExtension();
-            $image = $manager->read($request->file('id_front_image'));
-            $image->toJpeg(80)->save(base_path("public/uploads/verification_photo/").$id_front_image_name);
-            $verification->update([
-                'id_front_image' => $id_front_image_name,
+        // Prevent duplicate re-verification request
+        if ($verification->status != 'Rejected') {
+            return back()->with([
+                'message' => 'You have already submitted a re-verification request.',
+                'alert-type' => 'error'
             ]);
         }
-        // id_with_face_image
+
+        $manager = new ImageManager(new Driver());
+
+        // Handle id_front_image
+        if ($request->file('id_front_image')) {
+            if ($verification->id_front_image && file_exists(base_path("public/uploads/verification_photo/") . $verification->id_front_image)) {
+                unlink(base_path("public/uploads/verification_photo/") . $verification->id_front_image);
+            }
+            $id_front_image_name = $request->user()->id . "-id_front_image." . $request->file('id_front_image')->getClientOriginalExtension();
+            $image = $manager->read($request->file('id_front_image'));
+            $image->toJpeg(80)->save(base_path("public/uploads/verification_photo/") . $id_front_image_name);
+            $verification->update(['id_front_image' => $id_front_image_name]);
+        }
+
+        // Handle id_with_face_image
         if ($request->file('id_with_face_image')) {
-            unlink(base_path("public/uploads/verification_photo/").$verification->id_with_face_image);
-            $id_with_face_image_name = $request->user()->id."-id_with_face_image".".". $request->file('id_with_face_image')->getClientOriginalExtension();
+            if ($verification->id_with_face_image && file_exists(base_path("public/uploads/verification_photo/") . $verification->id_with_face_image)) {
+                unlink(base_path("public/uploads/verification_photo/") . $verification->id_with_face_image);
+            }
+            $id_with_face_image_name = $request->user()->id . "-id_with_face_image." . $request->file('id_with_face_image')->getClientOriginalExtension();
             $image = $manager->read($request->file('id_with_face_image'));
-            $image->toJpeg(80)->save(base_path("public/uploads/verification_photo/").$id_with_face_image_name);
-            $verification->update([
-                'id_with_face_image' => $id_with_face_image_name,
-            ]);
+            $image->toJpeg(80)->save(base_path("public/uploads/verification_photo/") . $id_with_face_image_name);
+            $verification->update(['id_with_face_image' => $id_with_face_image_name]);
         }
 
         $verification->update([
@@ -400,13 +448,12 @@ class UserController extends Controller
             'status' => 'Pending',
         ]);
 
-        $notification = array(
-            'message' => 'Id Verification request updated successfully.',
+        return back()->with([
+            'message' => 'ID Verification request updated successfully.',
             'alert-type' => 'success'
-        );
-
-        return back()->with($notification);
+        ]);
     }
+
 
     // Instant Unblocked
     public function instantUnblocked(Request $request)
