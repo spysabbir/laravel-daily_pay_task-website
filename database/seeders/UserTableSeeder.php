@@ -21,7 +21,7 @@ class UserTableSeeder extends Seeder
         $superAdmin = User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@spysabbir.com',
-            'date_of_birth' => '2024-01-01',
+            'date_of_birth' => '2025-01-01',
             'gender' => 'Male',
             'password' => Hash::make('Ss@12345678'),
             'user_type' => 'Backend',
@@ -39,7 +39,7 @@ class UserTableSeeder extends Seeder
         $user = User::create([
             'name' => 'Spy Sabbir',
             'email' => 'user@spysabbir.com',
-            'date_of_birth' => '2024-01-01',
+            'date_of_birth' => '2025-01-01',
             'gender' => 'Male',
             'deposit_balance' => 10000,
             'withdraw_balance' => 10000,
@@ -57,7 +57,7 @@ class UserTableSeeder extends Seeder
             'id_front_image' => 'id_front_image.jpg',
             'id_with_face_image' => 'id_with_face_image.jpg',
             'status' => 'Approved',
-            'approved_by' => $superAdmin->id,
+            'approved_by' => 1,
             'approved_at' => now(),
         ]);
 

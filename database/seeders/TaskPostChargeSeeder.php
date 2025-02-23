@@ -78,6 +78,12 @@ class TaskPostChargeSeeder extends Seeder
                 'max_charge' => 12,
             ],
             [
+                'category_id' => 2,
+                'sub_category_id' => 8,
+                'min_charge' => 9,
+                'max_charge' => 12,
+            ],
+            [
                 'category_id' => 3,
                 'sub_category_id' => 9,
                 'min_charge' => 10,
@@ -96,14 +102,8 @@ class TaskPostChargeSeeder extends Seeder
                 'max_charge' => 15,
             ],
             [
-                'category_id' => 3,
-                'sub_category_id' => 12,
-                'min_charge' => 13,
-                'max_charge' => 16,
-            ],
-            [
                 'category_id' => 4,
-                'sub_category_id' => 13,
+                'sub_category_id' => 12,
                 'min_charge' => 1,
                 'max_charge' => 100,
             ],

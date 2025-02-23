@@ -92,6 +92,7 @@
 <!-- Sign In Section End -->
 @endsection
 
+@section('script')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.toggle-password').forEach(function (button) {
@@ -113,3 +114,4 @@
         });
     });
 </script>
+@endsection

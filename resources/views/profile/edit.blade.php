@@ -116,8 +116,7 @@
                         </label>
                         <div class="input-group date datepicker" id="{{ $user->isFrontendUser() && ($user->hasVerification('Pending') || $user->hasVerification('Approved')) ? '' : 'date_of_birth_picker' }}">
                             <input type="text" class="form-control" id="userDateOfBirth" name="date_of_birth" value="{{ old('date_of_birth', $user->date_of_birth ? \Carbon\Carbon::parse($user->date_of_birth)->format('d F, Y') : '') }}"
-                                placeholder="Select a date" required readonly
-                            >
+                                placeholder="Select a date" required readonly >
                             <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                         </div>
                         @error('date_of_birth')
@@ -125,10 +124,9 @@
                         @enderror
                         <small class="text-danger d-block" id="userDateOfBirthError"></small>
                     </div>
-
                     <div class="mb-3">
                         <div>
-                            <label for="userDateOfBirth" class="form-label d-block">Gender <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
+                            <label for="gender" class="form-label d-block">Gender <span class="text-danger">*</span> <span class="text-primary">(As per your verification document)</span></label>
                             <div class="form-check form-check-inline">
                                 <input type="radio" class="form-check-input" value="Male" name="gender" id="Male" @checked(old('gender', $user->gender) === 'Male') {{ $user->gender !== 'Male' && $user->isFrontendUser() && ($user->hasVerification('Pending') || $user->hasVerification('Approved')) ? 'disabled' : '' }} required>
                                 <label class="form-check-label" for="Male">
@@ -240,19 +238,6 @@
                     icon.textContent = '🔒'; // Change to "eye-off" icon
                 }
             });
-        });
-
-        // Set the max date of birth to today
-        const dateInput = document.getElementById('userDateOfBirth');
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.setAttribute('max', today);
-        dateInput.addEventListener('change', function () {
-            if (this.value > today) {
-                document.getElementById('userDateOfBirthError').textContent = 'Future dates are not allowed';
-                this.value = '';
-            } else {
-                document.getElementById('userDateOfBirthError').textContent = '';
-            }
         });
     });
 </script>

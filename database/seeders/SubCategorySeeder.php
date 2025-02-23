@@ -58,10 +58,6 @@ class SubCategorySeeder extends Seeder
                 'name' => 'Commented',
             ],
             [
-                'category_id' => 3,
-                'name' => 'Watched',
-            ],
-            [
                 'category_id' => 4,
                 'name' => 'N/A',
             ]
