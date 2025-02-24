@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Assigning Roles - Edit')
+@section('title', 'Assigning Role Permission - Edit')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Assigning Roles - Edit</h3>
+                <h3 class="card-title">Assigning Role Permission - Edit</h3>
                 <a href="{{ route('backend.role-permission.index') }}" class="btn btn-info">Back to List</a>
             </div>
             <div class="card-body">
@@ -80,42 +80,71 @@
         const permissionCheckboxes = document.querySelectorAll(".group-permission");
         const permissionAllCheckbox = document.getElementById("PermissionAll");
 
-        groupCheckboxes.forEach(groupCheckbox => {
-            groupCheckbox.addEventListener("change", function () {
-                const groupName = this.getAttribute("data-group");
-                const groupPermissionCheckboxes = document.querySelectorAll(`.group-permission[data-group="${groupName}"]`);
-                const isChecked = this.checked;
+        const roleName = "{{ $role->name }}";
+        const restrictedGroup = "RolePermissionManagement"; // The group to restrict when role is Super Admin
 
-                groupPermissionCheckboxes.forEach(permissionCheckbox => permissionCheckbox.checked = isChecked);
-                checkPermissionAllCheckbox();
+        groupCheckboxes.forEach(groupCheckbox => {
+            const groupName = groupCheckbox.getAttribute("data-group");
+
+            if (roleName === "Super Admin" && groupName === restrictedGroup) {
+                groupCheckbox.disabled = true; // Disable group checkbox
+            }
+
+            groupCheckbox.addEventListener("change", function () {
+                const isChecked = this.checked;
+                const groupPermissionCheckboxes = document.querySelectorAll(`.group-permission[data-group="${groupName}"]`);
+
+                if (!(roleName === "Super Admin" && groupName === restrictedGroup)) {
+                    groupPermissionCheckboxes.forEach(permissionCheckbox => permissionCheckbox.checked = isChecked);
+                    checkPermissionAllCheckbox();
+                }
             });
         });
 
         permissionCheckboxes.forEach(permissionCheckbox => {
+            const groupName = permissionCheckbox.getAttribute("data-group");
+
+            if (roleName === "Super Admin" && groupName === restrictedGroup) {
+                permissionCheckbox.disabled = true; // Disable child checkboxes
+            }
+
             permissionCheckbox.addEventListener("change", function () {
-                const groupName = this.getAttribute("data-group");
                 const groupPermissionCheckboxes = document.querySelectorAll(`.group-permission[data-group="${groupName}"]`);
                 const groupCheckbox = document.querySelector(`.group-checkbox[data-group="${groupName}"]`);
 
                 const allChecked = Array.from(groupPermissionCheckboxes).every(permission => permission.checked);
 
-                groupCheckbox.checked = allChecked;
-                checkPermissionAllCheckbox();
+                if (!(roleName === "Super Admin" && groupName === restrictedGroup)) {
+                    groupCheckbox.checked = allChecked;
+                    checkPermissionAllCheckbox();
+                }
             });
         });
 
         permissionAllCheckbox.addEventListener("change", function () {
             const isChecked = this.checked;
-            groupCheckboxes.forEach(groupCheckbox => groupCheckbox.checked = isChecked);
-            permissionCheckboxes.forEach(permissionCheckbox => permissionCheckbox.checked = isChecked);
+
+            groupCheckboxes.forEach(groupCheckbox => {
+                const groupName = groupCheckbox.getAttribute("data-group");
+                if (!(roleName === "Super Admin" && groupName === restrictedGroup)) {
+                    groupCheckbox.checked = isChecked;
+                }
+            });
+
+            permissionCheckboxes.forEach(permissionCheckbox => {
+                const groupName = permissionCheckbox.getAttribute("data-group");
+                if (!(roleName === "Super Admin" && groupName === restrictedGroup)) {
+                    permissionCheckbox.checked = isChecked;
+                }
+            });
         });
 
         function checkPermissionAllCheckbox() {
             const allGroupCheckboxes = Array.from(groupCheckboxes);
             const allPermissionCheckboxes = Array.from(permissionCheckboxes);
 
-            const allGroupChecked = allGroupCheckboxes.every(groupCheckbox => groupCheckbox.checked);
-            const allPermissionChecked = allPermissionCheckboxes.every(permissionCheckbox => permissionCheckbox.checked);
+            const allGroupChecked = allGroupCheckboxes.every(groupCheckbox => groupCheckbox.checked || groupCheckbox.disabled);
+            const allPermissionChecked = allPermissionCheckboxes.every(permissionCheckbox => permissionCheckbox.checked || permissionCheckbox.disabled);
 
             permissionAllCheckbox.checked = allGroupChecked && allPermissionChecked;
         }
@@ -141,6 +170,9 @@
             var submitButton = $(this).find("button[type='submit']");
             submitButton.prop("disabled", true).text("Submitting...");
 
+            // Enable all disabled checkboxes before submitting
+            $('.group-permission:disabled, .group-checkbox:disabled').prop('disabled', false);
+
             $.ajax({
                 url: url,
                 type: "PUT",
@@ -153,8 +185,8 @@
                         $.each(response.error, function(prefix, val){
                             $('span.update_'+prefix+'_error').text(val[0]);
                         })
-                    }else{
-                        toastr.success('Role in permission update successfully.');
+                    } else {
+                        toastr.success('Role permission updated successfully.');
 
                         setTimeout(function () {
                             window.location.href = "{{ route('backend.role-permission.index') }}";
@@ -163,6 +195,9 @@
                 },
                 complete: function () {
                     submitButton.prop("disabled", false).text("Assigning");
+
+                    // Re-disable the checkboxes that were initially disabled
+                    $('.group-permission[data-group="RolePermissionManagement"], .group-checkbox[data-group="RolePermissionManagement"]').prop('disabled', true);
                 }
             });
         });

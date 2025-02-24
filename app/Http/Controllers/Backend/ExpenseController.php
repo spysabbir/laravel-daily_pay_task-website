@@ -231,6 +231,7 @@ class ExpenseController extends Controller implements HasMiddleware
                     $restorePermission = auth()->user()->can('expense.restore');
                     $deletePermission = auth()->user()->can('expense.delete');
 
+                    $viewBtn = '<button type="button" data-id="' . $row->id . '" class="btn btn-info btn-xs viewBtn">View</button>';
                     $restoreBtn = $restorePermission
                         ? '<button type="button" data-id="'.$row->id.'" class="btn bg-success btn-xs restoreBtn">Restore</button>'
                         : '';
@@ -238,7 +239,7 @@ class ExpenseController extends Controller implements HasMiddleware
                         ? '<button type="button" data-id="'.$row->id.'" class="btn bg-danger btn-xs forceDeleteBtn">Delete</button>'
                         : '';
 
-                    $btn = $restoreBtn . ' ' . $deleteBtn;
+                    $btn = $viewBtn . ' ' . $restoreBtn . ' ' . $deleteBtn;
                     return $btn;
                 })
                 ->rawColumns(['expense_category_name', 'amount', 'expense_date', 'action'])

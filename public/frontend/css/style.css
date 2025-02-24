@@ -3718,22 +3718,22 @@ h3 {
   background: #fd1616;
 }
 
-.signin-form .other-signin span {
+.other-signin span {
   color: #001935;
   margin-bottom: 15px;
   display: inline-block;
 }
 
-.signin-form .other-signin ul {
+.other-signin ul {
   padding-left: 0;
   margin-bottom: 0;
 }
 
-.signin-form .other-signin ul li {
+.other-signin ul li {
   display: inline-block;
 }
 
-.signin-form .other-signin ul li a i {
+.other-signin ul li a i {
   width: 35px;
   height: 35px;
   -webkit-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
@@ -3745,7 +3745,7 @@ h3 {
   margin: 0 3px;
 }
 
-.signin-form .other-signin ul li a i:hover {
+.other-signin ul li a i:hover {
   background: #001935;
   color: #ffffff;
 }

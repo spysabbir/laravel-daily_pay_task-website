@@ -15,7 +15,7 @@
                     </tr>
                     <tr>
                         <td>Description</td>
-                        <td>{{ $expense->description }}</td>
+                        <td>{{ $expense->description ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                         <td>Amount</td>
@@ -51,14 +51,16 @@
                         <td>Updated At</td>
                         <td>{{ date('d M, Y', strtotime($expense->updated_at)) }}</td>
                     </tr>
-                    <tr>
-                        <td>Deleted By</td>
-                        <td>{{ $expense->deletedBy->name ?? 'N/A' }}</td>
-                    </tr>
-                    <tr>
-                        <td>Deleted At</td>
-                        <td>{{ $expense->deleted_at ? date('d M, Y', strtotime($expense->deleted_at)) : 'N/A' }}</td>
-                    </tr>
+                    @if ($expense->deleted_at)
+                        <tr>
+                            <td>Deleted By</td>
+                            <td>{{ $expense->deletedBy->name ?? 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Deleted At</td>
+                            <td>{{ $expense->deleted_at ? date('d M, Y', strtotime($expense->deleted_at)) : 'N/A' }}</td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
         </div>

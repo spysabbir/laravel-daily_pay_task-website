@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Assigning Roles')
+@section('title', 'Assigning Role Permission')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Assigning Roles List</h3>
+                <h3 class="card-title">Assigning Role Permission List</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

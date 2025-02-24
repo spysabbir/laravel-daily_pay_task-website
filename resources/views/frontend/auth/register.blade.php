@@ -109,6 +109,22 @@
                         <button type="submit">Sign Up</button>
                     </div>
 
+                    <div class="other-signin text-center">
+                        <span>Or sign up with</span>
+                        <ul>
+                            <li>
+                                <a href="{{ route('socialite.redirect', 'google') }}">
+                                    <i class='bx bxl-google' style="background-color: #db4437; color: #fff;"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('socialite.redirect', 'facebook') }}">
+                                    <i class='bx bxl-facebook' style="background-color: #3b5998; color: #fff;"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
                     <div class="create-btn text-center">
                         <p>
                             Have an Account?

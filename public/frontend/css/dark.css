@@ -356,15 +356,15 @@ Default CSS
   color: #ffffff;
 }
 
-.theme-dark .signin-form .other-signin span {
+.theme-dark .other-signin span {
   color: #ffffff;
 }
 
-.theme-dark .signin-form .other-signin ul li a i {
+.theme-dark .other-signin ul li a i {
   background-color: #000000;
 }
 
-.theme-dark .signin-form .other-signin ul li a i:hover {
+.theme-dark .other-signin ul li a i:hover {
   background-color: #fd1616;
 }
 

@@ -1,13 +1,13 @@
 @extends('layouts.template_master')
 
-@section('title', 'Assigning Roles - Show')
+@section('title', 'Assigning Role Permission - Show')
 
 @section('content')
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="card-title">Assigning Roles - Show</h3>
+                <h3 class="card-title">Assigning Role Permission - Show</h3>
                 <a href="{{ route('backend.role-permission.index') }}" class="btn btn-info">Back to List</a>
             </div>
             <div class="card-body">
@@ -16,14 +16,18 @@
                 </div>
 
                 <div class="">
-                    @foreach($groupedData as $groupName => $names)
+                @forelse($groupedData as $groupName => $names)
                     <h4>{{ $groupName }}</h4>
                     <div class="mb-3">
                         @foreach($names as $name)
                             <strong class="badge bg-primary">{{ $name }}</strong>
                         @endforeach
                     </div>
-                @endforeach
+                @empty
+                    <div class="alert alert-warning text-center">
+                        <strong>Sorry!</strong> Permission not found.
+                    </div>
+                @endforelse
                 </div>
             </div>
         </div>

@@ -47,17 +47,29 @@ class RolePermissionController extends Controller implements HasMiddleware
                     $canDelete = auth()->user()->can('role-permission.destroy');
 
                     $viewBtn = '<a href="' . route('backend.role-permission.show', encrypt($row->id)) . '" class="btn btn-info btn-xs">View</a>';
-                    $assigningBtn = $canAssign
-                        ? '<a href="' . route('backend.role-permission.edit', encrypt($row->id)) . '" class="btn btn-success btn-xs">Assigning</a>'
-                        : '';
+                    if ($row->name === 'Super Admin' && auth()->user()->hasRole('Super Admin')) {
+                        $assigningBtn = $canAssign
+                            ? '<a href="' . route('backend.role-permission.edit', encrypt($row->id)) . '" class="btn btn-success btn-xs">Assigning</a>'
+                            : '';
+                    } elseif ($row->name !== 'Super Admin') {
+                        $assigningBtn = $canAssign
+                            ? '<a href="' . route('backend.role-permission.edit', encrypt($row->id)) . '" class="btn btn-success btn-xs">Assigning</a>'
+                            : '';
+                    } else {
+                        $assigningBtn = '';
+                    }
+
                     if ($row->name !== 'Super Admin') {
-                        $deleteBtn = $canDelete
-                        ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Remove All Permission</button>'
-                        : '';
+                        if ($row->permissions->count() > 0) {
+                            $deleteBtn = $canDelete
+                            ? '<button type="button" data-id="' . $row->id . '" class="btn btn-danger btn-xs deleteBtn">Remove All Permission</button>'
+                            : '';
+                        } else {
+                            $deleteBtn = '';
+                        }
                     }else{
                         $deleteBtn = '';
                     }
-
 
                     return $viewBtn . ' ' . $assigningBtn . ' ' . $deleteBtn;
                 })

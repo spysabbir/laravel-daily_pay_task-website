@@ -31,9 +31,9 @@
                                                 <label for="type" class="form-label">Type <span class="text-danger">*</span></label>
                                                 <select class="form-select" id="type" name="type">
                                                     <option value="">Select Type</option>
-                                                    <option value="Multiple Employee">Multiple Employee</option>
+                                                    <option value="Individual Employee">Individual Employee</option>
                                                     <option value="All Employee">All Employee</option>
-                                                    <option value="Multiple User">Multiple User</option>
+                                                    <option value="Individual User">Individual User</option>
                                                     <option value="All User">All User</option>
                                                 </select>
                                                 <span class="text-danger error-text type_error"></span>
@@ -213,10 +213,10 @@
             $('#user_id_hidden').val('');
             $('.user_id_error').text('');
 
-            if (selectedType === 'Multiple User') {
+            if (selectedType === 'Individual User') {
                 $('#userDiv').removeClass('d-none');
                 $('#user_id').prop('disabled', false);
-            } else if (selectedType === 'Multiple Employee') {
+            } else if (selectedType === 'Individual Employee') {
                 $('#employeeDiv').removeClass('d-none');
                 $('#employee_id').prop('disabled', false);
             }

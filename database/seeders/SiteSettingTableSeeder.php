@@ -35,7 +35,7 @@ class SiteSettingTableSeeder extends Seeder
             'site_linkedin_url' => 'https://www.pinterest.com/dailypaytask',
             'site_pinterest_url' => 'https://www.pinterest.com/dailypaytask',
             'site_youtube_url' => 'https://www.youtube.com/@DailyPayTask',
-            'site_whatsapp_url' => 'https://whatsapp.com',
+            'site_whatsapp_url' => 'https://wa.me/+8801883714846',
             'site_telegram_url' => 'https://t.me/dailypaytask_support',
             'site_tiktok_url' => 'https://www.tiktok.com/@dailypaytask',
         ];

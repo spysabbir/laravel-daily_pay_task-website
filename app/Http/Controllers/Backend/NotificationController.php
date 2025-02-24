@@ -120,14 +120,14 @@ class NotificationController extends Controller implements HasMiddleware
         $validator = Validator::make($request->all(), [
             'type' => 'required|string',
             'user_id' => [
-                'required_if:type,Multiple User',
-                'required_if:type,Multiple Employee',
+                'required_if:type,Individual User',
+                'required_if:type,Individual Employee',
                 'nullable', // Prevents validation error when not required
             ],
             'title' => 'required|string|max:255',
             'message' => 'required|string',
         ], [
-            'user_id.required_if' => 'The Name field is required when type is Multiple Employee or Multiple User.',
+            'user_id.required_if' => 'The Name field is required when type is Individual Employee or Individual User.',
         ]);
 
         if($validator->fails()){
@@ -146,7 +146,7 @@ class NotificationController extends Controller implements HasMiddleware
                 foreach ($allEmployee as $employee) {
                     $employee->notify(new CustomNotification($notificationData));
                 }
-            } elseif ($request->type == 'Multiple Employee') {
+            } elseif ($request->type == 'Individual Employee') {
                 $employeeIds = explode(',', $request->user_id); // Convert to an array
                 $employees = User::whereIn('id', $employeeIds)->get();
                 foreach ($employees as $employee) {
@@ -157,7 +157,7 @@ class NotificationController extends Controller implements HasMiddleware
                 foreach ($allUser as $user) {
                     $user->notify(new CustomNotification($notificationData));
                 }
-            } elseif ($request->type == 'Multiple User') {
+            } elseif ($request->type == 'Individual User') {
                 $userIds = explode(',', $request->user_id); // Convert to an array
                 $users = User::whereIn('id', $userIds)->get();
                 foreach ($users as $user) {

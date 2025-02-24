@@ -58,5 +58,7 @@
 	<script src="{{ asset('template') }}/vendors/feather-icons/feather.min.js"></script>
 	<script src="{{ asset('template') }}/js/template.js"></script>
 	<!-- endinject -->
+
+    @yield('script')
 </body>
 </html>
